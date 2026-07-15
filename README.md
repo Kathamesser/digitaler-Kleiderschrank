@@ -1,11 +1,8 @@
-# Digitaler Kleiderschrank 👕
+# Digitaler Kleiderschrank 
 
-Projekt für „Programmieren in WIV1" von Manuel Herrmann, Katharina Lutzky und Christian Maschke.
 
 Eine Web-App zum Digitalisieren des eigenen Kleiderschranks: Kleidungsstücke erfassen,
 Outfits planen und Stücke an Freunde verleihen oder verschenken.
-
-## Einrichtung (macht jeder von euch einmal)
 
 Voraussetzung: Python 3.10 oder neuer ist installiert (`python --version`).
 
