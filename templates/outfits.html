@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titel %}Outfits{% endblock %}
+
+{% block inhalt %}
+  <h1>Outfits</h1>
+
+  {% if outfits %}
+    <div class="karten-raster">
+      {% for outfit in outfits %}
+        <article class="karte">
+          <div class="outfit-collage">
+            {% for stueck in outfit.stuecke[:4] %}
+              {% if stueck.foto %}
+                <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+                     alt="Foto von {{ stueck.name }}">
+              {% else %}
+                <div class="karte-platzhalter"></div>
+              {% endif %}
+            {% endfor %}
+            {% for _ in range(4 - outfit.stuecke|length) %}
+              <div class="outfit-leerfeld"></div>
+            {% endfor %}
+          </div>
+          <div class="karte-text">
+            <p class="karte-name">{{ outfit.name }} <span class="anzahl">({{ outfit.stuecke|length }})</span></p>
+            <!-- Löschen als POST-Formular, nicht als Link:
+                 Aktionen, die etwas verändern, gehören nie in ein GET. -->
+            <form method="post"
+                  action="{{ url_for('outfit_loeschen', outfit_id=outfit.id) }}"
+                  onsubmit="return confirm('Outfit „{{ outfit.name }}“ wirklich löschen?');">
+              <button type="submit" class="knopf-loeschen" aria-label="Outfit {{ outfit.name }} löschen">✕</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="leer-hinweis">Du hast noch keine Outfits zusammengestellt.
+      <a href="{{ url_for('outfit_neu') }}">Stell dein erstes Outfit zusammen!</a></p>
+  {% endif %}
+{% endblock %}

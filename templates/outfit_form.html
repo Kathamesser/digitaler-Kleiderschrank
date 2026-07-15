@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titel %}Neues Outfit{% endblock %}
+
+{% block inhalt %}
+  <h1>Neues Outfit</h1>
+
+  {% if stuecke_nach_kategorie %}
+    <form method="post" class="formular">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required
+             placeholder="z. B. Business-Look">
+
+      {% for k, stuecke in stuecke_nach_kategorie.items() %}
+        <h2>{{ k }}</h2>
+        <div class="auswahl-gruppe">
+          {% for stueck in stuecke %}
+            <label class="auswahl-kachel">
+              <input type="checkbox" name="stuecke" value="{{ stueck.id }}" hidden>
+              <span class="auswahl-bild">
+                {% if stueck.foto %}
+                  <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+                       alt="Foto von {{ stueck.name }}">
+                {% else %}
+                  <div class="karte-platzhalter"></div>
+                {% endif %}
+                <span class="auswahl-haken" aria-hidden="true">✓</span>
+              </span>
+              <span class="auswahl-name">{{ stueck.name }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="knopf">Outfit speichern</button>
+    </form>
+  {% else %}
+    <p class="leer-hinweis">Du hast noch keine Kleidungsstücke, aus denen du ein
+      Outfit zusammenstellen könntest.
+      <a href="{{ url_for('kleidungsstueck_neu') }}">Häng zuerst etwas in deinen Schrank!</a></p>
+  {% endif %}
+{% endblock %}

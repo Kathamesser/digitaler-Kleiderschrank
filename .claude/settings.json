@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash('C:\\\\Users\\\\katha\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python313\\\\python.exe' -c ' *)"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titel %}Konto – Digitaler Kleiderschrank{% endblock %}
+
+{% block inhalt %}
+  <h1>Konto</h1>
+
+  <h2>Benutzername ändern</h2>
+  <form method="post" action="{{ url_for('konto_benutzername_aendern') }}" class="formular">
+    <label for="benutzername">Neuer Benutzername</label>
+    <input type="text" id="benutzername" name="benutzername" required
+           value="{{ current_user.benutzername }}">
+
+    <label for="benutzername_passwort">Aktuelles Passwort</label>
+    <input type="password" id="benutzername_passwort" name="passwort" required>
+
+    <button type="submit" class="knopf">Benutzername speichern</button>
+  </form>
+
+  <h2>Passwort ändern</h2>
+  <form method="post" action="{{ url_for('konto_passwort_aendern') }}" class="formular">
+    <label for="aktuelles_passwort">Aktuelles Passwort</label>
+    <input type="password" id="aktuelles_passwort" name="aktuelles_passwort" required>
+
+    <label for="neues_passwort">Neues Passwort</label>
+    <input type="password" id="neues_passwort" name="neues_passwort" required minlength="6">
+
+    <label for="neues_passwort_wiederholen">Neues Passwort wiederholen</label>
+    <input type="password" id="neues_passwort_wiederholen" name="neues_passwort_wiederholen" required minlength="6">
+
+    <button type="submit" class="knopf">Passwort speichern</button>
+  </form>
+{% endblock %}

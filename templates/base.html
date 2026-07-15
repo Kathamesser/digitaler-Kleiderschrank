@@ -5,32 +5,132 @@
   <!-- Wichtig fürs Handy: sorgt für richtige Skalierung -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block titel %}Digitaler Kleiderschrank{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <nav class="navigation">
-    <a class="logo" href="{{ url_for('index') }}">👕 Kleiderschrank</a>
-    <div class="nav-links">
-      {% if current_user.is_authenticated %}
-        <a href="{{ url_for('kleiderschrank') }}">Mein Schrank</a>
-        <a href="{{ url_for('kleidungsstueck_neu') }}">+ Neues Stück</a>
-        <a href="{{ url_for('logout') }}">Abmelden ({{ current_user.benutzername }})</a>
-      {% else %}
-        <a href="{{ url_for('login') }}">Anmelden</a>
-        <a href="{{ url_for('registrieren') }}">Registrieren</a>
-      {% endif %}
-    </div>
-  </nav>
+  <div class="app-rahmen">
+    <header class="kopf">
+      <div class="kopf-zeile">
+        <a class="logo" href="{{ url_for('index') }}">{% if current_user.is_authenticated %}{{ current_user.benutzername }}’s Schrank{% else %}Kleiderschrank{% endif %}</a>
+        <button type="button" class="menu-knopf" id="menuKnopf" aria-label="Menü öffnen" aria-expanded="false" aria-controls="menuKlappe">☰</button>
+      </div>
+      <div class="kopf-mitte">
+        {% if current_user.is_authenticated %}
+          <form method="post" action="{{ url_for('profilbild_hochladen') }}"
+                enctype="multipart/form-data" class="profilbild-form">
+            <label class="kopf-kreis" for="profilbildInput" title="Profilbild ändern">
+              {% if current_user.profilbild %}
+                <img src="{{ url_for('static', filename='uploads/' + current_user.profilbild) }}"
+                     alt="Profilbild von {{ current_user.benutzername }}">
+              {% else %}
+                <!-- Kleiderbügel als Platzhalter, solange kein Profilbild gesetzt ist -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3.5a1.5 1.5 0 1 1 1.5 1.5" />
+                  <path d="M12 5l8.5 6.2c.9.65.45 2.05-.65 2.05H4.15c-1.1 0-1.55-1.4-.65-2.05L12 5Z" />
+                  <path d="M4 17.5h16" />
+                </svg>
+              {% endif %}
+            </label>
+            <input type="file" id="profilbildInput" name="profilbild" accept="image/*"
+                   onchange="this.form.submit()" hidden>
+          </form>
+        {% else %}
+          <span class="kopf-kreis" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3.5a1.5 1.5 0 1 1 1.5 1.5" />
+              <path d="M12 5l8.5 6.2c.9.65.45 2.05-.65 2.05H4.15c-1.1 0-1.55-1.4-.65-2.05L12 5Z" />
+              <path d="M4 17.5h16" />
+            </svg>
+          </span>
+        {% endif %}
+      </div>
 
-  <main class="inhalt">
-    <!-- Flash-Nachrichten: kurze Rückmeldungen wie "gespeichert!" -->
-    {% with nachrichten = get_flashed_messages(with_categories=true) %}
-      {% for kategorie, nachricht in nachrichten %}
-        <p class="meldung meldung-{{ kategorie }}">{{ nachricht }}</p>
-      {% endfor %}
-    {% endwith %}
+      <nav id="menuKlappe" class="menu-klappe" hidden>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('kleiderschrank') }}">Mein Schrank</a>
+          <a href="{{ url_for('kleidungsstueck_neu') }}">+ Neues Stück</a>
+          <a href="{{ url_for('outfits') }}">Outfits</a>
+          <a href="{{ url_for('freunde') }}">Freunde</a>
+          <a href="{{ url_for('konto') }}">Konto</a>
+          <a href="{{ url_for('logout') }}">Abmelden</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Anmelden</a>
+          <a href="{{ url_for('registrieren') }}">Registrieren</a>
+        {% endif %}
+      </nav>
+    </header>
 
-    {% block inhalt %}{% endblock %}
-  </main>
+    <main class="inhalt">
+      <!-- Flash-Nachrichten: kurze Rückmeldungen wie "gespeichert!" -->
+      {% with nachrichten = get_flashed_messages(with_categories=true) %}
+        {% for kategorie, nachricht in nachrichten %}
+          <p class="meldung meldung-{{ kategorie }}">{{ nachricht }}</p>
+        {% endfor %}
+      {% endwith %}
+
+      {% block inhalt %}{% endblock %}
+    </main>
+
+    {% if current_user.is_authenticated %}
+      <div class="fuss-bereich">
+        <nav class="fussnav">
+          <a href="{{ url_for('freunde') }}" class="fussnav-punkt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8.5" cy="8" r="3" />
+              <circle cx="16" cy="9.2" r="2.4" />
+              <path d="M2.5 20c0-3.3 2.6-5.6 6-5.6s6 2.3 6 5.6" />
+              <path d="M13.4 15c2.9.2 5.1 2.2 5.1 5" />
+            </svg>
+            Freunde
+          </a>
+          <a href="{{ url_for('outfits') }}" class="fussnav-punkt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 4h6l1 2h3.5a1 1 0 0 1 1 1v1.2a2 2 0 0 1-2 2H18v9a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-9H4.5a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1H8l1-2Z" />
+            </svg>
+            Outfits
+          </a>
+          <a href="#" class="fussnav-punkt" title="Bald verfügbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="4.5" width="17" height="16" rx="3" />
+              <path d="M3.5 9.5h17M8 3v3M16 3v3" />
+            </svg>
+            Kalender
+          </a>
+          <a href="#" class="fussnav-punkt" title="Bald verfügbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20V11M11 20V4M18 20v-7" />
+            </svg>
+            Statistik
+          </a>
+        </nav>
+        {% if request.endpoint in ("outfits", "outfit_neu") %}
+          <a href="{{ url_for('outfit_neu') }}" class="fab" aria-label="Neues Outfit zusammenstellen">+</a>
+        {% else %}
+          <a href="{{ url_for('kleidungsstueck_neu') }}" class="fab" aria-label="Neues Kleidungsstück hinzufügen">+</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const menuKnopf = document.getElementById("menuKnopf");
+    const menuKlappe = document.getElementById("menuKlappe");
+    if (menuKnopf) {
+      menuKnopf.addEventListener("click", () => {
+        const istOffen = !menuKlappe.hidden;
+        menuKlappe.hidden = istOffen;
+        menuKnopf.setAttribute("aria-expanded", String(!istOffen));
+      });
+      document.addEventListener("click", (ereignis) => {
+        if (!menuKlappe.hidden && !menuKlappe.contains(ereignis.target) && ereignis.target !== menuKnopf) {
+          menuKlappe.hidden = true;
+          menuKnopf.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+  </script>
 </body>
 </html>

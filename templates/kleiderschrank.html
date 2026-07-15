@@ -1,14 +1,57 @@
 {% extends "base.html" %}
 {% block titel %}Mein Kleiderschrank{% endblock %}
 
+{% macro karte(stueck, aktive_kategorie) %}
+  <article class="karte" data-name="{{ stueck.name|lower }}">
+    <div class="karte-bild">
+      {% if stueck.foto %}
+        <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+             alt="Foto von {{ stueck.name }}">
+      {% else %}
+        <div class="karte-platzhalter"></div>
+      {% endif %}
+      <!-- Favorisieren als POST-Formular: verändert Daten, gehört nicht in ein GET. -->
+      <form method="post" class="favorit-form"
+            action="{{ url_for('kleidungsstueck_favorit', stueck_id=stueck.id) }}">
+        <input type="hidden" name="kategorie" value="{{ aktive_kategorie or '' }}">
+        <button type="submit" class="knopf-favorit {{ 'aktiv' if stueck.favorit }}"
+                aria-label="{{ stueck.name }} {{ 'aus Favoriten entfernen' if stueck.favorit else 'zu Favoriten hinzufügen' }}">
+          <svg viewBox="0 0 24 24" fill="{{ 'currentColor' if stueck.favorit else 'none' }}"
+               stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20.5s-7.5-4.6-9.9-9.2C.6 8 2.1 4.8 5.3 4.1c2-.4 3.9.5 5 2.1a5.6 5.6 0 0 1 1.7-2.1c1.1-1.6 3-2.5 5-2.1 3.2.7 4.7 3.9 3.2 7.2C19.5 15.9 12 20.5 12 20.5Z" />
+          </svg>
+        </button>
+      </form>
+    </div>
+    <div class="karte-text">
+      <p class="karte-name">{{ stueck.name }}</p>
+      <!-- Löschen als POST-Formular, nicht als Link:
+           Aktionen, die etwas verändern, gehören nie in ein GET. -->
+      <form method="post"
+            action="{{ url_for('kleidungsstueck_loeschen', stueck_id=stueck.id) }}"
+            onsubmit="return confirm('„{{ stueck.name }}“ wirklich löschen?');">
+        <button type="submit" class="knopf-loeschen" aria-label="{{ stueck.name }} löschen">✕</button>
+      </form>
+    </div>
+  </article>
+{% endmacro %}
+
 {% block inhalt %}
-  <h1>Mein Kleiderschrank</h1>
+  <div class="suchleiste">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M20 20l-4.3-4.3" />
+    </svg>
+    <input type="search" id="suche" placeholder="suchen…" aria-label="Kleidungsstücke durchsuchen">
+  </div>
 
   {% if kategorien %}
-    <!-- Filter-Buttons: einfach Links mit ?kategorie=... -->
+    <!-- Filter-Pills: einfach Links mit ?kategorie=... -->
     <div class="filter">
       <a href="{{ url_for('kleiderschrank') }}"
-         class="filter-knopf {{ 'aktiv' if not aktive_kategorie }}">Alle</a>
+         class="filter-knopf {{ 'aktiv' if not aktive_kategorie }}">Alles</a>
+      <a href="{{ url_for('kleiderschrank', kategorie='Favoriten') }}"
+         class="filter-knopf {{ 'aktiv' if aktive_kategorie == 'Favoriten' }}">❤ Favoriten</a>
       {% for k in kategorien %}
         <a href="{{ url_for('kleiderschrank', kategorie=k) }}"
            class="filter-knopf {{ 'aktiv' if aktive_kategorie == k }}">{{ k }}</a>
@@ -16,32 +59,75 @@
     </div>
   {% endif %}
 
-  {% if stuecke %}
-    <div class="karten-raster">
-      {% for stueck in stuecke %}
-        <article class="karte">
-          {% if stueck.foto %}
-            <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
-                 alt="Foto von {{ stueck.name }}">
-          {% else %}
-            <div class="karte-platzhalter">👕</div>
-          {% endif %}
-          <div class="karte-text">
-            <h2>{{ stueck.name }}</h2>
-            <p>{{ stueck.kategorie }}{% if stueck.farbe %} · {{ stueck.farbe }}{% endif %}</p>
-            <!-- Löschen als POST-Formular, nicht als Link:
-                 Aktionen, die etwas verändern, gehören nie in ein GET. -->
-            <form method="post"
-                  action="{{ url_for('kleidungsstueck_loeschen', stueck_id=stueck.id) }}"
-                  onsubmit="return confirm('„{{ stueck.name }}“ wirklich löschen?');">
-              <button type="submit" class="knopf-klein">Löschen</button>
-            </form>
-          </div>
-        </article>
-      {% endfor %}
-    </div>
+  {% if aktive_kategorie %}
+    {% if stuecke %}
+      <!-- Ein Filter ist aktiv: alle passenden Stücke im Raster -->
+      <section class="abschnitt">
+        <div class="abschnitt-kopf">
+          <h2>{{ '❤ Favoriten' if aktive_kategorie == 'Favoriten' else aktive_kategorie }}
+            <span class="anzahl">({{ stuecke|length }})</span></h2>
+        </div>
+        <div class="karten-raster">
+          {% for stueck in stuecke %}
+            {{ karte(stueck, aktive_kategorie) }}
+          {% endfor %}
+        </div>
+      </section>
+    {% elif aktive_kategorie == 'Favoriten' %}
+      <p class="leer-hinweis">Noch keine Favoriten. Tippe im Kleiderschrank aufs Herz,
+        um ein Stück hier reinzuholen.</p>
+    {% else %}
+      <p class="leer-hinweis">In dieser Kategorie hängt noch nichts.</p>
+    {% endif %}
+  {% elif stuecke %}
+    <!-- Keine Filterung: nach Kategorie gruppiert, je Reihe horizontal scrollbar -->
+    {% if favoriten %}
+      <section class="abschnitt">
+        <div class="abschnitt-kopf">
+          <h2>❤ Favoriten <span class="anzahl">({{ favoriten|length }})</span></h2>
+          <a class="alle-link" href="{{ url_for('kleiderschrank', kategorie='Favoriten') }}">alle →</a>
+        </div>
+        <div class="reihe">
+          {% for stueck in favoriten %}
+            {{ karte(stueck, none) }}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+    {% for k in kategorien %}
+      <section class="abschnitt">
+        <div class="abschnitt-kopf">
+          <h2>{{ k }} <span class="anzahl">({{ stuecke_nach_kategorie[k]|length }})</span></h2>
+          <a class="alle-link" href="{{ url_for('kleiderschrank', kategorie=k) }}">alle →</a>
+        </div>
+        <div class="reihe">
+          {% for stueck in stuecke_nach_kategorie[k] %}
+            {{ karte(stueck, none) }}
+          {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
   {% else %}
     <p class="leer-hinweis">Dein Schrank ist noch leer.
       <a href="{{ url_for('kleidungsstueck_neu') }}">Häng dein erstes Stück rein!</a></p>
   {% endif %}
+
+  <script>
+    // Einfache Live-Suche über den Namen der bereits geladenen Kleidungsstücke
+    const sucheFeld = document.getElementById("suche");
+    if (sucheFeld) {
+      sucheFeld.addEventListener("input", () => {
+        const begriff = sucheFeld.value.trim().toLowerCase();
+        document.querySelectorAll(".abschnitt").forEach((abschnitt) => {
+          let sichtbareTreffer = 0;
+          abschnitt.querySelectorAll(".karte").forEach((karte) => {
+            const passt = karte.dataset.name.includes(begriff);
+            karte.style.display = passt ? "" : "none";
+            if (passt) sichtbareTreffer += 1;
+          });
+          abschnitt.style.display = sichtbareTreffer > 0 ? "" : "none";
+        });
+      });
+    }
+  </script>
 {% endblock %}

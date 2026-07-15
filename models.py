@@ -13,10 +13,15 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     benutzername = db.Column(db.String(50), unique=True, nullable=False)
     passwort_hash = db.Column(db.String(200), nullable=False)
+    profilbild = db.Column(db.String(200))                 # Dateiname in static/uploads
 
     # Beziehung: user.kleidungsstuecke liefert alle Stücke des Nutzers
     kleidungsstuecke = db.relationship(
         "Kleidungsstueck", backref="besitzer", lazy=True,
+        cascade="all, delete-orphan",
+    )
+    outfits = db.relationship(
+        "Outfit", backref="besitzer", lazy=True,
         cascade="all, delete-orphan",
     )
 
@@ -28,29 +33,57 @@ class Kleidungsstueck(db.Model):
     kategorie = db.Column(db.String(50), nullable=False)  # z. B. "Hosen"
     farbe = db.Column(db.String(30))
     foto = db.Column(db.String(200))                      # Dateiname in static/uploads
+    favorit = db.Column(db.Boolean, default=False, nullable=False)
     besitzer_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
-    # TODO (Must-have "Favorisieren"):
-    # favorit = db.Column(db.Boolean, default=False)
 
     # TODO (Must-have "Verleihen"): merkt sich, bei wem das Stück gerade ist.
     # verliehen_an_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
-# =============================================================
-# TODO für später – so könnten die nächsten Modelle aussehen:
-#
-# class Outfit(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(100), nullable=False)
-#     besitzer_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-#     # Ein Outfit besteht aus mehreren Kleidungsstücken und ein
-#     # Kleidungsstück kann in mehreren Outfits sein
-#     # -> "viele zu viele"-Beziehung über eine Zwischentabelle.
-#
-# class Freundschaft(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     nutzer_a_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-#     nutzer_b_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-#     bestaetigt = db.Column(db.Boolean, default=False)
-# =============================================================
+# Zwischentabelle für die "viele zu viele"-Beziehung: ein Outfit besteht aus
+# mehreren Kleidungsstücken, und ein Kleidungsstück kann in mehreren
+# Outfits stecken.
+outfit_stuecke = db.Table(
+    "outfit_stuecke",
+    db.Column("outfit_id", db.Integer, db.ForeignKey("outfit.id"), primary_key=True),
+    db.Column("stueck_id", db.Integer, db.ForeignKey("kleidungsstueck.id"), primary_key=True),
+)
+
+
+class Outfit(db.Model):
+    """Eine Zusammenstellung aus mehreren Kleidungsstücken."""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    besitzer_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    # outfit.stuecke liefert alle enthaltenen Kleidungsstücke,
+    # stueck.outfits (backref) liefert umgekehrt alle Outfits eines Stücks
+    stuecke = db.relationship(
+        "Kleidungsstueck", secondary=outfit_stuecke, backref="outfits"
+    )
+
+
+class Follow(db.Model):
+    """Ein Nutzer (folger) will einem anderen Nutzer (gefolgter) folgen.
+    Erst wenn der Gefolgte die Anfrage annimmt (akzeptiert=True), darf der
+    Folger dessen Kleiderschrank/Outfits sehen. Folgen sich zwei Nutzer
+    gegenseitig, entstehen einfach zwei unabhängige Follow-Zeilen."""
+    id = db.Column(db.Integer, primary_key=True)
+    folger_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    gefolgter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    akzeptiert = db.Column(db.Boolean, default=False, nullable=False)
+
+    # user.folgt          -> Follow-Zeilen, in denen der Nutzer der Folger ist
+    # user.gefolgt_von     -> Follow-Zeilen, in denen der Nutzer der Gefolgte ist
+    folger = db.relationship(
+        "User", foreign_keys=[folger_id],
+        backref=db.backref("folgt", lazy=True, cascade="all, delete-orphan"),
+    )
+    gefolgter = db.relationship(
+        "User", foreign_keys=[gefolgter_id],
+        backref=db.backref("gefolgt_von", lazy=True, cascade="all, delete-orphan"),
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint("folger_id", "gefolgter_id", name="eindeutige_folge"),
+    )

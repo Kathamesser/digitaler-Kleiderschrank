@@ -7,20 +7,49 @@
   <form method="post" class="formular" enctype="multipart/form-data">
     <label for="name">Name</label>
     <input type="text" id="name" name="name" required
-           placeholder="z. B. Blaue Jeansjacke">
+           placeholder="Beschreibung (optional)">
 
     <label for="kategorie">Kategorie</label>
     <select id="kategorie" name="kategorie" required>
       <option>Oberteile</option>
       <option>Hosen</option>
+      <option>Kleider</option>
+      <option>Röcke</option>
       <option>Jacken</option>
       <option>Schuhe</option>
+      <option>Taschen</option>
+      <option>Schmuck</option>
+      <option>Brillen</option>
       <option>Accessoires</option>
+      <option>Kopfbedeckungen</option>
       <option>Sonstiges</option>
     </select>
 
     <label for="farbe">Farbe (optional)</label>
-    <input type="text" id="farbe" name="farbe" placeholder="z. B. Dunkelblau">
+    <select id="farbe" name="farbe">
+      <option value="">Keine Angabe</option>
+      <option>Schwarz</option>
+      <option>Weiß</option>
+      <option>Grau</option>
+      <option>Beige</option>
+      <option>Braun</option>
+      <option>Dunkelblau</option>
+      <option>Blau</option>
+      <option>Hellblau</option>
+      <option>Türkis</option>
+      <option>Grün</option>
+      <option>Olivgrün</option>
+      <option>Gelb</option>
+      <option>Orange</option>
+      <option>Rot</option>
+      <option>Bordeaux</option>
+      <option>Rosa</option>
+      <option>Lila</option>
+      <option>Gold</option>
+      <option>Silber</option>
+      <option>Bunt</option>
+      <option>Sonstiges</option>
+    </select>
 
     <label for="foto">Foto (optional)</label>
     <!-- capture="environment" öffnet am Handy direkt die Kamera -->

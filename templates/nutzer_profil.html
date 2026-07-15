@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block titel %}{{ profil_nutzer.benutzername }}{% endblock %}
+
+{% macro nur_lesen_karte(stueck) %}
+  <article class="karte">
+    {% if stueck.foto %}
+      <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+           alt="Foto von {{ stueck.name }}">
+    {% else %}
+      <div class="karte-platzhalter"></div>
+    {% endif %}
+    <div class="karte-text">
+      <p class="karte-name">{{ stueck.name }}</p>
+    </div>
+  </article>
+{% endmacro %}
+
+{% block inhalt %}
+  <div class="profil-kopf">
+    <span class="nutzer-avatar nutzer-avatar-gross" aria-hidden="true">
+      {% if profil_nutzer.profilbild %}
+        <img src="{{ url_for('static', filename='uploads/' + profil_nutzer.profilbild) }}" alt="">
+      {% else %}
+        {{ profil_nutzer.benutzername[0]|upper }}
+      {% endif %}
+    </span>
+    <h1>{{ profil_nutzer.benutzername }}</h1>
+
+    {% if eingehende_anfrage and not eingehende_anfrage.akzeptiert %}
+      <p class="profil-hinweis">„{{ profil_nutzer.benutzername }}“ möchte dir folgen.</p>
+      <div class="profil-aktionen">
+        <form method="post" action="{{ url_for('folge_anfrage_annehmen', nutzer_id=profil_nutzer.id) }}">
+          <input type="hidden" name="von" value="profil">
+          <button type="submit" class="knopf">Annehmen</button>
+        </form>
+        <form method="post" action="{{ url_for('folge_anfrage_ablehnen', nutzer_id=profil_nutzer.id) }}">
+          <input type="hidden" name="von" value="profil">
+          <button type="submit" class="knopf-klein">Ablehnen</button>
+        </form>
+      </div>
+    {% endif %}
+
+    <div class="profil-aktionen">
+      {% if ausgehende_anfrage and ausgehende_anfrage.akzeptiert %}
+        <form method="post" action="{{ url_for('nutzer_entfolgen', nutzer_id=profil_nutzer.id) }}">
+          <input type="hidden" name="von" value="profil">
+          <button type="submit" class="knopf-klein">Entfolgen</button>
+        </form>
+      {% elif ausgehende_anfrage %}
+        <form method="post" action="{{ url_for('nutzer_entfolgen', nutzer_id=profil_nutzer.id) }}">
+          <input type="hidden" name="von" value="profil">
+          <button type="submit" class="knopf-klein">Anfrage zurückziehen</button>
+        </form>
+      {% else %}
+        <form method="post" action="{{ url_for('nutzer_folgen', nutzer_id=profil_nutzer.id) }}">
+          <input type="hidden" name="von" value="profil">
+          <button type="submit" class="knopf">Folgen</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if darf_sehen %}
+    <h2>Kleiderschrank</h2>
+    {% if stuecke_nach_kategorie %}
+      {% for k, stuecke in stuecke_nach_kategorie.items() %}
+        <section class="abschnitt">
+          <div class="abschnitt-kopf">
+            <h2>{{ k }} <span class="anzahl">({{ stuecke|length }})</span></h2>
+          </div>
+          <div class="reihe">
+            {% for stueck in stuecke %}
+              {{ nur_lesen_karte(stueck) }}
+            {% endfor %}
+          </div>
+        </section>
+      {% endfor %}
+    {% else %}
+      <p class="leer-hinweis">{{ profil_nutzer.benutzername }} hat noch nichts in den Schrank gehängt.</p>
+    {% endif %}
+
+    <h2>Outfits</h2>
+    {% if outfits_liste %}
+      <div class="karten-raster">
+        {% for outfit in outfits_liste %}
+          <article class="karte">
+            <div class="outfit-collage">
+              {% for stueck in outfit.stuecke[:4] %}
+                {% if stueck.foto %}
+                  <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+                       alt="Foto von {{ stueck.name }}">
+                {% else %}
+                  <div class="karte-platzhalter"></div>
+                {% endif %}
+              {% endfor %}
+              {% for _ in range(4 - outfit.stuecke|length) %}
+                <div class="outfit-leerfeld"></div>
+              {% endfor %}
+            </div>
+            <div class="karte-text">
+              <p class="karte-name">{{ outfit.name }} <span class="anzahl">({{ outfit.stuecke|length }})</span></p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="leer-hinweis">{{ profil_nutzer.benutzername }} hat noch keine Outfits zusammengestellt.</p>
+    {% endif %}
+  {% else %}
+    <p class="leer-hinweis">Du siehst den Kleiderschrank erst, wenn „{{ profil_nutzer.benutzername }}“
+      deine Folge-Anfrage angenommen hat.</p>
+  {% endif %}
+{% endblock %}

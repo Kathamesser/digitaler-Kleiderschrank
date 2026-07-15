@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block titel %}Freunde{% endblock %}
+
+{% macro nutzer_zeile(nutzer, status, suche) %}
+  <li class="nutzer-zeile">
+    <a class="nutzer-link" href="{{ url_for('nutzer_profil', nutzer_id=nutzer.id) }}">
+      <span class="nutzer-avatar" aria-hidden="true">
+        {% if nutzer.profilbild %}
+          <img src="{{ url_for('static', filename='uploads/' + nutzer.profilbild) }}" alt="">
+        {% else %}
+          {{ nutzer.benutzername[0]|upper }}
+        {% endif %}
+      </span>
+      <span class="nutzer-name">{{ nutzer.benutzername }}</span>
+    </a>
+    {% if status == true %}
+      <form method="post" action="{{ url_for('nutzer_entfolgen', nutzer_id=nutzer.id) }}">
+        <input type="hidden" name="suche" value="{{ suche }}">
+        <button type="submit" class="knopf-klein">Entfolgen</button>
+      </form>
+    {% elif status == false %}
+      <form method="post" action="{{ url_for('nutzer_entfolgen', nutzer_id=nutzer.id) }}">
+        <input type="hidden" name="suche" value="{{ suche }}">
+        <button type="submit" class="knopf-klein" title="Anfrage zurückziehen">Angefragt</button>
+      </form>
+    {% else %}
+      <form method="post" action="{{ url_for('nutzer_folgen', nutzer_id=nutzer.id) }}">
+        <input type="hidden" name="suche" value="{{ suche }}">
+        <button type="submit" class="knopf-klein knopf-klein-aktiv">Folgen</button>
+      </form>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+{% macro anfrage_zeile(nutzer) %}
+  <li class="nutzer-zeile">
+    <a class="nutzer-link" href="{{ url_for('nutzer_profil', nutzer_id=nutzer.id) }}">
+      <span class="nutzer-avatar" aria-hidden="true">
+        {% if nutzer.profilbild %}
+          <img src="{{ url_for('static', filename='uploads/' + nutzer.profilbild) }}" alt="">
+        {% else %}
+          {{ nutzer.benutzername[0]|upper }}
+        {% endif %}
+      </span>
+      <span class="nutzer-name">{{ nutzer.benutzername }}</span>
+    </a>
+    <form method="post" action="{{ url_for('folge_anfrage_annehmen', nutzer_id=nutzer.id) }}">
+      <button type="submit" class="knopf-klein knopf-klein-aktiv">Annehmen</button>
+    </form>
+    <form method="post" action="{{ url_for('folge_anfrage_ablehnen', nutzer_id=nutzer.id) }}">
+      <button type="submit" class="knopf-klein">Ablehnen</button>
+    </form>
+  </li>
+{% endmacro %}
+
+{% block inhalt %}
+  <h1>Freunde</h1>
+
+  <form method="get" class="suchleiste">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M20 20l-4.3-4.3" />
+    </svg>
+    <input type="search" name="suche" value="{{ suche }}"
+           placeholder="Nutzername suchen…" aria-label="Nutzer suchen">
+  </form>
+
+  {% if anfragen_erhalten %}
+    <section class="abschnitt">
+      <div class="abschnitt-kopf"><h2>Anfragen erhalten <span class="anzahl">({{ anfragen_erhalten|length }})</span></h2></div>
+      <ul class="nutzer-liste">
+        {% for nutzer in anfragen_erhalten %}
+          {{ anfrage_zeile(nutzer) }}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  {% if suche %}
+    <section class="abschnitt">
+      <div class="abschnitt-kopf"><h2>Suchergebnisse</h2></div>
+      {% if treffer %}
+        <ul class="nutzer-liste">
+          {% for nutzer in treffer %}
+            {{ nutzer_zeile(nutzer, eigene_follows.get(nutzer.id), suche) }}
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="leer-hinweis">Keine Nutzer mit diesem Namen gefunden.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if anfragen_gesendet %}
+    <section class="abschnitt">
+      <div class="abschnitt-kopf"><h2>Ausstehende Anfragen <span class="anzahl">({{ anfragen_gesendet|length }})</span></h2></div>
+      <ul class="nutzer-liste">
+        {% for nutzer in anfragen_gesendet %}
+          {{ nutzer_zeile(nutzer, false, suche) }}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <section class="abschnitt">
+    <div class="abschnitt-kopf"><h2>Du folgst <span class="anzahl">({{ folgt|length }})</span></h2></div>
+    {% if folgt %}
+      <ul class="nutzer-liste">
+        {% for nutzer in folgt %}
+          {{ nutzer_zeile(nutzer, true, suche) }}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="leer-hinweis">Du folgst noch niemandem. Suche oben nach einem Nutzernamen!</p>
+    {% endif %}
+  </section>
+
+  <section class="abschnitt">
+    <div class="abschnitt-kopf"><h2>Folgt dir <span class="anzahl">({{ gefolgt_von|length }})</span></h2></div>
+    {% if gefolgt_von %}
+      <ul class="nutzer-liste">
+        {% for nutzer in gefolgt_von %}
+          {{ nutzer_zeile(nutzer, eigene_follows.get(nutzer.id), suche) }}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="leer-hinweis">Dir folgt noch niemand.</p>
+    {% endif %}
+  </section>
+{% endblock %}

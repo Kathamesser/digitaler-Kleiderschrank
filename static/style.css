@@ -1,69 +1,143 @@
 /* ============================================================
-   style.css – einfaches, responsives Design
+   style.css – App-artiges Design im Stil der Kleiderschrank-Vorlage
    Mobile-first: Grundstil gilt fürs Handy,
-   @media-Regeln erweitern für größere Bildschirme.
+   @media-Regeln sorgen für den "Telefonrahmen"-Look auf größeren Screens.
    ============================================================ */
 
 :root {
-  /* Farbpalette an einer Stelle definiert -> leicht anpassbar */
-  --tinte: #2b2b33;        /* Text */
-  --leinen: #f6f3ec;       /* Hintergrund, warmes Off-White */
-  --salbei: #6f8f72;       /* Hauptakzent (Grün wie ein Filz-Kleiderbügel) */
-  --salbei-dunkel: #57755a;
-  --senf: #d9a441;         /* zweiter Akzent für Hinweise */
+  --tinte: #262421;        /* Text, Buttons, aktive Elemente */
+  --leinen: #faf6ee;       /* Hintergrund, warmes Off-White */
   --karte: #ffffff;
+  --rand: #e5ddcd;         /* zarte Umrandung/Linien */
+  --muted: #948d7c;        /* gedämpfter Text */
+  --fehler: #c0392b;
+  --erfolg-bg: #eef1e6;
+  --fehler-bg: #f7e8d8;
 }
 
 * { box-sizing: border-box; }
 
+html, body { height: 100%; }
+
 body {
   margin: 0;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: "Quicksand", "Segoe UI", system-ui, sans-serif;
   color: var(--tinte);
   background: var(--leinen);
   line-height: 1.5;
 }
 
-/* ---------- Navigation ---------- */
-.navigation {
+a { color: inherit; }
+
+/* ---------- App-Rahmen ---------- */
+.app-rahmen {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  background: var(--leinen);
+}
+
+/* ---------- Kopfbereich ---------- */
+.kopf {
+  position: relative;
+  padding: 1.1rem 1.25rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--rand);
+}
+
+.kopf-zeile {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: var(--karte);
-  border-bottom: 3px solid var(--salbei);
 }
 
 .logo {
+  font-family: "Caveat", cursive;
+  font-size: 2.1rem;
   font-weight: 700;
-  font-size: 1.1rem;
   text-decoration: none;
   color: var(--tinte);
 }
 
-.nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
-.nav-links a { color: var(--salbei-dunkel); text-decoration: none; font-weight: 600; }
-.nav-links a:hover, .nav-links a:focus { text-decoration: underline; }
+.menu-knopf {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--tinte);
+  cursor: pointer;
+  padding: 0.25rem 0.35rem;
+}
+
+.kopf-mitte { display: flex; justify-content: center; margin-top: 0.6rem; }
+
+.profilbild-form { display: contents; }
+
+.kopf-kreis {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid var(--tinte);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tinte);
+  overflow: hidden;
+  background: var(--karte);
+}
+label.kopf-kreis { cursor: pointer; }
+.kopf-kreis svg { width: 24px; height: 24px; }
+.kopf-kreis img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Ausklapp-Menü unterm Hamburger-Knopf */
+.menu-klappe {
+  position: absolute;
+  top: 3.6rem;
+  right: 1.1rem;
+  background: var(--karte);
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(38, 36, 33, 0.14);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  z-index: 40;
+  text-align: left;
+}
+.menu-klappe[hidden] { display: none; }
+
+.menu-klappe a, .menu-klappe span {
+  padding: 0.6rem 0.8rem;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--tinte);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.menu-klappe a:hover { background: var(--leinen); }
+.menu-klappe span { color: var(--muted); font-weight: 500; }
 
 /* ---------- Seiteninhalt ---------- */
 .inhalt {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+  flex: 1 1 auto;
+  padding: 1.1rem 1.1rem 1.5rem;
 }
 
-h1 { font-size: 1.6rem; }
+h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.1rem; margin: 1.6rem 0 0.3rem; }
 
 /* ---------- Startseite ---------- */
 .hero { text-align: center; padding: 3rem 0; }
-.hero h1 { font-size: 2rem; }
+.hero h1 { font-family: "Caveat", cursive; font-size: 2.6rem; font-weight: 700; }
+.hero p { color: var(--muted); }
 
 /* ---------- Meldungen (Flash) ---------- */
-.meldung { padding: 0.6rem 1rem; border-radius: 8px; }
-.meldung-erfolg { background: #e4efe5; border-left: 4px solid var(--salbei); }
-.meldung-fehler { background: #f7e8d8; border-left: 4px solid var(--senf); }
+.meldung { padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.9rem; }
+.meldung-erfolg { background: var(--erfolg-bg); border-left: 4px solid var(--tinte); }
+.meldung-fehler { background: var(--fehler-bg); border-left: 4px solid var(--fehler); }
 
 /* ---------- Formulare ---------- */
 .formular {
@@ -77,95 +151,419 @@ h1 { font-size: 1.6rem; }
 
 .formular input,
 .formular select {
-  padding: 0.55rem;
-  border: 1px solid #c9c4b8;
-  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
   font-size: 1rem;
+  font-family: inherit;
   background: var(--karte);
+  color: var(--tinte);
 }
 
 .formular input:focus,
 .formular select:focus {
-  outline: 2px solid var(--salbei);
+  outline: 2px solid var(--tinte);
 }
 
 /* ---------- Knöpfe ---------- */
 .knopf {
   display: inline-block;
   margin-top: 1rem;
-  padding: 0.6rem 1.4rem;
+  padding: 0.65rem 1.5rem;
   border: none;
   border-radius: 999px;
-  background: var(--salbei);
+  background: var(--tinte);
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
-.knopf:hover, .knopf:focus { background: var(--salbei-dunkel); }
+.knopf:hover, .knopf:focus { background: #000; }
 
-.knopf-klein {
-  padding: 0.3rem 0.8rem;
-  border: 1px solid #c9c4b8;
+/* ---------- Suchleiste ---------- */
+.suchleiste {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--karte);
+  border: 1px solid var(--rand);
   border-radius: 999px;
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.85rem;
+  padding: 0.65rem 1.1rem;
+  margin-bottom: 1.1rem;
 }
-.knopf-klein:hover { background: #efece4; }
+.suchleiste svg { flex-shrink: 0; color: var(--muted); width: 18px; height: 18px; }
+.suchleiste input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 1rem;
+  font-family: inherit;
+  background: transparent;
+  color: var(--tinte);
+}
+.suchleiste input::placeholder { color: var(--muted); }
 
-/* ---------- Filter-Buttons ---------- */
-.filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+/* ---------- Filter-Pills ---------- */
+.filter {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+  margin-bottom: 1.4rem;
+  scrollbar-width: none;
+}
+.filter::-webkit-scrollbar { display: none; }
 
 .filter-knopf {
-  padding: 0.3rem 0.9rem;
+  flex: 0 0 auto;
+  padding: 0.5rem 1.15rem;
   border-radius: 999px;
-  border: 1px solid var(--salbei);
-  color: var(--salbei-dunkel);
+  border: 1.5px solid var(--tinte);
+  color: var(--tinte);
   text-decoration: none;
+  font-weight: 600;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
-.filter-knopf.aktiv { background: var(--salbei); color: #fff; }
+.filter-knopf.aktiv { background: var(--tinte); color: #fff; }
 
-/* ---------- Kleiderschrank-Raster ---------- */
+/* ---------- Kategorie-Abschnitte ---------- */
+.abschnitt { margin-bottom: 1.7rem; }
+
+.abschnitt-kopf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+.abschnitt-kopf h2 { font-size: 1.05rem; margin: 0; font-weight: 700; }
+.anzahl { font-weight: 500; color: var(--muted); font-size: 0.85rem; }
+.alle-link { font-size: 0.85rem; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+
+/* Horizontal scrollende Reihe (Übersicht) */
+.reihe {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.reihe::-webkit-scrollbar { display: none; }
+.reihe .karte { flex: 0 0 128px; scroll-snap-align: start; }
+
+/* Raster (gefilterte Einzelkategorie) */
 .karten-raster {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.8rem;
 }
 
+/* ---------- Kleidungsstück-Karte ---------- */
 .karte {
   background: var(--karte);
-  border-radius: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--rand);
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
+
+.karte-bild { position: relative; }
 
 .karte img,
 .karte-platzhalter {
   width: 100%;
-  aspect-ratio: 1 / 1;      /* quadratische Bilder wie im Kleiderschrank-Fach */
+  aspect-ratio: 1 / 1;
   object-fit: cover;
+  display: block;
 }
 
 .karte-platzhalter {
+  background-color: #f2ede1;
+  background-image: repeating-linear-gradient(
+    45deg, var(--rand), var(--rand) 2px, transparent 2px, transparent 10px
+  );
+}
+
+.favorit-form { display: contents; }
+
+.knopf-favorit {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--tinte);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  background: var(--leinen);
+  padding: 0;
+  cursor: pointer;
+}
+.knopf-favorit svg { width: 16px; height: 16px; }
+.knopf-favorit.aktiv { color: var(--fehler); }
+
+.karte-text {
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem;
+}
+.karte-name {
+  margin: 0;
+  font-size: 0.83rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.knopf-loeschen {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.1rem;
+  line-height: 1;
+}
+.knopf-loeschen:hover { color: var(--fehler); }
+
+.leer-hinweis { text-align: center; padding: 2.5rem 0; color: var(--muted); }
+.leer-hinweis a { color: var(--tinte); font-weight: 600; }
+
+/* ---------- Outfit-Karten (Übersicht) ---------- */
+.outfit-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  aspect-ratio: 1 / 1;
+  background: var(--rand);
+}
+.outfit-collage img,
+.outfit-collage .karte-platzhalter,
+.outfit-collage .outfit-leerfeld {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  display: block;
+}
+.outfit-leerfeld { background: var(--karte); }
+
+/* ---------- Auswahl-Kacheln (Outfit zusammenstellen) ---------- */
+.auswahl-gruppe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 0.5rem 0 1.2rem;
 }
 
-.karte-text { padding: 0.6rem 0.8rem; }
-.karte-text h2 { font-size: 1rem; margin: 0 0 0.2rem; }
-.karte-text p { margin: 0 0 0.5rem; font-size: 0.85rem; color: #6b6b74; }
+.auswahl-kachel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 92px;
+  cursor: pointer;
+}
 
-.leer-hinweis { text-align: center; padding: 2rem 0; }
+.auswahl-bild {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+.auswahl-bild img,
+.auswahl-bild .karte-platzhalter {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
 
-/* ---------- Größere Bildschirme (Laptop) ---------- */
-@media (min-width: 700px) {
-  h1 { font-size: 2rem; }
-  .hero h1 { font-size: 2.6rem; }
-  .inhalt { padding: 2rem 1rem; }
+.auswahl-haken {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  background: rgba(38, 36, 33, 0.55);
+  opacity: 0;
+}
+
+.auswahl-kachel input:checked ~ .auswahl-bild { border-color: var(--tinte); }
+.auswahl-kachel input:checked ~ .auswahl-bild .auswahl-haken { opacity: 1; }
+
+.auswahl-name {
+  font-size: 0.78rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Nutzerliste (Freunde) ---------- */
+.nutzer-liste {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nutzer-zeile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.nutzer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.nutzer-avatar {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--rand);
+  color: var(--tinte);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  overflow: hidden;
+}
+.nutzer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.nutzer-name {
+  flex: 1 1 auto;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knopf-klein {
+  flex-shrink: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--tinte);
+  background: transparent;
+  color: var(--tinte);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.knopf-klein-aktiv { background: var(--tinte); color: #fff; }
+
+/* ---------- Nutzerprofil ---------- */
+.profil-kopf {
+  text-align: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rand);
+}
+
+.nutzer-avatar-gross {
+  width: 84px;
+  height: 84px;
+  font-size: 1.8rem;
+  margin: 0 auto 0.6rem;
+}
+
+.profil-kopf h1 { margin: 0 0 0.8rem; }
+
+.profil-hinweis { color: var(--muted); margin: 0 0 0.6rem; }
+
+.profil-aktionen {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.profil-aktionen .knopf { margin-top: 0; }
+
+/* ---------- Fußbereich: Bottom-Nav + Plus-Knopf ---------- */
+.fuss-bereich {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  margin-top: auto;
+}
+
+.fussnav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--karte);
+  border-top: 1px solid var(--rand);
+  padding: 0.65rem 0.5rem calc(0.6rem + env(safe-area-inset-bottom));
+}
+
+.fussnav-punkt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.fussnav-punkt svg { width: 21px; height: 21px; }
+.fussnav-punkt:hover { color: var(--tinte); }
+
+.fab {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--tinte);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(38, 36, 33, 0.3);
+}
+.fab:hover { background: #000; }
+
+/* ---------- Größere Bildschirme: Telefonrahmen-Look ---------- */
+@media (min-width: 560px) {
+  body { background: #ece6d8; }
+
+  .app-rahmen {
+    margin: 2rem auto;
+    height: calc(100vh - 4rem);
+    min-height: 0;
+    border-radius: 28px;
+    border: 1px solid rgba(38, 36, 33, 0.08);
+    box-shadow: 0 24px 48px rgba(38, 36, 33, 0.2);
+    overflow-y: auto;
+  }
+
+  h1 { font-size: 1.7rem; }
+  .hero h1 { font-size: 3rem; }
 }
