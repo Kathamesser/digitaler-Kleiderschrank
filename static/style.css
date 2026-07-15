@@ -1,0 +1,171 @@
+/* ============================================================
+   style.css – einfaches, responsives Design
+   Mobile-first: Grundstil gilt fürs Handy,
+   @media-Regeln erweitern für größere Bildschirme.
+   ============================================================ */
+
+:root {
+  /* Farbpalette an einer Stelle definiert -> leicht anpassbar */
+  --tinte: #2b2b33;        /* Text */
+  --leinen: #f6f3ec;       /* Hintergrund, warmes Off-White */
+  --salbei: #6f8f72;       /* Hauptakzent (Grün wie ein Filz-Kleiderbügel) */
+  --salbei-dunkel: #57755a;
+  --senf: #d9a441;         /* zweiter Akzent für Hinweise */
+  --karte: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--tinte);
+  background: var(--leinen);
+  line-height: 1.5;
+}
+
+/* ---------- Navigation ---------- */
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--karte);
+  border-bottom: 3px solid var(--salbei);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--tinte);
+}
+
+.nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+.nav-links a { color: var(--salbei-dunkel); text-decoration: none; font-weight: 600; }
+.nav-links a:hover, .nav-links a:focus { text-decoration: underline; }
+
+/* ---------- Seiteninhalt ---------- */
+.inhalt {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1 { font-size: 1.6rem; }
+
+/* ---------- Startseite ---------- */
+.hero { text-align: center; padding: 3rem 0; }
+.hero h1 { font-size: 2rem; }
+
+/* ---------- Meldungen (Flash) ---------- */
+.meldung { padding: 0.6rem 1rem; border-radius: 8px; }
+.meldung-erfolg { background: #e4efe5; border-left: 4px solid var(--salbei); }
+.meldung-fehler { background: #f7e8d8; border-left: 4px solid var(--senf); }
+
+/* ---------- Formulare ---------- */
+.formular {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 420px;
+}
+
+.formular label { font-weight: 600; margin-top: 0.6rem; }
+
+.formular input,
+.formular select {
+  padding: 0.55rem;
+  border: 1px solid #c9c4b8;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--karte);
+}
+
+.formular input:focus,
+.formular select:focus {
+  outline: 2px solid var(--salbei);
+}
+
+/* ---------- Knöpfe ---------- */
+.knopf {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--salbei);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.knopf:hover, .knopf:focus { background: var(--salbei-dunkel); }
+
+.knopf-klein {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #c9c4b8;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.knopf-klein:hover { background: #efece4; }
+
+/* ---------- Filter-Buttons ---------- */
+.filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+.filter-knopf {
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--salbei);
+  color: var(--salbei-dunkel);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.filter-knopf.aktiv { background: var(--salbei); color: #fff; }
+
+/* ---------- Kleiderschrank-Raster ---------- */
+.karten-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.karte {
+  background: var(--karte);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.karte img,
+.karte-platzhalter {
+  width: 100%;
+  aspect-ratio: 1 / 1;      /* quadratische Bilder wie im Kleiderschrank-Fach */
+  object-fit: cover;
+}
+
+.karte-platzhalter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: var(--leinen);
+}
+
+.karte-text { padding: 0.6rem 0.8rem; }
+.karte-text h2 { font-size: 1rem; margin: 0 0 0.2rem; }
+.karte-text p { margin: 0 0 0.5rem; font-size: 0.85rem; color: #6b6b74; }
+
+.leer-hinweis { text-align: center; padding: 2rem 0; }
+
+/* ---------- Größere Bildschirme (Laptop) ---------- */
+@media (min-width: 700px) {
+  h1 { font-size: 2rem; }
+  .hero h1 { font-size: 2.6rem; }
+  .inhalt { padding: 2rem 1rem; }
+}

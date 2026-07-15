@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titel %}Neues Kleidungsstück{% endblock %}
+
+{% block inhalt %}
+  <h1>Neues Kleidungsstück</h1>
+  <!-- enctype="multipart/form-data" ist Pflicht, sobald Dateien hochgeladen werden -->
+  <form method="post" class="formular" enctype="multipart/form-data">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required
+           placeholder="z. B. Blaue Jeansjacke">
+
+    <label for="kategorie">Kategorie</label>
+    <select id="kategorie" name="kategorie" required>
+      <option>Oberteile</option>
+      <option>Hosen</option>
+      <option>Jacken</option>
+      <option>Schuhe</option>
+      <option>Accessoires</option>
+      <option>Sonstiges</option>
+    </select>
+
+    <label for="farbe">Farbe (optional)</label>
+    <input type="text" id="farbe" name="farbe" placeholder="z. B. Dunkelblau">
+
+    <label for="foto">Foto (optional)</label>
+    <!-- capture="environment" öffnet am Handy direkt die Kamera -->
+    <input type="file" id="foto" name="foto" accept="image/*" capture="environment">
+
+    <button type="submit" class="knopf">In den Schrank hängen</button>
+  </form>
+{% endblock %}

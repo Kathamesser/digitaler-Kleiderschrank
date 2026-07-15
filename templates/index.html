@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block inhalt %}
+  <section class="hero">
+    <h1>Dein Kleiderschrank.<br>Digital sortiert.</h1>
+    <p>Digitalisiere deine Kleidung, plane Outfits und verleihe
+       selten getragene Stücke an deine Freunde.</p>
+    {% if not current_user.is_authenticated %}
+      <a class="knopf" href="{{ url_for('registrieren') }}">Jetzt loslegen</a>
+    {% else %}
+      <a class="knopf" href="{{ url_for('kleiderschrank') }}">Zu meinem Schrank</a>
+    {% endif %}
+  </section>
+{% endblock %}

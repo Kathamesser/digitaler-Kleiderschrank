@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titel %}Mein Kleiderschrank{% endblock %}
+
+{% block inhalt %}
+  <h1>Mein Kleiderschrank</h1>
+
+  {% if kategorien %}
+    <!-- Filter-Buttons: einfach Links mit ?kategorie=... -->
+    <div class="filter">
+      <a href="{{ url_for('kleiderschrank') }}"
+         class="filter-knopf {{ 'aktiv' if not aktive_kategorie }}">Alle</a>
+      {% for k in kategorien %}
+        <a href="{{ url_for('kleiderschrank', kategorie=k) }}"
+           class="filter-knopf {{ 'aktiv' if aktive_kategorie == k }}">{{ k }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if stuecke %}
+    <div class="karten-raster">
+      {% for stueck in stuecke %}
+        <article class="karte">
+          {% if stueck.foto %}
+            <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
+                 alt="Foto von {{ stueck.name }}">
+          {% else %}
+            <div class="karte-platzhalter">👕</div>
+          {% endif %}
+          <div class="karte-text">
+            <h2>{{ stueck.name }}</h2>
+            <p>{{ stueck.kategorie }}{% if stueck.farbe %} · {{ stueck.farbe }}{% endif %}</p>
+            <!-- Löschen als POST-Formular, nicht als Link:
+                 Aktionen, die etwas verändern, gehören nie in ein GET. -->
+            <form method="post"
+                  action="{{ url_for('kleidungsstueck_loeschen', stueck_id=stueck.id) }}"
+                  onsubmit="return confirm('„{{ stueck.name }}“ wirklich löschen?');">
+              <button type="submit" class="knopf-klein">Löschen</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="leer-hinweis">Dein Schrank ist noch leer.
+      <a href="{{ url_for('kleidungsstueck_neu') }}">Häng dein erstes Stück rein!</a></p>
+  {% endif %}
+{% endblock %}

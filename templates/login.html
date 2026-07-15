@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titel %}Anmelden – Digitaler Kleiderschrank{% endblock %}
+
+{% block inhalt %}
+  <h1>Anmelden</h1>
+  <form method="post" class="formular">
+    <label for="benutzername">Benutzername</label>
+    <input type="text" id="benutzername" name="benutzername" required>
+
+    <label for="passwort">Passwort</label>
+    <input type="password" id="passwort" name="passwort" required>
+
+    <button type="submit" class="knopf">Anmelden</button>
+  </form>
+  <p>Noch kein Konto? <a href="{{ url_for('registrieren') }}">Jetzt registrieren</a></p>
+{% endblock %}
