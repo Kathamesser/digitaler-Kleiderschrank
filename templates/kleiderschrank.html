@@ -2,7 +2,10 @@
 {% block titel %}Mein Kleiderschrank{% endblock %}
 
 {% macro karte(stueck, aktive_kategorie) %}
-  <article class="karte" data-name="{{ stueck.name|lower }}">
+  <article class="karte"
+           data-name="{{ stueck.name|lower }}"
+           data-farbe="{{ (stueck.farbe or '')|lower }}"
+           data-kategorie="{{ stueck.kategorie|lower }}">
     <div class="karte-bild">
       {% if stueck.foto %}
         <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
@@ -113,7 +116,7 @@
   {% endif %}
 
   <script>
-    // Einfache Live-Suche über den Namen der bereits geladenen Kleidungsstücke
+    // Einfache Live-Suche über Name, Farbe und Kategorie der bereits geladenen Kleidungsstücke
     const sucheFeld = document.getElementById("suche");
     if (sucheFeld) {
       sucheFeld.addEventListener("input", () => {
@@ -121,7 +124,10 @@
         document.querySelectorAll(".abschnitt").forEach((abschnitt) => {
           let sichtbareTreffer = 0;
           abschnitt.querySelectorAll(".karte").forEach((karte) => {
-            const passt = karte.dataset.name.includes(begriff);
+            const passt =
+              karte.dataset.name.includes(begriff) ||
+              karte.dataset.farbe.includes(begriff) ||
+              karte.dataset.kategorie.includes(begriff);
             karte.style.display = passt ? "" : "none";
             if (passt) sichtbareTreffer += 1;
           });
