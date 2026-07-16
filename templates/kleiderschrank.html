@@ -2,10 +2,21 @@
 {% block titel %}Mein Kleiderschrank{% endblock %}
 
 {% macro karte(stueck, aktive_kategorie) %}
-  <article class="karte"
+  <article class="karte" tabindex="0" role="button"
+           aria-label="{{ stueck.name }} – Details anzeigen und bearbeiten"
            data-name="{{ stueck.name|lower }}"
            data-farbe="{{ (stueck.farbe or '')|lower }}"
-           data-kategorie="{{ stueck.kategorie|lower }}">
+           data-kategorie="{{ stueck.kategorie|lower }}"
+           data-bild="{{ url_for('static', filename='uploads/' + stueck.foto) if stueck.foto else '' }}"
+           data-modal-name="{{ stueck.name }}"
+           data-modal-kategorie="{{ stueck.kategorie }}"
+           data-modal-farbe="{{ stueck.farbe or '' }}"
+           data-modal-marke="{{ stueck.marke or '' }}"
+           data-modal-groesse="{{ stueck.groesse or '' }}"
+           data-modal-kaufdatum="{{ stueck.kaufdatum.isoformat() if stueck.kaufdatum else '' }}"
+           data-modal-preis="{{ stueck.preis if stueck.preis is not none else '' }}"
+           data-modal-status="{{ stueck.status }}"
+           data-bearbeiten-url="{{ url_for('kleidungsstueck_bearbeiten', stueck_id=stueck.id) }}">
     <div class="karte-bild">
       {% if stueck.foto %}
         <img src="{{ url_for('static', filename='uploads/' + stueck.foto) }}"
@@ -114,6 +125,145 @@
     <p class="leer-hinweis">Dein Schrank ist noch leer.
       <a href="{{ url_for('kleidungsstueck_neu') }}">Häng dein erstes Stück rein!</a></p>
   {% endif %}
+
+  <!-- Detail-/Bearbeiten-Menü: öffnet sich beim Klick auf ein Kleidungsstück
+       und wird per JS aus den data-Attributen der jeweiligen Karte befüllt. -->
+  <div class="stueck-overlay" id="stueckUeberlagerung" hidden>
+    <div class="stueck-modal" role="dialog" aria-modal="true" aria-labelledby="modalName">
+      <button type="button" class="modal-schliessen" id="modalSchliessen" aria-label="Schließen">✕</button>
+      <div class="modal-bild" id="modalBild"></div>
+      <form method="post" class="formular modal-formular" id="modalFormular">
+        <input type="hidden" name="aktive_kategorie" value="{{ aktive_kategorie or '' }}">
+
+        <label for="modalName" class="modal-beschreibung-label">Beschreibung</label>
+        <input type="text" id="modalName" name="name" required>
+
+        <label for="modalKategorie">Kategorie</label>
+        <select id="modalKategorie" name="kategorie" required>
+          <option>Oberteile</option>
+          <option>Hosen</option>
+          <option>Kleider</option>
+          <option>Röcke</option>
+          <option>Jacken</option>
+          <option>Schuhe</option>
+          <option>Taschen</option>
+          <option>Schmuck</option>
+          <option>Brillen</option>
+          <option>Accessoires</option>
+          <option>Kopfbedeckungen</option>
+          <option>Sonstiges</option>
+        </select>
+
+        <label for="modalFarbe">Farbe</label>
+        <select id="modalFarbe" name="farbe">
+          <option value="">Keine Angabe</option>
+          <option>Schwarz</option>
+          <option>Weiß</option>
+          <option>Grau</option>
+          <option>Beige</option>
+          <option>Braun</option>
+          <option>Dunkelblau</option>
+          <option>Blau</option>
+          <option>Hellblau</option>
+          <option>Türkis</option>
+          <option>Grün</option>
+          <option>Olivgrün</option>
+          <option>Gelb</option>
+          <option>Orange</option>
+          <option>Rot</option>
+          <option>Bordeaux</option>
+          <option>Rosa</option>
+          <option>Lila</option>
+          <option>Gold</option>
+          <option>Silber</option>
+          <option>Bunt</option>
+          <option>Gemustert</option>
+          <option>Sonstiges</option>
+        </select>
+
+        <label for="modalGroesse">Größe</label>
+        <input type="text" id="modalGroesse" name="groesse" placeholder="z. B. M, 38, 42 …">
+
+        <label for="modalMarke">Marke</label>
+        <input type="text" id="modalMarke" name="marke">
+
+        <label for="modalKaufdatum">Kaufdatum</label>
+        <input type="date" id="modalKaufdatum" name="kaufdatum">
+
+        <label for="modalPreis">Preis (€)</label>
+        <input type="number" id="modalPreis" name="preis" step="0.01" min="0" placeholder="0,00">
+
+        <label for="modalStatus">Status</label>
+        <select id="modalStatus" name="status">
+          <option>Eigener Artikel</option>
+          <option>Geliehener Artikel</option>
+          <option>Verliehener Artikel</option>
+        </select>
+
+        <button type="submit" class="knopf">Speichern</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Detail-/Bearbeiten-Menü: Klick auf eine Karte öffnet das Overlay
+    // und befüllt das Formular mit den data-Attributen dieser Karte.
+    const stueckUeberlagerung = document.getElementById("stueckUeberlagerung");
+    const modalBild = document.getElementById("modalBild");
+    const modalFormular = document.getElementById("modalFormular");
+    const modalName = document.getElementById("modalName");
+    const modalKategorie = document.getElementById("modalKategorie");
+    const modalFarbe = document.getElementById("modalFarbe");
+    const modalMarke = document.getElementById("modalMarke");
+    const modalGroesse = document.getElementById("modalGroesse");
+    const modalKaufdatum = document.getElementById("modalKaufdatum");
+    const modalPreis = document.getElementById("modalPreis");
+    const modalStatus = document.getElementById("modalStatus");
+
+    function stueckMenuOeffnen(karte) {
+      const d = karte.dataset;
+      modalFormular.action = d.bearbeitenUrl;
+      modalBild.innerHTML = d.bild
+        ? `<img src="${d.bild}" alt="Foto von ${d.modalName}">`
+        : `<div class="karte-platzhalter"></div>`;
+      modalName.value = d.modalName || "";
+      modalKategorie.value = d.modalKategorie || "";
+      modalFarbe.value = d.modalFarbe || "";
+      modalMarke.value = d.modalMarke || "";
+      modalGroesse.value = d.modalGroesse || "";
+      modalKaufdatum.value = d.modalKaufdatum || "";
+      modalPreis.value = d.modalPreis || "";
+      modalStatus.value = d.modalStatus || "Eigener Artikel";
+      stueckUeberlagerung.hidden = false;
+    }
+
+    function stueckMenuSchliessen() {
+      stueckUeberlagerung.hidden = true;
+    }
+
+    document.querySelectorAll(".karte[data-bearbeiten-url]").forEach((karte) => {
+      karte.addEventListener("click", (ereignis) => {
+        // Klicks auf Favorisieren-/Löschen-Formulare sollen nicht das Menü öffnen
+        if (ereignis.target.closest("form")) return;
+        stueckMenuOeffnen(karte);
+      });
+      karte.addEventListener("keydown", (ereignis) => {
+        if (ereignis.target.closest("form")) return;
+        if (ereignis.key === "Enter" || ereignis.key === " ") {
+          ereignis.preventDefault();
+          stueckMenuOeffnen(karte);
+        }
+      });
+    });
+
+    document.getElementById("modalSchliessen").addEventListener("click", stueckMenuSchliessen);
+    stueckUeberlagerung.addEventListener("click", (ereignis) => {
+      if (ereignis.target === stueckUeberlagerung) stueckMenuSchliessen();
+    });
+    document.addEventListener("keydown", (ereignis) => {
+      if (ereignis.key === "Escape" && !stueckUeberlagerung.hidden) stueckMenuSchliessen();
+    });
+  </script>
 
   <script>
     // Einfache Live-Suche über Name, Farbe und Kategorie der bereits geladenen Kleidungsstücke

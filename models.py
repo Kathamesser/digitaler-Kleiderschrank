@@ -34,10 +34,13 @@ class Kleidungsstueck(db.Model):
     farbe = db.Column(db.String(30))
     foto = db.Column(db.String(200))                      # Dateiname in static/uploads
     favorit = db.Column(db.Boolean, default=False, nullable=False)
+    marke = db.Column(db.String(60))
+    groesse = db.Column(db.String(30))
+    kaufdatum = db.Column(db.Date)
+    preis = db.Column(db.Numeric(8, 2))
+    # "Eigener Artikel", "Geliehener Artikel" oder "Verliehener Artikel"
+    status = db.Column(db.String(30), default="Eigener Artikel", nullable=False)
     besitzer_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
-    # TODO (Must-have "Verleihen"): merkt sich, bei wem das Stück gerade ist.
-    # verliehen_an_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
 # Zwischentabelle für die "viele zu viele"-Beziehung: ein Outfit besteht aus

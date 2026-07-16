@@ -267,7 +267,9 @@ h2 { font-size: 1.1rem; margin: 1.6rem 0 0.3rem; }
   border-radius: 16px;
   border: 1px solid var(--rand);
   overflow: hidden;
+  cursor: pointer;
 }
+.karte:focus-visible { outline: 2px solid var(--tinte); outline-offset: 2px; }
 
 .karte-bild { position: relative; }
 
@@ -550,6 +552,57 @@ h2 { font-size: 1.1rem; margin: 1.6rem 0 0.3rem; }
 }
 .fab:hover { background: #000; }
 
+/* ---------- Detail-/Bearbeiten-Menü (Kleidungsstück-Overlay) ---------- */
+.stueck-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 36, 33, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 60;
+}
+.stueck-overlay[hidden] { display: none; }
+
+.stueck-modal {
+  position: relative;
+  background: var(--leinen);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 22px 22px 0 0;
+  padding: 1.2rem 1.25rem 1.6rem;
+}
+
+.modal-schliessen {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.9rem;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--rand);
+  border-radius: 50%;
+  background: var(--karte);
+  color: var(--tinte);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-bild { border-radius: 16px; overflow: hidden; margin-bottom: 0.9rem; }
+.modal-bild img,
+.modal-bild .karte-platzhalter {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-formular { max-width: none; }
+.modal-formular .modal-beschreibung-label { margin-top: 0; }
+#modalName { font-size: 1.15rem; font-weight: 700; }
+
 /* ---------- Größere Bildschirme: Telefonrahmen-Look ---------- */
 @media (min-width: 560px) {
   body { background: #ece6d8; }
@@ -566,4 +619,7 @@ h2 { font-size: 1.1rem; margin: 1.6rem 0 0.3rem; }
 
   h1 { font-size: 1.7rem; }
   .hero h1 { font-size: 3rem; }
+
+  .stueck-overlay { align-items: center; }
+  .stueck-modal { border-radius: 22px; }
 }

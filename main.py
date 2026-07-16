@@ -4,6 +4,7 @@
 # =============================================================
 import os
 import uuid
+from datetime import datetime
 
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import (
@@ -59,6 +60,28 @@ def stelle_favorit_spalte_sicher():
             text("ALTER TABLE kleidungsstueck ADD COLUMN favorit BOOLEAN DEFAULT 0 NOT NULL")
         )
         db.session.commit()
+
+
+def stelle_verleih_spalten_sicher():
+    """Ergänzt die Spalten 'marke', 'groesse', 'kaufdatum', 'preis' und 'status'
+    in einer bereits bestehenden Datenbank nachträglich
+    (siehe stelle_profilbild_spalte_sicher)."""
+    inspektor = inspect(db.engine)
+    spalten = [s["name"] for s in inspektor.get_columns("kleidungsstueck")]
+    if "marke" not in spalten:
+        db.session.execute(text("ALTER TABLE kleidungsstueck ADD COLUMN marke VARCHAR(60)"))
+    if "groesse" not in spalten:
+        db.session.execute(text("ALTER TABLE kleidungsstueck ADD COLUMN groesse VARCHAR(30)"))
+    if "kaufdatum" not in spalten:
+        db.session.execute(text("ALTER TABLE kleidungsstueck ADD COLUMN kaufdatum DATE"))
+    if "preis" not in spalten:
+        db.session.execute(text("ALTER TABLE kleidungsstueck ADD COLUMN preis NUMERIC(8, 2)"))
+    if "status" not in spalten:
+        db.session.execute(
+            text("ALTER TABLE kleidungsstueck ADD COLUMN status VARCHAR(30) "
+                 "DEFAULT 'Eigener Artikel' NOT NULL")
+        )
+    db.session.commit()
 
 
 def stelle_akzeptiert_spalte_sicher():
@@ -304,6 +327,53 @@ def kleidungsstueck_favorit(stueck_id):
 
 
 # ---------------------------------------------------------------
+# Kleidungsstück bearbeiten (aus dem Detail-Menü im Kleiderschrank)
+# ---------------------------------------------------------------
+@app.route("/kleidungsstueck/<int:stueck_id>/bearbeiten", methods=["POST"])
+@login_required
+def kleidungsstueck_bearbeiten(stueck_id):
+    stueck = db.session.get(Kleidungsstueck, stueck_id)
+    ziel_kategorie = request.form.get("aktive_kategorie") or None
+
+    if stueck is None or stueck.besitzer_id != current_user.id:
+        flash("Dieses Kleidungsstück gehört nicht dir.", "fehler")
+        return redirect(url_for("kleiderschrank", kategorie=ziel_kategorie))
+
+    name = request.form.get("name", "").strip()
+    kategorie = request.form.get("kategorie", "").strip()
+    if not name or not kategorie:
+        flash("Bitte mindestens Name und Kategorie ausfüllen.", "fehler")
+        return redirect(url_for("kleiderschrank", kategorie=ziel_kategorie))
+
+    stueck.name = name
+    stueck.kategorie = kategorie
+    stueck.farbe = request.form.get("farbe", "").strip()
+    stueck.marke = request.form.get("marke", "").strip()
+    stueck.groesse = request.form.get("groesse", "").strip()
+    stueck.status = request.form.get("status") or "Eigener Artikel"
+
+    kaufdatum_text = request.form.get("kaufdatum", "").strip()
+    try:
+        stueck.kaufdatum = datetime.strptime(kaufdatum_text, "%Y-%m-%d").date() if kaufdatum_text else None
+    except ValueError:
+        stueck.kaufdatum = None
+
+    preis_text = request.form.get("preis", "").strip().replace(",", ".")
+    try:
+        stueck.preis = float(preis_text) if preis_text else None
+    except ValueError:
+        stueck.preis = None
+
+    db.session.commit()
+    flash(f"„{stueck.name}“ wurde aktualisiert.", "erfolg")
+    # Falls die Kategorie sich geändert hat, bleibt der alte Filter evtl. leer -
+    # dann eben zur neuen Kategorie springen, sonst wirkt die Änderung "verschwunden".
+    if ziel_kategorie and ziel_kategorie not in ("Favoriten",) and ziel_kategorie != stueck.kategorie:
+        ziel_kategorie = stueck.kategorie
+    return redirect(url_for("kleiderschrank", kategorie=ziel_kategorie))
+
+
+# ---------------------------------------------------------------
 # Kleidungsstück löschen
 # ---------------------------------------------------------------
 @app.route("/kleidungsstueck/<int:stueck_id>/loeschen", methods=["POST"])
@@ -527,16 +597,11 @@ def folge_anfrage_ablehnen(nutzer_id):
     return zurueck_nach_folgen_aktion(nutzer_id)
 
 
-# ---------------------------------------------------------------
-# TODO für euer Team (siehe MoSCoW-Anforderungen):
-#  - Kleidungsstück bearbeiten: Route /kleidungsstueck/<id>/bearbeiten
-#  - Verleihen: "verliehen_an"-Logik am Kleidungsstück
-# ---------------------------------------------------------------
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # legt die Datenbank beim ersten Start an
         stelle_profilbild_spalte_sicher()
         stelle_favorit_spalte_sicher()
+        stelle_verleih_spalten_sicher()
         stelle_akzeptiert_spalte_sicher()
     app.run(debug=True)
