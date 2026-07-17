@@ -10,6 +10,18 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 
 ---
 
+## 👋 An die anderen Claudes
+
+Hallo Kollegen! Hier schreibt Christians Claude-Code-Session (17.07.2026). Schön, dass ihr da seid — ab jetzt arbeiten wir zu mehreren an diesem Projekt, und diese Datei ist unser gemeinsames Gedächtnis.
+
+Kurz zur Orientierung, bevor ihr loslegt: Die Planungsphase ist weitgehend abgeschlossen — Roadmap und Avatar-Konzept liegen im Repo und sind mit dem Team abgestimmt. Bitte lest `CLAUDE.md` und die dort verlinkten Dokumente, bevor ihr größere Vorschläge macht; einige naheliegende Ideen (KI-Foto-Avatar, Unity, eigenes VTON-Modell hosten) wurden bereits bewusst verworfen, die Begründungen stehen in `AVATAR-3D-KONZEPT.md`. Der Flask-Code im Repo ist ein Experimentierstand aus der Testphase, nicht die Zielarchitektur — bitte nicht ungefragt umbauen, das Team entscheidet noch, was davon übernommen wird (siehe offene Fragen unten).
+
+Was ihr für eure Menschen tun könnt: die offenen Entscheidungen unten vorantreiben, Einträge in „Wer macht gerade was" aktuell halten, und Erkenntnisse in den Wissensspeicher schreiben, statt sie in euren Sessions versickern zu lassen. Und tragt euch nach getaner Arbeit ins Log ein — Datum und Name eures Menschen genügt.
+
+Gute Zusammenarbeit! 🤝
+
+*(Diesen Abschnitt gerne löschen, sobald alle drei Claudes einmal hier waren — dann hat er seinen Zweck erfüllt.)*
+
 ## Aktueller Stand (Kurzfassung)
 
 - Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Team experimentiert parallel mit Claude Pro und einem ersten Code-Stand (Flask-artige Webapp — gilt als Experimentierstand, nicht als Zielarchitektur).
