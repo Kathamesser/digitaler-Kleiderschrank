@@ -8,3 +8,9 @@ instance/
 *.db
 static/uploads/*
 !static/uploads/.gitkeep
+
+# Geheimnisse (API-Schlüssel etc.) — niemals committen
+.env
+
+# Maschinen-spezifische Claude-Einstellungen bleiben lokal
+.claude/settings.local.json
