@@ -1,0 +1,574 @@
+<title>Digitaler Kleiderschrank — Projekt-Roadmap</title>
+<style>
+  :root{
+    --bg: #EDEAE2;
+    --surface: #F8F6F1;
+    --surface-2: #F1EEE6;
+    --ink: #221F1C;
+    --ink-soft: #5B564C;
+    --line: #D9D3C5;
+    --accent: #33415C;
+    --accent-soft: rgba(51,65,92,0.10);
+    --accent-2: #96602F;
+    --accent-2-soft: rgba(150,96,47,0.12);
+    --ring: rgba(51,65,92,0.35);
+  }
+  :root[data-theme="dark"]{
+    --bg: #16171A;
+    --surface: #1D1F23;
+    --surface-2: #202226;
+    --ink: #ECE8E0;
+    --ink-soft: #A39D8F;
+    --line: #34362F;
+    --accent: #90A4CE;
+    --accent-soft: rgba(144,164,206,0.14);
+    --accent-2: #D6A466;
+    --accent-2-soft: rgba(214,164,102,0.16);
+    --ring: rgba(144,164,206,0.4);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #16171A;
+      --surface: #1D1F23;
+      --surface-2: #202226;
+      --ink: #ECE8E0;
+      --ink-soft: #A39D8F;
+      --line: #34362F;
+      --accent: #90A4CE;
+      --accent-soft: rgba(144,164,206,0.14);
+      --accent-2: #D6A466;
+      --accent-2-soft: rgba(214,164,102,0.16);
+      --ring: rgba(144,164,206,0.4);
+    }
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Optima, Candara, "Noto Sans", "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3{
+    font-family: "Iowan Old Style", Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+  .label{
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+  .wrap{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+  }
+
+  /* ---- Header ---- */
+  header{ margin-bottom: 2.4rem; }
+  header .label{ color: var(--accent); margin-bottom: 0.9rem; display:block; }
+  header h1{ font-size: clamp(2rem, 4vw, 2.7rem); margin-bottom: 0.7rem; }
+  header p.sub{
+    max-width: 62ch;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    margin: 0 0 1.6rem;
+  }
+  .meta-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.1rem;
+  }
+  .meta-chip{
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.78rem;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.35rem 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Update note ---- */
+  .update-note{
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 2.4rem;
+  }
+  .update-note strong{ color: var(--ink); }
+
+  /* ---- Pillars ---- */
+  .pillars{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-bottom: 1.6rem;
+  }
+  .pillar{
+    background: var(--surface);
+    padding: 1.3rem 1.4rem;
+  }
+  .pillar.highlight{ background: var(--accent-2-soft); }
+  .pillar .label{ margin-bottom: 0.5rem; }
+  .pillar .label.core{ color: var(--accent-2); }
+  .pillar h3{ font-size: 1.1rem; margin-bottom: 0.35rem; }
+  .pillar p{ margin:0; color: var(--ink-soft); font-size: 0.92rem; }
+
+  /* ---- Avatar requirements ---- */
+  .req-box{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.3rem 1.4rem;
+    margin-bottom: 2.4rem;
+  }
+  .req-box .label{ color: var(--accent-2); margin-bottom: 0.7rem; }
+  .req-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 1.6rem;
+  }
+  .req-grid h4{
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 0.95rem;
+    margin: 0 0 0.3rem;
+    color: var(--ink);
+  }
+  .req-grid p{ margin: 0 0 1rem; font-size: 0.9rem; color: var(--ink-soft); }
+  .req-grid .full{ grid-column: 1 / -1; }
+
+  /* ---- Tech stack ---- */
+  .stack-box{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.3rem 1.4rem;
+    margin-bottom: 2.4rem;
+  }
+  .stack-box > .label{ color: var(--accent); margin-bottom: 0.7rem; display: block; }
+  .stack-scroll{ overflow-x: auto; }
+  .stack-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 520px;
+  }
+  .stack-table td{
+    text-align: left;
+    padding: 0.55rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  .stack-table tr:last-child td{ border-bottom: none; }
+  .stack-table td.layer{
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    padding-top: 0.7rem;
+  }
+  .stack-table td.choice{ color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .stack-note{ margin: 0.9rem 0 0; font-size: 0.85rem; color: var(--ink-soft); }
+
+  /* ---- Callout ---- */
+  .callout{
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 3.2rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout .label{ color: var(--accent); margin-bottom: 0.6rem; }
+  .callout ul{ margin: 0; padding-left: 1.1rem; }
+  .callout li{ margin-bottom: 0.5rem; color: var(--ink); }
+  .callout li:last-child{ margin-bottom: 0; }
+  .callout strong{ color: var(--ink); }
+
+  /* ---- Timeline ---- */
+  .section-title{
+    font-size: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+  .timeline{ position: relative; }
+  .rail-line{
+    position: absolute;
+    left: 27px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--line);
+  }
+  .phase{
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    column-gap: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+  .node-col{ display:flex; justify-content:center; padding-top: 1.5rem; }
+  .node{
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    position: relative; z-index: 1;
+  }
+  .phase.core .node{ border-color: var(--accent-2); background: var(--accent-2); }
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.3rem 1.4rem 1.4rem;
+  }
+  .phase.core .card{ border-color: var(--accent-2); }
+  .card-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .card-head .label{ margin-bottom: 0; }
+  .card h3{ font-size: 1.2rem; margin: 0.15rem 0 0.5rem; }
+  .card .desc{ color: var(--ink-soft); margin: 0 0 0.8rem; font-size: 0.95rem; }
+  .card ul{ margin: 0 0 0.9rem; padding-left: 1.1rem; }
+  .card li{ margin-bottom: 0.32rem; font-size: 0.93rem; }
+  .card li:last-child{ margin-bottom: 0; }
+  .tags{ display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag{
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 3px;
+    padding: 0.22rem 0.5rem;
+  }
+  .phase.core .tag{ background: var(--accent-2-soft); color: var(--accent-2); }
+  .risk-flag{
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.7rem;
+    color: var(--accent-2);
+    letter-spacing: 0.03em;
+  }
+
+  /* ---- Footer / cross-cutting ---- */
+  .crosscut{
+    margin-top: 3rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--line);
+  }
+  .crosscut h2{ font-size: 1.25rem; margin-bottom: 1.1rem; }
+  .crosscut-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+  .crosscut-item .label{ margin-bottom: 0.4rem; }
+  .crosscut-item p{ margin: 0; font-size: 0.92rem; color: var(--ink-soft); }
+
+  @media (max-width: 680px){
+    .pillars{ grid-template-columns: 1fr; }
+    .req-grid{ grid-template-columns: 1fr; }
+    .crosscut-grid{ grid-template-columns: 1fr; }
+    .phase{ grid-template-columns: 32px 1fr; column-gap: 0.7rem; }
+    .rail-line{ left: 15px; }
+    .node{ width: 11px; height: 11px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="label">Projektfahrplan · Abschlussprüfung</span>
+    <h1>Digitaler Kleiderschrank</h1>
+    <p class="sub">Kleidung digital erfassen, zu Outfits kombinieren, neue Teile per KI aus Online-Angeboten übernehmen — und über eine frei anpassbare 3D-Spielfigur ansehen, wie die ausgewählten Klamotten wirken.</p>
+    <div class="meta-row">
+      <span class="meta-chip">Team: 3 Personen</span>
+      <span class="meta-chip">Zeitraum: 26 Wochen</span>
+      <span class="meta-chip">8 Phasen</span>
+      <span class="meta-chip">Stand: 12.07.2026</span>
+    </div>
+  </header>
+
+  <p class="update-note"><strong>Änderung gegenüber der ersten Fassung:</strong> Statt eines KI-generierten Fotos aus eigenen Bildern nutzt der Avatar jetzt ein Sims-artiges, von Hand anpassbares 3D-Charaktermodell. Senkt Datenschutz- und Kostenrisiko deutlich, verlagert den Aufwand aber in ein eigenes 3D-Grafik-Thema.</p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <span class="label">Säule 1</span>
+      <h3>Kleiderschrank</h3>
+      <p>Klamotten bildlich erfassen, kategorisieren und jederzeit durchsuchen.</p>
+    </div>
+    <div class="pillar">
+      <span class="label">Säule 2</span>
+      <h3>Outfit-Kombinatorik</h3>
+      <p>Einzelne Teile zu vollständigen Outfits zusammenstellen und speichern.</p>
+    </div>
+    <div class="pillar">
+      <span class="label">Säule 3</span>
+      <h3>KI-Produktimport</h3>
+      <p>Aus Produktlink oder Beschreibung automatisch Bild und Daten übernehmen, als Wunschartikel markiert.</p>
+    </div>
+    <div class="pillar highlight">
+      <span class="label core">Säule 4 · Kernfeature</span>
+      <h3>Avatar-Baukasten</h3>
+      <p>Sims-artige 3D-Spielfigur mit umfangreicher Anpassung, trägt die ausgewählten Klamotten, von allen Seiten betrachtbar.</p>
+    </div>
+  </div>
+
+  <div class="req-box">
+    <span class="label">Anforderungen an den Avatar</span>
+    <div class="req-grid">
+      <div>
+        <h4>Darstellung</h4>
+        <p>3D-Modell, von allen Seiten betrachtbar (Rotation, Zoom).</p>
+      </div>
+      <div>
+        <h4>Aussehen</h4>
+        <p>Größe, Körperbau (dünn/dick/muskulös), Hautfarbe, Haarfarbe, Frisur, Augenfarbe, mehrere Gesichtsmodelle.</p>
+      </div>
+      <div class="full">
+        <h4>Körpermaße</h4>
+        <p>Anpassbar: Schultern, Taille, Beine, Brust. Dienen nicht nur dem Aussehen, sondern später auch dazu, zu bestimmen, ob ein Kleidungsstück passt und wie es entsprechend sitzt.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack-box">
+    <span class="label">Tech-Stack · Team-Entscheidung vom 12.07.2026</span>
+    <div class="stack-scroll">
+      <table class="stack-table">
+        <tr>
+          <td class="layer">Backend</td>
+          <td class="choice">Python (FastAPI)</td>
+          <td>Größte Teamerfahrung; bestes Ökosystem für den KI-Produktimport (Scraping, KI-APIs).</td>
+        </tr>
+        <tr>
+          <td class="layer">Datenbank</td>
+          <td class="choice">MongoDB</td>
+          <td>Im Team bekannt; Avatar-Konfiguration und Kleidungsstücke mit variablen Attributen passen gut zum Dokumentenmodell.</td>
+        </tr>
+        <tr>
+          <td class="layer">Frontend</td>
+          <td class="choice">JavaScript + Three.js</td>
+          <td>Der 3D-Avatar-Editor läuft im Browser und ist zwingend JavaScript — unabhängig von der Backend-Sprache.</td>
+        </tr>
+        <tr>
+          <td class="layer">Umgebung</td>
+          <td class="choice">VS Code</td>
+          <td>Standardwahl für Python + Web.</td>
+        </tr>
+      </table>
+    </div>
+    <p class="stack-note">Bewusste Konsequenz: zwei Sprachen im Projekt (Python im Backend, JavaScript im Frontend) — normal für Webprojekte, macht die Arbeitsteilung sauber. Noch offen: Frontend-Framework (z. B. React oder Vue) und KI-Anbieter für den Produktimport.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">Vier Empfehlungen vor dem Start</span>
+    <ul>
+      <li><strong>Risiko zuerst testen:</strong> Das 3D-Charaktersystem (Rig, Regler, Blend Shapes) ist der technisch unsicherste Teil und für die meisten Teams Neuland. Schon in Phase 1 einen kleinen Machbarkeits-Prototyp bauen (Testmodell, 2–3 Regler, drehbar), statt das Risiko aufzuschieben.</li>
+      <li><strong>Kleidungs-Fitting-Ansatz früh festlegen:</strong> Nicht jedes fotografierte Kleidungsstück einzeln 1:1 nachbauen. Empfehlung: jedes Stück wird einer 3D-Kategorie (T-Shirt, Hose, Jacke, Kleid, Schuhe, …) zugeordnet, die anhand der Körpermaße skaliert und mit Farbe/Muster aus dem Produktfoto eingefärbt wird. Im Team absegnen, bevor Phase 3/4 beginnen.</li>
+      <li><strong>Umfang bei Frisuren/Gesichtern begrenzen:</strong> Lieber 6–8 kuratierte Presets pro Kategorie als ein offenes, frei generierbares System.</li>
+      <li><strong>Rollen grob aufteilen, nicht zementieren:</strong> z. B. Backend & API, 3D/Frontend, Datenmodell & KI-Produktimport & Dokumentation. Alle drei bleiben an jeder Phase beteiligt.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Meilenstein-Fahrplan</h2>
+
+  <div class="timeline">
+    <div class="rail-line"></div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 0 · Woche 1–3</span>
+        </div>
+        <h3>Analyse &amp; Konzept</h3>
+        <p class="desc">Grundlage schaffen, bevor eine Zeile Code entsteht.</p>
+        <ul>
+          <li>Lasten-/Pflichtenheft mit Abnahmekriterien</li>
+          <li>User Stories für alle vier Kernfunktionen</li>
+          <li>Grobes Datenmodell (Nutzer, Kleidungsstück, Outfit, Wunschartikel, Avatar-Konfiguration)</li>
+          <li>Tech-Stack: Backend (Python), Datenbank (MongoDB) und 3D (Three.js) sind entschieden — noch offen: Frontend-Framework und KI-Anbieter für den Produktimport</li>
+        </ul>
+        <div class="tags"><span class="tag">Analyse</span><span class="tag">Konzeption</span><span class="tag">Team</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 1 · Woche 4–6</span>
+        </div>
+        <h3>Architektur, API &amp; Design</h3>
+        <p class="desc">Schnittstellen und Oberflächen festlegen, an denen alle drei parallel arbeiten können.</p>
+        <ul>
+          <li>API-Spezifikation (Kleidungsstücke, Outfits, Produktimport, Avatar-Konfiguration)</li>
+          <li>Finales Datenbankschema — bei MongoDB: Struktur der Collections/Dokumente, inkl. Körpermaße und Kleidungs-Kategorien</li>
+          <li>Klickbare Wireframes für die vier Kernbereiche</li>
+          <li>Repository, Branching-Modell, CI/CD-Grundgerüst</li>
+          <li>3D ist mit Three.js entschieden — hier nur noch: Projektaufbau festlegen (Zusammenspiel Frontend, Three.js-Viewer, FastAPI-Backend)</li>
+          <li>Grundsatzentscheidung zum Kleidungs-Fitting-Ansatz im Team absegnen</li>
+          <li>Machbarkeits-Prototyp: 3D-Testmodell mit 2–3 Reglern drehbar darstellen</li>
+        </ul>
+        <div class="tags"><span class="tag">Architektur</span><span class="tag">API</span><span class="tag">3D</span><span class="tag">Setup</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 2 · Woche 7–10</span>
+        </div>
+        <h3>Kleiderschrank-Kernfunktion</h3>
+        <p class="desc">Der digitale Kleiderschrank als erstes lauffähiges Modul.</p>
+        <ul>
+          <li>Registrierung/Login, Nutzerprofile</li>
+          <li>Bild-Upload inkl. Speicherung (Objektspeicher/Cloud)</li>
+          <li>Verwaltung von Kleidungsstücken (Kategorie, Farbe, Material, Tags)</li>
+          <li>Erste Frontend-Ansicht: Kleiderschrank durchblättern</li>
+        </ul>
+        <div class="tags"><span class="tag">Backend</span><span class="tag">Frontend</span><span class="tag">Storage</span></div>
+      </div>
+    </div>
+
+    <div class="phase core">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 3 · Woche 11–16</span>
+          <span class="risk-flag">Kernfeature · höchstes Risiko</span>
+        </div>
+        <h3>Avatar-Grundgerüst</h3>
+        <p class="desc">Die Sims-artige 3D-Spielfigur als eigenständiges Modul.</p>
+        <ul>
+          <li>Basis-3D-Humanoid mit Rig und Blend Shapes (Morph Targets)</li>
+          <li>Regler für Größe, Körperbau und Körpermaße (Schultern, Taille, Beine, Brust)</li>
+          <li>Auswahl für Hautfarbe, Haarfarbe, Augenfarbe</li>
+          <li>Bibliothek an Frisuren und Gesichtsmodellen (kuratierte Presets)</li>
+          <li>360°-Viewer zum Drehen/Zoomen des Avatars</li>
+          <li>Speichern der Avatar-Konfiguration je Nutzer</li>
+        </ul>
+        <div class="tags"><span class="tag">3D/Grafik</span><span class="tag">Frontend</span><span class="tag">Kernfeature</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 4 · Woche 17–19</span>
+        </div>
+        <h3>Outfit-Kombinatorik &amp; Kleidungs-Fitting</h3>
+        <p class="desc">Aus einzelnen Teilen werden anziehbare, passende Outfits am Avatar.</p>
+        <ul>
+          <li>Zuordnung jedes Kleidungsstücks zu einer 3D-Kleidungs-Kategorie/-Vorlage</li>
+          <li>Skalierung der Kleidungs-Vorlage anhand der Körpermaße des Avatars</li>
+          <li>Einfärben/Texturieren der Vorlage anhand des Produktfotos</li>
+          <li>Logik zum Kombinieren mehrerer Kleidungsstücke zu einem Outfit am Avatar</li>
+          <li>„Passt/passt nicht"-Bewertung anhand Maße-Abgleich</li>
+          <li>Speichern/Bearbeiten/Löschen von Outfits, Filter- und Suchfunktion</li>
+        </ul>
+        <div class="tags"><span class="tag">Backend</span><span class="tag">3D/Grafik</span><span class="tag">UX</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 5 · Woche 20–22</span>
+        </div>
+        <h3>KI-Produktimport &amp; Wunschliste</h3>
+        <p class="desc">Externe Artikel per Link oder Beschreibung automatisiert übernehmen.</p>
+        <ul>
+          <li>Eingabemaske für Produktlink oder Freitext-Beschreibung</li>
+          <li>Scraping/Parsing der Produktseite bzw. Text-Interpretation</li>
+          <li>KI-gestützte Extraktion von Bild, Titel, Preis, Marke, Kategorie und Größenangabe</li>
+          <li>Wunschliste als eigener Bereich im Kleiderschrank</li>
+          <li>Fehlerbehandlung, wenn ein Artikel nicht erkannt wird oder keine Größe vorliegt</li>
+        </ul>
+        <div class="tags"><span class="tag">KI/LLM</span><span class="tag">Backend</span><span class="tag">Fehlerfälle</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 6 · Woche 23–24</span>
+        </div>
+        <h3>Integration &amp; Feinschliff</h3>
+        <p class="desc">Alle Module laufen als ein System zusammen.</p>
+        <ul>
+          <li>Zusammenführung aller Module in einer Anwendung</li>
+          <li>Ende-zu-Ende-Tests entlang der Kern-Nutzerpfade</li>
+          <li>Bugfixing und Oberflächen-Feinschliff</li>
+          <li>Performance-Optimierung (3D-Ladezeiten, Asset-Größen, Bildgrößen)</li>
+        </ul>
+        <div class="tags"><span class="tag">Integration</span><span class="tag">Testing</span><span class="tag">Polish</span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="node-col"><span class="node"></span></div>
+      <div class="card">
+        <div class="card-head">
+          <span class="label">Phase 7 · Woche 25–26</span>
+        </div>
+        <h3>Test, Dokumentation &amp; Abgabe</h3>
+        <p class="desc">Prüfungsreife herstellen.</p>
+        <ul>
+          <li>Testkonzept und -durchführung (fachlich und technisch)</li>
+          <li>Projekt- und technische Dokumentation für die Prüfung</li>
+          <li>Vorbereitung von Präsentation/Kolloquium inkl. Live-Demo</li>
+          <li>Deployment der Demo-Umgebung</li>
+        </ul>
+        <div class="tags"><span class="tag">Doku</span><span class="tag">Präsentation</span><span class="tag">Deployment</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="crosscut">
+    <h2>Läuft die ganze Zeit mit</h2>
+    <div class="crosscut-grid">
+      <div class="crosscut-item">
+        <span class="label">Datenschutz</span>
+        <p>Auch ohne eigenes Foto sind Körpermaße und Aussehensmerkmale personenbezogene Daten — von Phase 0 an sauber behandeln, nicht erst vor der Abgabe.</p>
+      </div>
+      <div class="crosscut-item">
+        <span class="label">Laufende Dokumentation</span>
+        <p>Entscheidungen direkt beim Treffen begründen und festhalten, statt sie am Ende aus dem Gedächtnis zu rekonstruieren.</p>
+      </div>
+      <div class="crosscut-item">
+        <span class="label">Team-Sync</span>
+        <p>Kurzer wöchentlicher Abgleich zu dritt, damit Abhängigkeiten zwischen den Modulen früh sichtbar werden.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
