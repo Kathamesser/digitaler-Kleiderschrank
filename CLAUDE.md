@@ -8,6 +8,7 @@ Kleidung bildlich erfassen und kategorisieren, zu Outfits kombinieren, Wunschart
 
 ## Zentrale Dokumente (im Repo)
 
+- `BRAIN.md` — **gemeinsames Team-Gedächtnis, zuerst lesen:** aktueller Stand, offene Entscheidungen, wer woran arbeitet, Log. Nach relevanter Arbeit dort einen Eintrag ergänzen (Datum + Name) und die betroffenen Abschnitte aktualisieren.
 - `ROADMAP.md` — Meilensteinplan mit 8 Phasen, Tech-Stack-Entscheidung und Empfehlungen
 - `AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar: MakeHuman-Asset-Pipeline („Werkstatt/Schaufenster"-Prinzip), Three.js-Editor, Fitting-Logik
 - `roadmap.html` — visuelle Version der Roadmap (im Browser öffnen)
