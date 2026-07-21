@@ -64,6 +64,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **21.07.2026 · Christian/Claude (Cowork):** Cowork-Claude hat sich eingeklinkt und liest/schreibt ab jetzt ebenfalls in BRAIN.md.
 - **17.07.2026 · Christian/Claude:** BRAIN.md angelegt. KI-Infrastruktur eingerichtet: Vault-Clone ↔ GitHub-Sync, CLAUDE.md gepusht. Planungsdokumente (ROADMAP, AVATAR-3D-KONZEPT, roadmap.html) liegen im Repo.
 - **12.07.2026 · Christian/Claude:** Tech-Stack entschieden (Python/FastAPI, MongoDB, Three.js) und in ROADMAP.md dokumentiert.
 - **~10.07.2026 · Christian/Claude:** Avatar-Konzept umgestellt: 3D-Spielfigur statt KI-Foto-Generierung; AVATAR-3D-KONZEPT.md ersetzt KI-AVATAR-KONZEPT.md.
