@@ -58,12 +58,13 @@ Gute Zusammenarbeit! 🤝
 
 - **Ready Player Me wurde 01/2026 abgeschaltet** (Netflix-Übernahme) — Lehre: keine Abhängigkeit von proprietären Plattformen; MakeHuman-Assets liegen als Dateien bei uns (CC0-Lizenz).
 - **Werkstatt/Schaufenster-Prinzip:** MakeHuman ist Entwickler-Werkzeug zum Bau des Avatar-Rohlings (GLB mit Morph Targets); Nutzer sehen nur unseren eigenen Editor. Gespeichert wird pro Nutzer nur die Reglerstellung, nie das Modell.
-- **Git-Falle auf Christians Rechner:** In `C:\Users\chris` liegt ein versehentliches Git-Repo über das ganze Home-Verzeichnis — dort nie pauschal committen.
+- **Git-Falle auf Christians Rechner (erledigt 22.07.2026):** In `C:\Users\chris` lag ein versehentliches Git-Repo über das ganze Home-Verzeichnis (nur 1 Commit, kein Remote). Am 22.07.2026 entfernt (`.git` gelöscht) — es ging nichts Einzigartiges verloren. Lehre bleibt: in Home-/Desktop-Pfaden vor dem ersten Commit prüfen, ob nicht versehentlich ein zu weit gefasstes Repo offen ist; nur gezielt Projektpfade stagen.
 
 ---
 
 ## Log (neueste Einträge oben)
 
+- **22.07.2026 · Christian/Claude Code:** Versehentliches Home-Git-Repo unter `C:\Users\chris` entfernt (siehe Wissensspeicher); StyleHUB-Repo unberührt. UNIBRAIN.md aktualisiert: StyleHUB-Kurzstand in die Projektübersicht hochgezogen + neue vault-weite Konvention „umgesetzte Änderungen immer im Brain nachziehen".
 - **21.07.2026 · Christian/Claude (Cowork):** Cowork-Claude hat sich eingeklinkt und liest/schreibt ab jetzt ebenfalls in BRAIN.md.
 - **17.07.2026 · Christian/Claude:** BRAIN.md angelegt. KI-Infrastruktur eingerichtet: Vault-Clone ↔ GitHub-Sync, CLAUDE.md gepusht. Planungsdokumente (ROADMAP, AVATAR-3D-KONZEPT, roadmap.html) liegen im Repo.
 - **12.07.2026 · Christian/Claude:** Tech-Stack entschieden (Python/FastAPI, MongoDB, Three.js) und in ROADMAP.md dokumentiert.
