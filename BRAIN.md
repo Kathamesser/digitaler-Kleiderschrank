@@ -6,7 +6,7 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 - Vor der Arbeit lesen, nach der Arbeit Änderungen eintragen — mit Datum und Namen. KI-Sitzungen dokumentieren dabei **jede** Aktion, siehe „📌 Protokollpflicht für alle KI-Sitzungen" unten.
 - Einträge kurz halten; Details gehören in die Fachdokumente (ROADMAP.md, AVATAR-3D-KONZEPT.md), hier stehen Stand, Entscheidungen und Übergaben.
 - Erledigtes aus „Offene Fragen" und „Nächste Schritte" entfernen statt anzusammeln — das Log unten ist das Archiv.
-- Über Git synchronisieren: vor dem Lesen pullen, nach dem Eintragen committen und pushen.
+- Über Git synchronisieren: vor dem Lesen pullen, nach dem Eintragen committen und nach `main` pushen. Es gilt nur die BRAIN.md auf `main` — Änderungen auf anderen Branches immer dorthin zusammenführen.
 
 ---
 
@@ -14,12 +14,13 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 
 **Gilt für jede KI-Sitzung, die für dieses Projekt arbeitet** — egal für welches Teammitglied (Christian, Katha, Teammitglied 3) und egal mit welchem Werkzeug (Claude Code, Claude Cowork, Chat auf claude.ai, andere KIs).
 
-1. **Vor der Arbeit:** Diese Datei komplett lesen (mit Git-Zugriff vorher pullen) und deine Sitzungskennung bestimmen — siehe „🪪 Deine Sitzungskennung" direkt hierunter.
+1. **Vor der Arbeit:** Diese Datei komplett lesen — immer den aktuellen Stand von `main` (mit Git-Zugriff vorher pullen) — und deine Sitzungskennung bestimmen, siehe „🪪 Deine Sitzungskennung" direkt hierunter.
 2. **Alles, was du für das Projekt tust, wird hier dokumentiert** — Code- und Doku-Änderungen, getroffene Entscheidungen und übernommene Vorschläge, Recherchen und Experimente samt Ergebnis, Änderungen an Setup, Tools oder Repo-Struktur. Lieber ein kurzer Eintrag zu viel als eine Aktion, die niemand nachvollziehen kann.
 3. **Wie:** Eintrag ins Log unten (neueste oben) im Format `**TT.MM.JJJJ · Sitzungskennung:** Kurzbeschreibung`. Zusätzlich die betroffenen Abschnitte nachziehen: Aktueller Stand, Offene Fragen, Wer macht gerade was, Wissensspeicher.
-4. **Wann:** Nach jedem abgeschlossenen Arbeitsschritt, spätestens vor Ende der Sitzung — danach committen und pushen, damit alle anderen Sitzungen den Stand sofort sehen.
+4. **Wann:** Nach jedem abgeschlossenen Arbeitsschritt, spätestens vor Ende der Sitzung — danach committen und nach `main` bringen (siehe Punkt 7), damit alle anderen Sitzungen den Stand sofort sehen.
 5. **Ohne Schreibzugriff:** Zuerst prüfen lassen, ob dein Claude-Werkzeug mit GitHub verknüpft ist — das war beim ersten Team-Test die Ursache (siehe Wissensspeicher); die Verknüpfung richtet dein Mensch einmal ein. Geht es danach immer noch nicht (z. B. Chat, der das Repo nur lesen kann): Am Ende der Antwort einen fertigen Log-Eintrag ausgeben und deinen Menschen bitten, ihn hier einzutragen und zu pushen.
 6. **Nie ins Log:** Passwörter, API-Keys, Tokens oder andere Geheimnisse.
+7. **Nur eine BRAIN.md — die auf `main`:** Alle lesen und schreiben denselben Stand. Arbeitet deine Sitzung auf einem eigenen Branch (z. B. Claude Code im Browser: `claude/…`), führst du deine BRAIN.md-Änderungen noch in derselben Sitzung nach `main` zusammen — per Merge oder Pull Request; geht das nicht, bittest du deinen Menschen darum. Bei Konflikten (meist im Log) beide Stände übernehmen, neueste Einträge oben, nie fremde Einträge überschreiben.
 
 ### 🪪 Deine Sitzungskennung
 
@@ -35,7 +36,7 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 **So bestimmst du deine Kennung — zu Beginn jeder Sitzung, nicht raten und nicht das Beispiel abschreiben:**
 
 1. `git config user.name` ausführen und in „Wer ist wer" den Teamnamen nachschlagen.
-2. `hostname` ausführen und in „Vergebene Kennungen" die Zeile mit diesem Rechnernamen und deiner Anwendung suchen. Genau ein Treffer → diese Kennung verwenden.
+2. `hostname` ausführen und in „Vergebene Kennungen" die Zeile mit diesem Rechnernamen und deiner Anwendung suchen. Genau ein Treffer → diese Kennung verwenden. **Ausnahme Cloud-Sitzung** (z. B. Claude Code im Browser; `hostname` = `vm`, Git-Name = `Claude`): Diese Werte sind bei allen gleich — nie daraus schließen, immer Schritt 3.
 3. Kein eindeutiger Treffer oder kein Shell-Zugriff: deinen Menschen nach dem gewünschten Namen und Gerätenamen fragen — die Namen legen die Teammitglieder selbst fest. Dann die Tabellen ergänzen oder anpassen (neue Zeile anlegen, Namen ändern oder fehlenden Rechnernamen nachtragen), committen und pushen.
 4. Deinem Menschen die ermittelte Kennung einmal nennen, damit sie bestätigt oder geändert werden kann.
 
@@ -57,9 +58,9 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 | `Christian/Claude(VMOffice.Cowork)` | VM „ClaudeOffice" auf dem Hauptrechner | Claude Cowork | — |
 | `Christian/Claude(Laptop.Code)` | Schullaptop | Claude Code | `Deadsec` |
 | `Christian/Claude(Laptop.Cowork)` | Schullaptop | Claude Cowork | — |
-| `Katha/Claude(Laptop.Code)` | Laptop | Claude Code | `vm` (Cloud-/Remote-Sitzung, siehe Wissensspeicher) |
+| `Katha/Claude(Laptop.Code)` | Laptop | Claude Code (im Browser) | — (Cloud-Sitzung, immer nachfragen) |
 
-*„—" beim Rechnernamen = noch nicht erfasst; bei der nächsten Sitzung auf diesem Gerät nachtragen.*
+*„—" beim Rechnernamen = noch nicht erfasst; bei der nächsten Sitzung auf diesem Gerät nachtragen. Cloud-Sitzungen bekommen nie einen Rechnernamen (`vm` ist bei allen gleich).*
 
 *Ältere Log-Einträge tragen noch frühere Schreibweisen (`Christian/Claude`, `Christian/Claude Code`, `Christian/Claude (Cowork)`). Sie bleiben so stehen, sind aber kein Vorbild — neue Einträge nur mit einer Kennung aus dieser Tabelle.*
 
@@ -115,11 +116,13 @@ Gute Zusammenarbeit! 🤝
 - **Git-Falle auf Christians Rechner (erledigt 22.07.2026):** In `C:\Users\chris` lag ein versehentliches Git-Repo über das ganze Home-Verzeichnis (nur 1 Commit, kein Remote). Am 22.07.2026 entfernt (`.git` gelöscht) — es ging nichts Einzigartiges verloren. Lehre bleibt: in Home-/Desktop-Pfaden vor dem ersten Commit prüfen, ob nicht versehentlich ein zu weit gefasstes Repo offen ist; nur gezielt Projektpfade stagen.
 - **KI-Sitzung kann nicht in BRAIN.md schreiben (15.09.2026):** Beim ersten Team-Test fehlte der KI-Sitzung einer Kollegin die Schreibberechtigung, sie konnte ihre Kennung nicht eintragen. Ursache: GitHub war noch nicht mit ihrem Claude verknüpft. Lösung: Verknüpfung einmal einrichten — Repo-Rechte oder `.claude/settings.json` mussten dafür nicht geändert werden.
 - **Hostname-Erkennung funktioniert nicht bei Cloud-/Remote-Sitzungen (15.09.2026):** Bei Kathas erster Claude-Code-Sitzung (Claude Code on the web) lieferte `git config user.name` nur den generischen Wert „Claude" statt eines Teamnamens, und `hostname` lieferte `vm` statt eines wiedererkennbaren Gerätenamens — kein eindeutiger Treffer in „Vergebene Kennungen" möglich. Lösung laut Regel 3: Mensch gefragt, gewünschte Kennung bestätigt (`Katha/Claude(Laptop.Code)`) und Tabelle ergänzt. Lehre: Bei Cloud-/Remote-Sitzungen immer nachfragen statt aus `hostname` zu schließen.
+- **Cloud-Sitzungen schreiben auf eigene Branches (15.09.2026):** Kathas Claude Code im Browser hat ihren Erstkontakt auf `claude/digitaler-kleiderschrank-vcb0la` statt auf `main` committet, ohne Pull Request — für alle anderen Sitzungen unsichtbar, bis Christians Sitzung ihn zusammengeführt hat. Daraus die Regel „Nur eine BRAIN.md — die auf `main`" (Protokollpflicht Punkt 7).
 
 ---
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Nachgesehen, ob neue Sitzungen beigetreten sind: Kathas Cloud-Sitzung lag mit ihrem Erstkontakt nur auf Branch `claude/digitaler-kleiderschrank-vcb0la` — per Fast-Forward nach `main` zusammengeführt. Auf Christians Anweisung Regel „Nur eine BRAIN.md — die auf `main`" ergänzt (Protokollpflicht Punkt 7, Regeln für alle, CLAUDE.md, UNIBRAIN). Cloud-Lücke geschlossen: `vm` und Git-Name `Claude` gelten nicht mehr als Erkennungsmerkmal, Kathas Tabellenzeile ohne Rechnernamen, ihre Kennung unverändert.
 - **15.09.2026 · Katha/Claude(Laptop.Code):** Erstkontakt dieser Sitzung: `git pull` + `BRAIN.md` komplett gelesen. Sitzungskennung war nicht eindeutig bestimmbar (Cloud-/Remote-Sitzung, `hostname` = `vm`, `git config user.name` = generisch „Claude") — Katha gefragt und `Katha/Claude(Laptop.Code)` bestätigt. Tabelle „Vergebene Kennungen" ergänzt, „Wer macht gerade was" aktualisiert, Erstkontakt-Test in „Nächste Schritte" für Katha als erledigt markiert (Teammitglied 3 offen), neue Erkenntnis zur Hostname-Erkennung bei Cloud-Sitzungen in den Wissensspeicher.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Problem beim ersten Team-Test: Die KI-Sitzung einer Kollegin konnte ihre Kennung nicht in BRAIN.md eintragen (keine Schreibberechtigung). Ursache von Christian gefunden: GitHub war noch nicht mit ihrem Claude verknüpft. Keine Änderung an Repo-Rechten oder Claude-Freigaben nötig; Hinweis in Protokollpflicht (Punkt 5), Nächste Schritte und Wissensspeicher ergänzt.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Entscheidung Christian: Die Teammitglieder legen ihre Namen für die Sitzungskennung selbst fest, verbindlich ist nur die Syntax `Mensch/KI(Gerät.Anwendung)`. Abschnitt „🪪 Deine Sitzungskennung" präzisiert: Name selbst gewählt, Vorbelegung „Katha" änderbar, ermittelte Kennung wird bestätigt oder geändert.
