@@ -25,7 +25,7 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 
 Jeder Log-Eintrag trägt die Kennung der Sitzung, die ihn geschrieben hat: **`Mensch/KI(Gerät.Anwendung)`**. Der Mensch bleibt die Konstante, Gerät und Anwendung machen die Sitzung eindeutig.
 
-- **Mensch:** Teamname aus „Wer ist wer" — nicht der Git-Name
+- **Mensch:** der Name, den sich dein Mensch selbst gibt — steht in „Wer ist wer", nicht der Git-Name
 - **KI:** `Claude`; andere KIs mit ihrem eigenen Namen
 - **Gerät:** kurzer, fester Name für den Rechner, z. B. `Laptop`, `PC`, `HomeOffice` — einmal festlegen, danach immer gleich schreiben
 - **Anwendung:** `Code` = Claude Code · `Cowork` = Claude Cowork · `Chat` = Chat auf claude.ai
@@ -36,8 +36,8 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 
 1. `git config user.name` ausführen und in „Wer ist wer" den Teamnamen nachschlagen.
 2. `hostname` ausführen und in „Vergebene Kennungen" die Zeile mit diesem Rechnernamen und deiner Anwendung suchen. Genau ein Treffer → diese Kennung verwenden.
-3. Kein eindeutiger Treffer oder kein Shell-Zugriff: deinen Menschen nach Namen und Gerät fragen. Dann die Tabellen ergänzen (neue Zeile anlegen oder fehlenden Rechnernamen nachtragen), committen und pushen.
-4. Deinem Menschen die ermittelte Kennung einmal nennen, damit sie bestätigt werden kann.
+3. Kein eindeutiger Treffer oder kein Shell-Zugriff: deinen Menschen nach dem gewünschten Namen und Gerätenamen fragen — die Namen legen die Teammitglieder selbst fest. Dann die Tabellen ergänzen oder anpassen (neue Zeile anlegen, Namen ändern oder fehlenden Rechnernamen nachtragen), committen und pushen.
+4. Deinem Menschen die ermittelte Kennung einmal nennen, damit sie bestätigt oder geändert werden kann.
 
 **Wer ist wer**
 
@@ -47,7 +47,7 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 | Katha | `Katharina`, `Kathamesser` |
 | Teammitglied 3 | — |
 
-*Teammitglied 3: Beim ersten Kontakt echten Namen und Git-Namen eintragen und den Platzhalter „Teammitglied 3" überall in dieser Datei ersetzen.*
+*Die Namen legen die Teammitglieder selbst fest — „Katha" ist nur vorbelegt und darf geändert werden. Wer noch fehlt (z. B. Teammitglied 3), trägt beim ersten Kontakt eigenen Namen und Git-Namen ein und ersetzt den Platzhalter überall in dieser Datei.*
 
 **Vergebene Kennungen**
 
@@ -117,6 +117,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Entscheidung Christian: Die Teammitglieder legen ihre Namen für die Sitzungskennung selbst fest, verbindlich ist nur die Syntax `Mensch/KI(Gerät.Anwendung)`. Abschnitt „🪪 Deine Sitzungskennung" präzisiert: Name selbst gewählt, Vorbelegung „Katha" änderbar, ermittelte Kennung wird bestätigt oder geändert.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Erstkontakt-Regel umgesetzt: neuer Abschnitt „🪪 Deine Sitzungskennung" in der Protokollpflicht (Aufbau der Kennung; Ablauf zu Sitzungsbeginn über `git config user.name` und `hostname`, sonst Menschen fragen; Tabellen „Wer ist wer" — Katharina/Kathamesser = Katha, per gemeinsamer Git-E-Mail geprüft — und „Vergebene Kennungen"; Hinweis auf alte Schreibweisen). Widerspruch in der Begrüßung beseitigt, CLAUDE.md angeglichen. Offene Frage aus der Prüfung erledigt; Test durch Katha und Teammitglied 3 unter „Nächste Schritte".
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Geprüft, ob eine neue KI-Sitzung eines Teammitglieds (Beispiel: Kathas Claude Code) über CLAUDE.md → BRAIN.md Zweck, Protokollpflicht und eigene Kennung erkennt. Ergebnis: Zweck und Protokollpflicht ja; Kennung nicht zuverlässig bestimmbar (Git-Name ≠ Teamname, Gerätenamen und Kennungsliste stehen nur in Christians Vault, Teammitglied 3 ohne Namen); zwei widersprüchliche Stellen (CLAUDE.md „nach relevanter Arbeit … Datum + Name", Begrüßung „Name eures Menschen genügt"). Korrektur vorgeschlagen, wartet auf Christians Freigabe.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Abschnitt „📌 Protokollpflicht für alle KI-Sitzungen" angelegt: Jede KI-Sitzung jedes Teammitglieds (Claude Code, Cowork, claude.ai-Chat, andere KIs) dokumentiert ab sofort alle Aktionen fürs Projekt hier; Sitzungen ohne Schreibzugriff geben den Eintrag für ihren Menschen aus. „Regeln für alle" und „Aktueller Stand" angepasst, UNIBRAIN.md nachgezogen.
