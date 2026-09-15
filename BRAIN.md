@@ -3,12 +3,23 @@
 Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nicht verloren gehen soll. Wird von Menschen **und** von Claude gepflegt.
 
 **Regeln für alle (Menschen wie Claudes):**
-- Vor der Arbeit lesen, nach der Arbeit relevante Änderungen eintragen — mit Datum und Namen.
+- Vor der Arbeit lesen, nach der Arbeit Änderungen eintragen — mit Datum und Namen. KI-Sitzungen dokumentieren dabei **jede** Aktion, siehe „📌 Protokollpflicht für alle KI-Sitzungen" unten.
 - Einträge kurz halten; Details gehören in die Fachdokumente (ROADMAP.md, AVATAR-3D-KONZEPT.md), hier stehen Stand, Entscheidungen und Übergaben.
 - Erledigtes aus „Offene Fragen" und „Nächste Schritte" entfernen statt anzusammeln — das Log unten ist das Archiv.
 - Über Git synchronisieren: vor dem Lesen pullen, nach dem Eintragen committen und pushen.
 
 ---
+
+## 📌 Protokollpflicht für alle KI-Sitzungen (dauerhaft — nicht löschen)
+
+**Gilt für jede KI-Sitzung, die für dieses Projekt arbeitet** — egal für welches Teammitglied (Christian, Katha, Teammitglied 3) und egal mit welchem Werkzeug (Claude Code, Claude Cowork, Chat auf claude.ai, andere KIs).
+
+1. **Vor der Arbeit:** Diese Datei komplett lesen (mit Git-Zugriff vorher pullen).
+2. **Alles, was du für das Projekt tust, wird hier dokumentiert** — Code- und Doku-Änderungen, getroffene Entscheidungen und übernommene Vorschläge, Recherchen und Experimente samt Ergebnis, Änderungen an Setup, Tools oder Repo-Struktur. Lieber ein kurzer Eintrag zu viel als eine Aktion, die niemand nachvollziehen kann.
+3. **Wie:** Eintrag ins Log unten (neueste oben) im Format `**TT.MM.JJJJ · Mensch/KI(Gerät.Anwendung):** Kurzbeschreibung`, z. B. `Katha/Claude(Laptop.Code)`. Zusätzlich die betroffenen Abschnitte nachziehen: Aktueller Stand, Offene Fragen, Wer macht gerade was, Wissensspeicher.
+4. **Wann:** Nach jedem abgeschlossenen Arbeitsschritt, spätestens vor Ende der Sitzung — danach committen und pushen, damit alle anderen Sitzungen den Stand sofort sehen.
+5. **Ohne Schreibzugriff** (z. B. Chat auf claude.ai, der das Repo nur lesen kann): Am Ende der Antwort einen fertigen Log-Eintrag ausgeben und deinen Menschen bitten, ihn hier einzutragen und zu pushen.
+6. **Nie ins Log:** Passwörter, API-Keys, Tokens oder andere Geheimnisse.
 
 ## 👋 An die anderen Claudes
 
@@ -27,7 +38,7 @@ Gute Zusammenarbeit! 🤝
 - Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Team experimentiert parallel mit Claude Pro und einem ersten Code-Stand (Flask-artige Webapp — gilt als Experimentierstand, nicht als Zielarchitektur).
 - Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: ROADMAP.md.
 - Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: AVATAR-3D-KONZEPT.md.
-- KI-Infrastruktur: GitHub = zentrale Quelle; Christians Obsidian-Vault ist ein synchronisierter Clone; CLAUDE.md gibt allen Claude-Sessions den Projektkontext.
+- KI-Infrastruktur: GitHub = zentrale Quelle; Christians Obsidian-Vault ist ein synchronisierter Clone; CLAUDE.md gibt allen Claude-Sessions den Projektkontext. Seit 15.09.2026 gilt die Protokollpflicht: Alle KI-Sitzungen aller Teammitglieder dokumentieren jede Aktion in BRAIN.md.
 
 ## Offene Fragen / anstehende Entscheidungen
 
@@ -64,6 +75,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Abschnitt „📌 Protokollpflicht für alle KI-Sitzungen" angelegt: Jede KI-Sitzung jedes Teammitglieds (Claude Code, Cowork, claude.ai-Chat, andere KIs) dokumentiert ab sofort alle Aktionen fürs Projekt hier; Sitzungen ohne Schreibzugriff geben den Eintrag für ihren Menschen aus. „Regeln für alle" und „Aktueller Stand" angepasst, UNIBRAIN.md nachgezogen.
 - **22.07.2026 · Christian/Claude Code:** Versehentliches Home-Git-Repo unter `C:\Users\chris` entfernt (siehe Wissensspeicher); StyleHUB-Repo unberührt. UNIBRAIN.md aktualisiert: StyleHUB-Kurzstand in die Projektübersicht hochgezogen + neue vault-weite Konvention „umgesetzte Änderungen immer im Brain nachziehen".
 - **21.07.2026 · Christian/Claude (Cowork):** Cowork-Claude hat sich eingeklinkt und liest/schreibt ab jetzt ebenfalls in BRAIN.md.
 - **17.07.2026 · Christian/Claude:** BRAIN.md angelegt. KI-Infrastruktur eingerichtet: Vault-Clone ↔ GitHub-Sync, CLAUDE.md gepusht. Planungsdokumente (ROADMAP, AVATAR-3D-KONZEPT, roadmap.html) liegen im Repo.
