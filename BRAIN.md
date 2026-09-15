@@ -57,6 +57,7 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 | `Christian/Claude(VMOffice.Cowork)` | VM „ClaudeOffice" auf dem Hauptrechner | Claude Cowork | — |
 | `Christian/Claude(Laptop.Code)` | Schullaptop | Claude Code | `Deadsec` |
 | `Christian/Claude(Laptop.Cowork)` | Schullaptop | Claude Cowork | — |
+| `Katha/Claude(Laptop.Code)` | Laptop | Claude Code | `vm` (Cloud-/Remote-Sitzung, siehe Wissensspeicher) |
 
 *„—" beim Rechnernamen = noch nicht erfasst; bei der nächsten Sitzung auf diesem Gerät nachtragen.*
 
@@ -95,7 +96,7 @@ Gute Zusammenarbeit! 🤝
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
 | Christian | Planung/KI-Infrastruktur mit Claude Code | 15.09.2026 |
-| Katha | — (bitte selbst eintragen) | — |
+| Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
 ## Nächste Schritte (teamweit)
@@ -105,7 +106,7 @@ Gute Zusammenarbeit! 🤝
 - [ ] Katha: maschinen-spezifische Permission aus `.claude/settings.json` in die lokale `settings.local.json` umziehen
 - [ ] MakeHuman ausprobieren (jeder ~1 Stunde) und Eindruck hier festhalten
 - [ ] Offene Entscheidungen (siehe oben) beim nächsten Team-Sync klären
-- [ ] Katha und Teammitglied 3: GitHub mit dem eigenen Claude verknüpfen, einmal `git pull`, eine neue Claude-Code-Sitzung starten und fragen „Wie lautet deine Sitzungskennung für BRAIN.md?" — Ergebnis bestätigen (Test der Erstkontakt-Regel vom 15.09.2026)
+- [ ] Teammitglied 3: GitHub mit dem eigenen Claude verknüpfen, einmal `git pull`, eine neue Claude-Code-Sitzung starten und fragen „Wie lautet deine Sitzungskennung für BRAIN.md?" — Ergebnis bestätigen (Test der Erstkontakt-Regel vom 15.09.2026; bei Katha erfolgreich durchlaufen)
 
 ## Wissensspeicher (Erkenntnisse, die nicht verloren gehen sollen)
 
@@ -113,11 +114,13 @@ Gute Zusammenarbeit! 🤝
 - **Werkstatt/Schaufenster-Prinzip:** MakeHuman ist Entwickler-Werkzeug zum Bau des Avatar-Rohlings (GLB mit Morph Targets); Nutzer sehen nur unseren eigenen Editor. Gespeichert wird pro Nutzer nur die Reglerstellung, nie das Modell.
 - **Git-Falle auf Christians Rechner (erledigt 22.07.2026):** In `C:\Users\chris` lag ein versehentliches Git-Repo über das ganze Home-Verzeichnis (nur 1 Commit, kein Remote). Am 22.07.2026 entfernt (`.git` gelöscht) — es ging nichts Einzigartiges verloren. Lehre bleibt: in Home-/Desktop-Pfaden vor dem ersten Commit prüfen, ob nicht versehentlich ein zu weit gefasstes Repo offen ist; nur gezielt Projektpfade stagen.
 - **KI-Sitzung kann nicht in BRAIN.md schreiben (15.09.2026):** Beim ersten Team-Test fehlte der KI-Sitzung einer Kollegin die Schreibberechtigung, sie konnte ihre Kennung nicht eintragen. Ursache: GitHub war noch nicht mit ihrem Claude verknüpft. Lösung: Verknüpfung einmal einrichten — Repo-Rechte oder `.claude/settings.json` mussten dafür nicht geändert werden.
+- **Hostname-Erkennung funktioniert nicht bei Cloud-/Remote-Sitzungen (15.09.2026):** Bei Kathas erster Claude-Code-Sitzung (Claude Code on the web) lieferte `git config user.name` nur den generischen Wert „Claude" statt eines Teamnamens, und `hostname` lieferte `vm` statt eines wiedererkennbaren Gerätenamens — kein eindeutiger Treffer in „Vergebene Kennungen" möglich. Lösung laut Regel 3: Mensch gefragt, gewünschte Kennung bestätigt (`Katha/Claude(Laptop.Code)`) und Tabelle ergänzt. Lehre: Bei Cloud-/Remote-Sitzungen immer nachfragen statt aus `hostname` zu schließen.
 
 ---
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Katha/Claude(Laptop.Code):** Erstkontakt dieser Sitzung: `git pull` + `BRAIN.md` komplett gelesen. Sitzungskennung war nicht eindeutig bestimmbar (Cloud-/Remote-Sitzung, `hostname` = `vm`, `git config user.name` = generisch „Claude") — Katha gefragt und `Katha/Claude(Laptop.Code)` bestätigt. Tabelle „Vergebene Kennungen" ergänzt, „Wer macht gerade was" aktualisiert, Erstkontakt-Test in „Nächste Schritte" für Katha als erledigt markiert (Teammitglied 3 offen), neue Erkenntnis zur Hostname-Erkennung bei Cloud-Sitzungen in den Wissensspeicher.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Problem beim ersten Team-Test: Die KI-Sitzung einer Kollegin konnte ihre Kennung nicht in BRAIN.md eintragen (keine Schreibberechtigung). Ursache von Christian gefunden: GitHub war noch nicht mit ihrem Claude verknüpft. Keine Änderung an Repo-Rechten oder Claude-Freigaben nötig; Hinweis in Protokollpflicht (Punkt 5), Nächste Schritte und Wissensspeicher ergänzt.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Entscheidung Christian: Die Teammitglieder legen ihre Namen für die Sitzungskennung selbst fest, verbindlich ist nur die Syntax `Mensch/KI(Gerät.Anwendung)`. Abschnitt „🪪 Deine Sitzungskennung" präzisiert: Name selbst gewählt, Vorbelegung „Katha" änderbar, ermittelte Kennung wird bestätigt oder geändert.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Erstkontakt-Regel umgesetzt: neuer Abschnitt „🪪 Deine Sitzungskennung" in der Protokollpflicht (Aufbau der Kennung; Ablauf zu Sitzungsbeginn über `git config user.name` und `hostname`, sonst Menschen fragen; Tabellen „Wer ist wer" — Katharina/Kathamesser = Katha, per gemeinsamer Git-E-Mail geprüft — und „Vergebene Kennungen"; Hinweis auf alte Schreibweisen). Widerspruch in der Begrüßung beseitigt, CLAUDE.md angeglichen. Offene Frage aus der Prüfung erledigt; Test durch Katha und Teammitglied 3 unter „Nächste Schritte".
