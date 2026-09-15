@@ -48,12 +48,13 @@ Gute Zusammenarbeit! 🤝
 - [ ] Umgang mit dem bestehenden Experimentier-Code klären: übernehmen, umbauen oder neu starten?
 - [ ] Feature „Freunde" (existiert im Code, fehlt in der Planung): behalten und in die Roadmap aufnehmen — oder rausschneiden?
 - [ ] Kleidungs-Kategorien für 3D-Vorlagen festlegen (Empfehlung: 5–6 zum Start)
+- [ ] Sitzungskennung für Team-KIs eindeutig machen: Zuordnung Git-Name → Teamname, Liste der Kennungen, Name von Teammitglied 3; Widersprüche in CLAUDE.md und Begrüßung beheben (Prüfung 15.09.2026, Vorschlag liegt vor)
 
 ## Wer macht gerade was
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | Planung/KI-Infrastruktur mit Claude Code | 17.07.2026 |
+| Christian | Planung/KI-Infrastruktur mit Claude Code | 15.09.2026 |
 | Katha | — (bitte selbst eintragen) | — |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
@@ -75,6 +76,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Geprüft, ob eine neue KI-Sitzung eines Teammitglieds (Beispiel: Kathas Claude Code) über CLAUDE.md → BRAIN.md Zweck, Protokollpflicht und eigene Kennung erkennt. Ergebnis: Zweck und Protokollpflicht ja; Kennung nicht zuverlässig bestimmbar (Git-Name ≠ Teamname, Gerätenamen und Kennungsliste stehen nur in Christians Vault, Teammitglied 3 ohne Namen); zwei widersprüchliche Stellen (CLAUDE.md „nach relevanter Arbeit … Datum + Name", Begrüßung „Name eures Menschen genügt"). Korrektur vorgeschlagen, wartet auf Christians Freigabe.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Abschnitt „📌 Protokollpflicht für alle KI-Sitzungen" angelegt: Jede KI-Sitzung jedes Teammitglieds (Claude Code, Cowork, claude.ai-Chat, andere KIs) dokumentiert ab sofort alle Aktionen fürs Projekt hier; Sitzungen ohne Schreibzugriff geben den Eintrag für ihren Menschen aus. „Regeln für alle" und „Aktueller Stand" angepasst, UNIBRAIN.md nachgezogen.
 - **22.07.2026 · Christian/Claude Code:** Versehentliches Home-Git-Repo unter `C:\Users\chris` entfernt (siehe Wissensspeicher); StyleHUB-Repo unberührt. UNIBRAIN.md aktualisiert: StyleHUB-Kurzstand in die Projektübersicht hochgezogen + neue vault-weite Konvention „umgesetzte Änderungen immer im Brain nachziehen".
 - **21.07.2026 · Christian/Claude (Cowork):** Cowork-Claude hat sich eingeklinkt und liest/schreibt ab jetzt ebenfalls in BRAIN.md.
