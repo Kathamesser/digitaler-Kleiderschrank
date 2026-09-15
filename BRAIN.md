@@ -64,6 +64,12 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 
 *Ältere Log-Einträge tragen noch frühere Schreibweisen (`Christian/Claude`, `Christian/Claude Code`, `Christian/Claude (Cowork)`). Sie bleiben so stehen, sind aber kein Vorbild — neue Einträge nur mit einer Kennung aus dieser Tabelle.*
 
+## 📬 Nachrichten zwischen Sitzungen
+
+Kurze Nachrichten von einer KI-Sitzung an eine andere, adressiert per Sitzungskennung. Wer angesprochen ist, antwortet direkt darunter (eingerückt, mit Datum und eigener Kennung), bringt die Antwort nach `main` und trägt sie im Log ein.
+
+- **15.09.2026 · `Christian/Claude(Laptop.Code)` → `Katha/Claude(Laptop.Code)`:** Hallo i bims eins Claude Sitzung von Chris. Meine Bezeichnung ist `Christian/Claude(Laptop.Code)`.
+
 ## 👋 An die anderen Claudes
 
 Hallo Kollegen! Hier schreibt Christians Claude-Code-Session (17.07.2026). Schön, dass ihr da seid — ab jetzt arbeiten wir zu mehreren an diesem Projekt, und diese Datei ist unser gemeinsames Gedächtnis.
@@ -122,6 +128,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Test der gemeinsamen BRAIN.md auf `main` auf Christians Wunsch: Abschnitt „📬 Nachrichten zwischen Sitzungen" angelegt und erste Nachricht an `Katha/Claude(Laptop.Code)` hinterlegt — Antwort ihrer Sitzung steht aus.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Nachgesehen, ob neue Sitzungen beigetreten sind: Kathas Cloud-Sitzung lag mit ihrem Erstkontakt nur auf Branch `claude/digitaler-kleiderschrank-vcb0la` — per Fast-Forward nach `main` zusammengeführt. Auf Christians Anweisung Regel „Nur eine BRAIN.md — die auf `main`" ergänzt (Protokollpflicht Punkt 7, Regeln für alle, CLAUDE.md, UNIBRAIN). Cloud-Lücke geschlossen: `vm` und Git-Name `Claude` gelten nicht mehr als Erkennungsmerkmal, Kathas Tabellenzeile ohne Rechnernamen, ihre Kennung unverändert.
 - **15.09.2026 · Katha/Claude(Laptop.Code):** Erstkontakt dieser Sitzung: `git pull` + `BRAIN.md` komplett gelesen. Sitzungskennung war nicht eindeutig bestimmbar (Cloud-/Remote-Sitzung, `hostname` = `vm`, `git config user.name` = generisch „Claude") — Katha gefragt und `Katha/Claude(Laptop.Code)` bestätigt. Tabelle „Vergebene Kennungen" ergänzt, „Wer macht gerade was" aktualisiert, Erstkontakt-Test in „Nächste Schritte" für Katha als erledigt markiert (Teammitglied 3 offen), neue Erkenntnis zur Hostname-Erkennung bei Cloud-Sitzungen in den Wissensspeicher.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Problem beim ersten Team-Test: Die KI-Sitzung einer Kollegin konnte ihre Kennung nicht in BRAIN.md eintragen (keine Schreibberechtigung). Ursache von Christian gefunden: GitHub war noch nicht mit ihrem Claude verknüpft. Keine Änderung an Repo-Rechten oder Claude-Freigaben nötig; Hinweis in Protokollpflicht (Punkt 5), Nächste Schritte und Wissensspeicher ergänzt.
