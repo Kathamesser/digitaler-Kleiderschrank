@@ -18,7 +18,7 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 2. **Alles, was du für das Projekt tust, wird hier dokumentiert** — Code- und Doku-Änderungen, getroffene Entscheidungen und übernommene Vorschläge, Recherchen und Experimente samt Ergebnis, Änderungen an Setup, Tools oder Repo-Struktur. Lieber ein kurzer Eintrag zu viel als eine Aktion, die niemand nachvollziehen kann.
 3. **Wie:** Eintrag ins Log unten (neueste oben) im Format `**TT.MM.JJJJ · Sitzungskennung:** Kurzbeschreibung`. Zusätzlich die betroffenen Abschnitte nachziehen: Aktueller Stand, Offene Fragen, Wer macht gerade was, Wissensspeicher.
 4. **Wann:** Nach jedem abgeschlossenen Arbeitsschritt, spätestens vor Ende der Sitzung — danach committen und pushen, damit alle anderen Sitzungen den Stand sofort sehen.
-5. **Ohne Schreibzugriff** (z. B. Chat auf claude.ai, der das Repo nur lesen kann): Am Ende der Antwort einen fertigen Log-Eintrag ausgeben und deinen Menschen bitten, ihn hier einzutragen und zu pushen.
+5. **Ohne Schreibzugriff:** Zuerst prüfen lassen, ob dein Claude-Werkzeug mit GitHub verknüpft ist — das war beim ersten Team-Test die Ursache (siehe Wissensspeicher); die Verknüpfung richtet dein Mensch einmal ein. Geht es danach immer noch nicht (z. B. Chat, der das Repo nur lesen kann): Am Ende der Antwort einen fertigen Log-Eintrag ausgeben und deinen Menschen bitten, ihn hier einzutragen und zu pushen.
 6. **Nie ins Log:** Passwörter, API-Keys, Tokens oder andere Geheimnisse.
 
 ### 🪪 Deine Sitzungskennung
@@ -105,18 +105,20 @@ Gute Zusammenarbeit! 🤝
 - [ ] Katha: maschinen-spezifische Permission aus `.claude/settings.json` in die lokale `settings.local.json` umziehen
 - [ ] MakeHuman ausprobieren (jeder ~1 Stunde) und Eindruck hier festhalten
 - [ ] Offene Entscheidungen (siehe oben) beim nächsten Team-Sync klären
-- [ ] Katha und Teammitglied 3: einmal `git pull`, eine neue Claude-Code-Sitzung starten und fragen „Wie lautet deine Sitzungskennung für BRAIN.md?" — Ergebnis bestätigen (Test der Erstkontakt-Regel vom 15.09.2026)
+- [ ] Katha und Teammitglied 3: GitHub mit dem eigenen Claude verknüpfen, einmal `git pull`, eine neue Claude-Code-Sitzung starten und fragen „Wie lautet deine Sitzungskennung für BRAIN.md?" — Ergebnis bestätigen (Test der Erstkontakt-Regel vom 15.09.2026)
 
 ## Wissensspeicher (Erkenntnisse, die nicht verloren gehen sollen)
 
 - **Ready Player Me wurde 01/2026 abgeschaltet** (Netflix-Übernahme) — Lehre: keine Abhängigkeit von proprietären Plattformen; MakeHuman-Assets liegen als Dateien bei uns (CC0-Lizenz).
 - **Werkstatt/Schaufenster-Prinzip:** MakeHuman ist Entwickler-Werkzeug zum Bau des Avatar-Rohlings (GLB mit Morph Targets); Nutzer sehen nur unseren eigenen Editor. Gespeichert wird pro Nutzer nur die Reglerstellung, nie das Modell.
 - **Git-Falle auf Christians Rechner (erledigt 22.07.2026):** In `C:\Users\chris` lag ein versehentliches Git-Repo über das ganze Home-Verzeichnis (nur 1 Commit, kein Remote). Am 22.07.2026 entfernt (`.git` gelöscht) — es ging nichts Einzigartiges verloren. Lehre bleibt: in Home-/Desktop-Pfaden vor dem ersten Commit prüfen, ob nicht versehentlich ein zu weit gefasstes Repo offen ist; nur gezielt Projektpfade stagen.
+- **KI-Sitzung kann nicht in BRAIN.md schreiben (15.09.2026):** Beim ersten Team-Test fehlte der KI-Sitzung einer Kollegin die Schreibberechtigung, sie konnte ihre Kennung nicht eintragen. Ursache: GitHub war noch nicht mit ihrem Claude verknüpft. Lösung: Verknüpfung einmal einrichten — Repo-Rechte oder `.claude/settings.json` mussten dafür nicht geändert werden.
 
 ---
 
 ## Log (neueste Einträge oben)
 
+- **15.09.2026 · Christian/Claude(Laptop.Code):** Problem beim ersten Team-Test: Die KI-Sitzung einer Kollegin konnte ihre Kennung nicht in BRAIN.md eintragen (keine Schreibberechtigung). Ursache von Christian gefunden: GitHub war noch nicht mit ihrem Claude verknüpft. Keine Änderung an Repo-Rechten oder Claude-Freigaben nötig; Hinweis in Protokollpflicht (Punkt 5), Nächste Schritte und Wissensspeicher ergänzt.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Entscheidung Christian: Die Teammitglieder legen ihre Namen für die Sitzungskennung selbst fest, verbindlich ist nur die Syntax `Mensch/KI(Gerät.Anwendung)`. Abschnitt „🪪 Deine Sitzungskennung" präzisiert: Name selbst gewählt, Vorbelegung „Katha" änderbar, ermittelte Kennung wird bestätigt oder geändert.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Erstkontakt-Regel umgesetzt: neuer Abschnitt „🪪 Deine Sitzungskennung" in der Protokollpflicht (Aufbau der Kennung; Ablauf zu Sitzungsbeginn über `git config user.name` und `hostname`, sonst Menschen fragen; Tabellen „Wer ist wer" — Katharina/Kathamesser = Katha, per gemeinsamer Git-E-Mail geprüft — und „Vergebene Kennungen"; Hinweis auf alte Schreibweisen). Widerspruch in der Begrüßung beseitigt, CLAUDE.md angeglichen. Offene Frage aus der Prüfung erledigt; Test durch Katha und Teammitglied 3 unter „Nächste Schritte".
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Geprüft, ob eine neue KI-Sitzung eines Teammitglieds (Beispiel: Kathas Claude Code) über CLAUDE.md → BRAIN.md Zweck, Protokollpflicht und eigene Kennung erkennt. Ergebnis: Zweck und Protokollpflicht ja; Kennung nicht zuverlässig bestimmbar (Git-Name ≠ Teamname, Gerätenamen und Kennungsliste stehen nur in Christians Vault, Teammitglied 3 ohne Namen); zwei widersprüchliche Stellen (CLAUDE.md „nach relevanter Arbeit … Datum + Name", Begrüßung „Name eures Menschen genügt"). Korrektur vorgeschlagen, wartet auf Christians Freigabe.
