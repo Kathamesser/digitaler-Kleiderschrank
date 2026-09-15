@@ -8,7 +8,7 @@ Kleidung bildlich erfassen und kategorisieren, zu Outfits kombinieren, Wunschart
 
 ## Zentrale Dokumente (im Repo)
 
-- `BRAIN.md` — **gemeinsames Team-Gedächtnis, zuerst lesen:** aktueller Stand, offene Entscheidungen, wer woran arbeitet, Log. Nach relevanter Arbeit dort einen Eintrag ergänzen (Datum + Name) und die betroffenen Abschnitte aktualisieren.
+- `BRAIN.md` — **gemeinsames Team-Gedächtnis, zuerst lesen:** aktueller Stand, offene Entscheidungen, wer woran arbeitet, Sitzungskennungen, Log. Nach **jeder** Aktion für das Projekt dort einen Log-Eintrag mit Datum und Sitzungskennung ergänzen und die betroffenen Abschnitte aktualisieren.
 - `ROADMAP.md` — Meilensteinplan mit 8 Phasen, Tech-Stack-Entscheidung und Empfehlungen
 - `AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar: MakeHuman-Asset-Pipeline („Werkstatt/Schaufenster"-Prinzip), Three.js-Editor, Fitting-Logik
 - `roadmap.html` — visuelle Version der Roadmap (im Browser öffnen)
@@ -33,6 +33,8 @@ Hinweis: Der aktuelle Code im Repo (Flask-artige Webapp mit Server-Templates) is
 
 ## Für Claude wichtig
 
+- **Zu Beginn jeder Sitzung:** `git pull`, dann `BRAIN.md` komplett lesen und deine Sitzungskennung (`Mensch/KI(Gerät.Anwendung)`) nach dem Abschnitt „🪪 Deine Sitzungskennung" bestimmen — nicht raten, im Zweifel deinen Menschen fragen.
+- **Protokollpflicht:** Jede Aktion für das Projekt (Code, Doku, Entscheidungen, Recherchen, Setup) kommt mit Datum und Sitzungskennung ins Log von `BRAIN.md`, danach committen und pushen. Details: Abschnitt „📌 Protokollpflicht für alle KI-Sitzungen" in `BRAIN.md`.
 - Projektphase beachten: Solange die Planung läuft, keine ungefragten Code-Umbauten — erst fragen, was übernommen werden soll.
 - Datenschutz ist prüfungsrelevantes Querschnittsthema: Körpermaße/Aussehen sind personenbezogene Daten; keine echten Nutzerfotos nötig (bewusste Design-Entscheidung gegen Foto-Avatare).
 - Der 3D-Avatar ist das Alleinstellungsmerkmal und höchste Risiko — Machbarkeits-Prototyp hat Vorrang vor Feinschliff anderswo.
