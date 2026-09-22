@@ -102,7 +102,7 @@ Gute Zusammenarbeit! 🤝
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | User Stories (Anforderungen-orientiert) erarbeitet, GitHub-Connector fürs claude.ai-Projekt eingerichtet | 22.09.2026 |
+| Christian | Restliche User Stories (2-10) aus dem GitHub-Kanban-Board in Userstory.md übernommen | 22.09.2026 |
 | Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
@@ -128,6 +128,8 @@ Gute Zusammenarbeit! 🤝
 ---
 
 ## Log (neueste Einträge oben)
+
+- **22.09.2026 · Christian/Claude(Laptop.Cowork):** User Stories 2–10 aus dem GitHub-Kanban-Board ("Kanban Board", View 1) in `Userstory.md` übernommen — Titel, Story-Text ("Als/möchte ich/damit") und Akzeptanzkriterien (als "Anforderungen:") jeweils 1:1 aus den zugehörigen Issues #2–#8, #15, #16 übertragen, ohne eigene Ergänzungen. Zwei Punkte für die Team-Review markiert: Issue #15 ("User Story 9") hat den Titel "verleihen", der Story-Text spricht aber von "verschenken" — möglicherweise Überschneidung mit Issue #16 ("User Story 10"), das noch leer ist. Issues #5, #6, #7, #8 haben (noch) keine oder nur teilweise Akzeptanzkriterien — im Dokument entsprechend als offen markiert statt selbst ausgedacht. Board-Zähler "Backlog 11" bei nur 10 sichtbaren Story-Karten beobachtet (11. Eintrag ist Issue #11 "Definition of Done", das im Done-Status liegt, keine User Story). Änderung liegt aktuell nur lokal committet vor (siehe letzter Eintrag zum fehlenden Schreibzugriff) — Push steht noch aus.
 
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** GitHub-Connector auf Projektebene fürs claude.ai-Projekt "StyleHub" eingerichtet (Repo `Kathamesser/digitaler-Kleiderschrank`, gesamtes Repo als Projektwissen). Gemeinsam mit Christian User Stories nach neuem Prinzip "Anforderungen-orientiert" erarbeitet (Überschrift je Story, darunter Block "Anforderungen:" als Liste statt Given/When/Then) und in `Userstory.md` festgehalten — User Story 1 "Kleiderschrank-Übersicht" vollständig mit Anforderungen, User Story 2 "Kleiderschrank mit Freunden teilen" als Platzhalter-Überschrift. Datei lag zunächst nur im Unibrain-Vault und im claude.ai-Projekt, jetzt auch im Repo committet. Sitzungskennung war nicht automatisch bestimmbar (Cowork über Gerätebrücke, siehe neuer Wissensspeicher-Eintrag) — bei Christian nachgefragt und `Christian/Claude(Laptop.Cowork)` bestätigt.
 
