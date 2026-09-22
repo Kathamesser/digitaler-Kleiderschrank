@@ -102,7 +102,7 @@ Gute Zusammenarbeit! 🤝
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | Inkonsistenz User Story 9/10 in Userstory.md korrigiert (Issue #15/#16) | 22.09.2026 |
+| Christian | Namen aus Userstory.md entfernt, Entwurfs-Anforderungen fuer leere Storys ergaenzt (Push folgt durch Christian) | 22.09.2026 |
 | Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
@@ -128,6 +128,8 @@ Gute Zusammenarbeit! 🤝
 ---
 
 ## Log (neueste Einträge oben)
+
+- **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch in `Userstory.md`: (1) alle Namens-Attributionen ("(Von ...)") aus den Überschriften entfernt. (2) Für die bis dahin leeren Storys 5, 6, 7, 8, 9 und 10 Anforderungen (und bei 5/9, wo auch der Story-Satz fehlte, zusätzlich ein Satz) selbst entworfen und jeweils deutlich als "Vorschlag von Claude" markiert, da im zugehörigen GitHub-Issue nichts hinterlegt war — nicht mit echten GitHub-Inhalten verwechseln, unbedingt im Team gegenprüfen. Änderung liegt lokal committet vor; Christian pusht diesmal selbst.
 
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch die zuvor gemeldete Dopplung zwischen Issue #15 ("User Story 9 – verleihen") und Issue #16 ("User Story 10 – verschenken") in `Userstory.md` korrigiert: Der ursprünglich unter #15 stehende Story-Text ("...Kleidungsstücke an Freunde verschenken...") passt inhaltlich zu #16 und wurde dorthin verschoben (inkl. Attribution "Von Linda"); User Story 9 ("verleihen") steht jetzt korrekt ohne Story-Text da, da dafür bislang nichts hinterlegt ist. Wichtig: Nur in `Userstory.md` korrigiert, nicht in GitHub — Issues #15 und #16 selbst sind unverändert, das müsste bei Gelegenheit separat nachgezogen werden.
 
