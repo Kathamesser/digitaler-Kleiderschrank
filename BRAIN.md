@@ -102,7 +102,7 @@ Gute Zusammenarbeit! 🤝
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | Planung/KI-Infrastruktur mit Claude Code | 15.09.2026 |
+| Christian | User Stories (Anforderungen-orientiert) erarbeitet, GitHub-Connector fürs claude.ai-Projekt eingerichtet | 22.09.2026 |
 | Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
@@ -123,10 +123,13 @@ Gute Zusammenarbeit! 🤝
 - **KI-Sitzung kann nicht in BRAIN.md schreiben (15.09.2026):** Beim ersten Team-Test fehlte der KI-Sitzung einer Kollegin die Schreibberechtigung, sie konnte ihre Kennung nicht eintragen. Ursache: GitHub war noch nicht mit ihrem Claude verknüpft. Lösung: Verknüpfung einmal einrichten — Repo-Rechte oder `.claude/settings.json` mussten dafür nicht geändert werden.
 - **Hostname-Erkennung funktioniert nicht bei Cloud-/Remote-Sitzungen (15.09.2026):** Bei Kathas erster Claude-Code-Sitzung (Claude Code on the web) lieferte `git config user.name` nur den generischen Wert „Claude" statt eines Teamnamens, und `hostname` lieferte `vm` statt eines wiedererkennbaren Gerätenamens — kein eindeutiger Treffer in „Vergebene Kennungen" möglich. Lösung laut Regel 3: Mensch gefragt, gewünschte Kennung bestätigt (`Katha/Claude(Laptop.Code)`) und Tabelle ergänzt. Lehre: Bei Cloud-/Remote-Sitzungen immer nachfragen statt aus `hostname` zu schließen.
 - **Cloud-Sitzungen schreiben auf eigene Branches (15.09.2026):** Kathas Claude Code im Browser hat ihren Erstkontakt auf `claude/digitaler-kleiderschrank-vcb0la` statt auf `main` committet, ohne Pull Request — für alle anderen Sitzungen unsichtbar, bis Christians Sitzung ihn zusammengeführt hat. Daraus die Regel „Nur eine BRAIN.md — die auf `main`" (Protokollpflicht Punkt 7).
+- **Cowork-Sitzungen über die Gerätebrücke haben ebenfalls generischen Hostnamen (22.09.2026):** Eine claude.ai-Cowork-Sitzung, die über die Gerätebrücke auf einen lokalen Rechner zugreift, liefert bei `hostname` innerhalb der Sandbox nur `claude` (nicht den echten Gerätenamen) und `git config user.name`/`user.email` sind dort leer — genau wie bei echten Cloud-Sitzungen laut obigem Punkt. Automatischer Abgleich über Schritt 2 funktioniert also auch hier nicht; immer Schritt 3 (Mensch fragen) nutzen. Deshalb bleibt der Rechnername in „Vergebene Kennungen" für Cowork-Zeilen bewusst „—" statt eines irreführenden Werts.
 
 ---
 
 ## Log (neueste Einträge oben)
+
+- **22.09.2026 · Christian/Claude(Laptop.Cowork):** GitHub-Connector auf Projektebene fürs claude.ai-Projekt "StyleHub" eingerichtet (Repo `Kathamesser/digitaler-Kleiderschrank`, gesamtes Repo als Projektwissen). Gemeinsam mit Christian User Stories nach neuem Prinzip "Anforderungen-orientiert" erarbeitet (Überschrift je Story, darunter Block "Anforderungen:" als Liste statt Given/When/Then) und in `Userstory.md` festgehalten — User Story 1 "Kleiderschrank-Übersicht" vollständig mit Anforderungen, User Story 2 "Kleiderschrank mit Freunden teilen" als Platzhalter-Überschrift. Datei lag zunächst nur im Unibrain-Vault und im claude.ai-Projekt, jetzt auch im Repo committet. Sitzungskennung war nicht automatisch bestimmbar (Cowork über Gerätebrücke, siehe neuer Wissensspeicher-Eintrag) — bei Christian nachgefragt und `Christian/Claude(Laptop.Cowork)` bestätigt.
 
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Test der gemeinsamen BRAIN.md auf `main` auf Christians Wunsch: Abschnitt „📬 Nachrichten zwischen Sitzungen" angelegt und erste Nachricht an `Katha/Claude(Laptop.Code)` hinterlegt — Antwort ihrer Sitzung steht aus.
 - **15.09.2026 · Christian/Claude(Laptop.Code):** Nachgesehen, ob neue Sitzungen beigetreten sind: Kathas Cloud-Sitzung lag mit ihrem Erstkontakt nur auf Branch `claude/digitaler-kleiderschrank-vcb0la` — per Fast-Forward nach `main` zusammengeführt. Auf Christians Anweisung Regel „Nur eine BRAIN.md — die auf `main`" ergänzt (Protokollpflicht Punkt 7, Regeln für alle, CLAUDE.md, UNIBRAIN). Cloud-Lücke geschlossen: `vm` und Git-Name `Claude` gelten nicht mehr als Erkennungsmerkmal, Kathas Tabellenzeile ohne Rechnernamen, ihre Kennung unverändert.
