@@ -93,17 +93,21 @@
 *Noch keine Anforderungen im GitHub-Issue #8 hinterlegt — im Team zu ergänzen.*
 
 
-## User Story 9: Kleidungsstück verleihen (Von Linda)
+## User Story 9: Kleidungsstück verleihen
 
-**"Nutzer möchte ich Kleidungsstücke an Freunde verschenken können, damit ich nicht mehr benötigte Kleidung unkompliziert weitergeben kann."**
-
-*Hinweis: Der Titel von Issue #15 spricht von "verleihen", der hinterlegte Story-Text dagegen von "verschenken" — möglicherweise eine Überschneidung mit User Story 10 (Issue #16). Im Team klären.*
+*Noch keine Story-Formulierung im GitHub-Issue #15 hinterlegt — der dort ursprünglich stehende Text gehörte inhaltlich zu "verschenken" und wurde zu User Story 10 verschoben (siehe dort). Für "verleihen" fehlt aktuell eine eigene Formulierung — im Team zu ergänzen.*
 
 **Anforderungen:**
 
-*Noch keine Anforderungen im GitHub-Issue #15 hinterlegt — im Team zu ergänzen.*
+*Noch keine Anforderungen hinterlegt — im Team zu ergänzen.*
 
 
-## User Story 10: Kleidungsstück verschenken
+## User Story 10: Kleidungsstück verschenken (Von Linda)
 
-*Noch keine Story-Formulierung und keine Anforderungen im GitHub-Issue #16 hinterlegt — im Team zu ergänzen (siehe Hinweis bei User Story 9 zur möglichen Überschneidung).*
+**"Nutzer möchte ich Kleidungsstücke an Freunde verschenken können, damit ich nicht mehr benötigte Kleidung unkompliziert weitergeben kann."**
+
+**Anforderungen:**
+
+*Noch keine Anforderungen im GitHub-Issue #16 hinterlegt — im Team zu ergänzen.*
+
+*Hinweis: Dieser Story-Text stand ursprünglich unter Issue #15 ("verleihen"), passt inhaltlich aber zu diesem Issue ("verschenken") — hier entsprechend zugeordnet. Nur in diesem Dokument korrigiert; in GitHub (Issue #15/#16) unverändert, bitte bei Gelegenheit dort nachziehen.*

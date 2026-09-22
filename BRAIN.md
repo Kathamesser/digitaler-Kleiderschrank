@@ -102,7 +102,7 @@ Gute Zusammenarbeit! 🤝
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | Restliche User Stories (2-10) aus dem GitHub-Kanban-Board in Userstory.md übernommen | 22.09.2026 |
+| Christian | Inkonsistenz User Story 9/10 in Userstory.md korrigiert (Issue #15/#16) | 22.09.2026 |
 | Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
 | Teammitglied 3 | — (bitte selbst eintragen) | — |
 
@@ -128,6 +128,8 @@ Gute Zusammenarbeit! 🤝
 ---
 
 ## Log (neueste Einträge oben)
+
+- **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch die zuvor gemeldete Dopplung zwischen Issue #15 ("User Story 9 – verleihen") und Issue #16 ("User Story 10 – verschenken") in `Userstory.md` korrigiert: Der ursprünglich unter #15 stehende Story-Text ("...Kleidungsstücke an Freunde verschenken...") passt inhaltlich zu #16 und wurde dorthin verschoben (inkl. Attribution "Von Linda"); User Story 9 ("verleihen") steht jetzt korrekt ohne Story-Text da, da dafür bislang nichts hinterlegt ist. Wichtig: Nur in `Userstory.md` korrigiert, nicht in GitHub — Issues #15 und #16 selbst sind unverändert, das müsste bei Gelegenheit separat nachgezogen werden.
 
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** User Stories 2–10 aus dem GitHub-Kanban-Board ("Kanban Board", View 1) in `Userstory.md` übernommen — Titel, Story-Text ("Als/möchte ich/damit") und Akzeptanzkriterien (als "Anforderungen:") jeweils 1:1 aus den zugehörigen Issues #2–#8, #15, #16 übertragen, ohne eigene Ergänzungen. Zwei Punkte für die Team-Review markiert: Issue #15 ("User Story 9") hat den Titel "verleihen", der Story-Text spricht aber von "verschenken" — möglicherweise Überschneidung mit Issue #16 ("User Story 10"), das noch leer ist. Issues #5, #6, #7, #8 haben (noch) keine oder nur teilweise Akzeptanzkriterien — im Dokument entsprechend als offen markiert statt selbst ausgedacht. Board-Zähler "Backlog 11" bei nur 10 sichtbaren Story-Karten beobachtet (11. Eintrag ist Issue #11 "Definition of Done", das im Done-Status liegt, keine User Story). Änderung liegt aktuell nur lokal committet vor (siehe letzter Eintrag zum fehlenden Schreibzugriff) — Push steht noch aus.
 
