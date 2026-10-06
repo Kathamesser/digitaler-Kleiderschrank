@@ -12,7 +12,7 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 
 ## 📌 Protokollpflicht für alle KI-Sitzungen (dauerhaft — nicht löschen)
 
-**Gilt für jede KI-Sitzung, die für dieses Projekt arbeitet** — egal für welches Teammitglied (Christian, Katha, Teammitglied 3) und egal mit welchem Werkzeug (Claude Code, Claude Cowork, Chat auf claude.ai, andere KIs).
+**Gilt für jede KI-Sitzung, die für dieses Projekt arbeitet** — egal für welches Teammitglied (Christian, Katha, Manuel) und egal mit welchem Werkzeug (Claude Code, Claude Cowork, Chat auf claude.ai, andere KIs).
 
 1. **Vor der Arbeit:** Diese Datei komplett lesen — immer den aktuellen Stand von `main` (mit Git-Zugriff vorher pullen) — und deine Sitzungskennung bestimmen, siehe „🪪 Deine Sitzungskennung" direkt hierunter.
 2. **Alles, was du für das Projekt tust, wird hier dokumentiert** — Code- und Doku-Änderungen, getroffene Entscheidungen und übernommene Vorschläge, Recherchen und Experimente samt Ergebnis, Änderungen an Setup, Tools oder Repo-Struktur. Lieber ein kurzer Eintrag zu viel als eine Aktion, die niemand nachvollziehen kann.
@@ -46,9 +46,9 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 |---|---|
 | Christian | `Christian` |
 | Katha | `Katharina`, `Kathamesser` |
-| Teammitglied 3 | — |
+| Manuel | `ManuelHerrmannRDF` |
 
-*Die Namen legen die Teammitglieder selbst fest — „Katha" ist nur vorbelegt und darf geändert werden. Wer noch fehlt (z. B. Teammitglied 3), trägt beim ersten Kontakt eigenen Namen und Git-Namen ein und ersetzt den Platzhalter überall in dieser Datei.*
+*Die Namen legen die Teammitglieder selbst fest — „Katha" ist nur vorbelegt und darf geändert werden. Wer neu dazukommt, trägt beim ersten Kontakt eigenen Namen und Git-Namen ein und ersetzt den Platzhalter überall in dieser Datei.*
 
 **Vergebene Kennungen**
 
@@ -59,6 +59,8 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 | `Christian/Claude(Laptop.Code)` | Schullaptop | Claude Code | `Deadsec` |
 | `Christian/Claude(Laptop.Cowork)` | Schullaptop | Claude Cowork | — |
 | `Katha/Claude(Laptop.Code)` | Laptop | Claude Code (im Browser) | — (Cloud-Sitzung, immer nachfragen) |
+| `Manuel/Claude(Laptop.Cowork)` | Laptop | Claude Cowork | `Laptop-Manu` |
+| `Manuel/Claude(Laptop.Code)` | Laptop | Claude Code (Desktop-App, Code-Tab) | `Laptop-Manu` |
 
 *„—" beim Rechnernamen = noch nicht erfasst; bei der nächsten Sitzung auf diesem Gerät nachtragen. Cloud-Sitzungen bekommen nie einen Rechnernamen (`vm` ist bei allen gleich).*
 
@@ -104,7 +106,7 @@ Gute Zusammenarbeit! 🤝
 |---|---|---|
 | Christian | Namen aus Userstory.md entfernt, Entwurfs-Anforderungen fuer leere Storys ergaenzt (Push folgt durch Christian) | 22.09.2026 |
 | Katha | Erstkontakt: Sitzungskennung bestätigt, BRAIN.md gelesen | 15.09.2026 |
-| Teammitglied 3 | — (bitte selbst eintragen) | — |
+| Manuel | Einstieg mit Claude Cowork und Claude Code: Repo verbunden, BRAIN.md gelesen, Sitzungskennungen festgelegt, Erstkontakt-Test bestanden | 06.10.2026 |
 
 ## Nächste Schritte (teamweit)
 
@@ -113,7 +115,6 @@ Gute Zusammenarbeit! 🤝
 - [ ] Katha: maschinen-spezifische Permission aus `.claude/settings.json` in die lokale `settings.local.json` umziehen
 - [ ] MakeHuman ausprobieren (jeder ~1 Stunde) und Eindruck hier festhalten
 - [ ] Offene Entscheidungen (siehe oben) beim nächsten Team-Sync klären
-- [ ] Teammitglied 3: GitHub mit dem eigenen Claude verknüpfen, einmal `git pull`, eine neue Claude-Code-Sitzung starten und fragen „Wie lautet deine Sitzungskennung für BRAIN.md?" — Ergebnis bestätigen (Test der Erstkontakt-Regel vom 15.09.2026; bei Katha erfolgreich durchlaufen)
 
 ## Wissensspeicher (Erkenntnisse, die nicht verloren gehen sollen)
 
@@ -129,6 +130,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **06.10.2026 · Manuel/Claude(Laptop.Code):** Erstkontakt Manuel (bisher „Teammitglied 3", Git-Name `ManuelHerrmannRDF`) mit Claude Code (Desktop-App) auf seinem Laptop: `git pull`, CLAUDE.md und BRAIN.md gelesen. Kennung abgeleitet über `git config user.name` (→ Manuel) und `hostname` (`Laptop-Manu`); für Claude Code auf diesem Rechner gab es noch keinen Eintrag, daher Rückfrage — `Manuel/Claude(Laptop.Code)` von Manuel bestätigt. „Wer ist wer", „Vergebene Kennungen" (inkl. der vorher von Manuels Cowork-Sitzung festgelegten `Manuel/Claude(Laptop.Cowork)`) und „Wer macht gerade was" ergänzt, Platzhalter „Teammitglied 3" in den aktuellen Abschnitten ersetzt (alte Log-Einträge unverändert). Test der Erstkontakt-Regel damit auch für Manuel bestanden, Punkt aus „Nächste Schritte" entfernt. Hinweis: Beide Sitzungen hatten heute zuerst in Manuels eigenem Repo `ManuelHerrmannRDF/digitaler-Kleiderschrank` gearbeitet statt im Team-Repo `Kathamesser/digitaler-Kleiderschrank` — die Einträge sind hiermit ins Team-Repo übernommen.
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch in `Userstory.md`: (1) alle Namens-Attributionen ("(Von ...)") aus den Überschriften entfernt. (2) Für die bis dahin leeren Storys 5, 6, 7, 8, 9 und 10 Anforderungen (und bei 5/9, wo auch der Story-Satz fehlte, zusätzlich ein Satz) selbst entworfen und jeweils deutlich als "Vorschlag von Claude" markiert, da im zugehörigen GitHub-Issue nichts hinterlegt war — nicht mit echten GitHub-Inhalten verwechseln, unbedingt im Team gegenprüfen. Änderung liegt lokal committet vor; Christian pusht diesmal selbst.
 
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch die zuvor gemeldete Dopplung zwischen Issue #15 ("User Story 9 – verleihen") und Issue #16 ("User Story 10 – verschenken") in `Userstory.md` korrigiert: Der ursprünglich unter #15 stehende Story-Text ("...Kleidungsstücke an Freunde verschenken...") passt inhaltlich zu #16 und wurde dorthin verschoben (inkl. Attribution "Von Linda"); User Story 9 ("verleihen") steht jetzt korrekt ohne Story-Text da, da dafür bislang nichts hinterlegt ist. Wichtig: Nur in `Userstory.md` korrigiert, nicht in GitHub — Issues #15 und #16 selbst sind unverändert, das müsste bei Gelegenheit separat nachgezogen werden.
