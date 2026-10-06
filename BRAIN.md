@@ -61,6 +61,7 @@ Beispiel: Katha arbeitet am Laptop mit Claude Code → `Katha/Claude(Laptop.Code
 | `Katha/Claude(Laptop.Code)` | Laptop | Claude Code (im Browser) | — (Cloud-Sitzung, immer nachfragen) |
 | `Manuel/Claude(Laptop.Cowork)` | Laptop | Claude Cowork | `Laptop-Manu` |
 | `Manuel/Claude(Laptop.Code)` | Laptop | Claude Code (Desktop-App, Code-Tab) | `Laptop-Manu` |
+| `Christian/Claude(Projekt.Code)` | claude.ai-Projekt „Sharely" (Cloud) | Claude Code (Thread im Projekt) | — (Cloud-Sitzung, immer nachfragen) — *vorläufig, Bestätigung durch Christian steht aus* |
 
 *„—" beim Rechnernamen = noch nicht erfasst; bei der nächsten Sitzung auf diesem Gerät nachtragen. Cloud-Sitzungen bekommen nie einen Rechnernamen (`vm` ist bei allen gleich).*
 
@@ -76,7 +77,7 @@ Kurze Nachrichten von einer KI-Sitzung an eine andere, adressiert per Sitzungske
 
 Hallo Kollegen! Hier schreibt Christians Claude-Code-Session (17.07.2026). Schön, dass ihr da seid — ab jetzt arbeiten wir zu mehreren an diesem Projekt, und diese Datei ist unser gemeinsames Gedächtnis.
 
-Kurz zur Orientierung, bevor ihr loslegt: Die Planungsphase ist weitgehend abgeschlossen — Roadmap und Avatar-Konzept liegen im Repo und sind mit dem Team abgestimmt. Bitte lest `CLAUDE.md` und die dort verlinkten Dokumente, bevor ihr größere Vorschläge macht; einige naheliegende Ideen (KI-Foto-Avatar, Unity, eigenes VTON-Modell hosten) wurden bereits bewusst verworfen, die Begründungen stehen in `AVATAR-3D-KONZEPT.md`. Der Flask-Code im Repo ist ein Experimentierstand aus der Testphase, nicht die Zielarchitektur — bitte nicht ungefragt umbauen, das Team entscheidet noch, was davon übernommen wird (siehe offene Fragen unten).
+Kurz zur Orientierung, bevor ihr loslegt: Die Planungsphase ist weitgehend abgeschlossen — Roadmap und Avatar-Konzept liegen im Repo und sind mit dem Team abgestimmt. Bitte lest `CLAUDE.md` und die dort verlinkten Dokumente, bevor ihr größere Vorschläge macht; einige naheliegende Ideen (KI-Foto-Avatar, Unity, eigenes VTON-Modell hosten) wurden bereits bewusst verworfen, die Begründungen stehen in `AVATAR-3D-KONZEPT.md`. Der frühere Flask-Experimentierstand aus der Testphase wurde am 06.10.2026 aus dem Repo entfernt; die Umsetzung startet neu nach dem Zielbild.
 
 Was ihr für eure Menschen tun könnt: die offenen Entscheidungen unten vorantreiben, Einträge in „Wer macht gerade was" aktuell halten, und Erkenntnisse in den Wissensspeicher schreiben, statt sie in euren Sessions versickern zu lassen. Und tragt euch nach jeder Aktion ins Log ein — wie genau und mit welcher Kennung, steht oben unter „📌 Protokollpflicht für alle KI-Sitzungen".
 
@@ -86,7 +87,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Aktueller Stand (Kurzfassung)
 
-- Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Team experimentiert parallel mit Claude Pro und einem ersten Code-Stand (Flask-artige Webapp — gilt als Experimentierstand, nicht als Zielarchitektur).
+- Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Projektstart der Umsetzung. Der Experimentierstand (Flask-Webapp) wurde am 06.10.2026 vollständig aus dem Repo entfernt — es wird neu nach dem Zielbild aufgebaut, der alte Code bleibt in der Git-Historie nachlesbar.
 - Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: ROADMAP.md.
 - Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: AVATAR-3D-KONZEPT.md.
 - KI-Infrastruktur: GitHub = zentrale Quelle; Christians Obsidian-Vault ist ein synchronisierter Clone; CLAUDE.md gibt allen Claude-Sessions den Projektkontext. Seit 15.09.2026 gilt die Protokollpflicht: Alle KI-Sitzungen aller Teammitglieder dokumentieren jede Aktion in BRAIN.md, jeweils mit fester Sitzungskennung (Regeln und Kennungsliste im Abschnitt „📌 Protokollpflicht").
@@ -96,8 +97,7 @@ Gute Zusammenarbeit! 🤝
 - [ ] Frontend-Framework wählen (React oder Vue) — betrifft Phase 1
 - [ ] KI-Anbieter für den Produktimport wählen — betrifft Phase 5
 - [ ] Körpermaße: Regler mit internem cm-Mapping bestätigen (Empfehlung aus AVATAR-3D-KONZEPT.md)
-- [ ] Umgang mit dem bestehenden Experimentier-Code klären: übernehmen, umbauen oder neu starten?
-- [ ] Feature „Freunde" (existiert im Code, fehlt in der Planung): behalten und in die Roadmap aufnehmen — oder rausschneiden?
+- [ ] Feature „Freunde" (war im entfernten Experimentier-Code, steht inzwischen in den User Storys 2, 9 und 10, fehlt aber in der Roadmap): in die Roadmap aufnehmen — oder rausschneiden?
 - [ ] Kleidungs-Kategorien für 3D-Vorlagen festlegen (Empfehlung: 5–6 zum Start)
 
 ## Wer macht gerade was
@@ -131,6 +131,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **06.10.2026 · Christian/Claude(Projekt.Code):** Auf Christians Wunsch („Experimentierstand vollständig löschen, aber nur das") den Flask-Experimentierstand entfernt: `main.py`, `models.py`, `requirements.txt`, `static/` und `templates/` gelöscht (alle aus Kathas Commits vom 15./16.07.2026), `README.md` durch eine kurze Projektbeschreibung ersetzt (die alte beschrieb nur die Flask-App). Bewusst stehen gelassen: `.claude/settings.json` (Umzug in `settings.local.json` ist eigener offener Punkt für Katha), `.gitignore`, Datei `test`, alle Planungsdokumente. Offene Frage „Umgang mit Experimentier-Code" damit erledigt; Hinweise in CLAUDE.md, BRAIN.md und `docs/claude-projekt-instructions.md` angepasst. Umgesetzt als Pull Request auf Branch `claude/remove-experimental-app-f72h3e`. Kennung vorläufig (Cloud-Sitzung im claude.ai-Projekt, Bestätigung durch Christian steht aus).
 - **06.10.2026 · Manuel/Claude(Laptop.Code):** Lokalen Briefkasten `UEBERGABE.local.md` zwischen Manuels Cowork- und Code-Sitzung eingerichtet: Datei in `.git/info/exclude` eingetragen (`git status` zeigt sie nicht mehr), Nachricht der Cowork-Sitzung gelesen und dort beantwortet. Auf Bitte der Cowork-Sitzung und mit Manuels Auftrag Wissensspeicher-Eintrag „Keine Direktnachrichten zwischen Cowork- und Claude-Code-Sitzung" ergänzt.
 - **06.10.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch `docs/sprints/` (README, Vorlage, sprint-01.md) wieder aus dem Repo entfernt und den Eintrag „Aktueller Sprint" aus „Aktueller Stand" gestrichen — das Sprint Planning soll nicht auf GitHub liegen; Katha hat den Inhalt als Markdown im Chat erhalten.
 - **06.10.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Frage, wie das Sprint Planning dokumentiert werden soll, Empfehlung gegeben: Status im GitHub-Board (Milestone je Sprint, Story Points), Begründungen/Entscheidungen pro Sprint in `docs/sprints/sprint-XX.md`. Umgesetzt: `docs/sprints/README.md` (Sprint-Übersicht), `sprint-vorlage.md` und `sprint-01.md` mit Kathas Planning vom 06.10. (Teilnehmende Manuel, Katharina, Christian; Aufgaben Datenbankmodell festlegen, Datenbank erstellen, Mockups erstellen). Von Claude ergänzt und im Team zu prüfen: Sprintziel-Formulierung, Fertig-Kriterien je Aufgabe, Reihenfolge, Vorschlag Aufgabe 4 (Kategorien/Körpermaße klären), Annahme 2-Wochen-Sprint; Verantwortliche und Schätzungen noch offen. „Aktueller Stand" um aktuellen Sprint ergänzt. Kennung gemäß Tabelle verwendet (Cloud-Sitzung, Bestätigung durch Katha steht aus).

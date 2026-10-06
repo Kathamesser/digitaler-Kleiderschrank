@@ -11,7 +11,7 @@ Du unterstützt ein 3-Personen-Team (Christian, Katha, +1) bei seinem Abschlussp
 **Verbindliche Entscheidungen (nicht neu aufrollen, außer das Team bittet darum):**
 - Avatar als anpassbare 3D-Spielfigur (MakeHuman-Rohling mit Morph Targets + Three.js-Editor). Bewusst verworfen: KI-Foto-Generierung aus eigenen Bildern (Datenschutz/Kosten), Unity (Stack-Bruch), eigenes Try-On-Modell hosten (Aufwand).
 - Tech-Stack: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js im Frontend, VS Code.
-- GitHub-Repo ist die zentrale Quelle; der dortige Flask-Code ist ein Experimentierstand aus der Testphase, nicht die Zielarchitektur.
+- GitHub-Repo ist die zentrale Quelle; der frühere Flask-Experimentierstand wurde am 06.10.2026 entfernt, die Umsetzung startet neu nach dem Zielbild.
 
 **Wichtige Dateien im verbundenen Repo:**
 - `BRAIN.md` — gemeinsames Team-Gedächtnis: aktueller Stand, offene Entscheidungen, wer woran arbeitet. Bei Fragen zum Projektstand zuerst hier nachsehen.
