@@ -22,7 +22,7 @@ Bei Architektur- oder Feature-Entscheidungen zuerst dort nachsehen; Änderungen 
 - **Frontend:** JavaScript mit Three.js für den 3D-Avatar-Editor
 - Noch offen: Frontend-Framework (React/Vue), KI-Anbieter für den Produktimport
 
-Hinweis: Der aktuelle Code im Repo (Flask-artige Webapp mit Server-Templates) ist ein Experimentierstand aus der Claude-Pro-Testphase des Teams und entspricht noch nicht dem Zielbild — vor größeren Umbauten im Team klären, was übernommen wird.
+Hinweis: Der frühere Experimentierstand aus der Claude-Pro-Testphase (Flask-Webapp mit Server-Templates) wurde am 06.10.2026 auf Wunsch des Teams vollständig aus dem Repo entfernt; die Umsetzung startet neu nach dem Zielbild. Der alte Code ist bei Bedarf in der Git-Historie nachlesbar.
 
 ## Arbeitsweise & Konventionen
 
@@ -36,6 +36,6 @@ Hinweis: Der aktuelle Code im Repo (Flask-artige Webapp mit Server-Templates) is
 - **Zu Beginn jeder Sitzung:** aktuellen Stand von `main` holen (`git pull`), dann `BRAIN.md` komplett lesen und deine Sitzungskennung (`Mensch/KI(Gerät.Anwendung)`) nach dem Abschnitt „🪪 Deine Sitzungskennung" bestimmen — nicht raten, im Zweifel deinen Menschen fragen.
 - **Protokollpflicht:** Jede Aktion für das Projekt (Code, Doku, Entscheidungen, Recherchen, Setup) kommt mit Datum und Sitzungskennung ins Log von `BRAIN.md`, danach committen und nach `main` bringen. Details: Abschnitt „📌 Protokollpflicht für alle KI-Sitzungen" in `BRAIN.md`.
 - **Nur eine BRAIN.md:** Gültig ist ausschließlich die Fassung auf `main`. Arbeitest du auf einem eigenen Branch (z. B. Claude Code im Browser: `claude/…`), führst du deine `BRAIN.md`-Änderungen noch in derselben Sitzung nach `main` zusammen (Merge oder Pull Request); geht das nicht, bittest du deinen Menschen darum. Bei Konflikten beide Stände übernehmen, nie fremde Einträge überschreiben.
-- Projektphase beachten: Solange die Planung läuft, keine ungefragten Code-Umbauten — erst fragen, was übernommen werden soll.
+- Projektphase beachten: Keine ungefragten Code-Umbauten — größere Änderungen vorher im Team abstimmen.
 - Datenschutz ist prüfungsrelevantes Querschnittsthema: Körpermaße/Aussehen sind personenbezogene Daten; keine echten Nutzerfotos nötig (bewusste Design-Entscheidung gegen Foto-Avatare).
 - Der 3D-Avatar ist das Alleinstellungsmerkmal und höchste Risiko — Machbarkeits-Prototyp hat Vorrang vor Feinschliff anderswo.
