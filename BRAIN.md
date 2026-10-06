@@ -90,7 +90,6 @@ Gute Zusammenarbeit! 🤝
 - Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: ROADMAP.md.
 - Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: AVATAR-3D-KONZEPT.md.
 - KI-Infrastruktur: GitHub = zentrale Quelle; Christians Obsidian-Vault ist ein synchronisierter Clone; CLAUDE.md gibt allen Claude-Sessions den Projektkontext. Seit 15.09.2026 gilt die Protokollpflicht: Alle KI-Sitzungen aller Teammitglieder dokumentieren jede Aktion in BRAIN.md, jeweils mit fester Sitzungskennung (Regeln und Kennungsliste im Abschnitt „📌 Protokollpflicht").
-- **Aktueller Sprint:** Sprint 01 (06.10.–19.10.2026) — Fundament: Datenmodell, laufende MongoDB, Mockups. Planning: [docs/sprints/sprint-01.md](docs/sprints/sprint-01.md)
 
 ## Offene Fragen / anstehende Entscheidungen
 
@@ -106,7 +105,7 @@ Gute Zusammenarbeit! 🤝
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
 | Christian | Namen aus Userstory.md entfernt, Entwurfs-Anforderungen fuer leere Storys ergaenzt (Push folgt durch Christian) | 22.09.2026 |
-| Katha | Sprint Planning Sprint 01 dokumentiert (`docs/sprints/`) | 06.10.2026 |
+| Katha | Sprint Planning Sprint 01 (Dokument außerhalb des Repos) | 06.10.2026 |
 | Manuel | Einstieg mit Claude Cowork und Claude Code: Repo verbunden, BRAIN.md gelesen, Sitzungskennungen festgelegt, Erstkontakt-Test bestanden | 06.10.2026 |
 
 ## Nächste Schritte (teamweit)
@@ -131,6 +130,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **06.10.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch `docs/sprints/` (README, Vorlage, sprint-01.md) wieder aus dem Repo entfernt und den Eintrag „Aktueller Sprint" aus „Aktueller Stand" gestrichen — das Sprint Planning soll nicht auf GitHub liegen; Katha hat den Inhalt als Markdown im Chat erhalten.
 - **06.10.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Frage, wie das Sprint Planning dokumentiert werden soll, Empfehlung gegeben: Status im GitHub-Board (Milestone je Sprint, Story Points), Begründungen/Entscheidungen pro Sprint in `docs/sprints/sprint-XX.md`. Umgesetzt: `docs/sprints/README.md` (Sprint-Übersicht), `sprint-vorlage.md` und `sprint-01.md` mit Kathas Planning vom 06.10. (Teilnehmende Manuel, Katharina, Christian; Aufgaben Datenbankmodell festlegen, Datenbank erstellen, Mockups erstellen). Von Claude ergänzt und im Team zu prüfen: Sprintziel-Formulierung, Fertig-Kriterien je Aufgabe, Reihenfolge, Vorschlag Aufgabe 4 (Kategorien/Körpermaße klären), Annahme 2-Wochen-Sprint; Verantwortliche und Schätzungen noch offen. „Aktueller Stand" um aktuellen Sprint ergänzt. Kennung gemäß Tabelle verwendet (Cloud-Sitzung, Bestätigung durch Katha steht aus).
 - **06.10.2026 · Manuel/Claude(Laptop.Code):** Erstkontakt Manuel (bisher „Teammitglied 3", Git-Name `ManuelHerrmannRDF`) mit Claude Code (Desktop-App) auf seinem Laptop: `git pull`, CLAUDE.md und BRAIN.md gelesen. Kennung abgeleitet über `git config user.name` (→ Manuel) und `hostname` (`Laptop-Manu`); für Claude Code auf diesem Rechner gab es noch keinen Eintrag, daher Rückfrage — `Manuel/Claude(Laptop.Code)` von Manuel bestätigt. „Wer ist wer", „Vergebene Kennungen" (inkl. der vorher von Manuels Cowork-Sitzung festgelegten `Manuel/Claude(Laptop.Cowork)`) und „Wer macht gerade was" ergänzt, Platzhalter „Teammitglied 3" in den aktuellen Abschnitten ersetzt (alte Log-Einträge unverändert). Test der Erstkontakt-Regel damit auch für Manuel bestanden, Punkt aus „Nächste Schritte" entfernt. Hinweis: Beide Sitzungen hatten heute zuerst in Manuels eigenem Repo `ManuelHerrmannRDF/digitaler-Kleiderschrank` gearbeitet statt im Team-Repo `Kathamesser/digitaler-Kleiderschrank` — die Einträge sind hiermit ins Team-Repo übernommen.
 - **22.09.2026 · Christian/Claude(Laptop.Cowork):** Auf Christians Wunsch in `Userstory.md`: (1) alle Namens-Attributionen ("(Von ...)") aus den Überschriften entfernt. (2) Für die bis dahin leeren Storys 5, 6, 7, 8, 9 und 10 Anforderungen (und bei 5/9, wo auch der Story-Satz fehlte, zusätzlich ein Satz) selbst entworfen und jeweils deutlich als "Vorschlag von Claude" markiert, da im zugehörigen GitHub-Issue nichts hinterlegt war — nicht mit echten GitHub-Inhalten verwechseln, unbedingt im Team gegenprüfen. Änderung liegt lokal committet vor; Christian pusht diesmal selbst.
