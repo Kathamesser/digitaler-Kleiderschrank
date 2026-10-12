@@ -1,6 +1,6 @@
 # Avatar-Regler: Zuordnung UI ↔ Morph Targets
 
-Stand: 12.10.2026 · Gilt für `Avatar_Editorgeruest.glb` (116 Morph Targets). Wie die Datei entsteht, steht in `AVATAR-PIPELINE.md`, warum genau diese Regler drin sind, in `REGLER-AUSWAHL.md`.
+Stand: 12.10.2026 · Gilt für `Avatar_Editorgeruest.glb` (114 Morph Targets). Wie die Datei entsteht, steht in `AVATAR-PIPELINE.md`, warum genau diese Regler drin sind, in `REGLER-AUSWAHL.md`.
 
 Dieses Dokument ist die verbindliche Übersetzung zwischen den Namen in der GLB-Datei (z. B. `max_gender`) und dem, was Nutzerinnen und Nutzer im Editor sehen (z. B. Regler „Geschlecht"). Wer am Editor-Code arbeitet oder neue Regler ergänzt, hält sich an diese Tabelle und trägt Änderungen hier nach.
 
@@ -22,7 +22,7 @@ Es sind also **nie beide** Targets eines Paares gleichzeitig größer als 0. Bei
 
 ### Technische Regeln für den Code
 
-- **Zwei Meshes:** Die GLB enthält Körper und Augen als getrennte Meshes mit denselben 116 Target-Namen in derselben Reihenfolge. Jeder Wert muss auf **beide** Meshes gesetzt werden, sonst bleiben die Augen beim Verformen stehen.
+- **Zwei Meshes:** Die GLB enthält Körper und Augen als getrennte Meshes mit denselben 114 Target-Namen in derselben Reihenfolge. Jeder Wert muss auf **beide** Meshes gesetzt werden, sonst bleiben die Augen beim Verformen stehen.
 - **Index über den Namen holen,** nie fest verdrahten: `mesh.morphTargetDictionary["max_gender"]` liefert den Index für `mesh.morphTargetInfluences`.
 - **Gespeichert werden die UI-Werte,** nicht die Morph-Werte (z. B. `{ "geschlecht": -100, "gewicht": 20 }`). So bleibt das Speicherformat stabil, auch wenn wir später Targets austauschen. Das passt zum Werkstatt/Schaufenster-Prinzip in `AVATAR-3D-KONZEPT.md`.
 - **Lineare Näherung:** In MakeHuman beeinflussen sich die Grundregler gegenseitig (z. B. hängt die Gewichtsform vom Geschlecht ab). Unsere Targets sind jeweils vom neutralen Avatar aus gemessen und werden einfach addiert. Für den Editor reicht das. Extreme Kombinationen, etwa Gewicht und Muskeln gleichzeitig auf Maximum, können aber leicht von MakeHuman abweichen.
@@ -121,20 +121,34 @@ Diese Regler entsprechen den Spalten in Größentabellen. Links ist immer kleine
 
 ### 3.5 Figurtyp (Schnellauswahl)
 
-Die 22 `bodyshapes`-Targets gibt es nur als `max_`, sie sind fertige Körperform-Mischungen. Im Editor ist das eine Auswahl (Kacheln oder Dropdown) plus ein Stärke-Regler von 0 bis 100. Es ist immer nur ein Figurtyp aktiv. Die `fem`-Typen passen zur weiblichen, die `man`-Typen zur männlichen Seite des Geschlechtsreglers. Der Editor zeigt deshalb je nach Geschlechtsregler zuerst den passenden Satz.
+Die 20 Figurtypen gibt es nur als `max_`. Es sind fertige Körperform-Mischungen. Im Editor ist das eine Auswahl (Kacheln oder Dropdown) plus ein Stärke-Regler von 0 bis 100, und es ist immer nur ein Figurtyp aktiv. Die `frau_`-Typen stehen bei der weiblichen, die `mann_`-Typen bei der männlichen Seite des Geschlechtsreglers. Der Editor zeigt je nach Geschlechtsregler zuerst den passenden Satz. „Hüftbetont" erscheint in beiden Sätzen. Für füllige Figuren lassen sich die Typen mit dem Gewichtsregler kombinieren.
 
-| Target (`max_bodyshapes_elvs-…`) | Anzeige |
-|---|---|
-| `fem-apple`, `man-apple` | Apfel |
-| `fem-full-hourglass` | Sanduhr, kurvig |
-| `fem-neat-hourglass` | Sanduhr, schlank |
-| `fem-triangle`, `man-triangle` | Dreieck (Birne) |
-| `fem-invert-triangle`, `man-invert-triangle` | umgekehrtes Dreieck |
-| `fem-rectangle`, `man-rectangle` | Rechteck |
-| `fem-diamond` | Raute |
-| `fem-lean-column`, `man-lean-column` | schlanke Säule |
-| `man-trapezoid` | Trapez |
-| `fem-adrenal`, `fem-liver`, `fem-ovary`, `fem-thyroid`, `man-adrenal`, `man-gonadal`, `man-liver`, `man-thyroid` | Weitere Typen. Die Namen stammen aus einem Ernährungs-Typenmodell und taugen nicht als Beschriftung. Vor der Verwendung am Modell anschauen und neu benennen oder weglassen. |
+Auswahl, Umbenennung und das Aussortieren von `adrenal` hat Christian am 12.10.2026 entschieden. Vorschaubilder und Begründung stehen in `FIGURTYPEN.md`.
+
+| Target | Anzeige | Bild | ursprünglicher MakeHuman-Name (`bodyshapes/…`) |
+|---|---|---|---|
+| `max_figur_frau_apfel` | Apfel | Mitte fülliger, Beine schlank | `elvs-fem-apple` |
+| `max_figur_frau_birne` | Birne | Hüfte breiter als Schultern | `elvs-fem-triangle` |
+| `max_figur_frau_birne-kraeftig` | Birne, kräftig | breite Hüften, kräftige Oberschenkel | `elvs-fem-ovary` |
+| `max_figur_frau_sanduhr-kurvig` | Sanduhr, kurvig | schmale Taille, kurvige Brust und Hüfte | `elvs-fem-full-hourglass` |
+| `max_figur_frau_sanduhr-schlank` | Sanduhr, schlank | wie oben, schlanker | `elvs-fem-neat-hourglass` |
+| `max_figur_frau_v-form` | V-Form | Schultern betont, Hüfte schmal | `elvs-fem-invert-triangle` |
+| `max_figur_frau_rechteck` | Rechteck | Taille kaum betont | `elvs-fem-rectangle` |
+| `max_figur_frau_raute` | Raute | Mitte und Hüfte etwas breiter, Schultern schmal | `elvs-fem-diamond` |
+| `max_figur_frau_saeule` | Schlanke Säule | schlank, gerade | `elvs-fem-lean-column` |
+| `max_figur_frau_bauchbetont` | Bauchbetont | runder Bauch, sonst schlank | `elvs-fem-liver` |
+| `max_figur_frau_vollschlank` | Vollschlank | rundum füllig | `elvs-fem-thyroid` |
+| `max_figur_mann_apfel` | Apfel | Bauch und Brust fülliger | `elvs-man-apple` |
+| `max_figur_mann_birne` | Birne | Hüfte breiter als Schultern | `elvs-man-triangle` |
+| `max_figur_mann_hueftbetont` | Hüftbetont (für beide Geschlechter) | Hüfte und Oberschenkel weicher | `elvs-man-gonadal` |
+| `max_figur_mann_v-form` | V-Form | breite Schultern, schmale Hüfte | `elvs-man-invert-triangle` |
+| `max_figur_mann_trapez` | Trapez (athletisch) | breite Schultern, mittlere Taille | `elvs-man-trapezoid` |
+| `max_figur_mann_rechteck` | Rechteck | gerade, Taille kaum abgesetzt | `elvs-man-rectangle` |
+| `max_figur_mann_saeule` | Schlanke Säule | schlank, gerade | `elvs-man-lean-column` |
+| `max_figur_mann_bauchbetont` | Bauchbetont | runder Bauch | `elvs-man-liver` |
+| `max_figur_mann_vollschlank` | Vollschlank | sehr füllig, großer Bauch | `elvs-man-thyroid` |
+
+Aussortiert, aber in `Avatar_Aussehen_spaeter.blend` erhalten: `elvs-fem-adrenal` und `elvs-man-adrenal` (wirken unnatürlich). Die ursprünglichen Namen der übrigen Typen stammen aus einem unwissenschaftlichen „Drüsentyp"-Modell (adrenal, liver, ovary, thyroid, gonadal) und dürfen in der App nicht auftauchen.
 
 ## 4. Verknüpfte Regler
 
@@ -150,5 +164,5 @@ Weitere Verknüpfungen, etwa Geschlecht mit Brustgröße oder passendem Figurtyp
 ## 5. Offen
 
 - **Zentimeter-Zuordnung:** Welcher Morph-Wert entspricht wie vielen Zentimetern, z. B. Taillenumfang bei `max_…waist… = 1`? Das ist nötig für die Passform-Bewertung gegen Größentabellen und wird am Modell nachgemessen.
-- Beschriftung von `bodyproportions` und den Figurtypen aus 3.5 am Modell prüfen.
+- Beschriftung von `bodyproportions` am Modell prüfen.
 - Aussehen (Gesicht, Kopf, Hände) liegt in `Avatar_Aussehen_spaeter.blend` und bekommt später eine eigene Tabelle hier.

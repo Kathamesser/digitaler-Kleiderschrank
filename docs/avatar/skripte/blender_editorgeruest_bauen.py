@@ -25,6 +25,23 @@ SINGLE = [  # Regler ohne Seite (jeweils min_ und max_)
     "breast_breastsize", "breast_breastfirmness",
     "armslegs_upperlegs-height-decr-incr", "armslegs_lowerlegs-height-decr-incr",
 ]
+# Bewusst aussortiert (bleiben in Avatar_Aussehen_spaeter), Entscheidung Christian 12.10.2026:
+EXCLUDE = [
+    "max_bodyshapes_elvs-fem-adrenal",  # wirkt unnatürlich
+    "max_bodyshapes_elvs-man-adrenal",
+]
+# Figurtypen bekommen verständliche, stabile Namen (Anzeige-Texte stehen in AVATAR-REGLER.md)
+RENAME = {
+    "fem-apple": "frau_apfel", "fem-diamond": "frau_raute",
+    "fem-full-hourglass": "frau_sanduhr-kurvig", "fem-neat-hourglass": "frau_sanduhr-schlank",
+    "fem-invert-triangle": "frau_v-form", "fem-lean-column": "frau_saeule",
+    "fem-liver": "frau_bauchbetont", "fem-ovary": "frau_birne-kraeftig",
+    "fem-rectangle": "frau_rechteck", "fem-thyroid": "frau_vollschlank", "fem-triangle": "frau_birne",
+    "man-apple": "mann_apfel", "man-gonadal": "mann_hueftbetont",
+    "man-invert-triangle": "mann_v-form", "man-lean-column": "mann_saeule",
+    "man-liver": "mann_bauchbetont", "man-rectangle": "mann_rechteck",
+    "man-thyroid": "mann_vollschlank", "man-trapezoid": "mann_trapez", "man-triangle": "mann_birne",
+}
 SIDED = [  # armslegs_l-... und armslegs_r-... werden zusammengelegt
     "foot-scale-decr-incr", "upperarm-fat-decr-incr", "upperleg-fat-decr-incr",
     "lowerleg-fat-decr-incr", "leg-valgus-decr-incr",
@@ -50,7 +67,7 @@ plain = []
 for m in MACRO + SINGLE:
     plain += [d + "_" + m for d in ("min", "max") if d + "_" + m in keys]
 plain += [k for k in names if re.match(r"(min|max)_measure_", k)]
-plain += [k for k in names if k.startswith("max_bodyshapes_")]
+plain += [k for k in names if k.startswith("max_bodyshapes_") and k not in EXCLUDE]
 merged = []   # (neuer Name, linker Key, rechter Key)
 for s in SIDED:
     for d in ("min", "max"):
@@ -63,7 +80,13 @@ used = set(plain) | {x for _, l, r in merged for x in (l, r)}
 later = [k for k in names if k not in used]
 
 # Deltas vorab sichern, bevor Keys gelöscht werden
-editor_data = [(k, co(k)) for k in plain]
+def shown_name(k):
+    if k.startswith("max_bodyshapes_elvs-"):
+        return "max_figur_" + RENAME[k[len("max_bodyshapes_elvs-"):]]
+    return k
+
+
+editor_data = [(shown_name(k), co(k)) for k in plain]
 editor_data += [(name, co(l) + co(r) - basis) for name, l, r in merged]
 later_data = [(k, co(k)) for k in later]
 

@@ -45,8 +45,8 @@ Links und rechts werden in Blender zu einem gemeinsamen Shape Key zusammengelegt
 | leg-valgus (l+r) | X- oder O-Beine, beeinflusst den Fall der Hose |
 | upperlegs-height / lowerlegs-height | Beinlänge, also Innenbeinlänge der Hose |
 
-## 5. Optional: Figurtypen (22 Keys, jeweils nur Max)
-Die `bodyshapes` (z. B. Apfel, Sanduhr, Dreieck, V-Form, getrennt nach Frau und Mann) sind fertige Mischungen. Sie eignen sich als Schnellauswahl „Figurtyp“ im Editor, bevor man an einzelnen Maßen feilt.
+## 5. Figurtypen (20 Keys, jeweils nur Max)
+Die `bodyshapes` (z. B. Apfel, Sanduhr, Dreieck, V-Form, getrennt nach Frau und Mann) sind fertige Mischungen. Sie eignen sich als Schnellauswahl „Figurtyp“ im Editor, bevor man an einzelnen Maßen feilt. Auswahl und neue Namen: `FIGURTYPEN.md`.
 
 ## Nicht enthalten
 Gesicht und Kopf (Ohren, Nase, Mund, Augen, Wangen, Kinn, Stirn, Kopfform), Hände und Finger, Genitalien, Herkunft (die Hautfarbe läuft besser über das Material), reine Verschiebungen (`trans-*`) und Detailregler wie die Brustwarzen.
@@ -54,4 +54,4 @@ Gesicht und Kopf (Ohren, Nase, Mund, Augen, Wangen, Kinn, Stirn, Kopfform), Hän
 Kopf und Gesicht kann man später als eigenen kleinen „Aussehen“-Satz ergänzen, z. B. 5 bis 10 Regler.
 
 ## Umfang
-Ohne Figurtypen sind es 94 Shape Keys, mit Figurtypen 116. Umgesetzt mit Figurtypen: Die GLB-Datei ist 8 MB groß, als Download komprimiert etwa 3 MB. Mit allen 547 Keys wären es über 100 MB.
+Ohne Figurtypen sind es 94 Shape Keys, mit den 20 Figurtypen 114 (ursprünglich 22, die beiden `adrenal`-Typen sind seit 12.10.2026 aussortiert, siehe `FIGURTYPEN.md`). Die GLB-Datei ist knapp 8 MB groß, als Download komprimiert etwa 3 MB. Mit allen 547 Keys wären es über 100 MB.

@@ -6,8 +6,8 @@ Stand: 12.10.2026 · Umsetzung des Konzepts aus `AVATAR-3D-KONZEPT.md` (Werkstat
 
 | Datei | Inhalt |
 |---|---|
-| `Figuren\Avatar_Editorgeruest.glb` | Web-Avatar für Three.js: neutrale Standardfigur plus 116 Morph Targets (Auswahl: `REGLER-AUSWAHL.md`, Bedeutung: `AVATAR-REGLER.md`). 8 MB, komprimiert etwa 3 MB. Alle Targets starten auf 0. |
-| `Figuren\Avatar_Aussehen_spaeter\` | `.blend` mit den übrigen 421 Shape Keys (Gesicht, Kopf, Hände, Herkunft …) plus Namensliste, für später |
+| `Figuren\Avatar_Editorgeruest.glb` | Web-Avatar für Three.js: neutrale Standardfigur plus 114 Morph Targets (Auswahl: `REGLER-AUSWAHL.md`, Bedeutung: `AVATAR-REGLER.md`). 8 MB, komprimiert etwa 3 MB. Alle Targets starten auf 0. |
+| `Figuren\Avatar_Aussehen_spaeter\` | `.blend` mit den übrigen 423 Shape Keys (Gesicht, Kopf, Hände, Herkunft …) plus Namensliste, für später |
 | `Figuren\avatar_shapekeys.blend` | Zwischenstand mit allen 547 Shape Keys |
 | `Figuren\Formsammlung\` | 554 MakeHuman-Exporte (OBJ und MTL), je Regler eine Min- und eine Max-Figur |
 | `Figuren\_export_liste.txt` | Zuordnung Datei → MakeHuman-Regler und Wert |
@@ -24,4 +24,4 @@ Stand: 12.10.2026 · Umsetzung des Konzepts aus `AVATAR-3D-KONZEPT.md` (Werkstat
 - **Gleiche Vertex-Zahl ist Pflicht:** Alle Exporte müssen mit identischen Optionen entstehen. Alle 554 Dateien haben 14.444 Vertices und 14.398 Faces.
 - **Blender 5 dreht beim OBJ-Import das Objekt,** statt die Koordinaten umzurechnen. Das Skript erkennt beide Varianten.
 - **Flache Schattierung vervierfacht die GLB-Größe,** weil der Export jede Fläche in eigene Vertices teilt. Deshalb wird vor dem Export glatt schattiert.
-- **Startwerte der Targets:** Die erste GLB hatte alle 116 Werte auf 1, die Figur war dadurch völlig verformt. Das Skript setzt jetzt alle Werte auf 0.
+- **Startwerte der Targets:** Die erste GLB hatte alle Werte auf 1, die Figur war dadurch völlig verformt. Das Skript setzt jetzt alle Werte auf 0.
