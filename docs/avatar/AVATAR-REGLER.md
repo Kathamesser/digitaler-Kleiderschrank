@@ -57,7 +57,7 @@ Spalten: **links** = Beschriftung bei −100 (`min_`-Target), **rechts** = Besch
 | Körpergröße | kleiner | größer | `height` |
 | Proportionen | weniger idealisiert | idealisierter | `bodyproportions` |
 
-**Alter begrenzen:** In MakeHuman bedeutet `age` 0 = 1 Jahr, 0,1875 = 11 Jahre, 0,5 = 25 Jahre (unser Standard), 1 = 90 Jahre. Ganz links wäre der Avatar also ein Kleinkind. Für eine Kleidungs-App sollte die linke Seite bei etwa `min_age = 0,31` enden, das entspricht ungefähr 18 Jahren. Die rechte Seite reicht bis 90 Jahre.
+**Alter begrenzen:** In MakeHuman bedeutet `age` 0 = 1 Jahr, 0,1875 = 11 Jahre, 0,5 = 25 Jahre (unser Standard), 1 = 90 Jahre. Ganz links wäre der Avatar also ein Kleinkind. Wo die linke Seite endet, entscheidet das Team noch (offen seit 12.10.2026). Vorschlag: bei etwa `min_age = 0,31`, das entspricht ungefähr 18 Jahren. Technisch ist das nur eine Grenze am Regler. Die rechte Seite reicht bis 90 Jahre.
 
 **Proportionen:** Die genaue Wirkung von `bodyproportions` haben wir noch nicht am Modell geprüft. Die Beschriftung ist vorläufig und muss beim ersten Test im Editor bestätigt werden.
 

@@ -99,6 +99,7 @@ Gute Zusammenarbeit! 🤝
 - [ ] Körpermaße: Regler mit internem cm-Mapping bestätigen (Empfehlung aus AVATAR-3D-KONZEPT.md). Regler-Zuordnung steht in `docs/avatar/AVATAR-REGLER.md`, die Zentimeter-Werte je Target fehlen noch.
 - [ ] Feature „Freunde" (war im entfernten Experimentier-Code, steht inzwischen in den User Storys 2, 9 und 10, fehlt aber in der Roadmap): in die Roadmap aufnehmen — oder rausschneiden?
 - [ ] Kleidungs-Kategorien für 3D-Vorlagen festlegen (Empfehlung: 5–6 zum Start)
+- [ ] Avatar-Alter: Untergrenze des Alters-Reglers festlegen (Vorschlag ca. 18 Jahre, siehe `docs/avatar/AVATAR-REGLER.md` 3.1)
 
 ## Wer macht gerade was
 
