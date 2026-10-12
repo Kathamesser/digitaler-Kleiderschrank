@@ -2,18 +2,41 @@
 #   1. Avatar_Editorgeruest.glb  -> Auswahl für den Web-Editor (siehe regler-auswahl.md)
 #   2. Avatar_Aussehen_spaeter/  -> alle übrigen Shape Keys als .blend für später
 # Linke/rechte Regler (l-/r-) werden im Editorgerüst zu einem Key zusammengelegt.
-# Aufruf in Blender (Scripting-Tab) oder: blender -b --python blender_editorgeruest_bauen.py
+# Aufruf in Blender (Scripting-Tab: Open > diese Datei > Run Script) oder:
+#   blender -b --python docs/avatar/skripte/blender_editorgeruest_bauen.py
+# Die Pfade ergeben sich aus dem Repo, das Skript läuft also auf jedem Rechner mit
+# einem Clone. Erklärung der Dateien: assets/avatar/README.md
 
 import bpy
 import os
 import re
 import numpy as np
 
-FIG_DIR = r"C:\Users\chris\Favorites\Desktop\Abschlussprojekt\Avatar-Editor_Datein\Figuren"
-OUT_DIR = FIG_DIR
-SOURCE = os.path.join(FIG_DIR, "avatar_shapekeys.blend")
-GLB_PATH = os.path.join(OUT_DIR, "Avatar_Editorgeruest.glb")
-LATER_DIR = os.path.join(OUT_DIR, "Avatar_Aussehen_spaeter")
+SKRIPT_NAME = "blender_editorgeruest_bauen.py"
+
+
+def repo_ordner():
+    """Sucht den Repo-Ordner über den Speicherort dieses Skripts."""
+    kandidaten = []
+    for t in bpy.data.texts:   # Start aus dem Scripting-Tab
+        if t.filepath and os.path.basename(bpy.path.abspath(t.filepath)) == SKRIPT_NAME:
+            kandidaten.append(bpy.path.abspath(t.filepath))
+    try:                       # Start mit blender --python
+        kandidaten.append(os.path.abspath(__file__))
+    except NameError:
+        pass
+    for k in kandidaten:
+        repo = os.path.normpath(os.path.join(os.path.dirname(k), "..", "..", ".."))
+        if os.path.isdir(os.path.join(repo, "assets", "avatar")):
+            return repo
+    raise RuntimeError("Repo nicht gefunden. Bitte das Skript aus docs/avatar/skripte/ im Repo-Clone öffnen.")
+
+
+ASSET_DIR = os.path.join(repo_ordner(), "assets", "avatar")
+WERKSTATT = os.path.join(ASSET_DIR, "werkstatt")
+SOURCE = os.path.join(WERKSTATT, "avatar_shapekeys.blend")
+GLB_PATH = os.path.join(ASSET_DIR, "Avatar_Editorgeruest.glb")
+LATER_DIR = os.path.join(WERKSTATT, "Avatar_Aussehen_spaeter")   # nicht im Repo (.gitignore)
 LATER_BLEND = os.path.join(LATER_DIR, "Avatar_Aussehen_spaeter.blend")
 
 MACRO = ["gender", "age", "weight", "muscle", "height", "bodyproportions"]
@@ -132,7 +155,7 @@ for img in bpy.data.images:   # Texturpfad relativ zum Unterordner anpassen
 bpy.ops.wm.save_as_mainfile(filepath=LATER_BLEND, relative_remap=False)
 with open(os.path.join(LATER_DIR, "Shape_Keys_Liste.txt"), "w", encoding="utf-8") as f:
     f.write("Shape Keys in Avatar_Aussehen_spaeter.blend (%d)\n" % len(later))
-    f.write("Quelle: Figuren/avatar_shapekeys.blend, Basis = figur_default\n\n")
+    f.write("Quelle: assets/avatar/werkstatt/avatar_shapekeys.blend, Basis = figur_default\n\n")
     f.write("\n".join(later) + "\n")
 
 print("Editorgerüst: %d Shape Keys -> %s" % (len(editor_data), GLB_PATH))

@@ -1,7 +1,10 @@
 # StyleHUB: Misst die Körpermaße des Avatars in Zentimetern.
 #
-# Aufruf (Python 3 mit numpy, kein Blender nötig):
-#   python zentimeter_messen.py <Avatar_Editorgeruest.glb> <figur_default.obj> <Ausgabeordner>
+# Aufruf (Python 3 mit numpy, kein Blender nötig), im Repo-Ordner:
+#   python docs/avatar/skripte/zentimeter_messen.py
+# Ohne Angaben nimmt es assets/avatar/Avatar_Editorgeruest.glb und
+# assets/avatar/werkstatt/figur_default.obj und schreibt nach docs/avatar/.
+# Andere Dateien: python zentimeter_messen.py <glb> <figur_default.obj> <Ausgabeordner>
 #
 # Ergebnis im Ausgabeordner:
 #   messpunkte.json         Messbänder als Vertex-Indizes der GLB (für den Editor)
@@ -214,6 +217,13 @@ def main(glb, obj, outdir):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        sys.exit(__doc__ or "Aufruf: python zentimeter_messen.py <glb> <figur_default.obj> <ausgabeordner>")
-    main(*sys.argv[1:])
+    import os
+    if len(sys.argv) == 4:
+        main(*sys.argv[1:])
+    elif len(sys.argv) == 1:
+        repo = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+        main(os.path.join(repo, "assets", "avatar", "Avatar_Editorgeruest.glb"),
+             os.path.join(repo, "assets", "avatar", "werkstatt", "figur_default.obj"),
+             os.path.join(repo, "docs", "avatar"))
+    else:
+        sys.exit("Aufruf: python zentimeter_messen.py [<glb> <figur_default.obj> <ausgabeordner>]")
