@@ -60,7 +60,7 @@ Zuordnung zu den Targets in derselben Reihenfolge wie in `AVATAR-REGLER.md` 3.3 
 ## Was bewusst nicht gespeichert wird
 
 - **Verknüpfte Regler** wie „Gesamtumfang" (`AVATAR-REGLER.md` 4) sind Bedienhilfen. Sie verschieben die einzelnen Maß-Regler, gespeichert werden nur deren Werte.
-- **Zentimeter-Werte** (Taille 74 cm …) werden aus den Reglern berechnet, sobald die cm-Zuordnung feststeht (offen, siehe `AVATAR-REGLER.md` 5). Ob wir sie zusätzlich zwischenspeichern, etwa für schnelle Passform-Abfragen, entscheidet das Team mit dem Datenbankmodell.
+- **Zentimeter-Werte** (Taille 74 cm …) misst der Editor direkt an der Figur, aus den gespeicherten Reglerwerten (siehe `ZENTIMETER.md`). Ob wir sie zusätzlich zwischenspeichern, etwa für schnelle Passform-Abfragen im Backend, entscheidet das Team mit dem Datenbankmodell.
 - **Aussehen** (Gesicht, Haare, Hautfarbe) kommt später. Dafür ist ein zweites Objekt `aussehen` neben `regler` vorgesehen, damit das bestehende Format nicht umgebaut werden muss.
 
 ## Noch offen fürs Team

@@ -163,6 +163,6 @@ Weitere Verknüpfungen, etwa Geschlecht mit Brustgröße oder passendem Figurtyp
 
 ## 5. Offen
 
-- **Zentimeter-Zuordnung:** Welcher Morph-Wert entspricht wie vielen Zentimetern, z. B. Taillenumfang bei `max_…waist… = 1`? Das ist nötig für die Passform-Bewertung gegen Größentabellen und wird am Modell nachgemessen.
+- ~~Zentimeter-Zuordnung~~ erledigt am 12.10.2026: Der Editor misst die cm direkt an der Figur, siehe `ZENTIMETER.md`. Offen ist dort nur noch die Begrenzung des Größen-Reglers (Vorschlag −40 bis +45).
 - Beschriftung von `bodyproportions` am Modell prüfen.
 - Aussehen (Gesicht, Kopf, Hände) liegt in `Avatar_Aussehen_spaeter.blend` und bekommt später eine eigene Tabelle hier.
