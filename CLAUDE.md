@@ -12,6 +12,7 @@ Kleidung bildlich erfassen und kategorisieren, zu Outfits kombinieren, Wunschart
 - `ROADMAP.md` — Meilensteinplan mit 8 Phasen, Tech-Stack-Entscheidung und Empfehlungen
 - `AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar: MakeHuman-Asset-Pipeline („Werkstatt/Schaufenster"-Prinzip), Three.js-Editor, Fitting-Logik
 - `roadmap.html` — visuelle Version der Roadmap (im Browser öffnen)
+- `docs/avatar/AVATAR-REGLER.md` — verbindliche Zuordnung Editor-Regler ↔ Morph Targets des Avatars (`min_…`/`max_…`), dazu `AVATAR-PIPELINE.md` (MakeHuman → Blender → GLB)
 
 Bei Architektur- oder Feature-Entscheidungen zuerst dort nachsehen; Änderungen an Entscheidungen auch dort nachziehen.
 

@@ -89,21 +89,25 @@ Gute Zusammenarbeit! 🤝
 - Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Projektstart der Umsetzung. Der Experimentierstand (Flask-Webapp) wurde am 06.10.2026 vollständig aus dem Repo entfernt — es wird neu nach dem Zielbild aufgebaut, der alte Code bleibt in der Git-Historie nachlesbar.
 - Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: ROADMAP.md.
 - Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: AVATAR-3D-KONZEPT.md.
+- Avatar-Rohling steht (12.10.2026): `Avatar_Editorgeruest.glb` mit 114 Morph Targets für die Passform, lädt im three.js-Editor. Welcher UI-Regler welches Target steuert: `docs/avatar/AVATAR-REGLER.md` (verbindlich, bei Änderungen nachziehen). Pipeline und Skripte: `docs/avatar/AVATAR-PIPELINE.md`.
+- Avatar-Figuren in der Datenbank (12.10.2026, Christian): 0 bis 3 Figuren je Nutzer, Collection `figuren`, nur Reglerwerte. Vorschlag für die Felder: `docs/avatar/FIGUR-DATENMODELL.md`, Grundlage fürs Datenbankmodell.
 - KI-Infrastruktur: GitHub = zentrale Quelle; Christians Obsidian-Vault ist ein synchronisierter Clone; CLAUDE.md gibt allen Claude-Sessions den Projektkontext. Seit 15.09.2026 gilt die Protokollpflicht: Alle KI-Sitzungen aller Teammitglieder dokumentieren jede Aktion in BRAIN.md, jeweils mit fester Sitzungskennung (Regeln und Kennungsliste im Abschnitt „📌 Protokollpflicht").
 
 ## Offene Fragen / anstehende Entscheidungen
 
 - [ ] Frontend-Framework wählen (React oder Vue) — betrifft Phase 1
 - [ ] KI-Anbieter für den Produktimport wählen — betrifft Phase 5
-- [ ] Körpermaße: Regler mit internem cm-Mapping bestätigen (Empfehlung aus AVATAR-3D-KONZEPT.md)
+- [x] Körpermaße: cm-Mapping erledigt (12.10.2026): Der Editor misst die cm direkt an der Figur, Methode und Realitätsprüfung in `docs/avatar/ZENTIMETER.md`.
+- [ ] Größen-Regler begrenzen: Vorschlag −40 bis +45, das entspricht etwa 144 bis 205 cm (`docs/avatar/ZENTIMETER.md` Abschnitt 4)
 - [ ] Feature „Freunde" (war im entfernten Experimentier-Code, steht inzwischen in den User Storys 2, 9 und 10, fehlt aber in der Roadmap): in die Roadmap aufnehmen — oder rausschneiden?
 - [ ] Kleidungs-Kategorien für 3D-Vorlagen festlegen (Empfehlung: 5–6 zum Start)
+- [ ] Avatar-Alter: Untergrenze des Alters-Reglers festlegen (Vorschlag ca. 18 Jahre, siehe `docs/avatar/AVATAR-REGLER.md` 3.1)
 
 ## Wer macht gerade was
 
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
-| Christian | Namen aus Userstory.md entfernt, Entwurfs-Anforderungen fuer leere Storys ergaenzt (Push folgt durch Christian) | 22.09.2026 |
+| Christian | 3D-Avatar: Rohling `Avatar_Editorgeruest.glb` fertig, als Nächstes Three.js-Testseite mit Reglern | 12.10.2026 |
 | Katha | Sprint Planning Sprint 01 (Dokument außerhalb des Repos) | 06.10.2026 |
 | Manuel | Einstieg mit Claude Cowork und Claude Code: Repo verbunden, BRAIN.md gelesen, Sitzungskennungen festgelegt, Erstkontakt-Test bestanden | 06.10.2026 |
 
@@ -130,6 +134,10 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **12.10.2026 · Christian/Claude(Laptop.Code):** Zentimeter-Zuordnung des Avatars festgelegt (Christians Auftrag: festlegen, wenn die Werte realistisch sind). Die 20 Messbänder von MakeHuman übernommen, dazu Schrittlänge und Fußlänge ergänzt. Die Standardfiguren an der GLB nachgemessen: weiblich entspricht Damen 36, männlich Herren 46 (Vergleich mit Größentabellen aus dem Handel), beide etwas kleiner als der Durchschnitt. Entscheidung: Der Editor misst die cm live an der verformten Figur, es gibt keine feste Umrechnungstabelle. Neu: `docs/avatar/ZENTIMETER.md`, `ZENTIMETER-TABELLE.md`, `messpunkte.json`, `skripte/zentimeter_messen.py`. Offen: Begrenzung des Größen-Reglers.
+- **12.10.2026 · Christian/Claude(Laptop.Code):** Speicherung der Avatar-Figuren mit Christian geklärt. Entscheidung Christian: Ein Nutzer kann 0 bis 3 Figuren anlegen (Obergrenze änderbar), eigene MongoDB-Collection `figuren`, nur nach Login abrufbar. Daraus einen Vorschlag für das Datenbankmodell geschrieben: `docs/avatar/FIGUR-DATENMODELL.md` (gespeichert werden nur die 47 Reglerwerte −100…+100 plus Figurtyp und Stärke, keine 3D-Daten; mit Regler-Version). Als Vorlage für die Aufgabe „Datenbankmodell festlegen" gedacht.
+- **12.10.2026 · Christian/Claude(Laptop.Code):** Figurtypen-Bestandsaufnahme mit Christian: alle 22 MakeHuman-`bodyshapes` gerendert (Vorder- und Seitenansicht), beschrieben und gemeinsam bewertet. Entscheidung Christian: beide `adrenal`-Typen raus (unnatürlich), „Hüftbetont“ (gonadal) für beide Geschlechter, „Vollschlank“ und „Bauchbetont“ bleiben für füllige Figuren. Alle 20 Typen haben verständliche Target-Namen bekommen (`max_figur_frau_apfel` …). GLB neu gebaut, jetzt 114 Targets. Doku: `docs/avatar/FIGURTYPEN.md`, `AVATAR-REGLER.md` 3.5.
+- **12.10.2026 · Christian/Claude(Laptop.Code):** 3D-Avatar-Rohling gebaut, zusammen mit Christian. MakeHuman-Export aller Regler einzeln als Min- und Max-Figur per Skript (554 OBJ, alle 14.444 Vertices, Meter), in Blender zu 547 Shape Keys kombiniert, daraus `Avatar_Editorgeruest.glb` mit 116 passformrelevanten Morph Targets erzeugt (Maße aus Größentabellen, Grundform, Körperform, Arme, Beine, Füße, 22 Figurtypen; links und rechts zusammengelegt; 8 MB). Gesicht, Kopf, Hände und Herkunft sind für später in `Avatar_Aussehen_spaeter` ausgelagert. Christians Entscheidungen: Maße nicht in der Datei verschmelzen, sondern im Editor per verknüpftem Regler „Gesamtumfang"; je Merkmal ein UI-Regler, der das Min/Max-Paar steuert (z. B. Geschlecht weiblich = `min_gender`, männlich = `max_gender`); neutrale Standardfigur als Startzustand. Neu im Repo: `docs/avatar/AVATAR-REGLER.md` (Zuordnung UI ↔ Targets), `AVATAR-PIPELINE.md`, `REGLER-AUSWAHL.md`, `skripte/`. Die Arbeitsdateien liegen auf Christians Rechner (`Abschlussprojekt\Avatar-Editor_Datein\`), nicht im Repo.
 - **06.10.2026 · Christian/Claude(Laptop.Code):** Sitzungskennung auf Christians Angabe korrigiert: Die Cloud-Sitzung im claude.ai-Projekt läuft unter `Christian/Claude(Laptop.Code)`, nicht `Projekt.Code`; vorläufige Tabellenzeile wieder entfernt, Log-Eintrag angepasst.
 - **06.10.2026 · Christian/Claude(Laptop.Code):** Auf Christians Wunsch („Experimentierstand vollständig löschen, aber nur das") den Flask-Experimentierstand entfernt: `main.py`, `models.py`, `requirements.txt`, `static/` und `templates/` gelöscht (alle aus Kathas Commits vom 15./16.07.2026), `README.md` durch eine kurze Projektbeschreibung ersetzt (die alte beschrieb nur die Flask-App). Bewusst stehen gelassen: `.claude/settings.json` (Umzug in `settings.local.json` ist eigener offener Punkt für Katha), `.gitignore`, Datei `test`, alle Planungsdokumente. Offene Frage „Umgang mit Experimentier-Code" damit erledigt; Hinweise in CLAUDE.md, BRAIN.md und `docs/claude-projekt-instructions.md` angepasst. Umgesetzt per Pull Request #47 (von Christian gemergt).
 - **06.10.2026 · Manuel/Claude(Laptop.Code):** Lokalen Briefkasten `UEBERGABE.local.md` zwischen Manuels Cowork- und Code-Sitzung eingerichtet: Datei in `.git/info/exclude` eingetragen (`git status` zeigt sie nicht mehr), Nachricht der Cowork-Sitzung gelesen und dort beantwortet. Auf Bitte der Cowork-Sitzung und mit Manuels Auftrag Wissensspeicher-Eintrag „Keine Direktnachrichten zwischen Cowork- und Claude-Code-Sitzung" ergänzt.
