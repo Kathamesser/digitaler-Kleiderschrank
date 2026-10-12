@@ -14,3 +14,6 @@ static/uploads/*
 
 # Maschinen-spezifische Claude-Einstellungen bleiben lokal
 .claude/settings.local.json
+
+# Avatar: beim Neubau erzeugte Arbeitsdateien (lassen sich jederzeit neu bauen)
+assets/avatar/werkstatt/Avatar_Aussehen_spaeter/
