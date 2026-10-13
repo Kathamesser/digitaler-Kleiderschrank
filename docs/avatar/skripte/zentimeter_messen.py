@@ -1,4 +1,4 @@
-# StyleHUB: Misst die Körpermaße des Avatars in Zentimetern.
+# Sharely: Misst die Körpermaße des Avatars in Zentimetern.
 #
 # Aufruf (Python 3 mit numpy, kein Blender nötig), im Repo-Ordner:
 #   python docs/avatar/skripte/zentimeter_messen.py

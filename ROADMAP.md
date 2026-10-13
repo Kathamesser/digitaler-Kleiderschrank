@@ -1,6 +1,6 @@
-# StyleHUB — Digitaler Kleiderschrank
+# Sharely — Digitaler Kleiderschrank
 
-Projektfahrplan für die Abschlussprüfung. Arbeitstitel **StyleHUB** (Name kann sich noch ändern).
+Projektfahrplan für die Abschlussprüfung. Projektname **Sharely** („style and share“, festgelegt mit der Technischen Konzeption vom 04.10.2026; „StyleHUB“ war nur der Platzhalter-Arbeitstitel).
 
 **Team:** 3 Personen · **Zeitraum:** 26 Wochen (~6 Monate) · **Stand:** 12.07.2026
 

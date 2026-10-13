@@ -1,4 +1,4 @@
-# StyleHUB — Digitaler Kleiderschrank
+# Sharely — Digitaler Kleiderschrank
 
 Abschlussprüfungsprojekt (3-Personen-Team): Kleidung bildlich erfassen und kategorisieren, zu Outfits kombinieren, Wunschartikel per KI importieren — und als Kernfeature ein frei anpassbarer 3D-Avatar, der die ausgewählten Klamotten trägt.
 

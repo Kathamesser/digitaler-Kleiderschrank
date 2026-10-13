@@ -56,7 +56,7 @@ Pro Nutzer landet in der Datenbank nur ein kleiner Konfigurations-Datensatz, sin
 
 | Option | Was es ist | Bewertung fürs Projekt |
 |---|---|---|
-| **Three.js** (Empfehlung) | JavaScript-3D-Bibliothek für den Browser | Läuft direkt in der Web-App, kein Plugin/Installation, riesige Community, volle Unterstützung für glTF-Morph-Targets. Passt am besten, wenn StyleHUB eine Web-Anwendung wird. |
+| **Three.js** (Empfehlung) | JavaScript-3D-Bibliothek für den Browser | Läuft direkt in der Web-App, kein Plugin/Installation, riesige Community, volle Unterstützung für glTF-Morph-Targets. Passt am besten, wenn Sharely eine Web-Anwendung wird. |
 | Babylon.js | Ebenfalls JavaScript-3D für den Browser | Gleichwertig fähig, etwas „Framework-artiger". Geschmacksfrage — nur eine von beiden wählen. |
 | Unity (WebGL-Export oder App) | Spiele-Engine | Mächtiger Charaktereditor möglich, aber eigene Entwicklungsumgebung, C# statt Web-Stack, klobiger WebGL-Export, Lizenzthema. Nur sinnvoll, falls ihr sowieso eine native App bauen wollt. |
 

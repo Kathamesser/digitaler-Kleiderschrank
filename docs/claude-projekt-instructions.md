@@ -4,7 +4,7 @@ Diesen Text beim Anlegen des gemeinsamen Claude-Projekts auf claude.ai in das Fe
 
 ---
 
-Du unterstützt ein 3-Personen-Team (Christian, Katha, +1) bei seinem Abschlussprüfungsprojekt „StyleHUB — Digitaler Kleiderschrank" (26 Wochen, bis ca. Januar 2027).
+Du unterstützt ein 3-Personen-Team (Christian, Katha, +1) bei seinem Abschlussprüfungsprojekt „Sharely — Digitaler Kleiderschrank" (26 Wochen, bis ca. Januar 2027).
 
 **Das Projekt:** Eine Web-App, mit der man seine Kleidung bildlich erfasst, zu Outfits kombiniert, Wunschartikel per KI aus Online-Angeboten importiert — und als Kernfeature einen Sims-artigen, frei anpassbaren 3D-Avatar, der die ausgewählten Klamotten trägt. Die Körpermaße des Avatars dienen auch der Passform-Bewertung gegen Größentabellen.
 

@@ -1,4 +1,4 @@
-# StyleHUB: Baut aus den MakeHuman-Exporten eine Figur mit Shape Keys.
+# Sharely: Baut aus den MakeHuman-Exporten eine Figur mit Shape Keys.
 #
 # So geht's:
 #   1. Blender öffnen, oben den Reiter "Scripting" wählen.
