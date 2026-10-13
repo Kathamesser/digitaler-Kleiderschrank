@@ -1,4 +1,4 @@
-# StyleHUB: Exportiert jeden MakeHuman-Regler einzeln als Min- und Max-Figur (OBJ).
+# Sharely: Exportiert jeden MakeHuman-Regler einzeln als Min- und Max-Figur (OBJ).
 #
 # So geht's:
 #   1. In MakeHuman die Standardfigur einstellen (wie figur_default).

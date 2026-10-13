@@ -1,6 +1,6 @@
-# StyleHUB — Digitaler Kleiderschrank
+# Sharely — Digitaler Kleiderschrank
 
-Abschlussprüfungsprojekt, 3-Personen-Team, 26 Wochen (bis ca. Januar 2027). Arbeitstitel StyleHUB, Repo-Name „digitaler-Kleiderschrank".
+Abschlussprüfungsprojekt, 3-Personen-Team, 26 Wochen (bis ca. Januar 2027). Projektname Sharely („StyleHUB“ war nur der Platzhalter-Arbeitstitel), Repo-Name „digitaler-Kleiderschrank".
 
 ## Was die App tut
 

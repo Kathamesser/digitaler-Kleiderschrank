@@ -1,4 +1,4 @@
-# User Stories — StyleHUB
+# User Stories — Sharely
 
 *Aus dem GitHub-Kanban-Board (Kathamesser/digitaler-Kleiderschrank) übernommen, Stand 22.09.2026. Für die zuvor leeren Storys hat Claude Entwurfs-Anforderungen ergänzt (als "Vorschlag von Claude" markiert) — vor dem nächsten Team-Sync bitte gemeinsam prüfen und anpassen.*
 

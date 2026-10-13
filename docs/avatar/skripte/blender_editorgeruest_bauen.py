@@ -1,4 +1,4 @@
-# StyleHUB: Baut aus avatar_shapekeys.blend (alle 547 Shape Keys)
+# Sharely: Baut aus avatar_shapekeys.blend (alle 547 Shape Keys)
 #   1. Avatar_Editorgeruest.glb  -> Auswahl für den Web-Editor (siehe regler-auswahl.md)
 #   2. Avatar_Aussehen_spaeter/  -> alle übrigen Shape Keys als .blend für später
 # Linke/rechte Regler (l-/r-) werden im Editorgerüst zu einem Key zusammengelegt.
