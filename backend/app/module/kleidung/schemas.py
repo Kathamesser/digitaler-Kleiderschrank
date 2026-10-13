@@ -43,7 +43,10 @@ class Herkunft(str, Enum):
 
 
 class Status(str, Enum):
-    aktiv = "aktiv"
+    """Statuswerte laut ERM (Manuel, 13.10.2026). „wunsch“ und „archiviert“
+    kommen erst mit Wunschliste bzw. Archiv dazu."""
+
+    im_schrank = "im_schrank"
     verliehen = "verliehen"
     verschenkt = "verschenkt"
 

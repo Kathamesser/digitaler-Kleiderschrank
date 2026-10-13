@@ -78,7 +78,7 @@ async def digitalisieren(
         kleidungsstueck = await repository.anlegen({
             **daten,
             "nutzer_id": nutzer_id,
-            "status": Status.aktiv.value,
+            "status": Status.im_schrank.value,
             "bild_pfad": bild_pfad,
             "erstellt_am": datetime.now(timezone.utc),
         })
