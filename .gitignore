@@ -1,13 +1,16 @@
 # Python
 venv/
+.venv/
+.pytest_cache/
 __pycache__/
 *.pyc
 
 # Datenbank & Uploads gehören nicht ins Repo
 instance/
 *.db
-static/uploads/*
-!static/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
+!uploads/README.md
 
 # Geheimnisse (API-Schlüssel etc.) — niemals committen
 .env
@@ -17,3 +20,7 @@ static/uploads/*
 
 # Avatar: beim Neubau erzeugte Arbeitsdateien (lassen sich jederzeit neu bauen)
 assets/avatar/werkstatt/Avatar_Aussehen_spaeter/
+
+# Frontend
+node_modules/
+frontend/dist/

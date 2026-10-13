@@ -1,0 +1,1 @@
+"""Querschnitt: Konfiguration, Datenbank, Sicherheit."""
