@@ -1,0 +1,1 @@
+"""Sharely-Backend (FastAPI)."""
