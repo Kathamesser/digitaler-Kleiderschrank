@@ -97,7 +97,7 @@ erDiagram
 | Entität | Collection | Modul im Backend | Hinweise / offen |
 |---|---|---|---|
 | Nutzer | `nutzer` | `nutzer` | `email` und `nutzername` eindeutig (Index). Passwort nur als Hash. |
-| Kleidungsstück | `kleidungsstuecke` | `kleidung` | Bild als Datei in `uploads/<nutzer_id>/`, im Dokument nur der Pfad. Kategorien: feste Liste oder eigene Collection? (offen, siehe BRAIN.md) |
+| Kleidungsstück | `kleidungsstuecke` | `kleidung` | Bild als Datei in `uploads/<nutzer_id>/`, im Dokument nur der Pfad. Kategorien: feste Liste oder eigene Collection? (offen, siehe BRAIN.md). **Umgesetzt (13.10.2026, User Story 8):** `name`, `kategorie` (vorläufig feste Liste: oberteile, hosen, roecke_kleider, jacken, schuhe, accessoires), `farbe`, `groesse` (neu, fehlt im Entwurf oben; Freitext wie „M“ oder „38“), `favorit`, `status`, `bild_pfad`, `erstellt_am`. Noch nicht umgesetzt: `waermegrad`, `wasserdicht`, `saison`. Bitte in Manuels ERM abgleichen. |
 | Outfit | `outfits` | `outfits` | n:m zu Kleidungsstück als Liste von IDs im Outfit. Was passiert mit Outfits, wenn ein Teil gelöscht wird? |
 | Figur | `figuren` | `figuren` | Entschieden 12.10.2026, Details in `docs/avatar/FIGUR-DATENMODELL.md` |
 | Freundschaft | `freundschaften` | `freunde` | Wireframes sprechen von „folgen", Konzeption von „Freundschaftsanfrage bestätigen": einseitig oder gegenseitig? |

@@ -14,7 +14,8 @@ _client: AsyncMongoClient | None = None
 
 def verbinden() -> None:
     global _client
-    _client = AsyncMongoClient(get_settings().mongodb_url)
+    # tz_aware: Zeitpunkte kommen als UTC mit Zeitzone zurück, nicht "naiv"
+    _client = AsyncMongoClient(get_settings().mongodb_url, tz_aware=True)
 
 
 async def trennen() -> None:

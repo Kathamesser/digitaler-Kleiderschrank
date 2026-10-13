@@ -1,0 +1,139 @@
+<!doctype html>
+<!--
+  Testseite für User Story 8 (Kleidungsstück digitalisieren), ohne Framework.
+  Nur zum Ausprobieren des Backends, bis React/Vue entschieden ist; danach löschen.
+  Start: siehe frontend/testseiten/README.md
+-->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Kleidungsstück hinzufügen (Test)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 16px; background: #fafafa; color: #222; }
+    h1 { font-size: 1.3rem; }
+    form { display: grid; gap: 10px; background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 1px 4px #0002; }
+    label { display: grid; gap: 4px; font-size: .9rem; }
+    input, select, button { font: inherit; padding: 8px; }
+    .knoepfe { display: flex; gap: 8px; }
+    .knoepfe button { flex: 1; }
+    #vorschau { max-width: 100%; max-height: 240px; object-fit: contain; display: none; border-radius: 8px; }
+    #meldung { padding: 10px; border-radius: 8px; display: none; }
+    #meldung.ok { display: block; background: #e3f6e3; }
+    #meldung.fehler { display: block; background: #fbe3e3; }
+    #schrank { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 16px; }
+    .karte { background: #fff; border-radius: 10px; padding: 6px; box-shadow: 0 1px 3px #0002; font-size: .85rem; }
+    .karte img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Kleidungsstück hinzufügen</h1>
+
+  <form id="formular">
+    <div class="knoepfe">
+      <button type="button" id="kamera-knopf">📷 Foto aufnehmen</button>
+      <button type="button" id="galerie-knopf">🖼️ Aus Galerie</button>
+    </div>
+    <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
+    <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
+    <input type="file" id="galerie" accept="image/jpeg,image/png,image/webp" hidden>
+    <img id="vorschau" alt="Vorschau">
+
+    <label>Bezeichnung*
+      <input name="name" required maxlength="100" placeholder="z. B. Blaues Leinenhemd">
+    </label>
+    <label>Kategorie*
+      <select name="kategorie" required>
+        <option value="oberteile">Oberteile</option>
+        <option value="hosen">Hosen</option>
+        <option value="roecke_kleider">Röcke &amp; Kleider</option>
+        <option value="jacken">Jacken</option>
+        <option value="schuhe">Schuhe</option>
+        <option value="accessoires">Accessoires</option>
+      </select>
+    </label>
+    <label>Farbe <input name="farbe" maxlength="50"></label>
+    <label>Größe <input name="groesse" maxlength="20" placeholder="z. B. M, 38, 42"></label>
+    <button type="submit">Speichern</button>
+    <div id="meldung"></div>
+  </form>
+
+  <h2>Mein Schrank</h2>
+  <div id="schrank"></div>
+
+  <script>
+    const API = "http://localhost:8000/api";
+    const MAX_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzdem selbst
+
+    const formular = document.getElementById("formular");
+    const vorschau = document.getElementById("vorschau");
+    const meldung = document.getElementById("meldung");
+    let bild = null;
+
+    function zeige(text, art) {
+      meldung.textContent = text;
+      meldung.className = art;
+    }
+
+    for (const id of ["kamera", "galerie"]) {
+      const eingabe = document.getElementById(id);
+      document.getElementById(id + "-knopf").onclick = () => eingabe.click();
+      eingabe.onchange = () => {
+        bild = eingabe.files[0] || null;
+        if (!bild) return;
+        if (bild.size > MAX_MB * 1024 * 1024) {
+          zeige(`Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_MB} MB.`, "fehler");
+          bild = null;
+          return;
+        }
+        meldung.className = "";
+        vorschau.src = URL.createObjectURL(bild);
+        vorschau.style.display = "block";
+      };
+    }
+
+    formular.onsubmit = async (e) => {
+      e.preventDefault();
+      if (!bild) return zeige("Bitte zuerst ein Foto aufnehmen oder auswählen.", "fehler");
+      const daten = new FormData(formular);
+      daten.append("bild", bild);
+      try {
+        const antwort = await fetch(`${API}/kleidung`, { method: "POST", body: daten });
+        const inhalt = await antwort.json();
+        if (!antwort.ok) {
+          const text = typeof inhalt.detail === "string" ? inhalt.detail : "Bitte die Eingaben prüfen.";
+          return zeige(text, "fehler");
+        }
+        zeige(`„${inhalt.name}“ wurde deinem Kleiderschrank hinzugefügt.`, "ok");
+        formular.reset();
+        bild = null;
+        vorschau.style.display = "none";
+        ladeSchrank();
+      } catch {
+        zeige("Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+      }
+    };
+
+    async function ladeSchrank() {
+      const schrank = document.getElementById("schrank");
+      try {
+        const liste = await (await fetch(`${API}/kleidung`)).json();
+        schrank.replaceChildren(...liste.map((k) => {
+          const karte = document.createElement("div");
+          karte.className = "karte";
+          const img = document.createElement("img");
+          img.src = "http://localhost:8000" + k.bild_url;
+          img.alt = k.name;
+          const text = document.createElement("div");
+          text.textContent = k.name;
+          karte.append(img, text);
+          return karte;
+        }));
+      } catch {
+        schrank.textContent = "Schrank konnte nicht geladen werden.";
+      }
+    }
+    ladeSchrank();
+  </script>
+</body>
+</html>

@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     mongodb_datenbank: str = "sharely"
     # Ordner für hochgeladene Bilder, je Nutzer ein Unterordner (siehe Technische Konzeption 2.2)
     upload_ordner: str = "../uploads"
+    # Größte erlaubte Bilddatei beim Hochladen (User Story 8)
+    max_bild_mb: int = 10
     # Adressen, von denen das Frontend im Browser zugreifen darf (CORS)
     frontend_urls: list[str] = ["http://localhost:5173"]
 
