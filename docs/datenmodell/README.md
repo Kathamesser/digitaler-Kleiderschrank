@@ -2,6 +2,8 @@
 
 Stand: 13.10.2026 · **Entwurf** von Katha/Claude(Laptop.Code) als Startpunkt für die Sprint-01-Aufgabe „Datenbankmodell festlegen". Abgeleitet aus der Technischen Konzeption (Use Cases, Wireframes), den User Stories und `docs/avatar/FIGUR-DATENMODELL.md`. Bitte im Team prüfen, anpassen und dann hier als entschieden markieren.
 
+**Manuel arbeitet am ERM (Stand 13.10.2026).** Dieser Entwurf ist nur eine Zuarbeit; gültig ist Manuels Fassung, sobald sie steht.
+
 ## Vorgehen
 
 1. **ERM** (fachlich): Entitäten, Attribute, Beziehungen mit Kardinalitäten, unabhängig von der Datenbank. Das Diagramm unten ist der Entwurf; die Prüfungsfassung kann z. B. mit draw.io erstellt und als Bild hier abgelegt werden (`erm.png` o. Ä.).
