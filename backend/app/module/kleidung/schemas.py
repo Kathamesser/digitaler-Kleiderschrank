@@ -16,7 +16,8 @@ class Kategorie(str, Enum):
 
     oberteile = "oberteile"
     hosen = "hosen"
-    roecke_kleider = "roecke_kleider"
+    roecke = "roecke"
+    kleider = "kleider"
     jacken = "jacken"
     schuhe = "schuhe"
     accessoires = "accessoires"
@@ -27,7 +28,6 @@ class Saison(str, Enum):
     sommer = "sommer"
     herbst = "herbst"
     winter = "winter"
-    keine = "keine"
 
 
 class Anlass(str, Enum):
@@ -40,7 +40,6 @@ class Herkunft(str, Enum):
     laden = "laden"
     flohmarkt = "flohmarkt"
     online = "online"
-    geklaut = "geklaut"
 
 
 class Status(str, Enum):
@@ -64,7 +63,7 @@ class KleidungsstueckAngaben(BaseModel):
     anlass: list[Anlass] = []
     preis: float | None = Field(None, ge=0, le=100_000, description="in Euro")
     kaufdatum: date | None = None
-    woher: Herkunft | None = None
+    herkunft: Herkunft | None = None
     notiz: str | None = Field(None, max_length=1000)
 
     @field_validator("groesse", "marke", "farbe", "notiz", mode="before")
@@ -79,14 +78,7 @@ class KleidungsstueckAngaben(BaseModel):
     def auf_cent_runden(cls, wert):
         return round(wert, 2) if wert is not None else None
 
-    @field_validator("saison")
-    @classmethod
-    def keine_allein(cls, wert):
-        if Saison.keine in wert and len(wert) > 1:
-            raise ValueError("„Keine“ Saison lässt sich nicht mit anderen Jahreszeiten kombinieren.")
-        return list(dict.fromkeys(wert))
-
-    @field_validator("anlass")
+    @field_validator("saison", "anlass")
     @classmethod
     def ohne_doppelte(cls, wert):
         return list(dict.fromkeys(wert))

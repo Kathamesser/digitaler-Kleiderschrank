@@ -74,7 +74,7 @@ def test_alle_eigenschaften(client):
         anlass=["alltag", "sport"],
         preis="89.999",
         kaufdatum="2025-11-02",
-        woher="flohmarkt",
+        herkunft="flohmarkt",
         notiz="Reißverschluss klemmt etwas",
     )
     assert antwort.status_code == 201
@@ -85,7 +85,7 @@ def test_alle_eigenschaften(client):
     assert k["anlass"] == ["alltag", "sport"]
     assert k["preis"] == 90.0
     assert k["kaufdatum"] == "2025-11-02"
-    assert k["woher"] == "flohmarkt"
+    assert k["herkunft"] == "flohmarkt"
     assert k["notiz"] == "Reißverschluss klemmt etwas"
 
 
@@ -94,10 +94,10 @@ def test_leere_textfelder_werden_none(client):
     assert k["marke"] is None and k["notiz"] is None
 
 
-def test_saison_keine_nicht_kombinierbar(client):
-    antwort = hochladen(client, saison=["keine", "sommer"])
-    assert antwort.status_code == 422
-    assert hochladen(client, saison=["keine"]).status_code == 201
+def test_roecke_und_kleider_sind_getrennt(client):
+    assert hochladen(client, kategorie="roecke").status_code == 201
+    assert hochladen(client, kategorie="kleider").status_code == 201
+    assert hochladen(client, kategorie="roecke_kleider").status_code == 422
 
 
 def test_kaufdatum_in_zukunft_wird_abgelehnt(client):
@@ -106,7 +106,8 @@ def test_kaufdatum_in_zukunft_wird_abgelehnt(client):
 
 
 def test_ungueltige_auswahl_wird_abgelehnt(client):
-    assert hochladen(client, woher="geschenkt").status_code == 422
+    assert hochladen(client, herkunft="geklaut").status_code == 422
+    assert hochladen(client, saison=["keine"]).status_code == 422
     assert hochladen(client, anlass=["party"]).status_code == 422
     assert hochladen(client, preis="-5").status_code == 422
 

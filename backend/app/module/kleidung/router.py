@@ -43,7 +43,7 @@ def angaben_aus_formular(
     anlass: Annotated[list[Anlass] | None, Form()] = None,
     preis: Annotated[float | None, Form(description="in Euro")] = None,
     kaufdatum: Annotated[date | None, Form()] = None,
-    woher: Annotated[Herkunft | None, Form()] = None,
+    herkunft: Annotated[Herkunft | None, Form()] = None,
     notiz: Annotated[str | None, Form()] = None,
 ) -> KleidungsstueckAngaben:
     """Formularfelder → KleidungsstueckAngaben. Nötig, weil FastAPI ein
@@ -53,7 +53,7 @@ def angaben_aus_formular(
         return KleidungsstueckAngaben(
             kategorie=kategorie, favorit=favorit, privat=privat, groesse=groesse,
             marke=marke, farbe=farbe, saison=saison or [], anlass=anlass or [],
-            preis=preis, kaufdatum=kaufdatum, woher=woher, notiz=notiz,
+            preis=preis, kaufdatum=kaufdatum, herkunft=herkunft, notiz=notiz,
         )
     except ValidationError as fehler:
         raise RequestValidationError(fehler.errors(include_url=False, include_context=False))
