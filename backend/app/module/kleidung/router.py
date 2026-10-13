@@ -39,6 +39,7 @@ def angaben_aus_formular(
     groesse: Annotated[str | None, Form()] = None,
     marke: Annotated[str | None, Form()] = None,
     farbe: Annotated[str | None, Form()] = None,
+    material: Annotated[str | None, Form()] = None,
     saison: Annotated[list[Saison] | None, Form()] = None,
     anlass: Annotated[list[Anlass] | None, Form()] = None,
     preis: Annotated[float | None, Form(description="in Euro")] = None,
@@ -52,7 +53,7 @@ def angaben_aus_formular(
     try:
         return KleidungsstueckAngaben(
             kategorie=kategorie, favorit=favorit, privat=privat, groesse=groesse,
-            marke=marke, farbe=farbe, saison=saison or [], anlass=anlass or [],
+            marke=marke, farbe=farbe, material=material, saison=saison or [], anlass=anlass or [],
             preis=preis, kaufdatum=kaufdatum, herkunft=herkunft, notiz=notiz,
         )
     except ValidationError as fehler:

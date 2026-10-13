@@ -59,6 +59,7 @@ class KleidungsstueckAngaben(BaseModel):
     groesse: str | None = Field(None, max_length=20)
     marke: str | None = Field(None, max_length=50)
     farbe: str | None = Field(None, max_length=50)
+    material: str | None = Field(None, max_length=100)
     saison: list[Saison] = []
     anlass: list[Anlass] = []
     preis: float | None = Field(None, ge=0, le=100_000, description="in Euro")
@@ -66,7 +67,7 @@ class KleidungsstueckAngaben(BaseModel):
     herkunft: Herkunft | None = None
     notiz: str | None = Field(None, max_length=1000)
 
-    @field_validator("groesse", "marke", "farbe", "notiz", mode="before")
+    @field_validator("groesse", "marke", "farbe", "material", "notiz", mode="before")
     @classmethod
     def leer_ist_none(cls, wert):
         if isinstance(wert, str):

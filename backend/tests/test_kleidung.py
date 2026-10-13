@@ -55,7 +55,7 @@ def test_nur_bild_und_kategorie_genuegen(client, tmp_path):
     assert k["favorit"] is False
     assert k["privat"] is False
     assert k["saison"] == [] and k["anlass"] == []
-    assert k["marke"] is None and k["preis"] is None and k["kaufdatum"] is None
+    assert k["marke"] is None and k["material"] is None and k["preis"] is None and k["kaufdatum"] is None
     assert k["status"] == "aktiv"
     assert k["bild_url"] == f"/api/kleidung/{k['id']}/bild"
     assert len(list(tmp_path.rglob("*.png"))) == 1
@@ -70,6 +70,7 @@ def test_alle_eigenschaften(client):
         groesse="M",
         marke="Vaude",
         farbe="dunkelgrün",
+        material="Polyester",
         saison=["herbst", "winter"],
         anlass=["alltag", "sport"],
         preis="89.999",
@@ -81,6 +82,7 @@ def test_alle_eigenschaften(client):
     k = antwort.json()
     assert k["favorit"] is True and k["privat"] is True
     assert (k["groesse"], k["marke"], k["farbe"]) == ("M", "Vaude", "dunkelgrün")
+    assert k["material"] == "Polyester"
     assert k["saison"] == ["herbst", "winter"]
     assert k["anlass"] == ["alltag", "sport"]
     assert k["preis"] == 90.0
