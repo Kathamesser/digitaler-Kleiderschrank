@@ -1,5 +1,7 @@
 # Datenmodell (ERM → MongoDB)
 
+> **Überholt (13.10.2026):** Gültig ist jetzt Manuels ERM in [`ERM-SHARELY.md`](ERM-SHARELY.md) mit den Diagrammen `ERM_Sharely.drawio`, `erm_sharely.png` und `erm_teil3_mongodb.png`. Dieser Entwurf bleibt als Zuarbeit stehen; er zeigt beim Kleidungsstück z. B. noch `name`, `waermegrad` und `wasserdicht`, die inzwischen gestrichen sind. Unterschiede: `ERM-SHARELY.md` Abschnitt 10.
+
 Stand: 13.10.2026 · **Entwurf** von Katha/Claude(Laptop.Code) als Startpunkt für die Sprint-01-Aufgabe „Datenbankmodell festlegen". Abgeleitet aus der Technischen Konzeption (Use Cases, Wireframes), den User Stories und `docs/avatar/FIGUR-DATENMODELL.md`. Bitte im Team prüfen, anpassen und dann hier als entschieden markieren.
 
 **Manuel arbeitet am ERM (Stand 13.10.2026).** Dieser Entwurf ist nur eine Zuarbeit; gültig ist Manuels Fassung, sobald sie steht.
