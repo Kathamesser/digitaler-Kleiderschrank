@@ -5,12 +5,12 @@ Obergrenzen und Berechnungen. Datenbankzugriffe laufen über repository.py.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, time, timezone
 from pathlib import Path
 
 from app.core.config import get_settings
 from app.module.kleidung import repository
-from app.module.kleidung.schemas import Kategorie, KleidungsstueckAntwort, Status
+from app.module.kleidung.schemas import KleidungsstueckAngaben, KleidungsstueckAntwort, Status
 
 
 class BildUngueltig(Exception):
@@ -46,19 +46,17 @@ def _upload_ordner() -> Path:
 
 
 def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
+    kaufdatum = kleidungsstueck.get("kaufdatum")
     return KleidungsstueckAntwort(
-        **kleidungsstueck,
+        **{**kleidungsstueck, "kaufdatum": kaufdatum.date() if kaufdatum else None},
         bild_url=f"/api/kleidung/{kleidungsstueck['id']}/bild",
     )
 
 
 async def digitalisieren(
     nutzer_id: str,
-    name: str,
-    kategorie: Kategorie,
+    angaben: KleidungsstueckAngaben,
     bild: bytes,
-    farbe: str | None = None,
-    groesse: str | None = None,
 ) -> KleidungsstueckAntwort:
     """User Story 8: Foto prüfen, im Upload-Ordner des Nutzers ablegen und das
     Kleidungsstück anlegen."""
@@ -72,14 +70,14 @@ async def digitalisieren(
     datei.parent.mkdir(parents=True, exist_ok=True)
     datei.write_bytes(bild)
 
+    daten = angaben.model_dump(mode="json")
+    # MongoDB kennt nur Zeitpunkte, kein reines Datum: Kaufdatum als 00:00 UTC
+    if angaben.kaufdatum:
+        daten["kaufdatum"] = datetime.combine(angaben.kaufdatum, time(), timezone.utc)
     try:
         kleidungsstueck = await repository.anlegen({
+            **daten,
             "nutzer_id": nutzer_id,
-            "name": name,
-            "kategorie": kategorie.value,
-            "farbe": farbe,
-            "groesse": groesse,
-            "favorit": False,
             "status": Status.aktiv.value,
             "bild_pfad": bild_pfad,
             "erstellt_am": datetime.now(timezone.utc),

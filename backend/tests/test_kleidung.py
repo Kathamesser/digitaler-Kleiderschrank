@@ -4,6 +4,8 @@ Die Datenbank wird durch einen Speicher im Arbeitsspeicher ersetzt, die Bilder
 landen in einem temporären Ordner. So laufen die Tests ohne MongoDB.
 """
 
+from datetime import date, timedelta
+
 import pytest
 from bson import ObjectId
 from fastapi.testclient import TestClient
@@ -41,22 +43,72 @@ def client(monkeypatch, tmp_path):
 
 
 def hochladen(client, bild=PNG, dateiname="shirt.png", **felder):
-    daten = {"name": "Blaues Shirt", "kategorie": "oberteile", **felder}
+    daten = {"kategorie": "oberteile", **felder}
     return client.post("/api/kleidung", data=daten, files={"bild": (dateiname, bild)})
 
 
-def test_digitalisieren_legt_kleidungsstueck_an(client, tmp_path):
-    antwort = hochladen(client, farbe="blau", groesse="M")
+def test_nur_bild_und_kategorie_genuegen(client, tmp_path):
+    antwort = hochladen(client)
     assert antwort.status_code == 201
     k = antwort.json()
-    assert k["name"] == "Blaues Shirt"
     assert k["kategorie"] == "oberteile"
-    assert k["farbe"] == "blau"
-    assert k["groesse"] == "M"
     assert k["favorit"] is False
+    assert k["privat"] is False
+    assert k["saison"] == [] and k["anlass"] == []
+    assert k["marke"] is None and k["preis"] is None and k["kaufdatum"] is None
     assert k["status"] == "aktiv"
     assert k["bild_url"] == f"/api/kleidung/{k['id']}/bild"
     assert len(list(tmp_path.rglob("*.png"))) == 1
+
+
+def test_alle_eigenschaften(client):
+    antwort = hochladen(
+        client,
+        kategorie="jacken",
+        favorit="true",
+        privat="true",
+        groesse="M",
+        marke="Vaude",
+        farbe="dunkelgrün",
+        saison=["herbst", "winter"],
+        anlass=["alltag", "sport"],
+        preis="89.999",
+        kaufdatum="2025-11-02",
+        woher="flohmarkt",
+        notiz="Reißverschluss klemmt etwas",
+    )
+    assert antwort.status_code == 201
+    k = antwort.json()
+    assert k["favorit"] is True and k["privat"] is True
+    assert (k["groesse"], k["marke"], k["farbe"]) == ("M", "Vaude", "dunkelgrün")
+    assert k["saison"] == ["herbst", "winter"]
+    assert k["anlass"] == ["alltag", "sport"]
+    assert k["preis"] == 90.0
+    assert k["kaufdatum"] == "2025-11-02"
+    assert k["woher"] == "flohmarkt"
+    assert k["notiz"] == "Reißverschluss klemmt etwas"
+
+
+def test_leere_textfelder_werden_none(client):
+    k = hochladen(client, marke="   ", notiz="").json()
+    assert k["marke"] is None and k["notiz"] is None
+
+
+def test_saison_keine_nicht_kombinierbar(client):
+    antwort = hochladen(client, saison=["keine", "sommer"])
+    assert antwort.status_code == 422
+    assert hochladen(client, saison=["keine"]).status_code == 201
+
+
+def test_kaufdatum_in_zukunft_wird_abgelehnt(client):
+    morgen = (date.today() + timedelta(days=1)).isoformat()
+    assert hochladen(client, kaufdatum=morgen).status_code == 422
+
+
+def test_ungueltige_auswahl_wird_abgelehnt(client):
+    assert hochladen(client, woher="geschenkt").status_code == 422
+    assert hochladen(client, anlass=["party"]).status_code == 422
+    assert hochladen(client, preis="-5").status_code == 422
 
 
 def test_bild_und_liste_abrufen(client):
@@ -65,7 +117,7 @@ def test_bild_und_liste_abrufen(client):
     assert bild.status_code == 200
     assert bild.content == JPEG
     assert [e["id"] for e in client.get("/api/kleidung").json()] == [k["id"]]
-    assert client.get(f"/api/kleidung/{k['id']}").json()["name"] == "Blaues Shirt"
+    assert client.get(f"/api/kleidung/{k['id']}").json()["kategorie"] == "oberteile"
 
 
 def test_kein_bild_wird_abgelehnt(client, tmp_path):
@@ -86,8 +138,13 @@ def test_unbekannte_kategorie_wird_abgelehnt(client):
     assert hochladen(client, kategorie="socken").status_code == 422
 
 
-def test_fehlender_name_wird_abgelehnt(client):
-    assert hochladen(client, name="").status_code == 422
+def test_fehlende_kategorie_wird_abgelehnt(client):
+    antwort = client.post("/api/kleidung", files={"bild": ("shirt.png", PNG)})
+    assert antwort.status_code == 422
+
+
+def test_fehlendes_bild_wird_abgelehnt(client):
+    assert client.post("/api/kleidung", data={"kategorie": "hosen"}).status_code == 422
 
 
 def test_unbekanntes_kleidungsstueck(client):

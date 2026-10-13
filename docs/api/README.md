@@ -17,7 +17,7 @@ Alle Endpunkte liegen unter `/api/<modul>`, z. B. `/api/kleidung`, `/api/outfits
 
 | Methode | Pfad | Zweck | User Story |
 |---|---|---|---|
-| POST | `/api/kleidung` | Kleidungsstück mit Foto anlegen (multipart: `bild`, `name`, `kategorie`, optional `farbe`, `groesse`) | 8 |
+| POST | `/api/kleidung` | Kleidungsstück mit Foto anlegen (multipart). Pflicht: `bild`, `kategorie`. Optional: `favorit`, `privat` (true/false, Standard false), `groesse`, `marke`, `farbe`, `saison`, `anlass` (Mehrfachauswahl als wiederholtes Feld), `preis` (Euro), `kaufdatum` (JJJJ-MM-TT), `woher`, `notiz` | 8 |
 | GET | `/api/kleidung` | Alle Kleidungsstücke des Nutzers, neueste zuerst | 1 (Grundform) |
 | GET | `/api/kleidung/{id}` | Ein Kleidungsstück | 1 |
 | GET | `/api/kleidung/{id}/bild` | Bild eines Kleidungsstücks | 8 |

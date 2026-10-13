@@ -14,11 +14,14 @@
     h1 { font-size: 1.3rem; }
     form { display: grid; gap: 10px; background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 1px 4px #0002; }
     label { display: grid; gap: 4px; font-size: .9rem; }
+    fieldset { border: 1px solid #ddd; border-radius: 8px; font-size: .9rem; }
+    fieldset label, label.schalter { display: inline-flex; align-items: center; gap: 4px; margin-right: 12px; }
+    .zeile { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     input, select, button { font: inherit; padding: 8px; }
     .knoepfe { display: flex; gap: 8px; }
     .knoepfe button { flex: 1; }
     #vorschau { max-width: 100%; max-height: 240px; object-fit: contain; display: none; border-radius: 8px; }
-    #meldung { padding: 10px; border-radius: 8px; display: none; }
+    #meldung { padding: 10px; border-radius: 8px; display: none; white-space: pre-line; }
     #meldung.ok { display: block; background: #e3f6e3; }
     #meldung.fehler { display: block; background: #fbe3e3; }
     #schrank { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 16px; }
@@ -39,9 +42,6 @@
     <input type="file" id="galerie" accept="image/jpeg,image/png,image/webp" hidden>
     <img id="vorschau" alt="Vorschau">
 
-    <label>Bezeichnung*
-      <input name="name" required maxlength="100" placeholder="z. B. Blaues Leinenhemd">
-    </label>
     <label>Kategorie*
       <select name="kategorie" required>
         <option value="oberteile">Oberteile</option>
@@ -52,8 +52,43 @@
         <option value="accessoires">Accessoires</option>
       </select>
     </label>
+    <div>
+      <label class="schalter"><input type="checkbox" name="favorit" value="true"> ❤️ Favorit</label>
+      <label class="schalter"><input type="checkbox" name="privat" value="true"> 🔒 Privat (Freunde sehen es nicht)</label>
+    </div>
+    <div class="zeile">
+      <label>Größe <input name="groesse" maxlength="20" placeholder="z. B. M, 38"></label>
+      <label>Marke <input name="marke" maxlength="50"></label>
+    </div>
     <label>Farbe <input name="farbe" maxlength="50"></label>
-    <label>Größe <input name="groesse" maxlength="20" placeholder="z. B. M, 38, 42"></label>
+    <fieldset id="saison">
+      <legend>Saison</legend>
+      <label><input type="checkbox" name="saison" value="fruehling"> Frühling</label>
+      <label><input type="checkbox" name="saison" value="sommer"> Sommer</label>
+      <label><input type="checkbox" name="saison" value="herbst"> Herbst</label>
+      <label><input type="checkbox" name="saison" value="winter"> Winter</label>
+      <label><input type="checkbox" name="saison" value="keine"> Keine</label>
+    </fieldset>
+    <fieldset>
+      <legend>Anlass</legend>
+      <label><input type="checkbox" name="anlass" value="alltag"> Alltag</label>
+      <label><input type="checkbox" name="anlass" value="sport"> Sport</label>
+      <label><input type="checkbox" name="anlass" value="edel"> Edel</label>
+    </fieldset>
+    <div class="zeile">
+      <label>Preis (€) <input name="preis" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      <label>Kaufdatum <input name="kaufdatum" type="date" id="kaufdatum"></label>
+    </div>
+    <label>Woher
+      <select name="woher">
+        <option value="">–</option>
+        <option value="laden">Laden</option>
+        <option value="flohmarkt">Flohmarkt</option>
+        <option value="online">Online</option>
+        <option value="geklaut">Geklaut</option>
+      </select>
+    </label>
+    <label>Notiz <textarea name="notiz" maxlength="1000" rows="3"></textarea></label>
     <button type="submit">Speichern</button>
     <div id="meldung"></div>
   </form>
@@ -69,6 +104,19 @@
     const vorschau = document.getElementById("vorschau");
     const meldung = document.getElementById("meldung");
     let bild = null;
+    const KATEGORIEN = {
+      oberteile: "Oberteil", hosen: "Hose", roecke_kleider: "Rock/Kleid",
+      jacken: "Jacke", schuhe: "Schuhe", accessoires: "Accessoire",
+    };
+    document.getElementById("kaufdatum").max = new Date().toISOString().slice(0, 10);
+
+    // „Keine“ Saison schließt die Jahreszeiten aus und umgekehrt
+    document.getElementById("saison").onchange = (e) => {
+      if (!e.target.checked) return;
+      for (const kasten of document.querySelectorAll('[name="saison"]')) {
+        if (kasten !== e.target && (kasten.value === "keine" || e.target.value === "keine")) kasten.checked = false;
+      }
+    };
 
     function zeige(text, art) {
       meldung.textContent = text;
@@ -95,16 +143,23 @@
     formular.onsubmit = async (e) => {
       e.preventDefault();
       if (!bild) return zeige("Bitte zuerst ein Foto aufnehmen oder auswählen.", "fehler");
-      const daten = new FormData(formular);
+      const daten = new FormData();
+      // leere Felder gar nicht erst schicken
+      for (const [feld, wert] of new FormData(formular)) {
+        if (wert.trim() !== "") daten.append(feld, wert);
+      }
       daten.append("bild", bild);
       try {
         const antwort = await fetch(`${API}/kleidung`, { method: "POST", body: daten });
         const inhalt = await antwort.json();
         if (!antwort.ok) {
-          const text = typeof inhalt.detail === "string" ? inhalt.detail : "Bitte die Eingaben prüfen.";
+          const text = typeof inhalt.detail === "string"
+            ? inhalt.detail
+            : inhalt.detail.map((f) => `${f.loc.at(-1)}: ${f.msg.replace(/^Value error, /, "")}`).join("
+");
           return zeige(text, "fehler");
         }
-        zeige(`„${inhalt.name}“ wurde deinem Kleiderschrank hinzugefügt.`, "ok");
+        zeige(`${KATEGORIEN[inhalt.kategorie]} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
         formular.reset();
         bild = null;
         vorschau.style.display = "none";
@@ -123,9 +178,10 @@
           karte.className = "karte";
           const img = document.createElement("img");
           img.src = "http://localhost:8000" + k.bild_url;
-          img.alt = k.name;
+          const titel = [KATEGORIEN[k.kategorie], k.marke].filter(Boolean).join(" · ");
+          img.alt = titel;
           const text = document.createElement("div");
-          text.textContent = k.name;
+          text.textContent = (k.favorit ? "❤️ " : "") + (k.privat ? "🔒 " : "") + titel;
           karte.append(img, text);
           return karte;
         }));
