@@ -15,7 +15,7 @@ uvicorn app.main:app --reload
 
 Dann im Browser: http://localhost:8000/api/health (Lebenszeichen) und http://localhost:8000/docs (alle Endpunkte zum Ausprobieren). MongoDB muss für die Fach-Endpunkte laufen, lokal oder über MongoDB Atlas (Adresse in `.env`).
 
-Tests: `python -m pytest` im Ordner `backend/`.
+Tests: `.venv\Scripts\python -m pytest` im Ordner `backend/` (macOS/Linux: `.venv/bin/python -m pytest`). In VS Code: einmal „Python: Select Interpreter“ → `backend\.venv\Scripts\python.exe`, dann laufen die Tests im Testing-Bereich (Reagenzglas links); die Einstellungen dafür stehen in `.vscode/settings.json`. **Nicht** die Testdatei mit ▶ „Run Python File“ starten: Das nimmt oft das globale Python ohne pytest (Fehler `No module named 'pytest'`) und führt keine Tests aus.
 
 ## Aufbau
 
