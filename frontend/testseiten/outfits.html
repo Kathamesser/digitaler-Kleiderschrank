@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- Wireframes 9 (Outfits) und 10 (Outfits leer). Beispieldaten: Das Modul outfits hat noch kein Backend.
+     Leeren Zustand ansehen: outfits.html?leer -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Outfits</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
+</head>
+<body>
+<main class="seite mit-navigation">
+  <header class="kopfband">
+    <h1>Meine Outfits</h1>
+    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
+  </header>
+
+  <div class="hinweis">Beispieldaten: Outfits werden noch nicht gespeichert (Backend-Modul outfits fehlt).</div>
+  <div class="raster zwei" id="raster"></div>
+
+  <div class="leer" id="leer" hidden>
+    <div class="kachel" data-symbol="bild"></div>
+    <strong>Noch keine Outfits erstellt</strong>
+    <p>Kombiniere deine Kleidungsstücke</p>
+    <a class="knopf" href="outfit-erstellen.html">Outfit erstellen</a>
+  </div>
+</main>
+<a class="plus" href="outfit-erstellen.html" aria-label="Outfit erstellen" data-symbol="plus"></a>
+
+<script>
+  navigation("outfits");
+
+  const BEISPIELE = ["Business Look", "Wochenende", "Winter Outfit", "Date Night"];
+  const outfits = new URLSearchParams(location.search).has("leer") ? [] : BEISPIELE;
+
+  const raster = document.getElementById("raster");
+  for (const name of outfits) {
+    const karte = document.createElement("div");
+    karte.className = "karte outfit";
+    const kachel = document.createElement("div");
+    kachel.className = "kachel";
+    for (let i = 0; i < 4; i++) kachel.insertAdjacentHTML("beforeend", `<span>${SYMBOL.bild}</span>`);
+    const text = document.createElement("p");
+    text.textContent = name;
+    karte.append(kachel, text);
+    raster.append(karte);
+  }
+  document.getElementById("leer").hidden = outfits.length > 0;
+</script>
+</body>
+</html>

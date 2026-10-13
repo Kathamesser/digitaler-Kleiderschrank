@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- Wireframe 17 (Freunde). Beispieldaten: Das Modul freunde hat noch kein Backend. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Freunde</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
+</head>
+<body>
+<main class="seite mit-navigation">
+  <header class="kopfband">
+    <h1>Freunde</h1>
+    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
+  </header>
+
+  <label class="suche">
+    <span data-symbol="lupe"></span>
+    <input type="search" id="suche" placeholder="Freunde suchen" aria-label="Freunde suchen">
+  </label>
+
+  <div class="hinweis">Beispieldaten: Freunde haben noch kein Backend. Die Knöpfe ändern nur die Anzeige.</div>
+
+  <div class="abschnitt">Anfragen</div>
+  <ul class="liste" id="anfragen"></ul>
+  <div class="abschnitt">Folgt dir</div>
+  <ul class="liste" id="folgende"></ul>
+</main>
+
+<script>
+  navigation("freunde");
+
+  const ANFRAGEN = [{ name: "Lena", text: "möchte dir folgen" }];
+  const FOLGENDE = [
+    { name: "Jonas", text: "12 Kleidungsstücke", folgt: false },
+    { name: "Mia", text: "folgt dir bereits", folgt: true },
+    { name: "Sophie", text: "8 Kleidungsstücke", folgt: false },
+  ];
+
+  function eintrag(person, knopf) {
+    const li = document.createElement("li");
+    li.className = "eintrag";
+    li.dataset.name = person.name.toLowerCase();
+    li.innerHTML = `<span class="profilbild klein">${SYMBOL.person}</span><span class="text"><strong></strong><span></span></span>`;
+    li.querySelector("strong").textContent = person.name;
+    li.querySelector(".text span").textContent = person.text;
+    li.append(knopf);
+    return li;
+  }
+
+  document.getElementById("anfragen").append(...ANFRAGEN.map((p) => {
+    const knopf = document.createElement("button");
+    knopf.className = "knopf-dunkel klein";
+    knopf.textContent = "Bestätigen";
+    knopf.onclick = () => { knopf.textContent = "Bestätigt"; knopf.disabled = true; };
+    return eintrag(p, knopf);
+  }));
+
+  document.getElementById("folgende").append(...FOLGENDE.map((p) => {
+    const knopf = document.createElement("button");
+    const setze = () => {
+      knopf.className = p.folgt ? "knopf-dunkel klein" : "knopf-rand klein";
+      knopf.textContent = p.folgt ? "Folgt" : "Folgen";
+    };
+    knopf.onclick = () => { p.folgt = !p.folgt; setze(); };
+    setze();
+    return eintrag(p, knopf);
+  }));
+
+  document.getElementById("suche").oninput = (e) => {
+    const wort = e.target.value.trim().toLowerCase();
+    for (const li of document.querySelectorAll(".eintrag")) li.hidden = !li.dataset.name.includes(wort);
+  };
+</script>
+</body>
+</html>

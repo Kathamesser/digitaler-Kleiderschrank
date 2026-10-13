@@ -1,0 +1,88 @@
+<!doctype html>
+<!-- Wireframes 5 (Schrank) und 6 (Schrank leer). Daten live aus GET /api/kleidung. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Schrank</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
+</head>
+<body>
+<main class="seite mit-navigation">
+  <header class="kopfband">
+    <h1>Hallo Test-Nutzer!</h1>
+    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
+  </header>
+
+  <label class="suche">
+    <span data-symbol="lupe"></span>
+    <input type="search" id="suche" placeholder="Im Schrank suchen" aria-label="Im Schrank suchen">
+  </label>
+  <div class="filterleiste" id="filter" role="toolbar" aria-label="Filter"></div>
+
+  <div id="meldung" class="meldung" role="status"></div>
+  <div class="raster" id="raster"></div>
+
+  <div class="leer" id="leer" hidden>
+    <div class="kachel" data-symbol="bild"></div>
+    <strong>Noch keine Kleidungsstücke</strong>
+    <p>Füge dein erstes Teil hinzu</p>
+    <a class="knopf" href="kleidung-hochladen.html">Kleidungsstück hinzufügen</a>
+  </div>
+</main>
+<a class="plus" href="kleidung-hochladen.html" aria-label="Kleidungsstück hinzufügen" data-symbol="plus"></a>
+
+<script>
+  navigation("schrank");
+
+  const raster = document.getElementById("raster");
+  const leer = document.getElementById("leer");
+  const meldung = document.getElementById("meldung");
+  const suche = document.getElementById("suche");
+  let alle = [];
+  let filter = "alles";
+
+  // Bestätigung nach dem Hinzufügen (User Story 8), kommt von kleidung-hochladen.html
+  const neu = new URLSearchParams(location.search).get("neu");
+  if (neu && KATEGORIEN[neu]) {
+    zeigeMeldung(meldung, `${KATEGORIEN[neu]} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
+    history.replaceState(null, "", "schrank.html");
+  }
+
+  // Filterleiste: Alles | Favoriten | Kategorien
+  const filterWerte = { alles: "Alles", favoriten: "Favoriten", ...KATEGORIEN_MEHRZAHL };
+  const leiste = document.getElementById("filter");
+  for (const [wert, text] of Object.entries(filterWerte)) {
+    const knopf = document.createElement("button");
+    knopf.type = "button";
+    knopf.textContent = text;
+    knopf.dataset.wert = wert;
+    knopf.onclick = () => { filter = wert; zeichne(); };
+    leiste.append(knopf);
+  }
+  suche.oninput = zeichne;
+
+  function passt(k) {
+    if (filter === "favoriten" && !k.favorit) return false;
+    if (filter !== "alles" && filter !== "favoriten" && k.kategorie !== filter) return false;
+    const wort = suche.value.trim().toLowerCase();
+    if (!wort) return true;
+    return [KATEGORIEN[k.kategorie], k.marke, k.farbe, k.material, k.groesse, k.notiz]
+      .some((feld) => feld && feld.toLowerCase().includes(wort));
+  }
+
+  function zeichne() {
+    for (const knopf of leiste.children) knopf.classList.toggle("aktiv", knopf.dataset.wert === filter);
+    const treffer = alle.filter(passt);
+    raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k)));
+    leer.hidden = alle.length > 0;
+    if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
+  }
+
+  holeJson("/kleidung")
+    .then((liste) => { alle = liste; zeichne(); })
+    .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
+</script>
+</body>
+</html>

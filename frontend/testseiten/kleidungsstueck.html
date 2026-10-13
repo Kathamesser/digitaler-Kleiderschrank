@@ -1,0 +1,82 @@
+<!doctype html>
+<!-- Wireframe 8 (Kleidungsstück – Detailansicht). Daten live aus GET /api/kleidung/{id}. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Kleidungsstück</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
+</head>
+<body>
+<main class="seite">
+  <header class="kopf">
+    <a class="zurueck" href="schrank.html" aria-label="Zurück zum Schrank" data-symbol="zurueck"></a>
+    <h1 id="titel">Kleidungsstück</h1>
+  </header>
+
+  <div id="meldung" class="meldung" role="status"></div>
+  <div id="inhalt" hidden>
+    <div class="grossbild"><img id="bild" alt=""></div>
+    <dl class="eigenschaften" id="eigenschaften"></dl>
+    <p id="notiz" class="leise"></p>
+    <div class="knopfstapel">
+      <!-- Bearbeiten/Löschen: Endpunkte gibt es im Backend noch nicht -->
+      <button class="knopf breit" disabled title="Kommt noch: Bearbeiten-Endpunkt fehlt">Bearbeiten</button>
+      <button class="knopf breit" disabled title="Kommt noch: Löschen-Endpunkt fehlt">Löschen</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const meldung = document.getElementById("meldung");
+  const id = new URLSearchParams(location.search).get("id");
+
+  const euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
+  const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE");
+  const liste = (werte, namen) => werte.map((w) => namen[w]).join(", ");
+
+  function zeige(k) {
+    document.title = `Sharely – ${titelVon(k)}`;
+    document.getElementById("titel").textContent = titelVon(k);
+    const bild = document.getElementById("bild");
+    bild.src = bildUrl(k);
+    bild.alt = titelVon(k);
+
+    // Nur ausgefüllte Eigenschaften zeigen
+    const zeilen = [
+      ["Kategorie", KATEGORIEN[k.kategorie]],
+      ["Größe", k.groesse],
+      ["Marke", k.marke],
+      ["Farbe", k.farbe],
+      ["Material", k.material],
+      ["Saison", k.saison.length ? liste(k.saison, SAISONS) : null],
+      ["Anlass", k.anlass.length ? liste(k.anlass, ANLAESSE) : null],
+      ["Preis", k.preis != null ? euro.format(k.preis) : null],
+      ["Kaufdatum", k.kaufdatum ? datum(k.kaufdatum) : null],
+      ["Herkunft", HERKUENFTE[k.herkunft]],
+      ["Favorit", k.favorit ? "Ja" : "Nein"],
+      ["Sichtbar für", k.privat ? "Nur mich" : "Mich und Freunde"],
+    ];
+    const dl = document.getElementById("eigenschaften");
+    for (const [name, wert] of zeilen) {
+      if (!wert) continue;
+      const zeile = document.createElement("div");
+      const dt = document.createElement("dt");
+      const dd = document.createElement("dd");
+      dt.textContent = name;
+      dd.textContent = wert;
+      zeile.append(dt, dd);
+      dl.append(zeile);
+    }
+    document.getElementById("notiz").textContent = k.notiz ? `Notiz: ${k.notiz}` : "";
+    document.getElementById("inhalt").hidden = false;
+  }
+
+  if (!id) zeigeMeldung(meldung, "Kein Kleidungsstück ausgewählt.", "fehler");
+  else holeJson(`/kleidung/${encodeURIComponent(id)}`)
+    .then(zeige)
+    .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
+</script>
+</body>
+</html>

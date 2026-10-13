@@ -1,0 +1,223 @@
+/*
+  Gemeinsames Stylesheet aller Testseiten, nach den Wireframes der Technischen Konzeption.
+
+  Design an die Mockups anpassen: zuerst die Variablen in :root ändern (Farben,
+  Schrift, Rundungen, Abstände), dann die einzelnen Bausteine weiter unten. Die
+  Klassennamen sind so gewählt, dass sie später in React/Vue weiterverwendet
+  werden können.
+*/
+
+:root {
+  /* Farben */
+  --text: #5f5f5f;
+  --text-leise: #8a8a8a;
+  --dunkel: #5a5a5a;        /* gewählte Pillen, aktive Tabs, Schalter an */
+  --auf-dunkel: #ffffff;    /* Text auf dunklen Flächen */
+  --linie: #9a9a9a;         /* Rahmen */
+  --trenner: #dddddd;       /* Trennlinien in Listen */
+  --feld: #d6d6d6;          /* Eingabefelder, graue Knöpfe */
+  --band: #e6e6e6;          /* Kopfband, Suchleiste, Navigation */
+  --flaeche: #ffffff;       /* Seitenhintergrund */
+  --fehler: #7a2222;
+  --fehler-flaeche: #f6e3e3;
+
+  /* Schrift */
+  --schrift: "DejaVu Sans", Verdana, system-ui, sans-serif;
+
+  /* Formen */
+  --rund-klein: 6px;
+  --rund: 12px;
+  --rund-pille: 999px;
+  --seitenbreite: 420px;
+  --rand: 20px;
+  --nav-hoehe: 52px;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; } /* sonst gewinnt z. B. display: flex gegen hidden */
+body {
+  margin: 0; background: var(--flaeche); color: var(--text);
+  font-family: var(--schrift);
+}
+a { color: inherit; }
+.seite { max-width: var(--seitenbreite); margin: 0 auto; padding: 16px var(--rand) 32px; min-height: 100vh; }
+.seite.mit-navigation { padding-bottom: calc(var(--nav-hoehe) + 32px); }
+.leise { color: var(--text-leise); font-size: .8rem; }
+.zentriert { text-align: center; }
+
+/* ---------- Kopf ---------- */
+
+/* Unterseiten: Pfeil zurück + Titel (Wireframes 7, 8, 11, 12, 14, 16, 18–21) */
+.kopf { position: relative; text-align: center; margin: 8px 0 20px; }
+.kopf h1 { font-size: 1.25rem; margin: 0; padding: 0 28px; }
+.kopf .zurueck { position: absolute; left: -6px; top: 50%; transform: translateY(-50%); display: flex; padding: 4px; }
+.kopf .rechts { position: absolute; right: -4px; top: 50%; transform: translateY(-50%); display: flex; padding: 4px; }
+
+/* Hauptseiten: graues Band mit Titel und Profilbild (Wireframes 5, 9, 13, 17) */
+.kopfband {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--band); margin: -16px calc(-1 * var(--rand)) 20px; padding: 22px var(--rand);
+}
+.kopfband h1 { font-size: 1.25rem; margin: 0; }
+.profilbild { width: 44px; height: 44px; border-radius: 50%; background: var(--dunkel); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.profilbild.gross { width: 88px; height: 88px; }
+.profilbild.klein { width: 34px; height: 34px; }
+
+/* Marke (Anmeldung, Wireframes 1–4) */
+.marke { text-align: center; margin: 24px 0 28px; }
+.marke img { width: 90px; height: auto; }
+.marke strong { display: block; font-size: 1.1rem; letter-spacing: .04em; margin-top: 8px; }
+.marke small { font-weight: 700; font-size: .7rem; }
+
+/* ---------- Knöpfe ---------- */
+
+.knopf, .knopf-rand, .knopf-dunkel {
+  display: inline-block; font: inherit; font-weight: 700; font-size: .9rem; text-align: center; text-decoration: none;
+  border-radius: var(--rund-klein); padding: 10px 14px; cursor: pointer; color: var(--text);
+}
+.knopf { background: var(--feld); border: 1.5px solid var(--feld); }
+.knopf-rand { background: var(--flaeche); border: 1.5px solid var(--linie); }
+.knopf-dunkel { background: var(--dunkel); border: 1.5px solid var(--dunkel); color: var(--auf-dunkel); }
+.knopf.breit, .knopf-rand.breit, .knopf-dunkel.breit { display: block; width: 100%; }
+.knopf.klein, .knopf-rand.klein, .knopf-dunkel.klein { font-size: .75rem; padding: 6px 12px; }
+.knopf:disabled, .knopf-rand:disabled, .knopf-dunkel:disabled { opacity: .55; cursor: not-allowed; }
+.knopfreihe { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+.knopfstapel { display: grid; gap: 12px; margin-top: 24px; }
+
+/* Runder Plus-Knopf unten rechts (Wireframes 5, 9) */
+.plus {
+  position: fixed; bottom: calc(var(--nav-hoehe) + 18px); right: max(18px, calc(50vw - var(--seitenbreite) / 2 + 18px));
+  width: 52px; height: 52px; border-radius: 50%; background: var(--dunkel);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px #0003;
+}
+
+/* Umschalter mit zwei Hälften (Anmelden/Registrieren, Verliehen/Ausgeliehen, Leihen/Verschenken) */
+.umschalter { display: grid; grid-template-columns: 1fr 1fr; border: 1.5px solid var(--dunkel); border-radius: var(--rund-klein); overflow: hidden; margin: 0 16px 24px; }
+.umschalter button { font: inherit; font-weight: 700; font-size: .85rem; padding: 8px; border: none; background: var(--flaeche); color: var(--text); cursor: pointer; }
+.umschalter button.aktiv { background: var(--dunkel); color: var(--auf-dunkel); }
+
+/* ---------- Formulare ---------- */
+
+.titel { display: block; font-weight: 700; font-size: .85rem; margin: 16px 0 6px; }
+.titel small { display: block; font-weight: 400; font-size: .75rem; }
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], input[type=search], textarea {
+  width: 100%; font: inherit; font-size: .9rem; color: var(--text);
+  background: var(--feld); border: none; border-radius: var(--rund-klein); padding: 10px 12px;
+}
+textarea { resize: vertical; min-height: 70px; }
+.zeile { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.link-klein { display: block; text-align: right; font-size: .75rem; margin-top: 6px; }
+
+/* Auswahl als Pillen: Radio/Checkbox versteckt, das <span> danach ist die Pille */
+.pillen { display: flex; flex-wrap: wrap; gap: 6px; }
+.pillen input { position: absolute; opacity: 0; pointer-events: none; }
+.pillen span {
+  display: inline-block; font-weight: 700; font-size: .75rem; padding: 5px 12px;
+  border: 1.5px solid var(--linie); border-radius: var(--rund-pille); cursor: pointer; user-select: none;
+}
+.pillen input:checked + span { background: var(--dunkel); border-color: var(--dunkel); color: var(--auf-dunkel); }
+.pillen input:focus-visible + span, .schalter input:focus-visible + .bahn { outline: 2px solid var(--dunkel); outline-offset: 2px; }
+
+/* Schalter zum Umlegen (Wireframe 7 „Wasserdicht“) */
+.schalter-zeile { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+.schalter-zeile .titel { margin: 0; }
+.schalter { position: relative; display: inline-block; }
+.schalter input { position: absolute; opacity: 0; }
+.bahn { display: block; width: 44px; height: 24px; border-radius: var(--rund-pille); background: var(--feld); position: relative; cursor: pointer; transition: background .2s; }
+.bahn::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  border-radius: 50%; background: var(--flaeche); box-shadow: 0 1px 2px #0003; transition: transform .2s;
+}
+.schalter input:checked + .bahn { background: var(--dunkel); }
+.schalter input:checked + .bahn::after { transform: translateX(20px); }
+
+/* Bildbereich beim Hinzufügen (Wireframe 7) */
+.bildrahmen {
+  border: 1.5px solid var(--linie); border-radius: var(--rund); height: 190px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.bildrahmen img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ---------- Meldungen ---------- */
+
+.meldung { margin-top: 12px; padding: 10px 12px; border-radius: var(--rund-klein); font-size: .85rem; white-space: pre-line; }
+.meldung:empty { display: none; }
+.meldung.ok { background: var(--band); border-left: 4px solid var(--dunkel); }
+.meldung.fehler { background: var(--fehler-flaeche); border-left: 4px solid var(--fehler); color: var(--fehler); }
+
+/* Hinweis auf Beispieldaten (Seiten ohne Backend) */
+.hinweis { border: 1.5px dashed var(--linie); border-radius: var(--rund-klein); padding: 8px 10px; font-size: .75rem; color: var(--text-leise); margin-bottom: 16px; }
+
+/* ---------- Suche und Filter (Wireframe 5) ---------- */
+
+.suche { display: flex; align-items: center; gap: 8px; background: var(--band); border-radius: 2px; padding: 0 10px; margin: 0 4px 16px; }
+.suche input { background: transparent; padding: 7px 0; font-weight: 700; font-size: .8rem; }
+.filterleiste { display: flex; gap: 0; overflow-x: auto; background: var(--band); margin: 0 calc(-1 * var(--rand)) 20px; padding: 10px var(--rand); scrollbar-width: none; }
+.filterleiste button { font: inherit; font-size: .8rem; background: none; border: none; color: var(--text); padding: 0 6px; cursor: pointer; white-space: nowrap; border-left: 1px solid var(--text); }
+.filterleiste button:first-child { border-left: none; padding-left: 0; }
+.filterleiste button.aktiv { font-weight: 700; }
+
+/* ---------- Raster mit Kacheln (Wireframes 5, 11, 18, 19) ---------- */
+
+.raster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 14px; }
+.karte { text-align: center; font-size: .78rem; text-decoration: none; color: inherit; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
+.kachel { position: relative; aspect-ratio: 1; border: 1.5px solid var(--linie); border-radius: var(--rund-klein); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.kachel img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.karte p { margin: 6px 0 0; }
+.karte.gewaehlt .kachel { border: 2.5px solid var(--dunkel); }
+.abzeichen {
+  position: absolute; top: 4px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--flaeche); border: 1.5px solid var(--linie); display: flex; align-items: center; justify-content: center;
+}
+.abzeichen.rechts { right: 4px; }
+.abzeichen.links { left: 4px; }
+.abzeichen.dunkel { background: var(--dunkel); border-color: var(--dunkel); }
+
+/* Outfit-Karten mit 2×2 Vorschau (Wireframe 9) */
+.raster.zwei { grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+.outfit .kachel { aspect-ratio: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 6px; }
+.outfit .kachel > * { aspect-ratio: 1; border: 1.5px solid var(--linie); border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.outfit p { font-weight: 700; }
+
+/* Leerer Zustand (Wireframes 6, 10) */
+.leer { text-align: center; margin-top: 90px; }
+.leer .kachel { width: 80px; margin: 0 auto 18px; }
+.leer strong { display: block; font-size: .95rem; }
+.leer p { font-size: .75rem; margin: 6px 0 16px; }
+
+/* ---------- Listen (Wireframes 13, 15, 17) ---------- */
+
+.abschnitt { font-weight: 700; font-size: .8rem; margin: 18px 0 4px; }
+.liste { list-style: none; margin: 0; padding: 0; }
+.eintrag { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--trenner); }
+.eintrag .vorschau { width: 40px; height: 40px; border: 1.5px solid var(--linie); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.eintrag .text { flex: 1; min-width: 0; }
+.eintrag .text strong { display: block; font-size: .85rem; }
+.eintrag .text span { font-size: .7rem; color: var(--text-leise); }
+
+/* Eigenschaften als Tabelle (Wireframes 8, 16) */
+.eigenschaften { margin: 20px 0 0; }
+.eigenschaften div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--trenner); font-size: .85rem; }
+.eigenschaften dt { color: var(--text-leise); }
+.eigenschaften dd { margin: 0; font-weight: 700; text-align: right; }
+.grossbild { width: 240px; max-width: 100%; aspect-ratio: 1; margin: 0 auto; border: 1.5px solid var(--linie); border-radius: var(--rund); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.grossbild img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Profil (Wireframes 18, 19) ---------- */
+
+.profilkopf { text-align: center; }
+.profilkopf .profilbild { margin: 0 auto 10px; }
+.profilkopf strong { display: block; font-size: 1.05rem; }
+.zahlen { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin: 18px 0; }
+.zahlen strong { display: block; font-size: 1.1rem; }
+.zahlen span { font-size: .7rem; }
+
+/* ---------- Navigation unten (Wireframes 5, 9, 13, 17) ---------- */
+
+.navigation {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: var(--seitenbreite);
+  height: var(--nav-hoehe); display: grid; grid-template-columns: repeat(4, 1fr); background: var(--band);
+}
+.navigation a { display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .78rem; text-decoration: none; border-left: 1px solid var(--trenner); }
+.navigation a:first-child { border-left: none; }
+.navigation a.aktiv { background: var(--dunkel); color: var(--auf-dunkel); }

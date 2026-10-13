@@ -1,115 +1,17 @@
 <!doctype html>
-<!--
-  Testseite für User Story 8 (Kleidungsstück digitalisieren), ohne Framework.
-  Stil nach den Wireframes der Technischen Konzeption (7. Hinzufügen, 5. Schrank).
-  Nur zum Ausprobieren des Backends, bis React/Vue entschieden ist; danach löschen.
-  Start: siehe frontend/testseiten/README.md
--->
+<!-- Wireframe 7 (Kleidungsstück hinzufügen), User Story 8. Speichert über POST /api/kleidung. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Hinzufügen (Test)</title>
-  <style>
-    :root {
-      --text: #5f5f5f;
-      --dunkel: #5a5a5a;
-      --linie: #9a9a9a;
-      --feld: #d6d6d6;
-      --hell: #ececec;
-      --weiss: #fff;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; background: var(--weiss); color: var(--text);
-      font-family: "DejaVu Sans", Verdana, system-ui, sans-serif;
-    }
-    .seite { max-width: 420px; margin: 0 auto; padding: 16px 20px 32px; }
-
-    .kopf { position: relative; text-align: center; margin: 8px 0 20px; }
-    .kopf h1 { font-size: 1.25rem; margin: 0; }
-    .kopf .zurueck { position: absolute; left: -6px; top: 50%; transform: translateY(-50%); }
-
-    /* Bildbereich */
-    .bildrahmen {
-      border: 1.5px solid var(--linie); border-radius: 12px; height: 190px;
-      display: flex; align-items: center; justify-content: center; overflow: hidden;
-    }
-    .bildrahmen img { width: 100%; height: 100%; object-fit: contain; display: none; }
-    .knoepfe { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 6px; }
-    .knopf-rand {
-      font: inherit; font-weight: 700; font-size: .85rem; color: var(--text);
-      background: var(--weiss); border: 1.5px solid var(--linie); border-radius: 8px; padding: 9px; cursor: pointer;
-    }
-
-    /* Felder */
-    .titel { display: block; font-weight: 700; font-size: .85rem; margin: 16px 0 6px; }
-    .titel small { font-weight: 400; }
-    input[type=text], input[type=number], input[type=date], textarea {
-      width: 100%; font: inherit; font-size: .9rem; color: var(--text);
-      background: var(--feld); border: none; border-radius: 6px; padding: 10px 12px;
-    }
-    textarea { resize: vertical; min-height: 70px; }
-    .zeile { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-    /* Auswahl als Pillen: Radio/Checkbox versteckt, Label ist die Pille */
-    .pillen { display: flex; flex-wrap: wrap; gap: 6px; }
-    .pillen input { position: absolute; opacity: 0; pointer-events: none; }
-    .pillen span {
-      display: inline-block; font-weight: 700; font-size: .75rem; padding: 5px 12px;
-      border: 1.5px solid var(--linie); border-radius: 999px; cursor: pointer; user-select: none;
-    }
-    .pillen input:checked + span { background: var(--dunkel); border-color: var(--dunkel); color: var(--weiss); }
-    .pillen input:focus-visible + span, .schalter input:focus-visible + .bahn { outline: 2px solid var(--dunkel); outline-offset: 2px; }
-
-    /* Schalter wie „Wasserdicht“ im Wireframe */
-    .schalter-zeile { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
-    .schalter-zeile .titel { margin: 0; }
-    .schalter-zeile small { display: block; font-weight: 400; font-size: .75rem; }
-    .schalter { position: relative; display: inline-block; }
-    .schalter input { position: absolute; opacity: 0; }
-    .bahn {
-      display: block; width: 44px; height: 24px; border-radius: 999px; background: var(--feld);
-      position: relative; cursor: pointer; transition: background .2s;
-    }
-    .bahn::after {
-      content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
-      border-radius: 50%; background: var(--weiss); box-shadow: 0 1px 2px #0003; transition: transform .2s;
-    }
-    .schalter input:checked + .bahn { background: var(--dunkel); }
-    .schalter input:checked + .bahn::after { transform: translateX(20px); }
-
-    .speichern {
-      width: 100%; margin-top: 24px; font: inherit; font-weight: 700; font-size: 1rem; color: var(--text);
-      background: var(--feld); border: none; border-radius: 6px; padding: 11px; cursor: pointer;
-    }
-    .speichern:disabled { opacity: .6; cursor: wait; }
-
-    #meldung { margin-top: 12px; padding: 10px 12px; border-radius: 6px; font-size: .85rem; display: none; white-space: pre-line; }
-    #meldung.ok { display: block; background: var(--hell); border-left: 4px solid var(--dunkel); }
-    #meldung.fehler { display: block; background: #f6e3e3; border-left: 4px solid #a33; color: #7a2222; }
-
-    /* Schrank wie Wireframe 5 */
-    h2 { font-size: 1.1rem; margin: 36px 0 14px; }
-    #schrank { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 12px; }
-    .karte { text-align: center; font-size: .78rem; }
-    .karte .kachel {
-      position: relative; aspect-ratio: 1; border: 1.5px solid var(--linie); border-radius: 6px; overflow: hidden;
-    }
-    .karte img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .karte .abzeichen {
-      position: absolute; top: 4px; width: 22px; height: 22px; border-radius: 50%;
-      background: var(--weiss); border: 1.5px solid var(--linie); display: flex; align-items: center; justify-content: center;
-    }
-    .karte .herz { right: 4px; }
-    .karte .schloss { left: 4px; }
-    .karte p { margin: 6px 0 0; }
-  </style>
+  <title>Sharely – Hinzufügen</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
 </head>
 <body>
 <main class="seite">
   <header class="kopf">
-    <svg class="zurueck" width="16" height="28" viewBox="0 0 16 28" aria-hidden="true"><path d="M2 2l12 12L2 26" fill="none" stroke="#5f5f5f" stroke-width="1.8"/></svg>
+    <a class="zurueck" href="schrank.html" aria-label="Zurück zum Schrank" data-symbol="zurueck"></a>
     <h1>Hinzufügen</h1>
   </header>
 
@@ -120,11 +22,11 @@
         <circle cx="45" cy="17" r="7" fill="none" stroke="#9a9a9a"/>
         <path d="M1 63 L100 36 L209 63" fill="none" stroke="#9a9a9a"/>
       </svg>
-      <img id="vorschau" alt="Vorschau des Fotos">
+      <img id="vorschau" alt="Vorschau des Fotos" hidden>
     </div>
-    <div class="knoepfe">
-      <button type="button" class="knopf-rand" id="kamera-knopf">Foto aufnehmen</button>
-      <button type="button" class="knopf-rand" id="galerie-knopf">Galerie</button>
+    <div class="knopfreihe">
+      <button type="button" class="knopf-rand klein" id="kamera-knopf">Foto aufnehmen</button>
+      <button type="button" class="knopf-rand klein" id="galerie-knopf">Galerie</button>
     </div>
     <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
     <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
@@ -167,30 +69,12 @@
 
     <label><span class="titel">Notiz</span><textarea name="notiz" maxlength="1000"></textarea></label>
 
-    <button type="submit" class="speichern" id="speichern">Speichern</button>
-    <div id="meldung" role="status"></div>
+    <button type="submit" class="knopf breit" id="speichern" style="margin-top: 24px">Speichern</button>
+    <div id="meldung" class="meldung" role="status"></div>
   </form>
-
-  <h2>Mein Schrank</h2>
-  <div id="schrank"></div>
 </main>
 
 <script>
-  const API = "http://localhost:8000/api";
-  const MAX_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzdem selbst
-
-  // Werte wie in backend/app/module/kleidung/schemas.py
-  const KATEGORIEN = {
-    oberteile: "Oberteil", hosen: "Hose", roecke: "Rock", kleider: "Kleid",
-    jacken: "Jacke", schuhe: "Schuhe", accessoires: "Accessoire",
-  };
-  const SAISONS = { fruehling: "Frühling", sommer: "Sommer", herbst: "Herbst", winter: "Winter" };
-  const ANLAESSE = { alltag: "Alltag", sport: "Sport", edel: "Edel" };
-  const HERKUENFTE = { laden: "Laden", flohmarkt: "Flohmarkt", online: "Online" };
-
-  const HERZ = '<svg width="12" height="11" viewBox="0 0 12 11" aria-label="Favorit"><path d="M6 10.5 1.2 5.8A3 3 0 0 1 6 2a3 3 0 0 1 4.8 3.8Z" fill="#5a5a5a"/></svg>';
-  const SCHLOSS = '<svg width="10" height="12" viewBox="0 0 10 12" aria-label="Privat"><rect x="1" y="5" width="8" height="6.5" rx="1" fill="#5a5a5a"/><path d="M2.8 5V3.5a2.2 2.2 0 0 1 4.4 0V5" fill="none" stroke="#5a5a5a" stroke-width="1.3"/></svg>';
-
   function pillen(ziel, name, werte, typ) {
     const box = document.getElementById(ziel);
     for (const [wert, text] of Object.entries(werte)) {
@@ -216,11 +100,6 @@
   const meldung = document.getElementById("meldung");
   let bild = null;
 
-  function zeige(text, art) {
-    meldung.textContent = text;
-    meldung.className = art;
-  }
-
   for (const id of ["kamera", "galerie"]) {
     const eingabe = document.getElementById(id);
     document.getElementById(id + "-knopf").onclick = () => eingabe.click();
@@ -228,21 +107,21 @@
       const datei = eingabe.files[0];
       eingabe.value = "";
       if (!datei) return;
-      if (datei.size > MAX_MB * 1024 * 1024) {
-        return zeige(`Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_MB} MB.`, "fehler");
+      if (datei.size > MAX_BILD_MB * 1024 * 1024) {
+        return zeigeMeldung(meldung, `Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_BILD_MB} MB.`, "fehler");
       }
       bild = datei;
-      meldung.className = "";
+      meldung.textContent = "";
       vorschau.src = URL.createObjectURL(bild);
-      vorschau.style.display = "block";
+      vorschau.hidden = false;
       platzhalter.style.display = "none";
     };
   }
 
   formular.onsubmit = async (e) => {
     e.preventDefault();
-    if (!bild) return zeige("Bitte zuerst ein Foto aufnehmen oder aus der Galerie wählen.", "fehler");
-    if (!formular.kategorie.value) return zeige("Bitte eine Kategorie auswählen.", "fehler");
+    if (!bild) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder aus der Galerie wählen.", "fehler");
+    if (!formular.kategorie.value) return zeigeMeldung(meldung, "Bitte eine Kategorie auswählen.", "fehler");
 
     const daten = new FormData();
     // leere Felder gar nicht erst schicken
@@ -256,51 +135,15 @@
     try {
       const antwort = await fetch(`${API}/kleidung`, { method: "POST", body: daten });
       const inhalt = await antwort.json();
-      if (!antwort.ok) {
-        const text = typeof inhalt.detail === "string"
-          ? inhalt.detail
-          : inhalt.detail.map((f) => `${f.loc.at(-1)}: ${f.msg.replace(/^Value error, /, "")}`).join("\n");
-        return zeige(text, "fehler");
-      }
-      zeige(`${KATEGORIEN[inhalt.kategorie]} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
-      formular.reset();
-      bild = null;
-      vorschau.style.display = "none";
-      platzhalter.style.display = "";
-      ladeSchrank();
+      if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
+      // Bestätigung zeigt der Schrank an
+      location.href = `schrank.html?neu=${inhalt.kategorie}`;
     } catch {
-      zeige("Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
     } finally {
       knopf.disabled = false;
     }
   };
-
-  async function ladeSchrank() {
-    const schrank = document.getElementById("schrank");
-    try {
-      const liste = await (await fetch(`${API}/kleidung`)).json();
-      schrank.replaceChildren(...liste.map((k) => {
-        const titel = [KATEGORIEN[k.kategorie], k.marke].filter(Boolean).join(" · ");
-        const karte = document.createElement("div");
-        karte.className = "karte";
-        const kachel = document.createElement("div");
-        kachel.className = "kachel";
-        const img = document.createElement("img");
-        img.src = "http://localhost:8000" + k.bild_url;
-        img.alt = titel;
-        kachel.append(img);
-        if (k.favorit) kachel.insertAdjacentHTML("beforeend", `<span class="abzeichen herz">${HERZ}</span>`);
-        if (k.privat) kachel.insertAdjacentHTML("beforeend", `<span class="abzeichen schloss">${SCHLOSS}</span>`);
-        const text = document.createElement("p");
-        text.textContent = titel;
-        karte.append(kachel, text);
-        return karte;
-      }));
-    } catch {
-      schrank.textContent = "Schrank konnte nicht geladen werden.";
-    }
-  }
-  ladeSchrank();
 </script>
 </body>
 </html>
