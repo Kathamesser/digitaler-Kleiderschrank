@@ -150,12 +150,35 @@ textarea { resize: vertical; min-height: 70px; }
 
 /* ---------- Suche und Filter (Wireframe 5) ---------- */
 
-.suche { display: flex; align-items: center; gap: 8px; background: var(--band); border-radius: 2px; padding: 0 10px; margin: 0 4px 16px; }
+.suchzeile { display: flex; gap: 8px; margin: 0 4px 16px; }
+.suche { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--band); border-radius: 2px; padding: 0 10px; }
+.filterknopf {
+  position: relative; flex-shrink: 0; width: 36px; display: flex; align-items: center; justify-content: center;
+  background: var(--band); border: none; border-radius: 2px; color: var(--text); cursor: pointer;
+}
+.filterknopf .zahl {
+  position: absolute; top: -7px; right: -7px; min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: var(--rund-pille); border: 2px solid var(--flaeche); background: var(--dunkel); color: var(--auf-dunkel);
+  font-size: .62rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
 .suche input { background: transparent; padding: 7px 0; font-weight: 700; font-size: .8rem; }
 .filterleiste { display: flex; gap: 0; overflow-x: auto; background: var(--band); margin: 0 calc(-1 * var(--rand)) 20px; padding: 10px var(--rand); scrollbar-width: none; }
 .filterleiste button { font: inherit; font-size: .8rem; background: none; border: none; color: var(--text); padding: 0 6px; cursor: pointer; white-space: nowrap; border-left: 1px solid var(--text); }
 .filterleiste button:first-child { border-left: none; padding-left: 0; }
 .filterleiste button.aktiv { font-weight: 700; }
+
+/* Filterblatt: schiebt sich von unten über die Seite (Schrank) */
+.blatt {
+  width: 100%; max-width: var(--seitenbreite); max-height: 85vh; margin: auto auto 0; padding: 0;
+  border: none; border-radius: var(--rund) var(--rund) 0 0; background: var(--flaeche); color: var(--text); overflow-y: auto;
+}
+.blatt::backdrop { background: #0006; }
+.blatt-kopf { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; background: var(--flaeche); padding: 16px var(--rand) 4px; }
+.blatt-kopf h2 { font-size: 1.1rem; margin: 0; }
+.blatt-inhalt { padding: 0 var(--rand) 20px; }
+.blatt-inhalt .zeile small { display: block; font-size: .7rem; margin-bottom: 4px; }
+.blatt-fuss { position: sticky; bottom: 0; display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; background: var(--flaeche); padding: 12px var(--rand) 16px; border-top: 1px solid var(--trenner); }
+.schliessen { display: flex; padding: 6px; background: none; border: none; color: var(--text); cursor: pointer; }
 
 /* ---------- Raster mit Kacheln (Wireframes 5, 11, 18, 19) ---------- */
 

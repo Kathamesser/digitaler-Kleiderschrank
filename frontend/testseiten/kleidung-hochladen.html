@@ -75,14 +75,6 @@
 </main>
 
 <script>
-  function pillen(ziel, name, werte, typ) {
-    const box = document.getElementById(ziel);
-    for (const [wert, text] of Object.entries(werte)) {
-      const label = document.createElement("label");
-      label.innerHTML = `<input type="${typ}" name="${name}" value="${wert}"><span>${text}</span>`;
-      box.append(label);
-    }
-  }
   pillen("kategorien", "kategorie", KATEGORIEN, "radio");
   pillen("saisons", "saison", SAISONS, "checkbox");
   pillen("anlaesse", "anlass", ANLAESSE, "checkbox");

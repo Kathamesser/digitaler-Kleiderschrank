@@ -25,6 +25,8 @@ const SYMBOL = {
   schloss: '<svg width="10" height="12" viewBox="0 0 10 12" aria-label="Privat"><rect x="1" y="5" width="8" height="6.5" rx="1" fill="currentColor"/><path d="M2.8 5V3.5a2.2 2.2 0 0 1 4.4 0V5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
   haken: '<svg width="11" height="9" viewBox="0 0 11 9" aria-label="ausgewählt"><path d="M1 4.5 4 7.5 10 1.5" fill="none" stroke="#fff" stroke-width="1.8"/></svg>',
   plus: '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2v18M2 11h18" stroke="#fff" stroke-width="2.2"/></svg>',
+  filter: '<svg width="16" height="15" viewBox="0 0 16 15" aria-hidden="true"><path d="M1 1.5h14L9.6 7.8v5.4l-3.2-1.6V7.8Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+  schliessen: '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="m2 2 10 10M12 2 2 12" stroke="currentColor" stroke-width="1.6"/></svg>',
   lupe: '<svg width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><circle cx="5.5" cy="5.5" r="4.3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m8.7 8.7 3.6 3.6" stroke="currentColor" stroke-width="1.3"/></svg>',
   person: '<svg width="55%" height="55%" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.6" fill="#fff"/><path d="M3 22a9 9 0 0 1 18 0Z" fill="#fff"/></svg>',
   zahnrad: '<svg width="22" height="22" viewBox="0 0 24 24" aria-label="Einstellungen"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="1.4"/></svg>',
@@ -52,6 +54,21 @@ function symboleEinsetzen() {
   for (const el of document.querySelectorAll("[data-symbol]")) el.innerHTML = SYMBOL[el.dataset.symbol];
 }
 document.addEventListener("DOMContentLoaded", symboleEinsetzen);
+
+/** Auswahl-Pillen in den Container mit der id `ziel` setzen (Hinzufügen, Filter im Schrank).
+ *  werte: { wert: Beschriftung }, typ: "radio" oder "checkbox". */
+function pillen(ziel, name, werte, typ) {
+  const box = document.getElementById(ziel);
+  for (const [wert, text] of Object.entries(werte)) {
+    const label = document.createElement("label");
+    const eingabe = document.createElement("input");
+    Object.assign(eingabe, { type: typ, name, value: wert });
+    const span = document.createElement("span");
+    span.textContent = text; // textContent, weil Filterwerte auch aus Freitext der Nutzer kommen
+    label.append(eingabe, span);
+    box.append(label);
+  }
+}
 
 /** GET ans Backend; wirft bei Fehlern eine Meldung, die man direkt anzeigen kann. */
 async function holeJson(pfad) {
