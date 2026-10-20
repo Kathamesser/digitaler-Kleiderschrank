@@ -61,14 +61,13 @@
 <script>
   seitenkopf(`Hallo ${NUTZER.name}!`);
 
-  // geliehen_von: Vorschlag fürs Modul verleihen, siehe schrank.html (statusVon)
   holeJson("/kleidung")
     .then((liste) => {
       const zaehle = (bedingung) => liste.filter(bedingung).length;
-      document.getElementById("z-eigene").textContent = zaehle((k) => !k.geliehen_von && k.status === "im_schrank");
+      document.getElementById("z-eigene").textContent = zaehle((k) => k.status === "im_schrank");
       document.getElementById("z-wunsch").textContent = zaehle((k) => k.status === "wunsch");
       document.getElementById("z-verliehen").textContent = zaehle((k) => k.status === "verliehen");
-      document.getElementById("z-geliehen").textContent = zaehle((k) => k.geliehen_von);
+      document.getElementById("z-geliehen").textContent = zaehle((k) => k.status === "geliehen");
     })
     .catch((fehler) => zeigeMeldung(document.getElementById("meldung"), fehler.message, "fehler"));
 </script>

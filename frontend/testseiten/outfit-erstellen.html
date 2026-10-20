@@ -36,7 +36,7 @@
       <div class="filter-titel"><span class="titel">Ausgewählte Teile</span><a href="#" class="link" data-schliessen>Auswahl ändern</a></div>
       <div class="auswahl-vorschau" id="vorschau"></div>
       <label><span class="titel">Name des Outfits</span><input type="text" name="name" maxlength="100" placeholder="z. B. Winterspaziergang"></label>
-      <span class="titel">Anlass</span>
+      <span class="titel">Kategorien</span>
       <div class="pillen pillen-kasten" id="anlaesse"></div>
       <div id="speichern-meldung" class="meldung" role="status"></div>
     </div>
@@ -53,7 +53,7 @@
     { text: "Abbrechen", symbol: "schliessen", href: "outfits.html", art: "knopf-rand" },
     { text: "Bestätigen", symbol: "ok", onclick: oeffneSpeichern },
   ]);
-  pillen("anlaesse", "anlass", ANLAESSE, "checkbox");
+  pillen("anlaesse", "kategorie", Object.fromEntries(KATEGORIEN_VORGABE.map((k) => [k, k])), "checkbox");
 
   const raster = document.getElementById("raster");
   const meldung = document.getElementById("meldung");

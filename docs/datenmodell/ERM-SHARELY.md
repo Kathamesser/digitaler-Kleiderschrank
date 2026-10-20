@@ -173,7 +173,7 @@ Noch offen (Manuel: „bleibt erstmal offen“):
 
 ## 10. Auswirkungen auf den bestehenden Code
 
-Kathas Modul `backend/app/module/kleidung` (User Story 8) entspricht noch dem ERM vom 13.10.2026. Für die Mockups müsste es angepasst werden, sobald das Team das ERM beschließt:
+Kathas Modul `backend/app/module/kleidung` (User Story 8) entsprach dem ERM vom 13.10.2026. **Umgesetzt am 20.10.2026 (Katha/Claude(Laptop.Code)):** alle Punkte der Tabelle; `kategorie_ids`, `masse` und `leihvorgang_id` sind vorbereitet, aber noch ohne eigene Logik. Prüfregeln und Indizes in MongoDB fehlen noch. Felder: `docs/api/README.md`.
 
 | Heute im Code | Laut ERM vom 20.10.2026 |
 |---|---|

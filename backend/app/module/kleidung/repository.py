@@ -17,15 +17,25 @@ def _collection():
 
 
 def _als_dict(dokument: dict) -> dict:
-    """MongoDB-Dokument → einfaches dict mit `id` und `nutzer_id` als Text."""
+    """MongoDB-Dokument → einfaches dict, alle Verweise (`…_id`) als Text."""
     dokument = dict(dokument)
     dokument["id"] = str(dokument.pop("_id"))
     dokument["nutzer_id"] = str(dokument["nutzer_id"])
+    dokument["kategorie_ids"] = [str(k) for k in dokument.get("kategorie_ids", [])]
+    if dokument.get("leihvorgang_id") is not None:
+        dokument["leihvorgang_id"] = str(dokument["leihvorgang_id"])
     return dokument
 
 
 async def anlegen(daten: dict) -> dict:
-    daten = {**daten, "nutzer_id": ObjectId(daten["nutzer_id"])}
+    """Verweise werden als ObjectId gespeichert (ERM, Reiter „MongoDB“)."""
+    daten = {
+        **daten,
+        "nutzer_id": ObjectId(daten["nutzer_id"]),
+        "kategorie_ids": [ObjectId(k) for k in daten.get("kategorie_ids", [])],
+    }
+    if daten.get("leihvorgang_id") is not None:
+        daten["leihvorgang_id"] = ObjectId(daten["leihvorgang_id"])
     ergebnis = await _collection().insert_one(daten)
     return _als_dict({**daten, "_id": ergebnis.inserted_id})
 

@@ -32,9 +32,9 @@
       <div>
         <dl class="eigenschaften" id="eigenschaften"></dl>
 
-        <details class="aufklapper" id="weitere" hidden>
-          <summary><span data-symbol="lineal"></span> Weitere Angaben <span class="pfeil" data-symbol="unten"></span></summary>
-          <div class="aufklapper-inhalt"><dl class="eigenschaften" id="weitere-liste"></dl></div>
+        <details class="aufklapper" id="masse" hidden>
+          <summary><span data-symbol="lineal"></span> Maße <span class="pfeil" data-symbol="unten"></span></summary>
+          <div class="aufklapper-inhalt"><dl class="eigenschaften" id="masse-liste"></dl></div>
         </details>
 
         <!-- Noch ohne Backend: Avatar, Verleihen, Ändern, Löschen -->
@@ -59,7 +59,6 @@
 
   const euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
   const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
-  const STATUSTEXT = { im_schrank: ["haus", "Eigenes"], verliehen: ["rechts", "Verliehen"], verschenkt: ["senden", "Verschenkt"], wunsch: ["stern", "Wunschartikel"] };
 
   /** Wert einer Zeile als Knoten: Text, Pillen oder eigener Inhalt. */
   const pille = (text, klasse = "") => {
@@ -94,27 +93,28 @@
     bild.alt = titelVon(k);
     bild.onerror = () => { rahmen.innerHTML = SYMBOL.buegel; };
 
-    const [statusSymbol, statusText] = STATUSTEXT[k.status] || ["haus", k.status];
-    document.getElementById("status").innerHTML = `${SYMBOL[statusSymbol]} `;
-    document.getElementById("status").append(statusText);
+    const status = STATUS.find((s) => s.wert === k.status) || { symbol: "haus", text: k.status };
+    document.getElementById("status").innerHTML = `${SYMBOL[status.symbol]} `;
+    document.getElementById("status").append(status.text);
 
     // Wie im Mockup; nur ausgefüllte Angaben zeigen
     const dl = document.getElementById("eigenschaften");
-    zeile(dl, "Kategorie", pille(KATEGORIEN_MEHRZAHL[k.kategorie]));
-    if (k.anlass.length) zeile(dl, "Anlass", k.anlass.map((a) => {
-      const p = pille(ANLAESSE[a], "etikett");
+    zeile(dl, "Kleidungsart", pille(KLEIDUNGSARTEN[k.kleidungsart]));
+    // Namen der Kategorien gibt es erst mit dem Modul Kategorien, bis dahin nur die Anzahl
+    if (k.kategorie_ids.length) {
+      const p = pille(k.kategorie_ids.length === 1 ? "1 Kategorie" : `${k.kategorie_ids.length} Kategorien`, "etikett");
       p.insertAdjacentHTML("afterbegin", SYMBOL.etikett);
-      return p;
-    }));
-    if (k.farbe) {
+      zeile(dl, "Kategorien", p);
+    }
+    const farbe = FARBEN.find((f) => f.wert === k.farbe);
+    if (farbe) {
       const punkt = document.createElement("span");
       punkt.className = "farbpunkt";
-      const erkannt = FARBEN.find((f) => erkannteWerte(k.farbe, FARBEN).has(f.wert));
-      punkt.style.background = erkannt ? erkannt.farbe : "var(--feld)";
-      zeile(dl, "Farbe", [punkt, k.farbe]);
+      punkt.style.background = farbe.farbe;
+      zeile(dl, "Farbe", [punkt, farbe.text]);
     }
     if (k.saison.length) zeile(dl, "Saison", k.saison.map((s) => pille(SAISONS[s])));
-    if (k.material) zeile(dl, "Material", k.material.split(/,\s*/).map((m) => pille(m)));
+    if (k.material) zeile(dl, "Material", pille(MATERIALIEN[k.material]));
     if (k.kaufdatum) {
       const kal = document.createElement("span");
       kal.innerHTML = SYMBOL.kalender;
@@ -126,10 +126,14 @@
     schalter.innerHTML = `<input type="checkbox" disabled aria-label="Privat" ${k.privat ? "checked" : ""}><span class="bahn"></span>`;
     zeile(dl, "Privat", [schalter, k.privat ? "Nur für dich sichtbar" : "Für Freunde sichtbar"], "schloss");
 
-    // Angaben, die es im Mockup nicht gibt, aber im Datenmodell
-    const weitere = [["Größe", k.groesse], ["Marke", k.marke], ["Herkunft", HERKUENFTE[k.herkunft]], ["Notiz", k.notiz]].filter(([, w]) => w);
-    for (const [name, wert] of weitere) zeile(document.getElementById("weitere-liste"), name, wert);
-    document.getElementById("weitere").hidden = !weitere.length;
+    // Maße in der Reihenfolge der Messpunkte (von oben nach unten)
+    const reihenfolge = Object.keys(MESSPUNKTE);
+    const masse = [...k.masse].sort((a, b) => reihenfolge.indexOf(a.messpunkt) - reihenfolge.indexOf(b.messpunkt));
+    for (const m of masse) {
+      zeile(document.getElementById("masse-liste"), MESSPUNKTE[m.messpunkt] || m.messpunkt,
+        `${m.wert_cm.toLocaleString("de-DE")} cm`);
+    }
+    document.getElementById("masse").hidden = !masse.length;
 
     document.getElementById("inhalt").hidden = false;
   }

@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Mockups „Desktop · Kleiderschrank“ und „Desktop · Kleidung filtern (Overlay)“. Daten live aus GET /api/kleidung.
-     Filter mit den Werten, die beim Hinzufügen heute gespeichert werden (Entscheidung Katha, 20.10.2026). -->
+     Filter im Aufbau des Mockups (Entscheidung Katha, 20.10.2026) mit den Feldern des ERM vom 20.10.2026. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -64,12 +64,12 @@
 
       <div class="auswahl-spalten">
         <div>
-          <div class="filter-titel"><span class="titel">Kategorie</span><small data-zaehler="kategorie" data-leer="eine Auswahl"></small></div>
-          <div class="auswahlliste" id="f-kategorie"></div>
+          <div class="filter-titel"><span class="titel">Kleidungsart</span><small data-zaehler="kleidungsart" data-leer="eine Auswahl"></small></div>
+          <div class="auswahlliste" id="f-kleidungsart"></div>
         </div>
-        <div>
-          <div class="filter-titel"><span class="titel">Anlass</span><small data-zaehler="anlass" data-leer="mehrere"></small></div>
-          <div class="auswahlliste" id="f-anlass"></div>
+        <div title="Kommt mit dem Modul Kategorien">
+          <div class="filter-titel"><span class="titel">Kategorie</span><small>folgt</small></div>
+          <div class="auswahlliste" id="f-kategorie"></div>
         </div>
         <div>
           <div class="filter-titel"><span class="titel">Material</span><small data-zaehler="material" data-leer="mehrere"></small></div>
@@ -131,27 +131,23 @@
 
   // Bestätigung nach dem Hinzufügen (User Story 8), kommt von kleidung-hochladen.html
   const neu = new URLSearchParams(location.search).get("neu");
-  if (neu && KATEGORIEN[neu]) {
-    zeigeMeldung(meldung, `${KATEGORIEN[neu]} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
+  if (neu) {
+    zeigeMeldung(meldung, `${neu} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
     history.replaceState(null, "", "schrank.html");
   }
 
   // ---------- Filter-Fenster ----------
 
-  const STATUS = [
-    { wert: "im_schrank", text: "Eigenes", symbol: "haus" },
-    { wert: "geliehen", text: "Geliehen", symbol: "links" },
-    { wert: "verliehen", text: "Verliehen", symbol: "rechts" },
-    { wert: "wunsch", text: "Wunschartikel", symbol: "stern" },
-  ];
-  const LISTEN = ["farbe", "anlass", "material", "saison", "status"];
+  const LISTEN = ["farbe", "material", "saison", "status"];
 
   farbkreise("f-farbe", "farbe", "checkbox");
-  pillen("f-kategorie", "kategorie", { alle: "Alle", ...KATEGORIEN_MEHRZAHL }, "radio");
-  formular.querySelector('[name="kategorie"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
-  pillen("f-anlass", "anlass", ANLAESSE, "checkbox");
-  pillen("f-material", "material", Object.fromEntries(MATERIALIEN.map((m) => [m.wert, m.text])), "checkbox");
-  pillen("f-saison", "saison", { ...SAISONS, ganzjaehrig: "Ganzjährig" }, "checkbox");
+  pillen("f-kleidungsart", "kleidungsart", { alle: "Alle", ...KLEIDUNGSARTEN }, "radio");
+  formular.querySelector('[name="kleidungsart"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
+  // Kategorien: nur zur Ansicht, bis es das Modul Kategorien (kategorie_ids → Namen) gibt
+  pillen("f-kategorie", "kategorie", Object.fromEntries(KATEGORIEN_VORGABE.map((k) => [k, k])), "checkbox");
+  for (const f of formular.querySelectorAll('[name="kategorie"]')) f.disabled = true;
+  pillen("f-material", "material", MATERIALIEN, "checkbox");
+  pillen("f-saison", "saison", SAISONS, "checkbox");
   for (const { wert, text, symbol } of STATUS) {
     const label = document.createElement("label");
     label.innerHTML = `<input type="checkbox" name="status" value="${wert}"><span>${SYMBOL[symbol]} ${text}</span>`;
@@ -163,7 +159,7 @@
   /** Aktuelle Auswahl im Filter. Leere Liste, "alle" bzw. null = kein Filter. */
   function kriterien() {
     const daten = new FormData(formular);
-    const f = { kategorie: daten.get("kategorie") || "alle" };
+    const f = { kleidungsart: daten.get("kleidungsart") || "alle" };
     for (const name of LISTEN) f[name] = daten.getAll(name);
     f.favorit = daten.has("favorit");
     f.privat = daten.has("privat");
@@ -175,27 +171,20 @@
     return f;
   }
 
-  /** Status eines Teils für den Filter. im_schrank = Eigenes, verliehen und wunsch kommen vom Backend
-   *  (wunsch erst mit der Wunschliste). geliehen = Teil eines Freundes bei mir; dafür liefert die API noch
-   *  nichts, Vorschlag fürs Modul verleihen: Feld geliehen_von in GET /api/kleidung mitschicken. */
-  function statusVon(k) {
-    return k.geliehen_von ? "geliehen" : k.status;
-  }
-
   /** Innerhalb einer Eigenschaft reicht ein Treffer (oder), zwischen Eigenschaften müssen alle passen (und).
    *  Teile ohne Angabe fallen raus, sobald nach dieser Eigenschaft gefiltert wird. */
   function passtZuFilter(k, f) {
     const eins = (auswahl, vorhanden) => !auswahl.length || auswahl.some((wert) => vorhanden.has(wert));
-    if (f.kategorie !== "alle" && k.kategorie !== f.kategorie) return false;
+    if (f.kleidungsart !== "alle" && k.kleidungsart !== f.kleidungsart) return false;
     if (f.favorit && !k.favorit) return false;
     if (f.privat && !k.privat) return false;
-    if (!eins(f.farbe, erkannteWerte(k.farbe, FARBEN))) return false;
-    if (!eins(f.material, erkannteWerte(k.material, MATERIALIEN))) return false;
-    if (!eins(f.anlass, new Set(k.anlass))) return false;
-    // Ganzjährig = alle vier Saisons angekreuzt
-    const saisons = new Set(k.saison.length === 4 ? [...k.saison, "ganzjaehrig"] : k.saison);
+    if (!eins(f.farbe, new Set([k.farbe]))) return false;
+    if (!eins(f.material, new Set([k.material]))) return false;
+    // Ganzjährige Teile passen zu jeder Saison, Filter „Ganzjährig“ findet nur ganzjährige Teile
+    const saisons = new Set(k.saison.includes("ganzjaehrig") ? Object.keys(SAISONS) : k.saison);
     if (!eins(f.saison, saisons)) return false;
-    if (!eins(f.status, new Set([statusVon(k)]))) return false;
+    // Status kommt vom Backend: geliehene Teile sind eigene Einträge mit status = geliehen (ERM, Regel 6)
+    if (!eins(f.status, new Set([k.status]))) return false;
     if (f.preisVon !== null || f.preisBis !== null) {
       if (k.preis == null) return false;
       if (f.preisVon !== null && k.preis < f.preisVon) return false;
@@ -211,7 +200,7 @@
 
   /** Wie viele Eigenschaften gerade filtern (Zahl am Filter-Knopf). */
   function anzahlAktiv(f) {
-    return LISTEN.filter((name) => f[name].length).length + (f.kategorie !== "alle") + f.favorit + f.privat
+    return LISTEN.filter((name) => f[name].length).length + (f.kleidungsart !== "alle") + f.favorit + f.privat
       + (f.preisVon !== null || f.preisBis !== null) + Boolean(f.kaufVon || f.kaufBis);
   }
 
@@ -219,7 +208,7 @@
   function zaehlerSetzen(f) {
     for (const el of formular.querySelectorAll("[data-zaehler]")) {
       const name = el.dataset.zaehler;
-      const n = name === "kategorie" ? Number(f.kategorie !== "alle") : f[name].length;
+      const n = name === "kleidungsart" ? Number(f.kleidungsart !== "alle") : f[name].length;
       el.textContent = n ? `${n} gewählt` : el.dataset.leer;
     }
   }
@@ -236,7 +225,8 @@
   function passtZurSuche(k) {
     const wort = suche.value.trim().toLowerCase();
     if (!wort) return true;
-    return [KATEGORIEN[k.kategorie], k.marke, k.farbe, k.material, k.groesse, k.notiz]
+    const farbe = FARBEN.find((x) => x.wert === k.farbe);
+    return [k.name, KLEIDUNGSARTEN[k.kleidungsart], KLEIDUNGSART_EINZAHL[k.kleidungsart], farbe && farbe.text, MATERIALIEN[k.material]]
       .some((feld) => feld && feld.toLowerCase().includes(wort));
   }
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Mockup „Desktop · Kleidungsstück hinzufügen (Overlay)“, User Story 8. Speichert über POST /api/kleidung.
-     Felder wie heute im Backend; Farbe und Material werden wie im Mockup gewählt und als Text gespeichert. -->
+     Felder nach Manuels ERM vom 20.10.2026 (docs/datenmodell/ERM-SHARELY.md). -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -32,27 +32,32 @@
         <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
         <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
         <input type="file" id="galerie" accept="image/jpeg,image/png,image/webp" hidden>
+
+        <div class="status-zeile" style="border-top: 1.5px solid var(--linie); padding-top: 22px; display: block">
+          <span class="titel">Status</span>
+          <div class="pillen" id="status" style="margin-top: 12px"></div>
+          <p class="leise" style="margin: 10px 0 0">„Verliehen“ setzt die App, sobald du ein Teil verleihst.</p>
+        </div>
       </div>
 
       <div>
         <div class="zeile">
-          <label><span class="titel" style="margin-top: 0">Marke</span><input type="text" name="marke" maxlength="50" placeholder="z. B. Vaude"></label>
+          <label><span class="titel" style="margin-top: 0">Name</span><input type="text" name="name" maxlength="100" placeholder="z. B. Wintermantel"></label>
           <div><span class="titel" style="margin-top: 0">Farbe</span><div class="farben" id="farben"></div></div>
         </div>
 
-        <span class="titel">Kategorie</span>
-        <div class="pillen pillen-kasten" id="kategorien"></div>
+        <span class="titel">Kleidungsart</span>
+        <div class="pillen pillen-kasten" id="kleidungsarten"></div>
 
-        <span class="titel">Anlass</span>
-        <div class="pillen pillen-kasten" id="anlaesse"></div>
+        <span class="titel">Kategorie</span>
+        <div class="pillen pillen-kasten" id="kategorien" title="Kommt mit dem Modul Kategorien"></div>
+        <p class="leise" style="margin: 8px 0 0">Kategorien kommen mit dem eigenen Modul, bis dahin nur zur Ansicht.</p>
 
         <details class="aufklapper">
-          <summary><span data-symbol="lineal"></span> Weitere Angaben <span class="pfeil" data-symbol="unten"></span></summary>
+          <summary><span data-symbol="lineal"></span> Maße <span class="pfeil" data-symbol="unten"></span></summary>
           <div class="aufklapper-inhalt">
-            <label><span class="titel">Größe</span><input type="text" name="groesse" maxlength="20" placeholder="z. B. M, 38"></label>
-            <span class="titel">Herkunft</span>
-            <div class="pillen" id="herkuenfte"></div>
-            <label><span class="titel">Notiz</span><textarea name="notiz" maxlength="1000"></textarea></label>
+            <p class="leise" style="margin-top: 0">In cm, gemessen wie am Avatar. Nur ausfüllen, was zum Teil passt.</p>
+            <div class="masse-raster" id="masse"></div>
           </div>
         </details>
 
@@ -90,19 +95,43 @@
 <script>
   seitenkopf("Mein Kleiderschrank");
 
-  farbkreise("farben", "farbwahl", "checkbox");
-  pillen("kategorien", "kategorie", KATEGORIEN_MEHRZAHL, "radio");
-  pillen("anlaesse", "anlass", ANLAESSE, "checkbox");
+  farbkreise("farben", "farbe", "checkbox");
+  pillen("kleidungsarten", "kleidungsart", KLEIDUNGSARTEN, "radio");
+  pillen("kategorien", "kategorie", Object.fromEntries(KATEGORIEN_VORGABE.map((k) => [k, k])), "checkbox");
+  for (const f of document.querySelectorAll('[name="kategorie"]')) f.disabled = true;
   pillen("saisons", "saison", SAISONS, "checkbox");
-  pillen("materialien", "materialwahl", Object.fromEntries(MATERIALIEN.map((m) => [m.wert, m.text])), "checkbox");
-  pillen("herkuenfte", "herkunft", HERKUENFTE, "checkbox");
+  pillen("materialien", "material", MATERIALIEN, "checkbox");
 
-  // Farbe und Herkunft: Kästchen statt Radio, damit sie sich wieder abwählen lassen; höchstens eins aktiv
-  for (const [box, name] of [["farben", "farbwahl"], ["herkuenfte", "herkunft"]]) {
+  for (const { wert, text, symbol } of STATUS) {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="radio" name="status" value="${wert}"><span>${SYMBOL[symbol]} ${text}</span>`;
+    document.getElementById("status").append(label);
+  }
+  document.querySelector('[name="status"][value="im_schrank"]').checked = true;
+  document.querySelector('[name="status"][value="verliehen"]').disabled = true;
+
+  for (const [schluessel, text] of Object.entries(MESSPUNKTE)) {
+    const label = document.createElement("label");
+    label.innerHTML = '<span></span><input type="number" min="0.1" max="300" step="0.1" inputmode="decimal" placeholder="cm">';
+    label.querySelector("span").textContent = text;
+    label.querySelector("input").dataset.messpunkt = schluessel;
+    document.getElementById("masse").append(label);
+  }
+
+  // Farbe und Material: Kästchen statt Radio, damit sie sich wieder abwählen lassen; höchstens eins aktiv.
+  // Ganzjährig schließt die einzelnen Saisons aus (so prüft es auch das Backend).
+  for (const [box, name] of [["farben", "farbe"], ["materialien", "material"]]) {
     document.getElementById(box).onchange = (e) => {
       for (const f of document.querySelectorAll(`[name="${name}"]`)) if (f !== e.target) f.checked = false;
     };
   }
+  document.getElementById("saisons").onchange = (e) => {
+    const ganzjaehrig = e.target.value === "ganzjaehrig";
+    if (!e.target.checked) return;
+    for (const f of document.querySelectorAll('[name="saison"]')) {
+      if (f !== e.target && (ganzjaehrig || f.value === "ganzjaehrig")) f.checked = false;
+    }
+  };
 
   document.getElementById("kaufdatum").max = new Date().toISOString().slice(0, 10);
 
@@ -137,19 +166,17 @@
   formular.onsubmit = async (e) => {
     e.preventDefault();
     if (!bild) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder hochladen.", "fehler");
-    if (!formular.kategorie.value) return zeigeMeldung(meldung, "Bitte eine Kategorie auswählen.", "fehler");
+    if (!formular.kleidungsart.value) return zeigeMeldung(meldung, "Bitte eine Kleidungsart auswählen.", "fehler");
 
     const daten = new FormData();
-    const eingaben = new FormData(formular);
-    // leere Felder gar nicht erst schicken; Farb- und Materialwahl werden zu Text
-    for (const [feld, wert] of eingaben) {
-      if (feld === "farbwahl" || feld === "materialwahl") continue;
+    // leere Felder gar nicht erst schicken (Maße haben kein name, die kommen unten als JSON)
+    for (const [feld, wert] of new FormData(formular)) {
       if (wert.trim() !== "") daten.append(feld, wert);
     }
-    const farbe = FARBEN.find((f) => f.wert === eingaben.get("farbwahl"));
-    if (farbe) daten.append("farbe", farbe.text);
-    const material = MATERIALIEN.filter((m) => eingaben.getAll("materialwahl").includes(m.wert)).map((m) => m.text);
-    if (material.length) daten.append("material", material.join(", "));
+    const masse = [...document.querySelectorAll("[data-messpunkt]")]
+      .filter((f) => f.value !== "")
+      .map((f) => ({ messpunkt: f.dataset.messpunkt, wert_cm: Number(f.value) }));
+    if (masse.length) daten.append("masse", JSON.stringify(masse));
     daten.append("bild", bild);
 
     const knopf = document.getElementById("speichern");
@@ -159,7 +186,7 @@
       const inhalt = await antwort.json();
       if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
       // Bestätigung zeigt der Schrank an
-      location.href = `schrank.html?neu=${inhalt.kategorie}`;
+      location.href = `schrank.html?neu=${encodeURIComponent(titelVon(inhalt))}`;
     } catch {
       zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
     } finally {

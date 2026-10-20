@@ -10,7 +10,7 @@ from pathlib import Path
 
 from app.core.config import get_settings
 from app.module.kleidung import repository
-from app.module.kleidung.schemas import KleidungsstueckAngaben, KleidungsstueckAntwort, Status
+from app.module.kleidung.schemas import KleidungsstueckAntwort, KleidungsstueckNeu
 
 
 class BildUngueltig(Exception):
@@ -55,11 +55,13 @@ def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
 
 async def digitalisieren(
     nutzer_id: str,
-    angaben: KleidungsstueckAngaben,
+    angaben: KleidungsstueckNeu,
     bild: bytes,
 ) -> KleidungsstueckAntwort:
     """User Story 8: Foto prüfen, im Upload-Ordner des Nutzers ablegen und das
-    Kleidungsstück anlegen."""
+    Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
+    Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
+    verleihen."""
     if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
         raise BildZuGross()
     endung = bild_format(bild)
@@ -78,7 +80,7 @@ async def digitalisieren(
         kleidungsstueck = await repository.anlegen({
             **daten,
             "nutzer_id": nutzer_id,
-            "status": Status.im_schrank.value,
+            "leihvorgang_id": None,
             "bild_pfad": bild_pfad,
             "erstellt_am": datetime.now(timezone.utc),
         })

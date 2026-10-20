@@ -290,7 +290,7 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 - `uploads/`: Bildablage, nur lokal, nicht im Repo.
 - VS-Code-Einstellungen und `pytest.ini` fürs ganze Team.
 
-### 6.2 User Story 8: Kleidungsstück digitalisieren (13.10.2026)
+### 6.2 User Story 8: Kleidungsstück digitalisieren (13.10.2026, an das ERM angepasst am 20.10.2026)
 
 | Endpunkt | Zweck |
 |---|---|
@@ -299,8 +299,11 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 | `GET /api/kleidung/{id}` | ein Teil |
 | `GET /api/kleidung/{id}/bild` | Bild, nur für den Besitzer |
 
-- **Eigenschaften** (Festlegung Katha, 13.10.2026): Pflicht nur Foto und Kategorie; optional Favorit, Privat, Größe, Marke, Farbe, Material, Saison und Anlass (Mehrfachauswahl), Preis, Kaufdatum, Herkunft, Notiz. Keine freie Bezeichnung, die Beschriftung soll künftig die Kleidungsart liefern.
-- **Statuswerte** nach dem ERM: `im_schrank` (Standard), `verliehen`, `verschenkt`.
+- **Eigenschaften** nach Manuels ERM vom 20.10.2026 (`ERM-SHARELY.md` Abschnitt 3 und 10): Pflicht nur Foto und Kleidungsart (feste Liste: Tops, Pullover, Hosen, Röcke, Kleider, Jacken, Schuhe, Unterwäsche, Einteiler, Accessoires). Optional ein Name (z. B. „Wintermantel“; ohne Namen zeigt die App die Kleidungsart), Favorit, Privat, Farbe (14 Werte) und Material (8 + Sonstiges) als feste Listen, Saison als Mehrfachauswahl mit „Ganzjährig“ (nur allein), Preis, Kaufdatum.
+- **Vorbereitet, noch ohne eigene Logik:** `kategorie_ids` (Kategorien als freie Etiketten, eigenes Modul folgt; geprüft wird nur das ID-Format), `masse` (je Messpunkt aus `docs/avatar/messpunkte.json` ein Wert in cm; ein Test prüft, dass die Liste im Code zur GLB passt) und `leihvorgang_id` (setzt nur das System).
+- **Statuswerte** nach dem ERM: `im_schrank` („Eigenes“, Standard), `geliehen`, `verliehen`, `wunsch`. Beim Anlegen wählbar sind Eigenes, Geliehen und Wunschartikel; `verliehen` setzt nur das Modul `verleihen`. `verschenkt` entfällt, Verschenken ist ein Besitzwechsel.
+- **Entfallen** gegenüber dem Stand vom 13.10.2026: Kategorie (jetzt Kleidungsart), Anlass (geht in den Kategorien auf), Größe, Marke, Herkunft, Notiz.
+- **Ablauf der Umstellung:** Erst festgelegt (Katha, 13.10.2026), dann vom ERM eingeholt: Die Desktop-Mockups vom 20.10.2026 verlangten andere Felder, Manuel hat das ERM danach ausgerichtet, der Code folgte am selben Tag. Prüfregeln und Indizes in MongoDB baut Manuels Sitzung getrennt.
 - **Bildprüfung am Dateiinhalt** (JPEG, PNG, WebP; höchstens 10 MB), zufälliger Dateiname, Upload-Ordner nicht öffentlich.
 - **Anmeldung als Platzhalter:** `aktueller_nutzer()` liefert vorerst einen festen Test-Nutzer.
 
@@ -319,7 +322,7 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 ### 7.1 Automatisierte Tests
 
 - Backend-Tests mit `pytest` und dem FastAPI-Testclient (`backend/tests/`), lauffähig ohne MongoDB über ein Ersatz-Repository.
-- Stand 20.10.2026: **14 Tests, alle grün** (`test_health.py`: 1, `test_kleidung.py`: 13). Geprüft werden u. a. Anlegen mit nur den Pflichtfeldern und mit allen Eigenschaften, fehlende oder ungültige Kategorie, fehlendes, ungültiges und zu großes Bild, Kaufdatum in der Zukunft, Abruf von Bild und Liste, unbekanntes Kleidungsstück.
+- Stand 20.10.2026 (nach der Umstellung auf das ERM): **19 Tests, alle grün** (`test_health.py`: 1, `test_kleidung.py`: 18). Geprüft werden u. a. Anlegen mit nur den Pflichtfeldern und mit allen Eigenschaften, alle Kleidungsarten, Status beim Anlegen (verliehen und verschenkt abgelehnt), Ganzjährig, ungültige Farbe/Material/Kategorie-ID/Maße, Messpunkte gleich der GLB-Liste, fehlendes, ungültiges und zu großes Bild, Kaufdatum in der Zukunft, Abruf von Bild und Liste, unbekanntes Kleidungsstück.
 - Zusätzlich wurde User Story 8 gegen eine lokale MongoDB mit Wegwerf-Datenbank durchgespielt.
 
 ### 7.2 Manuelle Prüfungen

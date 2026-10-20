@@ -9,62 +9,62 @@ const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzd
 // Platzhalter, bis es Anmeldung und Modul nutzer gibt
 const NUTZER = { name: "Test-Nutzer" };
 
-// Werte wie in backend/app/module/kleidung/schemas.py
-const KATEGORIEN = {
-  oberteile: "Oberteil", hosen: "Hose", roecke: "Rock", kleider: "Kleid",
-  jacken: "Jacke", schuhe: "Schuhe", accessoires: "Accessoire",
+// Werte wie in backend/app/module/kleidung/schemas.py (ERM vom 20.10.2026)
+const KLEIDUNGSARTEN = {
+  tops: "Tops", pullover: "Pullover", hosen: "Hosen", roecke: "Röcke", kleider: "Kleider",
+  jacken: "Jacken", schuhe: "Schuhe", unterwaesche: "Unterwäsche", einteiler: "Einteiler", accessoires: "Accessoires",
 };
-const KATEGORIEN_MEHRZAHL = {
-  oberteile: "Oberteile", hosen: "Hosen", roecke: "Röcke", kleider: "Kleider",
-  jacken: "Jacken", schuhe: "Schuhe", accessoires: "Accessoires",
+// Anzeigename, wenn ein Teil keinen Namen hat
+const KLEIDUNGSART_EINZAHL = {
+  tops: "Top", pullover: "Pullover", hosen: "Hose", roecke: "Rock", kleider: "Kleid",
+  jacken: "Jacke", schuhe: "Schuhe", unterwaesche: "Unterwäsche", einteiler: "Einteiler", accessoires: "Accessoire",
 };
-const SAISONS = { fruehling: "Frühling", sommer: "Sommer", herbst: "Herbst", winter: "Winter" };
-const ANLAESSE = { alltag: "Alltag", sport: "Sport", edel: "Edel" };
-const HERKUENFTE = { laden: "Laden", flohmarkt: "Flohmarkt", online: "Online" };
+const SAISONS = { fruehling: "Frühling", sommer: "Sommer", herbst: "Herbst", winter: "Winter", ganzjaehrig: "Ganzjährig" };
+const STATUS = [
+  { wert: "im_schrank", text: "Eigenes", symbol: "haus" },
+  { wert: "geliehen", text: "Geliehen", symbol: "links" },
+  { wert: "verliehen", text: "Verliehen", symbol: "rechts" },
+  { wert: "wunsch", text: "Wunschartikel", symbol: "stern" },
+];
+// Vorgegebene Kategorien laut ERM. Gespeichert werden später kategorie_ids aus der Collection kategorien;
+// solange es das Modul dafür nicht gibt, zeigen die Seiten die Liste nur an.
+const KATEGORIEN_VORGABE = [
+  "Business", "Freizeit", "Abend", "Sport", "Party", "Urlaub", "Feiertage",
+  "Winterkleidung", "Sommerkleidung", "Lieblingsteile", "Second Hand", "Geschenk",
+];
 
-// Farbe und Material sind im Backend Freitext. Die Seiten bieten wie die Mockups feste Werte an
-// (Farbkreise, Material-Pillen) und erkennen sie im Text am Wortteil (woerter),
-// z. B. „Hellblau“ → Blau, „Denim“ → Jeans.
 const FARBEN = [
-  { wert: "schwarz", text: "Schwarz", farbe: "#2b2b2b", woerter: ["schwarz"] },
-  { wert: "weiss", text: "Weiß", farbe: "#ffffff", woerter: ["weiß", "weiss"] },
-  { wert: "grau", text: "Grau", farbe: "#9a9a9a", woerter: ["grau", "silber"] },
-  { wert: "beige", text: "Beige", farbe: "#e3d3b4", woerter: ["beige", "creme", "sand"] },
-  { wert: "braun", text: "Braun", farbe: "#8b5a3c", woerter: ["braun", "cognac"] },
-  { wert: "rot", text: "Rot", farbe: "#c94040", woerter: ["rot", "bordeaux"] },
-  { wert: "rosa", text: "Rosa", farbe: "#eda5b4", woerter: ["rosa", "pink"] },
-  { wert: "orange", text: "Orange", farbe: "#ef8c3a", woerter: ["orange"] },
-  { wert: "gelb", text: "Gelb", farbe: "#f0c63c", woerter: ["gelb", "gold"] },
-  { wert: "gruen", text: "Grün", farbe: "#4f9a58", woerter: ["grün", "gruen", "oliv", "khaki"] },
-  { wert: "blau", text: "Blau", farbe: "#3a72c4", woerter: ["blau", "türkis"] },
-  { wert: "dunkelblau", text: "Dunkelblau", farbe: "#2c3a5e", woerter: ["dunkelblau", "navy", "marine"] },
-  { wert: "lila", text: "Lila", farbe: "#8a5bb5", woerter: ["lila", "violett", "flieder"] },
-  { wert: "bunt", text: "Bunt", farbe: "conic-gradient(#c94040, #f0c63c, #4f9a58, #3a72c4, #8a5bb5, #c94040)", woerter: ["bunt", "mehrfarbig", "gemustert"] },
+  { wert: "schwarz", text: "Schwarz", farbe: "#2b2b2b" },
+  { wert: "weiss", text: "Weiß", farbe: "#ffffff" },
+  { wert: "grau", text: "Grau", farbe: "#9a9a9a" },
+  { wert: "beige", text: "Beige", farbe: "#e3d3b4" },
+  { wert: "braun", text: "Braun", farbe: "#8b5a3c" },
+  { wert: "rot", text: "Rot", farbe: "#c94040" },
+  { wert: "rosa", text: "Rosa", farbe: "#eda5b4" },
+  { wert: "orange", text: "Orange", farbe: "#ef8c3a" },
+  { wert: "gelb", text: "Gelb", farbe: "#f0c63c" },
+  { wert: "gruen", text: "Grün", farbe: "#4f9a58" },
+  { wert: "blau", text: "Blau", farbe: "#3a72c4" },
+  { wert: "dunkelblau", text: "Dunkelblau", farbe: "#2c3a5e" },
+  { wert: "lila", text: "Lila", farbe: "#8a5bb5" },
+  { wert: "bunt", text: "Bunt", farbe: "conic-gradient(#c94040, #f0c63c, #4f9a58, #3a72c4, #8a5bb5, #c94040)" },
 ];
-const MATERIALIEN = [
-  { wert: "baumwolle", text: "Baumwolle", woerter: ["baumwolle", "cotton"] },
-  { wert: "polyester", text: "Polyester", woerter: ["polyester"] },
-  { wert: "wolle", text: "Wolle", woerter: ["wolle", "merino", "kaschmir"] },
-  { wert: "leinen", text: "Leinen", woerter: ["leinen"] },
-  { wert: "seide", text: "Seide", woerter: ["seide"] },
-  { wert: "leder", text: "Leder", woerter: ["leder"] },
-  { wert: "jeans", text: "Jeans", woerter: ["jeans", "denim"] },
-  { wert: "viskose", text: "Viskose", woerter: ["viskose"] },
-];
+const MATERIALIEN = {
+  baumwolle: "Baumwolle", polyester: "Polyester", wolle: "Wolle", leinen: "Leinen", seide: "Seide",
+  leder: "Leder", jeans: "Jeans", viskose: "Viskose", sonstiges: "Sonstiges",
+};
+// Die 22 Messbänder der Avatar-GLB (docs/avatar/messpunkte.json), Reihenfolge von oben nach unten
+const MESSPUNKTE = {
+  "neck-circ": "Halsumfang", "neck-height": "Halslänge", "shoulder-dist": "Schulterbreite (eine Seite)",
+  "frontchest-dist": "Brustbreite vorn", "bust-circ": "Brustumfang", "underbust-circ": "Unterbrustumfang",
+  "upperarm-circ": "Oberarmumfang", "upperarm-length": "Oberarmlänge", "lowerarm-length": "Unterarmlänge",
+  "wrist-circ": "Handgelenkumfang", "napetowaist-dist": "Rückenlänge", "waist-circ": "Taillenumfang",
+  "waisttohip-dist": "Abstand Taille bis Hüfte", "hips-circ": "Hüftumfang", "schrittlaenge": "Schrittlänge (Innenbein)",
+  "upperleg-height": "Oberschenkellänge", "thigh-circ": "Oberschenkelumfang", "knee-circ": "Knieumfang",
+  "lowerleg-height": "Unterschenkellänge", "calf-circ": "Wadenumfang", "ankle-circ": "Knöchelumfang",
+  "fusslaenge": "Fußlänge",
+};
 
-/** Welche festen Werte (FARBEN, MATERIALIEN) in einem Freitext stecken. Längere Wörter zuerst und dann
- *  aus dem Text streichen, damit „Baumwolle“ nicht zusätzlich als „Wolle“ und „Dunkelblau“ nicht als „Blau“ zählt. */
-function erkannteWerte(text, werte) {
-  let rest = (text || "").toLowerCase();
-  const gefunden = new Set();
-  const paare = werte.flatMap((w) => w.woerter.map((wort) => [wort, w.wert])).sort((a, b) => b[0].length - a[0].length);
-  for (const [wort, wert] of paare) {
-    if (rest.includes(wort)) { gefunden.add(wert); rest = rest.split(wort).join(" "); }
-  }
-  return gefunden;
-}
-
-// Symbole als SVG (keine Emojis), Linien im Stil der Mockups. Farbe folgt currentColor.
 const svg = (inhalt, groesse = 18) =>
   `<svg width="${groesse}" height="${groesse}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inhalt}</svg>`;
 const SYMBOL = {
@@ -207,9 +207,9 @@ function zeigeMeldung(el, text, art) {
   el.className = `meldung ${art}`;
 }
 
-/** Anzeigename eines Kleidungsstücks, solange es keine Bezeichnung gibt: „Jacke · Vaude“ */
+/** Anzeigename eines Kleidungsstücks: der Name, ohne Namen die Kleidungsart („Jacke“). */
 function titelVon(k) {
-  return [KATEGORIEN[k.kategorie], k.marke].filter(Boolean).join(" · ");
+  return k.name || KLEIDUNGSART_EINZAHL[k.kleidungsart] || k.kleidungsart;
 }
 
 function bildUrl(k) {
@@ -224,7 +224,7 @@ function tonVon(id) {
   return TOENE[summe % TOENE.length];
 }
 
-/** Kachel eines Kleidungsstücks (Schrank, Outfit erstellen): Bild, Herz, Name, Kategorie. */
+/** Kachel eines Kleidungsstücks (Schrank, Outfit erstellen): Bild, Herz, Name, Kleidungsart. */
 function kleidungsKarte(k, { link = true } = {}) {
   const karte = document.createElement(link ? "a" : "button");
   karte.className = "karte";
@@ -248,9 +248,9 @@ function kleidungsKarte(k, { link = true } = {}) {
   }
   if (k.privat) kachel.insertAdjacentHTML("beforeend", `<span class="abzeichen links" aria-label="Privat">${SYMBOL.schloss}</span>`);
   const name = document.createElement("strong");
-  name.textContent = k.marke || KATEGORIEN[k.kategorie];
+  name.textContent = titelVon(k);
   const art = document.createElement("small");
-  art.textContent = KATEGORIEN_MEHRZAHL[k.kategorie];
+  art.textContent = KLEIDUNGSARTEN[k.kleidungsart];
   karte.append(kachel, name, art);
   return karte;
 }

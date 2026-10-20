@@ -1,12 +1,13 @@
 """HTTP-Endpunkte des Moduls kleidung.
 
-Aufgabe: Kleidungsstücke anlegen (mit Foto), anzeigen, bearbeiten, löschen; Filter nach Kategorie, Suche, Favoriten.
+Aufgabe: Kleidungsstücke anlegen (mit Foto), anzeigen, bearbeiten, löschen; Filter nach Kleidungsart, Suche, Favoriten.
 Grundlage: User Story 1, 4, 5 und 8, Konzeption 1.3, Wireframes 5–8.
 
 Hier nur Anfragen entgegennehmen, prüfen lassen (schemas.py) und an service.py
 weitergeben. Keine Geschäftslogik und keine Datenbankzugriffe in dieser Datei.
 """
 
+import json
 from datetime import date
 from typing import Annotated
 
@@ -19,12 +20,13 @@ from app.core.config import get_settings
 from app.core.sicherheit import aktueller_nutzer
 from app.module.kleidung import service
 from app.module.kleidung.schemas import (
-    Anlass,
-    Herkunft,
-    Kategorie,
-    KleidungsstueckAngaben,
+    Farbe,
+    Kleidungsart,
     KleidungsstueckAntwort,
+    KleidungsstueckNeu,
+    Material,
     Saison,
+    StatusBeimAnlegen,
 )
 
 router = APIRouter(prefix="/kleidung", tags=["kleidung"])
@@ -33,28 +35,39 @@ Nutzer = Annotated[str, Depends(aktueller_nutzer)]
 
 
 def angaben_aus_formular(
-    kategorie: Annotated[Kategorie, Form()],
+    kleidungsart: Annotated[Kleidungsart, Form()],
+    name: Annotated[str | None, Form()] = None,
     favorit: Annotated[bool, Form()] = False,
     privat: Annotated[bool, Form()] = False,
-    groesse: Annotated[str | None, Form()] = None,
-    marke: Annotated[str | None, Form()] = None,
-    farbe: Annotated[str | None, Form()] = None,
-    material: Annotated[str | None, Form()] = None,
+    farbe: Annotated[Farbe | None, Form()] = None,
+    material: Annotated[Material | None, Form()] = None,
     saison: Annotated[list[Saison] | None, Form()] = None,
-    anlass: Annotated[list[Anlass] | None, Form()] = None,
     preis: Annotated[float | None, Form(description="in Euro")] = None,
     kaufdatum: Annotated[date | None, Form()] = None,
-    herkunft: Annotated[Herkunft | None, Form()] = None,
-    notiz: Annotated[str | None, Form()] = None,
-) -> KleidungsstueckAngaben:
-    """Formularfelder → KleidungsstueckAngaben. Nötig, weil FastAPI ein
+    status_: Annotated[
+        StatusBeimAnlegen, Form(alias="status", description="im_schrank (Eigenes), geliehen oder wunsch")
+    ] = StatusBeimAnlegen.im_schrank,
+    kategorie_ids: Annotated[list[str] | None, Form()] = None,
+    masse: Annotated[
+        str | None, Form(description='JSON-Liste, z. B. [{"messpunkt": "waist-circ", "wert_cm": 80}]')
+    ] = None,
+) -> KleidungsstueckNeu:
+    """Formularfelder → KleidungsstueckNeu. Nötig, weil FastAPI ein
     Formular-Modell nicht zusammen mit einer Datei annimmt. Regelverstöße aus
     dem Modell (z. B. Kaufdatum in der Zukunft) werden zu einer 422-Antwort."""
     try:
-        return KleidungsstueckAngaben(
-            kategorie=kategorie, favorit=favorit, privat=privat, groesse=groesse,
-            marke=marke, farbe=farbe, material=material, saison=saison or [], anlass=anlass or [],
-            preis=preis, kaufdatum=kaufdatum, herkunft=herkunft, notiz=notiz,
+        masse_liste = json.loads(masse) if masse else []
+    except json.JSONDecodeError:
+        raise RequestValidationError([{
+            "type": "json_invalid", "loc": ("body", "masse"),
+            "msg": "Maße müssen eine JSON-Liste sein.", "input": masse,
+        }])
+    try:
+        return KleidungsstueckNeu(
+            kleidungsart=kleidungsart, name=name, favorit=favorit, privat=privat,
+            farbe=farbe, material=material, saison=saison or [], preis=preis,
+            kaufdatum=kaufdatum, status=status_, kategorie_ids=kategorie_ids or [],
+            masse=masse_liste,
         )
     except ValidationError as fehler:
         raise RequestValidationError(fehler.errors(include_url=False, include_context=False))
@@ -64,12 +77,13 @@ def angaben_aus_formular(
 async def kleidungsstueck_digitalisieren(
     nutzer_id: Nutzer,
     bild: Annotated[UploadFile, File(description="Foto, JPEG/PNG/WebP")],
-    angaben: Annotated[KleidungsstueckAngaben, Depends(angaben_aus_formular)],
+    angaben: Annotated[KleidungsstueckNeu, Depends(angaben_aus_formular)],
 ) -> KleidungsstueckAntwort:
     """User Story 8: Foto hochladen und als Kleidungsstück anlegen.
 
-    Pflicht sind nur `bild` und `kategorie`. Mehrfachauswahl (`saison`,
-    `anlass`) wird als wiederholtes Feld geschickt: `saison=herbst&saison=winter`.
+    Pflicht sind nur `bild` und `kleidungsart`. Mehrfachauswahl (`saison`,
+    `kategorie_ids`) wird als wiederholtes Feld geschickt:
+    `saison=herbst&saison=winter`. `masse` kommt als JSON-Text.
     """
     # Ein Byte mehr als erlaubt lesen, damit der Service "zu groß" erkennt,
     # ohne beliebig große Dateien in den Speicher zu holen.

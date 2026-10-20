@@ -1,6 +1,6 @@
 # Testseiten (Klick-Prototyp)
 
-HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Sie dienen zum Ausprobieren des Backends und als Klick-Prototyp, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks sind die von heute (Backend/ERM), nicht die abweichenden aus den Mockups (siehe offene Frage in `BRAIN.md`).
+HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Sie dienen zum Ausprobieren des Backends und als Klick-Prototyp, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks folgen seit 20.10.2026 Manuels ERM (`docs/datenmodell/ERM-SHARELY.md`), das selbst nach den Mockups gebaut ist.
 
 ## Seiten
 
@@ -9,9 +9,9 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | `index.html` | – | Übersicht aller Seiten |
 | `anmeldung.html` | Desktop 1, 2 | ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
 | `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), Rest Platzhalter |
-| `schrank.html` | Kleiderschrank, Kleidung filtern | live: Liste, Suche, „Alles“ und Filter-Fenster (Favorit, Privat, Farbe, Kategorie, Anlass, Material, Saison, Status, Kaufdatum, Preis) |
-| `kleidung-hochladen.html` | Kleidungsstück hinzufügen | live: User Story 8; Foto per Kamera, Datei oder Ziehen; Farbe und Material per Farbkreis bzw. Pillen, gespeichert als Text |
-| `kleidungsstueck.html?id=…` | Kleidungsstück – Detailansicht | live; Bearbeiten, Löschen, Verleihen, Anprobieren fehlen im Backend noch |
+| `schrank.html` | Kleiderschrank, Kleidung filtern | live: Liste, Suche (Name, Kleidungsart, Farbe, Material), „Alles“ und Filter-Fenster (Favorit, Privat, Farbe, Kleidungsart, Material, Saison, Status, Kaufdatum, Preis; Kategorie nur zur Ansicht, bis es das Modul Kategorien gibt). Ganzjährige Teile passen zu jeder Saison. „Geliehen“ = Status `geliehen` |
+| `kleidung-hochladen.html` | Kleidungsstück hinzufügen | live: User Story 8; Foto per Kamera, Datei oder Ziehen; Name, Farbe, Kleidungsart, Maße (22 Messpunkte), Saison, Material, Kaufdatum, Preis, Favorit, Privat, Status (Eigenes/Geliehen/Wunschartikel; „Verliehen“ gesperrt). Kategorien nur zur Ansicht |
+| `kleidungsstueck.html?id=…` | Kleidungsstück – Detailansicht | live, mit Maßen; Kategorien nur als Anzahl (Namen kommen mit dem Modul Kategorien); Bearbeiten, Löschen, Verleihen, Anprobieren fehlen im Backend noch |
 | `outfits.html` | Outfits | Beispieldaten; leerer Zustand mit `outfits.html?leer` |
 | `outfit-erstellen.html` | Outfit erstellen, Outfit speichern | Auswahl aus dem echten Schrank, Speichern fehlt im Backend |
 | `freunde.html` | Freunde | Beispieldaten |
@@ -25,7 +25,7 @@ Schriften (DM Sans, Fraunces) kommen von Google Fonts; ohne Internet fallen die 
 ## Aufbau
 
 - `stil.css`: das gesamte Aussehen. Ganz oben stehen alle Farben, Schrift, Rundungen und Abstände als Variablen (`:root`). **Design ändern = zuerst diese Variablen ändern, dann die Bausteine darunter.** Alle Seiten ziehen automatisch mit.
-- `gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend), Farb- und Materialwerte, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
+- `gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
 - Je Seite eine HTML-Datei mit nur dem, was die Seite selbst braucht.
 
 ## Weiterverwenden mit React oder Vue
