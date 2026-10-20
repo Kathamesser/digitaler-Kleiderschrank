@@ -19,6 +19,7 @@ docs/konzeption/    Technische Konzeption (PDF, inkl. Wireframes)
 
 ## Dokumente
 
+- `docs/PROJEKTDOKUMENTATION.md` — Projektdokumentation (Verlauf, Entscheidungen, Soll-Ist-Vergleich)
 - `BRAIN.md` — gemeinsames Team-Gedächtnis (aktueller Stand, offene Entscheidungen, Log)
 - `ROADMAP.md` / `roadmap.html` — Meilensteinplan und Tech-Stack-Entscheidung
 - `AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar
