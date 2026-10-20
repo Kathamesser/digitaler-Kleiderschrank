@@ -179,6 +179,39 @@ textarea { resize: vertical; min-height: 70px; }
 .blatt-inhalt .zeile small { display: block; font-size: .7rem; margin-bottom: 4px; }
 .blatt-fuss { position: sticky; bottom: 0; display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; background: var(--flaeche); padding: 12px var(--rand) 16px; border-top: 1px solid var(--trenner); }
 .schliessen { display: flex; padding: 6px; background: none; border: none; color: var(--text); cursor: pointer; }
+.blatt-kopf h2 { display: flex; align-items: center; gap: 10px; }
+.blatt-fuss button { display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* Bausteine im Filtermenü (Mockup „Kleidung filtern“) */
+.filter-schalter {
+  display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px;
+  background: var(--band); border-radius: var(--rund-klein); font-size: .78rem;
+}
+.filter-schalter .text { flex: 1; }
+.filter-schalter strong { font-size: .85rem; }
+.filter-titel { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.filter-titel small { font-size: .68rem; color: var(--text-leise); white-space: nowrap; }
+
+/* Farbkreise: Kästchen versteckt, der Kreis danach zeigt Farbe und Auswahl */
+.farben { display: flex; flex-wrap: wrap; gap: 8px; }
+.farben label { position: relative; }
+.farben input { position: absolute; opacity: 0; pointer-events: none; }
+.farben span { display: block; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--linie); cursor: pointer; }
+.farben input:checked + span { outline: 2.5px solid var(--dunkel); outline-offset: 2px; }
+.farben input:checked + span::after {
+  content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--flaeche) no-repeat center / 10px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 9'%3E%3Cpath d='M1 4.5 4 7.5 10 1.5' fill='none' stroke='%235a5a5a' stroke-width='1.8'/%3E%3C/svg%3E");
+}
+.farben input:focus-visible + span { outline: 2px solid var(--dunkel); outline-offset: 2px; }
+
+/* Auswahllisten mit Kästchen, im Mockup vier Spalten, hier zwei wegen der Seitenbreite */
+.auswahl-spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.auswahlliste { border: 1.5px solid var(--linie); border-radius: var(--rund-klein); max-height: 170px; overflow-y: auto; padding: 4px; }
+.auswahlliste label { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; font-size: .8rem; cursor: pointer; }
+.auswahlliste label:has(input:checked) { background: var(--band); font-weight: 700; }
+.auswahlliste input { margin: 0; accent-color: var(--dunkel); }
+
+.pillen span svg { vertical-align: -2px; }
 
 /* ---------- Raster mit Kacheln (Wireframes 5, 11, 18, 19) ---------- */
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Wireframes 5 (Schrank) und 6 (Schrank leer). Daten live aus GET /api/kleidung.
-     Filtermenü über das Symbol neben der Suche: alle Eigenschaften aus dem Hinzufügen-Formular. -->
+     Filtermenü über das Symbol neben der Suche, Aufbau nach dem Desktop-Mockup „Kleidung filtern“. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -40,45 +40,50 @@
 </main>
 <a class="plus" href="kleidung-hochladen.html" aria-label="Kleidungsstück hinzufügen" data-symbol="plus"></a>
 
-<!-- Filtermenü: gleiche Reihenfolge wie beim Hinzufügen (kleidung-hochladen.html) -->
+<!-- Filtermenü nach dem Mockup „Kleidung filtern (Overlay)“ (docs/mockups/desktop/), aber mit den Werten,
+     die beim Hinzufügen heute gespeichert werden (Entscheidung Katha, 20.10.2026). -->
 <dialog class="blatt" id="filterblatt" aria-labelledby="filtertitel">
   <form id="filterformular" method="dialog">
     <header class="blatt-kopf">
-      <h2 id="filtertitel">Filter</h2>
+      <h2 id="filtertitel"><span data-symbol="filter"></span>Kleidung filtern</h2>
       <button type="button" class="schliessen" id="filter-schliessen" aria-label="Filter schließen" data-symbol="schliessen"></button>
     </header>
     <div class="blatt-inhalt">
-      <span class="titel">Kategorie</span>
-      <div class="pillen" id="f-kategorie"></div>
-
-      <div class="schalter-zeile">
-        <span class="titel">Nur Favoriten</span>
+      <div class="filter-schalter">
+        <span data-symbol="herz"></span>
+        <span class="text"><strong>Favorit</strong> – nur Lieblingsstücke anzeigen</span>
         <label class="schalter"><input type="checkbox" name="favorit" value="true" aria-label="Nur Favoriten"><span class="bahn"></span></label>
       </div>
-
-      <span class="titel">Sichtbarkeit</span>
-      <div class="pillen" id="f-sichtbar"></div>
-
-      <span class="titel">Leihen</span>
-      <div class="pillen" id="f-leihen"></div>
-
-      <!-- Freitextfelder: angeboten werden die Werte, die im Schrank vorkommen -->
-      <div id="f-groesse-abschnitt" hidden><span class="titel">Größe</span><div class="pillen" id="f-groesse"></div></div>
-      <div id="f-marke-abschnitt" hidden><span class="titel">Marke</span><div class="pillen" id="f-marke"></div></div>
-      <div id="f-farbe-abschnitt" hidden><span class="titel">Farbe</span><div class="pillen" id="f-farbe"></div></div>
-      <div id="f-material-abschnitt" hidden><span class="titel">Material</span><div class="pillen" id="f-material"></div></div>
-
-      <span class="titel">Saison</span>
-      <div class="pillen" id="f-saison"></div>
-
-      <span class="titel">Anlass</span>
-      <div class="pillen" id="f-anlass"></div>
-
-      <span class="titel">Preis (€)</span>
-      <div class="zeile">
-        <label><small>von</small><input type="number" name="preis_von" min="0" step="0.01" inputmode="decimal" aria-label="Preis von"></label>
-        <label><small>bis</small><input type="number" name="preis_bis" min="0" step="0.01" inputmode="decimal" aria-label="Preis bis"></label>
+      <div class="filter-schalter">
+        <span data-symbol="schloss"></span>
+        <span class="text"><strong>Privat</strong> – nur Teile anzeigen, die Freunde nicht sehen</span>
+        <label class="schalter"><input type="checkbox" name="privat" value="true" aria-label="Nur private Teile"><span class="bahn"></span></label>
       </div>
+
+      <div class="filter-titel"><span class="titel">Farbe</span><small data-zaehler="farbe" data-leer="mehrere"></small></div>
+      <div class="farben" id="f-farbe"></div>
+
+      <div class="auswahl-spalten">
+        <div>
+          <div class="filter-titel"><span class="titel">Kategorie</span><small data-zaehler="kategorie" data-leer="eine Auswahl"></small></div>
+          <div class="auswahlliste" id="f-kategorie"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Anlass</span><small data-zaehler="anlass" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-anlass"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Material</span><small data-zaehler="material" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-material"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Saison</span><small data-zaehler="saison" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-saison"></div>
+        </div>
+      </div>
+
+      <span class="titel">Status</span>
+      <div class="pillen" id="f-status"></div>
 
       <span class="titel">Kaufdatum</span>
       <div class="zeile">
@@ -86,12 +91,15 @@
         <label><small>bis</small><input type="date" name="kauf_bis" aria-label="Gekauft bis"></label>
       </div>
 
-      <span class="titel">Herkunft</span>
-      <div class="pillen" id="f-herkunft"></div>
+      <span class="titel">Preis (€)</span>
+      <div class="zeile">
+        <label><small>von</small><input type="number" name="preis_von" min="0" step="0.01" inputmode="decimal" placeholder="0,00" aria-label="Preis von"></label>
+        <label><small>bis</small><input type="number" name="preis_bis" min="0" step="0.01" inputmode="decimal" placeholder="0,00" aria-label="Preis bis"></label>
+      </div>
     </div>
     <footer class="blatt-fuss">
-      <button type="button" class="knopf-rand" id="filter-zuruecksetzen">Zurücksetzen</button>
-      <button type="submit" class="knopf-dunkel" id="filter-zeigen">Anzeigen</button>
+      <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
+      <button type="submit" class="knopf-dunkel"><span data-symbol="ok"></span> <span id="filter-zeigen">Teile anzeigen</span></button>
     </footer>
   </form>
 </dialog>
@@ -118,39 +126,84 @@
 
   // ---------- Filtermenü ----------
 
-  const FREITEXT = ["groesse", "marke", "farbe", "material"];
-  const LISTEN = ["kategorie", "sichtbar", "leihen", ...FREITEXT, "saison", "anlass", "herkunft"];
+  // Farbe und Material sind beim Hinzufügen Freitext. Der Filter bietet wie im Mockup feste Werte an
+  // und erkennt sie im Text am Wortteil (woerter), z. B. „Hellblau“ → Blau, „Denim“ → Jeans.
+  const FARBEN = [
+    { wert: "schwarz", text: "Schwarz", farbe: "#2b2b2b", woerter: ["schwarz"] },
+    { wert: "weiss", text: "Weiß", farbe: "#ffffff", woerter: ["weiß", "weiss"] },
+    { wert: "grau", text: "Grau", farbe: "#9a9a9a", woerter: ["grau", "silber"] },
+    { wert: "beige", text: "Beige", farbe: "#e8dcc4", woerter: ["beige", "creme", "sand"] },
+    { wert: "braun", text: "Braun", farbe: "#8b5a3c", woerter: ["braun", "cognac"] },
+    { wert: "rot", text: "Rot", farbe: "#c94040", woerter: ["rot", "bordeaux"] },
+    { wert: "rosa", text: "Rosa", farbe: "#eda5b4", woerter: ["rosa", "pink"] },
+    { wert: "orange", text: "Orange", farbe: "#ef8c3a", woerter: ["orange"] },
+    { wert: "gelb", text: "Gelb", farbe: "#f0c63c", woerter: ["gelb", "gold"] },
+    { wert: "gruen", text: "Grün", farbe: "#4f9a58", woerter: ["grün", "gruen", "oliv", "khaki"] },
+    { wert: "blau", text: "Blau", farbe: "#3a72c4", woerter: ["blau", "türkis"] },
+    { wert: "dunkelblau", text: "Dunkelblau", farbe: "#2c3a5e", woerter: ["dunkelblau", "navy", "marine"] },
+    { wert: "lila", text: "Lila", farbe: "#8a5bb5", woerter: ["lila", "violett", "flieder"] },
+    { wert: "bunt", text: "Bunt", farbe: "conic-gradient(#c94040, #f0c63c, #4f9a58, #3a72c4, #8a5bb5, #c94040)", woerter: ["bunt", "mehrfarbig", "gemustert"] },
+  ];
+  const MATERIALIEN = [
+    { wert: "baumwolle", text: "Baumwolle", woerter: ["baumwolle", "cotton"] },
+    { wert: "polyester", text: "Polyester", woerter: ["polyester"] },
+    { wert: "wolle", text: "Wolle", woerter: ["wolle", "merino", "kaschmir"] },
+    { wert: "leinen", text: "Leinen", woerter: ["leinen"] },
+    { wert: "seide", text: "Seide", woerter: ["seide"] },
+    { wert: "leder", text: "Leder", woerter: ["leder"] },
+    { wert: "jeans", text: "Jeans", woerter: ["jeans", "denim"] },
+    { wert: "viskose", text: "Viskose", woerter: ["viskose"] },
+  ];
+  const STATUS = [
+    { wert: "im_schrank", text: "Eigenes", symbol: "haus" },
+    { wert: "geliehen", text: "Geliehen", symbol: "links" },
+    { wert: "verliehen", text: "Verliehen", symbol: "rechts" },
+    { wert: "wunsch", text: "Wunschartikel", symbol: "stern" },
+  ];
+  const LISTEN = ["farbe", "anlass", "material", "saison", "status"];
 
-  pillen("f-kategorie", "kategorie", KATEGORIEN_MEHRZAHL, "checkbox");
-  pillen("f-sichtbar", "sichtbar", { privat: "Privat", freunde: "Für Freunde sichtbar" }, "checkbox");
-  pillen("f-leihen", "leihen", { verliehen: "Verliehen", geliehen: "Geliehen" }, "checkbox");
-  pillen("f-saison", "saison", SAISONS, "checkbox");
+  for (const { wert, text, farbe } of FARBEN) {
+    const label = document.createElement("label");
+    label.title = text;
+    const eingabe = Object.assign(document.createElement("input"), { type: "checkbox", name: "farbe", value: wert });
+    eingabe.setAttribute("aria-label", text);
+    const kreis = document.createElement("span");
+    kreis.style.background = farbe;
+    label.append(eingabe, kreis);
+    document.getElementById("f-farbe").append(label);
+  }
+  pillen("f-kategorie", "kategorie", { alle: "Alle", ...KATEGORIEN_MEHRZAHL }, "radio");
+  formular.querySelector('[name="kategorie"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
   pillen("f-anlass", "anlass", ANLAESSE, "checkbox");
-  pillen("f-herkunft", "herkunft", HERKUENFTE, "checkbox");
+  pillen("f-material", "material", Object.fromEntries(MATERIALIEN.map((m) => [m.wert, m.text])), "checkbox");
+  pillen("f-saison", "saison", { ...SAISONS, ganzjaehrig: "Ganzjährig" }, "checkbox");
+  for (const { wert, text, symbol } of STATUS) {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" name="status" value="${wert}"><span>${SYMBOL[symbol]} ${text}</span>`;
+    document.getElementById("f-status").append(label);
+  }
   const heute = new Date().toISOString().slice(0, 10);
   for (const name of ["kauf_von", "kauf_bis"]) formular.elements[name].max = heute;
 
-  // Freitext vergleicht ohne Groß-/Kleinschreibung: „Blau“ und „blau “ sind ein Wert
-  const schluessel = (text) => text.trim().toLowerCase();
-
-  /** Pillen für Größe, Marke, Farbe, Material aus den Werten im Schrank; leere Abschnitte verstecken. */
-  function freitextPillen() {
-    for (const feld of FREITEXT) {
-      const werte = {};
-      for (const k of alle) if (k[feld]) werte[schluessel(k[feld])] ??= k[feld].trim();
-      const sortiert = Object.entries(werte).sort((a, b) => a[1].localeCompare(b[1], "de", { numeric: true }));
-      document.getElementById(`f-${feld}`).replaceChildren();
-      pillen(`f-${feld}`, feld, Object.fromEntries(sortiert), "checkbox");
-      document.getElementById(`f-${feld}-abschnitt`).hidden = sortiert.length === 0;
+  /** Welche festen Werte in einem Freitext stecken. Längere Wörter zuerst und dann aus dem Text
+   *  streichen, damit „Baumwolle“ nicht zusätzlich als „Wolle“ und „Dunkelblau“ nicht als „Blau“ zählt. */
+  function erkannteWerte(text, werte) {
+    let rest = (text || "").toLowerCase();
+    const gefunden = new Set();
+    const paare = werte.flatMap((w) => w.woerter.map((wort) => [wort, w.wert])).sort((a, b) => b[0].length - a[0].length);
+    for (const [wort, wert] of paare) {
+      if (rest.includes(wort)) { gefunden.add(wert); rest = rest.split(wort).join(" "); }
     }
+    return gefunden;
   }
 
-  /** Aktuelle Auswahl im Filtermenü. Leere Liste bzw. null = kein Filter. */
+  /** Aktuelle Auswahl im Filtermenü. Leere Liste, "alle" bzw. null = kein Filter. */
   function kriterien() {
     const daten = new FormData(formular);
-    const f = {};
+    const f = { kategorie: daten.get("kategorie") || "alle" };
     for (const name of LISTEN) f[name] = daten.getAll(name);
     f.favorit = daten.has("favorit");
+    f.privat = daten.has("privat");
     const zahl = (wert) => (wert === "" || wert === null ? null : Number(wert));
     f.preisVon = zahl(daten.get("preis_von"));
     f.preisBis = zahl(daten.get("preis_bis"));
@@ -159,26 +212,27 @@
     return f;
   }
 
-  /** Leihstand eines Teils. verliehen = mein Teil bei jemand anderem (status vom Backend),
-   *  geliehen = Teil eines Freundes bei mir. Dafür liefert die API noch nichts; Vorschlag fürs
-   *  Modul verleihen: geliehene Teile mit Feld geliehen_von in GET /api/kleidung mitschicken. */
-  function leihstand(k) {
+  /** Status eines Teils für den Filter. im_schrank = Eigenes, verliehen und wunsch kommen vom Backend
+   *  (wunsch erst mit der Wunschliste). geliehen = Teil eines Freundes bei mir; dafür liefert die API noch
+   *  nichts, Vorschlag fürs Modul verleihen: Feld geliehen_von in GET /api/kleidung mitschicken. */
+  function statusVon(k) {
     return k.geliehen_von ? "geliehen" : k.status;
   }
 
   /** Innerhalb einer Eigenschaft reicht ein Treffer (oder), zwischen Eigenschaften müssen alle passen (und).
    *  Teile ohne Angabe fallen raus, sobald nach dieser Eigenschaft gefiltert wird. */
   function passtZuFilter(k, f) {
-    const einer = (auswahl, wert) => !auswahl.length || auswahl.includes(wert);
-    if (!einer(f.kategorie, k.kategorie)) return false;
+    const eins = (auswahl, vorhanden) => !auswahl.length || auswahl.some((wert) => vorhanden.has(wert));
+    if (f.kategorie !== "alle" && k.kategorie !== f.kategorie) return false;
     if (f.favorit && !k.favorit) return false;
-    if (!einer(f.sichtbar, k.privat ? "privat" : "freunde")) return false;
-    if (!einer(f.leihen, leihstand(k))) return false;
-    for (const feld of FREITEXT) if (!einer(f[feld], k[feld] && schluessel(k[feld]))) return false;
-    for (const feld of ["saison", "anlass"]) {
-      if (f[feld].length && !k[feld].some((wert) => f[feld].includes(wert))) return false;
-    }
-    if (!einer(f.herkunft, k.herkunft)) return false;
+    if (f.privat && !k.privat) return false;
+    if (!eins(f.farbe, erkannteWerte(k.farbe, FARBEN))) return false;
+    if (!eins(f.material, erkannteWerte(k.material, MATERIALIEN))) return false;
+    if (!eins(f.anlass, new Set(k.anlass))) return false;
+    // Ganzjährig = alle vier Saisons angekreuzt
+    const saisons = new Set(k.saison.length === 4 ? [...k.saison, "ganzjaehrig"] : k.saison);
+    if (!eins(f.saison, saisons)) return false;
+    if (!eins(f.status, new Set([statusVon(k)]))) return false;
     if (f.preisVon !== null || f.preisBis !== null) {
       if (k.preis == null) return false;
       if (f.preisVon !== null && k.preis < f.preisVon) return false;
@@ -194,8 +248,17 @@
 
   /** Wie viele Eigenschaften gerade filtern (Zahl am Filtersymbol). */
   function anzahlAktiv(f) {
-    return LISTEN.filter((name) => f[name].length).length + f.favorit
+    return LISTEN.filter((name) => f[name].length).length + (f.kategorie !== "alle") + f.favorit + f.privat
       + (f.preisVon !== null || f.preisBis !== null) + Boolean(f.kaufVon || f.kaufBis);
+  }
+
+  /** „2 gewählt“ bzw. „mehrere“ / „eine Auswahl“ neben den Überschriften. */
+  function zaehlerSetzen(f) {
+    for (const el of formular.querySelectorAll("[data-zaehler]")) {
+      const name = el.dataset.zaehler;
+      const n = name === "kategorie" ? Number(f.kategorie !== "alle") : f[name].length;
+      el.textContent = n ? `${n} gewählt` : el.dataset.leer;
+    }
   }
 
   filterknopf.onclick = () => blatt.showModal();
@@ -214,7 +277,7 @@
     knopf.textContent = text;
     knopf.dataset.wert = wert;
     knopf.onclick = () => {
-      for (const feld of formular.elements.kategorie) feld.checked = feld.value === wert;
+      formular.elements.kategorie.value = KATEGORIEN[wert] ? wert : "alle";
       formular.elements.favorit.checked = wert === "favoriten";
       zeichne();
     };
@@ -222,11 +285,10 @@
   }
   suche.oninput = zeichne;
 
-  /** Welcher Knopf der Leiste zur Auswahl im Menü passt (keiner bei mehreren Kategorien). */
+  /** Welcher Knopf der Leiste zur Auswahl im Menü passt. */
   function leistenWert(f) {
-    if (f.favorit) return f.kategorie.length ? null : "favoriten";
-    if (f.kategorie.length > 1) return null;
-    return f.kategorie[0] ?? "alles";
+    if (f.favorit) return f.kategorie === "alle" ? "favoriten" : null;
+    return f.kategorie === "alle" ? "alles" : f.kategorie;
   }
 
   function passtZurSuche(k) {
@@ -245,6 +307,7 @@
     filterzahl.textContent = anzahl;
     filterzahl.hidden = !anzahl;
     filterknopf.setAttribute("aria-label", anzahl ? `Filter, ${anzahl} aktiv` : "Filter");
+    zaehlerSetzen(f);
 
     const treffer = alle.filter((k) => passtZuFilter(k, f) && passtZurSuche(k));
     document.getElementById("filter-zeigen").textContent =
@@ -254,8 +317,9 @@
     if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
   }
 
+  zaehlerSetzen(kriterien());
   holeJson("/kleidung")
-    .then((liste) => { alle = liste; freitextPillen(); zeichne(); })
+    .then((liste) => { alle = liste; zeichne(); })
     .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
 </script>
 </body>
