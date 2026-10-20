@@ -112,7 +112,6 @@ Gute Zusammenarbeit! 🤝
 
 - [ ] Geliehene Teile im eigenen Schrank: Laut Manuels ERM vom 20.10.2026 (Regel 6) bekommt der Empfänger einen eigenen Eintrag mit `status = geliehen` und `leihvorgang_id`. Modul `kleidung` und Testseiten nutzen seit 20.10.2026 diesen Status (der Vorschlag `geliehen_von` ist damit erledigt); offen ist nur noch die Umsetzung im Modul `verleihen`.
 - [ ] Alte Kleidungsstücke in Kathas lokaler Datenbank (Format vom 13.10.) passen nicht mehr zum neuen Code. Katha hat das Löschen am 20.10.2026 freigegeben; noch auszuführen auf Kathas Laptop (die Cloud-Sitzung erreicht die lokale Datenbank nicht): Collection `kleidungsstuecke` in der Datenbank `sharely` leeren und den Inhalt von `uploads/` löschen.
-- [ ] Annahme von Claude (20.10.2026), von Katha/Manuel zu bestätigen: „Ganzjährig“ nur allein wählbar (nicht zusammen mit einzelnen Saisons), Maße 0,1 bis 300 cm, auf eine Nachkommastelle gerundet; Name bis 100 Zeichen.
 - [ ] Frontend-Framework wählen (React oder Vue) — betrifft Phase 1
 - [ ] KI-Anbieter für den Produktimport wählen — betrifft Phase 5
 - [x] Körpermaße: cm-Mapping erledigt (12.10.2026): Der Editor misst die cm direkt an der Figur, Methode und Realitätsprüfung in `docs/avatar/ZENTIMETER.md`.
@@ -155,6 +154,8 @@ Gute Zusammenarbeit! 🤝
 ---
 
 ## Log (neueste Einträge oben)
+
+- **20.10.2026 · Katha/Claude(Laptop.Code):** Entscheidung Katha: Claudes Annahmen zum Kleidungsstück bestätigt, also „Ganzjährig“ nur allein wählbar (nicht zusammen mit einzelnen Saisons), Maße 0,1 bis 300 cm auf eine Nachkommastelle gerundet, Name bis 100 Zeichen. So bereits im Code (`kleidung/schemas.py`); offene Frage entfernt.
 
 - **20.10.2026 · Katha/Claude(Laptop.Code):** Katha hat die Sitzungskennung `Katha/Claude(Laptop.Code)` für diese Cloud-Sitzung bestätigt, den Commit freigegeben und das Löschen der alten Kleidungsstücke in ihrer lokalen Datenbank erlaubt. Umstellung auf das ERM (Eintrag darunter) von `claude/fervent-planck-iyxjhh` nach `main` gebracht (Fast-Forward). Löschen selbst steht noch aus, weil die Cloud-Sitzung Kathas lokale MongoDB nicht erreicht; Befehl an Katha gegeben, siehe offene Fragen.
 
