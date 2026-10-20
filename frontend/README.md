@@ -4,9 +4,9 @@ Single-Page-App im Browser, responsiv für Desktop und Smartphone (Technische Ko
 
 **Noch offen:** Frontend-Framework React oder Vue (siehe `BRAIN.md`, offene Fragen). Deshalb ist hier noch kein Projekt generiert. Sobald das entschieden ist, wird das Gerüst mit Vite in diesem Ordner erzeugt (`npm create vite@latest`, Vorlage `react` oder `vue`). Die Unterordner unten bleiben dabei erhalten.
 
-## Klick-Prototyp
+## Seiten (Templates)
 
-Bis das Framework feststeht, gibt es in `testseiten/` HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `testseiten/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `testseiten/README.md`.
+Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `testseiten/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `templates/README.md`.
 
 ## Ordner
 

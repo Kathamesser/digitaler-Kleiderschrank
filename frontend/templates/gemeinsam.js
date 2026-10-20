@@ -1,4 +1,4 @@
-// Gemeinsame Bausteine aller Testseiten: Backend-Adresse, Beschriftungen, Symbole, Kopf- und Fußleiste.
+// Gemeinsame Bausteine aller Seiten (Templates): Backend-Adresse, Beschriftungen, Symbole, Kopf- und Fußleiste.
 // Aussehen nach den Desktop-Mockups (docs/mockups/desktop/).
 // Später in React/Vue: Aufrufe → src/api/, Symbole/Kopf/Fußleiste → src/komponenten/.
 

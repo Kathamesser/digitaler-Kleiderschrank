@@ -100,9 +100,9 @@ Gute Zusammenarbeit! 🤝
   - Gegenseitige Freundschaft mit Anfrage und Blockieren (statt Folgen). Freigabe und Feedback (US 2) gestrichen; „geteilt“ heißt: für alle Freunde sichtbar, außer `privat = true` (gilt auch für Outfits). Private Teile und Outfits sieht nie jemand anderes.
   - Kleidungsstücke jederzeit löschbar, ohne Schnappschuss für den Verlauf.
   - Neu: Neuigkeiten des Entwicklerteams, anlegen dürfen nur Admins (`Nutzer.Ist_Admin`, nur direkt in der Datenbank setzbar).
-  - Kathas Modul `kleidung` und die Testseiten sind seit 20.10.2026 auf dieses ERM umgestellt (`ERM-SHARELY.md` Abschnitt 10); `kategorie_ids`, `masse`, `leihvorgang_id` nur vorbereitet. Prüfregeln/Indizes in MongoDB fehlen noch (Manuels Sitzung).
-- Erstes Feature (13.10.2026, Katha; Felder seit 20.10.2026 nach Manuels ERM): User Story 8 „Kleidungsstück digitalisieren“, `POST /api/kleidung` mit Foto-Upload, dazu Liste, Einzelabruf und geschützter Bildabruf; Pflicht nur Foto und Kleidungsart, dazu Name, Favorit, Privat, Farbe, Material, Saison (mit Ganzjährig), Preis, Kaufdatum, Status (Eigenes/Geliehen/Wunschartikel), vorbereitet Kategorien, Maße, Leihvorgang. Testseite `frontend/testseiten/kleidung-hochladen.html` im Stil der Wireframes. Login vorerst als Platzhalter (fester Test-Nutzer in `core/sicherheit.py`). Endpunkte und Absprachen: `docs/api/README.md`.
-- Klick-Prototyp (13.10.2026, Katha; seit 20.10.2026 im Design der Desktop-Mockups): 10 HTML-Seiten ohne Framework in `frontend/testseiten/` (Start: `index.html` bzw. `anmeldung.html` → `hauptmenue.html`), Hauptmenü/Schrank/Hinzufügen/Detail live am Backend, Outfits/Leihen/Freunde/Profil mit Beispieldaten. Gemeinsames Aussehen in `stil.css` (Variablen in `:root`), wiederverwendbar später in React/Vue.
+  - Kathas Modul `kleidung` und die Seiten (`frontend/templates/`) sind seit 20.10.2026 auf dieses ERM umgestellt (`ERM-SHARELY.md` Abschnitt 10); `kategorie_ids`, `masse`, `leihvorgang_id` nur vorbereitet. Prüfregeln/Indizes in MongoDB fehlen noch (Manuels Sitzung).
+- Erstes Feature (13.10.2026, Katha; Felder seit 20.10.2026 nach Manuels ERM): User Story 8 „Kleidungsstück digitalisieren“, `POST /api/kleidung` mit Foto-Upload, dazu Liste, Einzelabruf und geschützter Bildabruf; Pflicht nur Foto und Kleidungsart, dazu Name, Favorit, Privat, Farbe, Material, Saison (mit Ganzjährig), Preis, Kaufdatum, Status (Eigenes/Geliehen/Wunschartikel), vorbereitet Kategorien, Maße, Leihvorgang. Seite `frontend/templates/kleidung-hochladen.html` (bis 20.10.2026 Testseite in `frontend/testseiten/`). Login vorerst als Platzhalter (fester Test-Nutzer in `core/sicherheit.py`). Endpunkte und Absprachen: `docs/api/README.md`.
+- Seiten der Web-App (13.10.2026 als Klick-Prototyp begonnen, Katha; seit 20.10.2026 im Design der Desktop-Mockups und als Templates in `frontend/templates/`, vorher `frontend/testseiten/`): 10 HTML-Seiten ohne Framework (Start: `index.html` bzw. `anmeldung.html` → `hauptmenue.html`), Hauptmenü/Schrank/Hinzufügen/Detail live am Backend, Outfits/Leihen/Freunde/Profil mit Beispieldaten. Gemeinsames Aussehen in `stil.css` (Variablen in `:root`), wiederverwendbar später in React/Vue.
 - Projektdokumentation (20.10.2026): `docs/PROJEKTDOKUMENTATION.md` fasst den Verlauf zusammen und verweist auf die Fachdokumente; neue Entscheidungen dort in Kapitel 9 (Entscheidungsprotokoll) nachziehen.
 - Technische Konzeption vom 04.10.2026 (Katharina, Manuel, Christian) liegt als `docs/konzeption/Technische_Konzeption_Sharely.pdf`: Use-Case-Diagramme, Begründung Technologie-Stack und Architektur (Web-App, FastAPI, MongoDB, Client-Server mit modularem Monolithen, REST-API), 21 Wireframes (Anmeldung, Schrank, Outfits, Verliehen, Freunde, Profil).
 - Logo (13.10.2026): Schaf mit Kleiderbügel, liegt als `assets/branding/sharely-logo.png` (PNG, 435 × 502 px, transparenter Hintergrund).
@@ -110,7 +110,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Offene Fragen / anstehende Entscheidungen
 
-- [ ] Geliehene Teile im eigenen Schrank: Laut Manuels ERM vom 20.10.2026 (Regel 6) bekommt der Empfänger einen eigenen Eintrag mit `status = geliehen` und `leihvorgang_id`. Modul `kleidung` und Testseiten nutzen seit 20.10.2026 diesen Status (der Vorschlag `geliehen_von` ist damit erledigt); offen ist nur noch die Umsetzung im Modul `verleihen`.
+- [ ] Geliehene Teile im eigenen Schrank: Laut Manuels ERM vom 20.10.2026 (Regel 6) bekommt der Empfänger einen eigenen Eintrag mit `status = geliehen` und `leihvorgang_id`. Modul `kleidung` und die Seiten in `frontend/templates/` nutzen seit 20.10.2026 diesen Status (der Vorschlag `geliehen_von` ist damit erledigt); offen ist nur noch die Umsetzung im Modul `verleihen`.
 - [ ] Alte Kleidungsstücke in Kathas lokaler Datenbank (Format vom 13.10.) passen nicht mehr zum neuen Code. Katha hat das Löschen am 20.10.2026 freigegeben; noch auszuführen auf Kathas Laptop (die Cloud-Sitzung erreicht die lokale Datenbank nicht): Collection `kleidungsstuecke` in der Datenbank `sharely` leeren und den Inhalt von `uploads/` löschen.
 - [ ] Frontend-Framework wählen (React oder Vue) — betrifft Phase 1
 - [ ] KI-Anbieter für den Produktimport wählen — betrifft Phase 5
@@ -128,7 +128,7 @@ Gute Zusammenarbeit! 🤝
 | Person | Aktuell dran an | Stand vom |
 |---|---|---|
 | Christian | 3D-Avatar: Rohling `Avatar_Editorgeruest.glb` fertig, als Nächstes Three.js-Testseite mit Reglern | 12.10.2026 |
-| Katha | Modul `kleidung` und Klick-Prototyp (`frontend/testseiten/`) auf Manuels ERM vom 20.10.2026 umgestellt | 20.10.2026 |
+| Katha | Modul `kleidung` und Seiten (`frontend/templates/`, vorher `testseiten/`) auf Manuels ERM vom 20.10.2026 umgestellt | 20.10.2026 |
 | Manuel | ERM an die Desktop-Mockups angepasst und festgelegt (`docs/datenmodell/ERM-SHARELY.md`); als Nächstes baut seine Cowork-Sitzung die MongoDB-Struktur im Backend danach neu | 20.10.2026 |
 
 ## Nächste Schritte (teamweit)
@@ -141,7 +141,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Wissensspeicher (Erkenntnisse, die nicht verloren gehen sollen)
 
-- Testseiten zeigen nach einer Änderung noch den alten Stand? Der Browser cacht `stil.css` und `gemeinsam.js` vom einfachen Python-Server: Seite mit **Strg + F5** neu laden (14.10.2026).
+- Seiten in `frontend/templates/` zeigen nach einer Änderung noch den alten Stand? Der Browser cacht `stil.css` und `gemeinsam.js` vom einfachen Python-Server: Seite mit **Strg + F5** neu laden (14.10.2026).
 - **Ready Player Me wurde 01/2026 abgeschaltet** (Netflix-Übernahme) — Lehre: keine Abhängigkeit von proprietären Plattformen; MakeHuman-Assets liegen als Dateien bei uns (CC0-Lizenz).
 - **Werkstatt/Schaufenster-Prinzip:** MakeHuman ist Entwickler-Werkzeug zum Bau des Avatar-Rohlings (GLB mit Morph Targets); Nutzer sehen nur unseren eigenen Editor. Gespeichert wird pro Nutzer nur die Reglerstellung, nie das Modell.
 - **Git-Falle auf Christians Rechner (erledigt 22.07.2026):** In `C:\Users\chris` lag ein versehentliches Git-Repo über das ganze Home-Verzeichnis (nur 1 Commit, kein Remote). Am 22.07.2026 entfernt (`.git` gelöscht) — es ging nichts Einzigartiges verloren. Lehre bleibt: in Home-/Desktop-Pfaden vor dem ersten Commit prüfen, ob nicht versehentlich ein zu weit gefasstes Repo offen ist; nur gezielt Projektpfade stagen.
@@ -155,6 +155,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **20.10.2026 · Katha/Claude(Laptop.Code):** Entscheidung Katha: Die Seiten sind keine Testseiten mehr, sondern die Seiten der Web-App. Ordner `frontend/testseiten/` per `git mv` in `frontend/templates/` umbenannt (nur Umbenennung, Architektur bleibt: Frontend getrennt vom Backend, kein Server-Rendering durch FastAPI). Bezeichnungen „Testseiten“/„Prototyp“ in den Seiten, `stil.css`, `gemeinsam.js`, beiden Frontend-READMEs, „Aktueller Stand“ und `docs/PROJEKTDOKUMENTATION.md` angepasst; alte Log-Einträge bleiben unverändert. Neue Adresse: http://localhost:5173/frontend/templates/ (alle 11 Seiten und das Logo laden).
 - **20.10.2026 · Katha/Claude(Laptop.Code):** Entscheidung Katha: Claudes Annahmen zum Kleidungsstück bestätigt, also „Ganzjährig“ nur allein wählbar (nicht zusammen mit einzelnen Saisons), Maße 0,1 bis 300 cm auf eine Nachkommastelle gerundet, Name bis 100 Zeichen. So bereits im Code (`kleidung/schemas.py`); offene Frage entfernt.
 
 - **20.10.2026 · Katha/Claude(Laptop.Code):** Katha hat die Sitzungskennung `Katha/Claude(Laptop.Code)` für diese Cloud-Sitzung bestätigt, den Commit freigegeben und das Löschen der alten Kleidungsstücke in ihrer lokalen Datenbank erlaubt. Umstellung auf das ERM (Eintrag darunter) von `claude/fervent-planck-iyxjhh` nach `main` gebracht (Fast-Forward). Löschen selbst steht noch aus, weil die Cloud-Sitzung Kathas lokale MongoDB nicht erreicht; Befehl an Katha gegeben, siehe offene Fragen.

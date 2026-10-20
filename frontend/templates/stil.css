@@ -1,5 +1,5 @@
 /*
-  Gemeinsames Stylesheet aller Testseiten, nach den Desktop-Mockups (docs/mockups/desktop/).
+  Gemeinsames Stylesheet aller Seiten (Templates), nach den Desktop-Mockups (docs/mockups/desktop/).
 
   Farben, Schriften, Rundungen und Abstände stehen als Variablen in :root. Design ändern = zuerst
   diese Variablen anpassen, dann die Bausteine weiter unten. Die Klassennamen sind so gewählt, dass
@@ -280,7 +280,7 @@ textarea { resize: vertical; min-height: 90px; }
 .meldung.ok { background: var(--primaer-hell); border-left: 5px solid var(--primaer); }
 .meldung.fehler { background: var(--rosa); border-left: 5px solid var(--rot); color: var(--rot); }
 
-/* Hinweis auf Beispieldaten und Prototyp-Grenzen */
+/* Hinweis auf Beispieldaten und Funktionen ohne Backend */
 .hinweis { border: 1.5px dashed var(--feld-rand); border-radius: var(--rund-klein); padding: 10px 14px; font-size: .9rem; color: var(--text-leise); margin-bottom: 22px; background: #fbf8f3; }
 
 /* ---------- Fenster (Mockups „Overlay“) ---------- */
@@ -540,7 +540,7 @@ a.menue-zeile { text-decoration: none; }
 .menue-zeile.gefahr { border-color: var(--rot); color: var(--rot); }
 .menue-zeile:disabled { cursor: not-allowed; }
 
-/* ---------- Übersicht der Testseiten ---------- */
+/* ---------- Seitenübersicht ---------- */
 
 .liste { list-style: none; margin: 0; padding: 0; }
 .eintrag { display: flex; align-items: center; gap: 14px; padding: 16px 4px; border-bottom: 1.5px solid var(--linie); }

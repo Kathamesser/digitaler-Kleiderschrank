@@ -309,7 +309,7 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 
 ### 6.3 Klick-Prototyp (13./14.10.2026)
 
-Neun HTML-Seiten ohne Framework nach den Wireframes in `frontend/testseiten/`: Anmeldung, Schrank, Kleidungsstück hinzufügen und Detail, Outfits, Outfit erstellen, Verliehen, Freunde, Profil. Schrank, Hinzufügen und Detail laufen live am Backend, die übrigen mit Beispieldaten. Der Schrank hat Suche, Schnellfilter und ein Filtermenü über alle Eigenschaften. Das gesamte Aussehen steckt in `stil.css` mit Variablen in `:root`, damit es später ins Framework übernommen werden kann.
+Neun HTML-Seiten ohne Framework nach den Wireframes in `frontend/testseiten/` (seit 20.10.2026 `frontend/templates/`, im Design der Desktop-Mockups): Anmeldung, Schrank, Kleidungsstück hinzufügen und Detail, Outfits, Outfit erstellen, Verliehen, Freunde, Profil. Schrank, Hinzufügen und Detail laufen live am Backend, die übrigen mit Beispieldaten. Der Schrank hat Suche, Schnellfilter und ein Filtermenü über alle Eigenschaften. Das gesamte Aussehen steckt in `stil.css` mit Variablen in `:root`, damit es später ins Framework übernommen werden kann.
 
 ### 6.4 Avatar
 
@@ -472,7 +472,7 @@ Bisherige Erkenntnisse, die ins Fazit gehören können (aus dem Wissensspeicher 
 | `docs/api/README.md` | API-Absprachen und Endpunkte |
 | `docs/avatar/` | Regler, Pipeline, Figurtypen, Figur-Datenmodell, Zentimeter, Skripte |
 | `assets/avatar/README.md` | Avatar-Dateien und Neubau |
-| `backend/README.md`, `frontend/README.md`, `frontend/testseiten/README.md` | Aufbau, Start, Tests |
+| `backend/README.md`, `frontend/README.md`, `frontend/templates/README.md` | Aufbau, Start, Tests |
 
 ### 13.2 Glossar
 

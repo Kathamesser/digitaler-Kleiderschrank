@@ -1,6 +1,6 @@
-# Testseiten (Klick-Prototyp)
+# Templates (Seiten der Web-App)
 
-HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Sie dienen zum Ausprobieren des Backends und als Klick-Prototyp, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks folgen seit 20.10.2026 Manuels ERM (`docs/datenmodell/ERM-SHARELY.md`), das selbst nach den Mockups gebaut ist.
+HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Seit 20.10.2026 sind sie keine Testseiten mehr, sondern die Seiten der Web-App (Ordner bis dahin `frontend/testseiten/`, Entscheidung Katha). Sie laufen ohne Framework, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks folgen seit 20.10.2026 Manuels ERM (`docs/datenmodell/ERM-SHARELY.md`), das selbst nach den Mockups gebaut ist.
 
 ## Seiten
 
@@ -45,6 +45,6 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
    python -m http.server 5173
    ```
 
-3. Im Browser öffnen: http://localhost:5173/frontend/testseiten/
+3. Im Browser öffnen: http://localhost:5173/frontend/templates/
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.
