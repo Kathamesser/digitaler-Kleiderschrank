@@ -1,6 +1,6 @@
 # Avatar-Pipeline: von MakeHuman zur GLB-Datei
 
-Stand: 12.10.2026 · Umsetzung des Konzepts aus `AVATAR-3D-KONZEPT.md` (Werkstatt/Schaufenster). Seit 12.10.2026 liegen die fertige GLB und alles für einen Neubau im Repo unter `assets/avatar/` (Anleitung: `assets/avatar/README.md`), die Skripte hier in `skripte/`. Nur die MakeHuman-Einzelexporte (`Formsammlung`) liegen weiterhin allein auf Christians Rechner unter `Abschlussprojekt\Avatar-Editor_Datein\Figuren\`.
+Stand: 12.10.2026 · Umsetzung des Konzepts aus `docs/planung/AVATAR-3D-KONZEPT.md` (Werkstatt/Schaufenster). Seit 12.10.2026 liegen die fertige GLB und alles für einen Neubau im Repo unter `assets/avatar/` (Anleitung: `assets/avatar/README.md`), die Skripte hier in `skripte/`. Nur die MakeHuman-Einzelexporte (`Formsammlung`) liegen weiterhin allein auf Christians Rechner unter `Abschlussprojekt\Avatar-Editor_Datein\Figuren\`.
 
 ## Ergebnis
 

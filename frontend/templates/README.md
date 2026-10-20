@@ -24,15 +24,15 @@ Schriften (DM Sans, Fraunces) kommen von Google Fonts; ohne Internet fallen die 
 
 ## Aufbau
 
-- `stil.css`: das gesamte Aussehen. Ganz oben stehen alle Farben, Schrift, Rundungen und Abstände als Variablen (`:root`). **Design ändern = zuerst diese Variablen ändern, dann die Bausteine darunter.** Alle Seiten ziehen automatisch mit.
-- `gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
-- Je Seite eine HTML-Datei mit nur dem, was die Seite selbst braucht.
+- `../static/css/stil.css`: das gesamte Aussehen. Ganz oben stehen alle Farben, Schrift, Rundungen und Abstände als Variablen (`:root`). **Design ändern = zuerst diese Variablen ändern, dann die Bausteine darunter.** Alle Seiten ziehen automatisch mit.
+- `../static/js/gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
+- Je Seite eine HTML-Datei hier in `templates/` mit nur dem, was die Seite selbst braucht. Sie binden `../static/css/stil.css` und `../static/js/gemeinsam.js` ein.
 
 ## Weiterverwenden mit React oder Vue
 
 - `stil.css` kann fast unverändert übernommen werden (Klassennamen bleiben).
-- Das HTML jeder Seite wird zur Seiten-Komponente in `frontend/src/seiten/`, wiederkehrende Teile (Kachel, Navigation, Kopfband) zu Komponenten in `src/komponenten/`. In React wird dabei z. B. `class` zu `className`.
-- Die Backend-Aufrufe aus `gemeinsam.js` und den Seiten wandern nach `src/api/`.
+- Das HTML jeder Seite wird zur Seiten-Komponente (z. B. in `frontend/src/seiten/`), wiederkehrende Teile (Kachel, Kopf- und Fußleiste) zu Komponenten (z. B. `src/komponenten/`). In React wird dabei z. B. `class` zu `className`.
+- Die Backend-Aufrufe aus `gemeinsam.js` und den Seiten wandern in ein eigenes Modul (z. B. `src/api/`).
 
 Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werden.
 

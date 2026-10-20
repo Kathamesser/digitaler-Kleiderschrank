@@ -7,7 +7,7 @@ Datenbank: **MongoDB** (Technische Konzeption 2.2). Das ERM beschreibt die Daten
 ## 1. Grundlagen
 
 - **Desktop-Mockups vom 20.10.2026** (26 Bildschirme): Anmeldung, Hauptmenü, Kleiderschrank, Kleidungsstück hinzufügen/Detail/Filter, Outfits, Freunde, Leihen/Verschenken, Nachrichten, Profil, Garderobe
-- `Userstory.md` (User Stories 1–10), Use Cases der Technischen Konzeption
+- `docs/planung/Userstory.md` (User Stories 1–10), Use Cases der Technischen Konzeption
 - `docs/avatar/FIGUR-DATENMODELL.md` (Figur, entschieden am 12.10.2026)
 - Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`): Tags, Wertetabellen, 3D-Vorlagen
 - Kathas Umsetzung von User Story 8 (`backend/app/module/kleidung`)

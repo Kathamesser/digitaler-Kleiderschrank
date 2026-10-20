@@ -4,7 +4,7 @@ Lebendes Dokument für alles, was zwischen den Sessions und Teammitgliedern nich
 
 **Regeln für alle (Menschen wie Claudes):**
 - Vor der Arbeit lesen, nach der Arbeit Änderungen eintragen — mit Datum und Namen. KI-Sitzungen dokumentieren dabei **jede** Aktion, siehe „📌 Protokollpflicht für alle KI-Sitzungen" unten.
-- Einträge kurz halten; Details gehören in die Fachdokumente (ROADMAP.md, AVATAR-3D-KONZEPT.md), hier stehen Stand, Entscheidungen und Übergaben.
+- Einträge kurz halten; Details gehören in die Fachdokumente (docs/planung/ROADMAP.md, docs/planung/AVATAR-3D-KONZEPT.md), hier stehen Stand, Entscheidungen und Übergaben.
 - Erledigtes aus „Offene Fragen" und „Nächste Schritte" entfernen statt anzusammeln — das Log unten ist das Archiv.
 - Über Git synchronisieren: vor dem Lesen pullen, nach dem Eintragen committen und nach `main` pushen. Es gilt nur die BRAIN.md auf `main` — Änderungen auf anderen Branches immer dorthin zusammenführen.
 
@@ -76,7 +76,7 @@ Kurze Nachrichten von einer KI-Sitzung an eine andere, adressiert per Sitzungske
 
 Hallo Kollegen! Hier schreibt Christians Claude-Code-Session (17.07.2026). Schön, dass ihr da seid — ab jetzt arbeiten wir zu mehreren an diesem Projekt, und diese Datei ist unser gemeinsames Gedächtnis.
 
-Kurz zur Orientierung, bevor ihr loslegt: Die Planungsphase ist weitgehend abgeschlossen — Roadmap und Avatar-Konzept liegen im Repo und sind mit dem Team abgestimmt. Bitte lest `CLAUDE.md` und die dort verlinkten Dokumente, bevor ihr größere Vorschläge macht; einige naheliegende Ideen (KI-Foto-Avatar, Unity, eigenes VTON-Modell hosten) wurden bereits bewusst verworfen, die Begründungen stehen in `AVATAR-3D-KONZEPT.md`. Der frühere Flask-Experimentierstand aus der Testphase wurde am 06.10.2026 aus dem Repo entfernt; die Umsetzung startet neu nach dem Zielbild.
+Kurz zur Orientierung, bevor ihr loslegt: Die Planungsphase ist weitgehend abgeschlossen — Roadmap und Avatar-Konzept liegen im Repo und sind mit dem Team abgestimmt. Bitte lest `CLAUDE.md` und die dort verlinkten Dokumente, bevor ihr größere Vorschläge macht; einige naheliegende Ideen (KI-Foto-Avatar, Unity, eigenes VTON-Modell hosten) wurden bereits bewusst verworfen, die Begründungen stehen in `docs/planung/AVATAR-3D-KONZEPT.md`. Der frühere Flask-Experimentierstand aus der Testphase wurde am 06.10.2026 aus dem Repo entfernt; die Umsetzung startet neu nach dem Zielbild.
 
 Was ihr für eure Menschen tun könnt: die offenen Entscheidungen unten vorantreiben, Einträge in „Wer macht gerade was" aktuell halten, und Erkenntnisse in den Wissensspeicher schreiben, statt sie in euren Sessions versickern zu lassen. Und tragt euch nach jeder Aktion ins Log ein — wie genau und mit welcher Kennung, steht oben unter „📌 Protokollpflicht für alle KI-Sitzungen".
 
@@ -87,8 +87,8 @@ Gute Zusammenarbeit! 🤝
 ## Aktueller Stand (Kurzfassung)
 
 - Projektphase: Planung abgeschlossen bis auf offene Punkte unten; Projektstart der Umsetzung. Der Experimentierstand (Flask-Webapp) wurde am 06.10.2026 vollständig aus dem Repo entfernt — es wird neu nach dem Zielbild aufgebaut, der alte Code bleibt in der Git-Historie nachlesbar.
-- Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: ROADMAP.md.
-- Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: AVATAR-3D-KONZEPT.md.
+- Tech-Stack entschieden: Python-Backend (Zielbild FastAPI), MongoDB, JavaScript/Three.js-Frontend. Details und Begründung: docs/planung/ROADMAP.md.
+- Avatar-Ansatz entschieden: anpassbare 3D-Spielfigur (MakeHuman-Rohling + Three.js-Editor) statt KI-Foto-Generierung. Details: docs/planung/AVATAR-3D-KONZEPT.md.
 - Avatar-Rohling steht (12.10.2026): `Avatar_Editorgeruest.glb` mit 114 Morph Targets für die Passform, lädt im three.js-Editor. Welcher UI-Regler welches Target steuert: `docs/avatar/AVATAR-REGLER.md` (verbindlich, bei Änderungen nachziehen). Die Datei selbst und alles zum Neubauen liegt in `assets/avatar/` (Anleitung im README dort), Pipeline und Skripte: `docs/avatar/AVATAR-PIPELINE.md`.
 - Avatar-Figuren in der Datenbank (12.10.2026, Christian): 0 bis 3 Figuren je Nutzer, Collection `figuren`, nur Reglerwerte. Vorschlag für die Felder: `docs/avatar/FIGUR-DATENMODELL.md`, Grundlage fürs Datenbankmodell.
 - Projektgerüst steht (13.10.2026): `backend/` (FastAPI, modularer Monolith mit 8 Fachmodulen, je router → service → repository, startet und hat einen ersten Test), `frontend/` (Ordner und README, Framework noch offen), `uploads/` (nur lokal), Datenmodell siehe nächster Punkt. Einstieg: `backend/README.md`.
@@ -155,6 +155,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **20.10.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch die Ordnerstruktur aufgeräumt (Vorschlag Claude, von Katha in allen drei Teilen freigegeben): (1) Planungsdokumente `ROADMAP.md`, `roadmap.html`, `AVATAR-3D-KONZEPT.md`, `Userstory.md` per `git mv` nach `docs/planung/`; im Hauptordner bleiben nur `README.md`, `CLAUDE.md`, `BRAIN.md`. (2) Frontend: `stil.css` nach `frontend/static/css/`, `gemeinsam.js` nach `frontend/static/js/`, die HTML-Seiten bleiben in `frontend/templates/` und binden beides über `../static/…` ein; leere Platzhalter `frontend/public/`, `src/api/`, `src/komponenten/`, `src/seiten/` entfernt (werden erst mit React/Vue angelegt), `src/avatar-editor/` bleibt. (3) Datei `test` im Hauptordner gelöscht (Inhalt „habe ich rechte?“, aus der Testphase). Alle Verweise nachgezogen in `README.md` (neue Strukturübersicht), `CLAUDE.md`, `docs/claude-projekt-instructions.md` (**wichtig für die claude.ai-Projekte: dort die Anweisungen neu einfügen, falls sie kopiert wurden**), `docs/PROJEKTDOKUMENTATION.md`, `docs/avatar/`, `docs/datenmodell/`, `frontend/README.md`, `frontend/templates/README.md`, Kopfkommentar von `figuren/router.py` und den aktuellen Abschnitten hier; alte Log-Einträge bleiben unverändert. Geprüft: alle 11 Seiten laden am echten Backend mit CSS, JS und Logo, keine Konsolenfehler. **An alle: nach `git pull` liegen die Planungsdokumente unter `docs/planung/`, Christians Obsidian-Vault zieht beim nächsten Abgleich mit.**
 - **20.10.2026 · Katha/Claude(Laptop.Code):** Entscheidung Katha: Die Seiten sind keine Testseiten mehr, sondern die Seiten der Web-App. Ordner `frontend/testseiten/` per `git mv` in `frontend/templates/` umbenannt (nur Umbenennung, Architektur bleibt: Frontend getrennt vom Backend, kein Server-Rendering durch FastAPI). Bezeichnungen „Testseiten“/„Prototyp“ in den Seiten, `stil.css`, `gemeinsam.js`, beiden Frontend-READMEs, „Aktueller Stand“ und `docs/PROJEKTDOKUMENTATION.md` angepasst; alte Log-Einträge bleiben unverändert. Neue Adresse: http://localhost:5173/frontend/templates/ (alle 11 Seiten und das Logo laden).
 - **20.10.2026 · Katha/Claude(Laptop.Code):** Entscheidung Katha: Claudes Annahmen zum Kleidungsstück bestätigt, also „Ganzjährig“ nur allein wählbar (nicht zusammen mit einzelnen Saisons), Maße 0,1 bis 300 cm auf eine Nachkommastelle gerundet, Name bis 100 Zeichen. So bereits im Code (`kleidung/schemas.py`); offene Frage entfernt.
 

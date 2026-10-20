@@ -7,21 +7,33 @@ Die Umsetzung startet neu nach dem Zielbild (Python/FastAPI, MongoDB, JavaScript
 ## Projektstruktur
 
 ```
-backend/            Python/FastAPI, modularer Monolith (Start und Aufbau: backend/README.md)
-frontend/           Web-App im Browser, Three.js-Avatar-Editor (Framework noch offen: frontend/README.md)
-uploads/            hochgeladene Bilder, nur lokal, nicht im Repo
-assets/             Avatar-Dateien (GLB, Werkstatt) und Logo
-docs/datenmodell/   ERM und Abbildung auf MongoDB-Collections
-docs/api/           Absprachen zur REST-API
-docs/avatar/        Avatar: Regler, Pipeline, Figur-Datenmodell, Zentimeter
-docs/konzeption/    Technische Konzeption (PDF, inkl. Wireframes)
+README.md, CLAUDE.md, BRAIN.md   Einstieg, Kontext für Claude, Team-Gedächtnis (bleiben im Hauptordner)
+backend/                  Python/FastAPI, modularer Monolith (Start und Aufbau: backend/README.md)
+  app/core/               Einstellungen, Datenbank, Sicherheit
+  app/module/             ein Ordner je Fachbereich (router → service → repository)
+  tests/                  pytest
+frontend/                 Web-App im Browser (frontend/README.md)
+  templates/              die Seiten (HTML), Start: templates/index.html
+  static/css/             Aussehen (stil.css)
+  static/js/              gemeinsame Bausteine (gemeinsam.js)
+  src/avatar-editor/      3D-Avatar-Editor mit Three.js
+assets/                   Avatar-Dateien (GLB, Werkstatt) und Logo
+uploads/                  hochgeladene Bilder, nur lokal, nicht im Repo
+docs/                     Dokumentation
+  PROJEKTDOKUMENTATION.md Verlauf, Entscheidungen, Soll-Ist-Vergleich
+  planung/                Roadmap, Avatar-Konzept, User Stories
+  konzeption/             Technische Konzeption (PDF, inkl. Wireframes)
+  mockups/                Desktop-Mockups (PNG)
+  datenmodell/            ERM und Abbildung auf MongoDB-Collections
+  api/                    Absprachen zur REST-API
+  avatar/                 Avatar: Regler, Pipeline, Figur-Datenmodell, Zentimeter
 ```
 
 ## Dokumente
 
 - `docs/PROJEKTDOKUMENTATION.md` — Projektdokumentation (Verlauf, Entscheidungen, Soll-Ist-Vergleich)
 - `BRAIN.md` — gemeinsames Team-Gedächtnis (aktueller Stand, offene Entscheidungen, Log)
-- `ROADMAP.md` / `roadmap.html` — Meilensteinplan und Tech-Stack-Entscheidung
-- `AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar
-- `Userstory.md` — User Stories
+- `docs/planung/ROADMAP.md` / `docs/planung/roadmap.html` — Meilensteinplan und Tech-Stack-Entscheidung
+- `docs/planung/AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar
+- `docs/planung/Userstory.md` — User Stories
 - `CLAUDE.md` — Projektkontext für Claude-Sitzungen

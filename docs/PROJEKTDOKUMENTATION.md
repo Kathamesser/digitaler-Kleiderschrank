@@ -54,7 +54,7 @@ Eine responsive Web-App (Desktop und Smartphone), mit der Nutzer
 4. eine Sims-artige 3D-Spielfigur nach eigenem Körperbau gestalten, die die Kleidung trägt und die Passform anzeigt,
 5. Kleidungsstücke mit Freunden teilen, verleihen und verschenken.
 
-Die vier Säulen der Roadmap (Kleiderschrank, Outfit-Kombinatorik, KI-Produktimport, Avatar-Baukasten) sind in `ROADMAP.md` beschrieben, die sozialen Funktionen (Freunde, Verleihen, Verschenken) kamen über User Storys und die Technische Konzeption hinzu (siehe Abschnitt 11.1).
+Die vier Säulen der Roadmap (Kleiderschrank, Outfit-Kombinatorik, KI-Produktimport, Avatar-Baukasten) sind in `docs/planung/ROADMAP.md` beschrieben, die sozialen Funktionen (Freunde, Verleihen, Verschenken) kamen über User Storys und die Technische Konzeption hinzu (siehe Abschnitt 11.1).
 
 ### 1.4 Projektabgrenzung
 
@@ -72,7 +72,7 @@ Bewusst **nicht** Teil des Projekts:
 
 ### 2.1 Projektphasen (Soll)
 
-Der Meilensteinplan aus `ROADMAP.md` (erstellt 09.07.2026) teilt das Projekt in acht Phasen. Die Daten ergeben sich aus Projektwoche 1 = 09.07.2026.
+Der Meilensteinplan aus `docs/planung/ROADMAP.md` (erstellt 09.07.2026) teilt das Projekt in acht Phasen. Die Daten ergeben sich aus Projektwoche 1 = 09.07.2026.
 
 | Phase | Wochen | Zeitraum | Inhalt |
 |---|---|---|---|
@@ -132,7 +132,7 @@ Die Technische Konzeption vom 04.10.2026 (`docs/konzeption/Technische_Konzeption
 
 ### 3.3 Anforderungen (User Storys)
 
-Die User Storys stammen aus dem GitHub-Kanban-Board und stehen vollständig mit Anforderungen in `Userstory.md`.
+Die User Storys stammen aus dem GitHub-Kanban-Board und stehen vollständig mit Anforderungen in `docs/planung/Userstory.md`.
 
 | Nr. | User Story | Anforderungen | Umsetzungsstand (20.10.2026) |
 |---|---|---|---|
@@ -151,7 +151,7 @@ Nicht-funktionale Anforderungen (aus Konzeption und Roadmap): im Browser lauffä
 
 ### 3.4 Anforderungen an den Avatar
 
-Vorgabe aus dem Team (`ROADMAP.md`): 3D-Modell von allen Seiten betrachtbar (Drehen/Zoomen); anpassbar in Größe, Körperbau, Haut-, Haar- und Augenfarbe, Frisur und Gesicht; anpassbare Körpermaße (Schultern, Taille, Beine, Brust), die auch für die Passform-Bewertung dienen.
+Vorgabe aus dem Team (`docs/planung/ROADMAP.md`): 3D-Modell von allen Seiten betrachtbar (Drehen/Zoomen); anpassbar in Größe, Körperbau, Haut-, Haar- und Augenfarbe, Frisur und Gesicht; anpassbare Körpermaße (Schultern, Taille, Beine, Brust), die auch für die Passform-Bewertung dienen.
 
 ---
 
@@ -244,7 +244,7 @@ Die API-Beschreibung erzeugt FastAPI automatisch aus dem Code (`/docs`, `/redoc`
 
 ## 5. 3D-Avatar (Kernfeature)
 
-Der Avatar ist Alleinstellungsmerkmal und höchstes technisches Risiko. Deshalb hatte ein früher Machbarkeitsnachweis Vorrang. Konzept: `AVATAR-3D-KONZEPT.md`, Umsetzung: `docs/avatar/`.
+Der Avatar ist Alleinstellungsmerkmal und höchstes technisches Risiko. Deshalb hatte ein früher Machbarkeitsnachweis Vorrang. Konzept: `docs/planung/AVATAR-3D-KONZEPT.md`, Umsetzung: `docs/avatar/`.
 
 ### 5.1 Grundprinzip „Werkstatt und Schaufenster“
 
@@ -358,10 +358,10 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 
 | Datum | Entscheidung | Begründung | Wer | Quelle |
 |---|---|---|---|---|
-| 09.07.2026 | Meilensteinplan mit 8 Phasen über 26 Wochen | Struktur für das Projekt, Risiko zuerst | Team | `ROADMAP.md` |
-| ~10.07.2026 | 3D-Spielfigur statt KI-generiertem Foto-Avatar | geringeres Datenschutz- und Kostenrisiko, keine Abhängigkeit von KI-Anbietern | Team | `AVATAR-3D-KONZEPT.md` |
-| ~10.07.2026 | MakeHuman als Quelle des 3D-Modells, kein Unity, kein eigenes VTON-Modell | CC0-Lizenz, Dateien liegen beim Team; Ready Player Me wurde abgeschaltet | Team | `AVATAR-3D-KONZEPT.md` |
-| 12.07.2026 | Python (FastAPI), MongoDB, JavaScript/Three.js | Teamerfahrung, flexibles Dokumentenmodell, 3D im Browser | Team | `ROADMAP.md` |
+| 09.07.2026 | Meilensteinplan mit 8 Phasen über 26 Wochen | Struktur für das Projekt, Risiko zuerst | Team | `docs/planung/ROADMAP.md` |
+| ~10.07.2026 | 3D-Spielfigur statt KI-generiertem Foto-Avatar | geringeres Datenschutz- und Kostenrisiko, keine Abhängigkeit von KI-Anbietern | Team | `docs/planung/AVATAR-3D-KONZEPT.md` |
+| ~10.07.2026 | MakeHuman als Quelle des 3D-Modells, kein Unity, kein eigenes VTON-Modell | CC0-Lizenz, Dateien liegen beim Team; Ready Player Me wurde abgeschaltet | Team | `docs/planung/AVATAR-3D-KONZEPT.md` |
+| 12.07.2026 | Python (FastAPI), MongoDB, JavaScript/Three.js | Teamerfahrung, flexibles Dokumentenmodell, 3D im Browser | Team | `docs/planung/ROADMAP.md` |
 | 17.07.2026 | `BRAIN.md` als gemeinsames Team-Gedächtnis | Wissen zwischen Menschen und KI-Sitzungen sichern | Christian | `BRAIN.md` |
 | 15.09.2026 | Protokollpflicht und Sitzungskennungen für alle KI-Sitzungen; nur eine `BRAIN.md` auf `main` | Nachvollziehbarkeit (prüfungsrelevant) | Christian | `BRAIN.md` |
 | 04.10.2026 | Web-App als SPA, Client-Server mit modularem Monolithen, Bilder als Dateien je Nutzer | siehe Abschnitt 4.1–4.3 | Team | Technische Konzeption |
@@ -394,7 +394,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 09.07.–17.07.2026 | Roadmap, Avatar-Konzept (Wechsel zur 3D-Spielfigur), Tech-Stack; Flask-Experimentierstand in der Testphase; Planungsdokumente, `CLAUDE.md` und `BRAIN.md` im Repo |
 | 21.07.–22.07.2026 | Weitere KI-Sitzungen eingebunden, Git-Aufräumarbeiten |
 | 15.09.2026 | Protokollpflicht und Sitzungskennungen für alle KI-Sitzungen, erster Team-Test mit mehreren Sitzungen |
-| 22.09.2026 | User Storys 1–10 aus dem Kanban-Board in `Userstory.md` übernommen, fehlende Anforderungen als Vorschlag ergänzt |
+| 22.09.2026 | User Storys 1–10 aus dem Kanban-Board in `docs/planung/Userstory.md` übernommen, fehlende Anforderungen als Vorschlag ergänzt |
 | 04.10.2026 | Technische Konzeption mit Use Cases, Tech-Stack-Begründung, Architektur und 21 Wireframes |
 | 06.10.2026 | Erstes Sprint Planning; Manuel steigt mit KI-Sitzungen ein; Experimentierstand entfernt |
 | 12.10.2026 | Avatar-Rohling fertig: Pipeline, GLB mit 114 Morph Targets, Regler-Zuordnung, Figurtypen, Figur-Datenmodell, Zentimeter-Messung |
@@ -463,9 +463,9 @@ Bisherige Erkenntnisse, die ins Fazit gehören können (aus dem Wissensspeicher 
 |---|---|
 | `README.md` | Kurzbeschreibung und Projektstruktur |
 | `BRAIN.md` | Team-Gedächtnis: Stand, offene Entscheidungen, Wissensspeicher, Log aller Aktionen |
-| `ROADMAP.md`, `roadmap.html` | Meilensteinplan, Tech-Stack-Entscheidung |
-| `AVATAR-3D-KONZEPT.md` | Umsetzungskonzept 3D-Avatar |
-| `Userstory.md` | User Storys 1–10 |
+| `docs/planung/ROADMAP.md`, `docs/planung/roadmap.html` | Meilensteinplan, Tech-Stack-Entscheidung |
+| `docs/planung/AVATAR-3D-KONZEPT.md` | Umsetzungskonzept 3D-Avatar |
+| `docs/planung/Userstory.md` | User Storys 1–10 |
 | `docs/konzeption/Technische_Konzeption_Sharely.pdf` | Use Cases, Tech-Stack, Architektur, 21 Wireframes |
 | `docs/datenmodell/ERM-SHARELY.md` + Diagramme | ERM und MongoDB-Abbildung |
 | `docs/datenmodell/ERM-VORSCHLAEGE-2026-10-16.md` | Vorschläge zur ERM-Besprechung |

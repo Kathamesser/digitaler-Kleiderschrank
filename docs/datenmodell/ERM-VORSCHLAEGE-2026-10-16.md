@@ -16,7 +16,7 @@ Das ERM ist technisch in Ordnung: Kardinalitäten, Zuordnungstabellen und MongoD
 ## 1. Kleidungsart und 3D-Vorlagen
 
 - **Kleidungsart:** große feste Liste, aus der der Nutzer wählt. Jede Art ist nur ein Datensatz (Name, Kategorie, `Vorlage_ID`); neue Arten brauchen keinen Code.
-- **3D-Vorlage:** wenige, sie sind die eigentliche Arbeit. Viele Arten zeigen auf dieselbe Vorlage. Eine neue Vorlage braucht es nur bei deutlich anderer Form am Körper (kurz/lang, Rock/Kleid), nicht bei anderem Namen. Startvorschlag (passt zur Empfehlung „5–6 Vorlagen“ in `AVATAR-3D-KONZEPT.md`):
+- **3D-Vorlage:** wenige, sie sind die eigentliche Arbeit. Viele Arten zeigen auf dieselbe Vorlage. Eine neue Vorlage braucht es nur bei deutlich anderer Form am Körper (kurz/lang, Rock/Kleid), nicht bei anderem Namen. Startvorschlag (passt zur Empfehlung „5–6 Vorlagen“ in `docs/planung/AVATAR-3D-KONZEPT.md`):
 
 | Vorlage | Kleidungsarten (Beispiele) |
 |---|---|

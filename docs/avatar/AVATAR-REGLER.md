@@ -24,7 +24,7 @@ Es sind also **nie beide** Targets eines Paares gleichzeitig größer als 0. Bei
 
 - **Zwei Meshes:** Die GLB enthält Körper und Augen als getrennte Meshes mit denselben 114 Target-Namen in derselben Reihenfolge. Jeder Wert muss auf **beide** Meshes gesetzt werden, sonst bleiben die Augen beim Verformen stehen.
 - **Index über den Namen holen,** nie fest verdrahten: `mesh.morphTargetDictionary["max_gender"]` liefert den Index für `mesh.morphTargetInfluences`.
-- **Gespeichert werden die UI-Werte,** nicht die Morph-Werte (z. B. `{ "geschlecht": -100, "gewicht": 20 }`). So bleibt das Speicherformat stabil, auch wenn wir später Targets austauschen. Das passt zum Werkstatt/Schaufenster-Prinzip in `AVATAR-3D-KONZEPT.md`.
+- **Gespeichert werden die UI-Werte,** nicht die Morph-Werte (z. B. `{ "geschlecht": -100, "gewicht": 20 }`). So bleibt das Speicherformat stabil, auch wenn wir später Targets austauschen. Das passt zum Werkstatt/Schaufenster-Prinzip in `docs/planung/AVATAR-3D-KONZEPT.md`.
 - **Lineare Näherung:** In MakeHuman beeinflussen sich die Grundregler gegenseitig (z. B. hängt die Gewichtsform vom Geschlecht ab). Unsere Targets sind jeweils vom neutralen Avatar aus gemessen und werden einfach addiert. Für den Editor reicht das. Extreme Kombinationen, etwa Gewicht und Muskeln gleichzeitig auf Maximum, können aber leicht von MakeHuman abweichen.
 
 ## 2. Namensschema der Targets

@@ -6,16 +6,18 @@ Single-Page-App im Browser, responsiv für Desktop und Smartphone (Technische Ko
 
 ## Seiten (Templates)
 
-Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `testseiten/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `templates/README.md`.
+Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `static/css/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `templates/README.md`.
 
 ## Ordner
 
 | Ordner | Inhalt |
 |---|---|
-| `src/avatar-editor/` | 3D-Avatar-Editor mit Three.js: lädt die GLB, setzt die Regler auf die Morph Targets, Drehen/Zoomen. Bewusst **unabhängig vom Framework** gehalten, kann also schon jetzt entstehen. Grundlage: `docs/avatar/AVATAR-REGLER.md`, `AVATAR-3D-KONZEPT.md` |
-| `src/api/` | Aufrufe ans Backend, je Modul eine Datei (`kleidung.js`, `outfits.js` …) |
-| `src/seiten/` | Seiten aus den Wireframes: Anmeldung, Schrank, Outfits, Verliehen, Freunde, Profil/Einstellungen (Technische Konzeption Kapitel 3) |
-| `src/komponenten/` | Wiederverwendbare Bausteine, z. B. Kleidungsstück-Karte, untere Navigationsleiste, Empty State |
-| `public/` | Statische Dateien, z. B. Logo (Original: `assets/branding/sharely-logo.png`) |
+| `src/avatar-editor/` | 3D-Avatar-Editor mit Three.js: lädt die GLB, setzt die Regler auf die Morph Targets, Drehen/Zoomen. Bewusst **unabhängig vom Framework** gehalten, kann also schon jetzt entstehen. Grundlage: `docs/avatar/AVATAR-REGLER.md`, `docs/planung/AVATAR-3D-KONZEPT.md` |
+| `templates/` | Die Seiten der Web-App als HTML, eine Datei je Seite (Übersicht und Start: `templates/README.md`) |
+| `static/css/` | `stil.css`: das gesamte Aussehen, Farben und Schriften als Variablen in `:root` |
+| `static/js/` | `gemeinsam.js`: Backend-Adresse, Auswahlwerte, Symbole, Kopf- und Fußleiste, Kacheln |
+| `src/avatar-editor/` | siehe oben |
 
-Die Avatar-GLB liegt zentral in `assets/avatar/Avatar_Editorgeruest.glb` und wird nicht kopiert. Wie sie im Browser ankommt (Build-Schritt kopiert sie nach `public/` oder das Backend liefert sie aus), wird mit dem Framework festgelegt.
+Das Logo liegt nur in `assets/branding/` und wird von den Seiten direkt von dort geladen. Ordner für ein Framework (z. B. `src/seiten/`, `src/komponenten/`, `src/api/`) werden erst angelegt, wenn React oder Vue entschieden ist (Ordnerstruktur aufgeräumt am 20.10.2026).
+
+Die Avatar-GLB liegt zentral in `assets/avatar/Avatar_Editorgeruest.glb` und wird nicht kopiert. Wie sie im Browser ankommt (Build-Schritt kopiert sie oder das Backend liefert sie aus), wird mit dem Framework festgelegt.
