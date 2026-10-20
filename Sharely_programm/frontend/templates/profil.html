@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- Mockup „Desktop · Mein Profil (Overlay)“. Beispieldaten: Das Modul nutzer hat noch kein Backend. -->
+<!-- Mockup „Desktop · Mein Profil (Overlay)“. Profilbild live: GET/PUT/DELETE /api/nutzer/ich/profilbild,
+     per Datei oder direkt mit der Kamera. Name und „Mitglied seit“ sind noch Beispieldaten (Registrierung fehlt). -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -17,24 +18,180 @@
     </header>
     <div class="profil-kopf">
       <div class="bild">
-        <span class="initiale gross" id="initiale"></span>
-        <button type="button" class="symbolknopf" disabled title="Kommt noch: Modul nutzer fehlt" aria-label="Profilbild ändern" data-symbol="kamera"></button>
+        <span class="initiale gross" id="profilbild"></span>
+        <button type="button" class="symbolknopf" id="kamera-knopf" aria-label="Profilbild mit der Kamera aufnehmen" title="Foto aufnehmen" data-symbol="kamera"></button>
       </div>
       <div>
         <h2 id="name"></h2>
         <p>Mitglied seit Oktober 2026</p>
-        <button type="button" class="knopf-rand gruen klein" disabled title="Kommt noch: Modul nutzer fehlt">Bild hinzufügen</button>
+        <div class="knoepfe">
+          <button type="button" class="knopf-rand gruen klein" id="hochladen-knopf">Bild hinzufügen</button>
+          <button type="button" class="knopf-gefahr klein" id="entfernen-knopf" hidden>Bild entfernen</button>
+        </div>
+        <!-- accept wie im Backend; capture fehlt bewusst, damit am Handy auch die Galerie angeboten wird -->
+        <input type="file" id="datei" accept="image/jpeg,image/png,image/webp" hidden>
       </div>
     </div>
+    <div id="meldung" class="meldung" role="status"></div>
     <a class="menue-zeile" href="index.html"><span data-symbol="personWechsel"></span> Nutzer wechseln <span class="pfeil" data-symbol="weiter"></span></a>
-    <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch: Modul nutzer fehlt"><span data-symbol="muell"></span> Account löschen</button>
+    <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch: Registrierung und Login fehlen"><span data-symbol="muell"></span> Account löschen</button>
   </section>
 </main>
 
+<dialog class="blatt schmal" id="kamera-fenster" aria-labelledby="kamera-titel">
+  <header class="blatt-kopf">
+    <h2 id="kamera-titel"><span data-symbol="kamera"></span>Profilbild aufnehmen</h2>
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Kamera schließen" data-symbol="schliessen"></button>
+  </header>
+  <div class="blatt-inhalt">
+    <div class="kamera-buehne" id="buehne">
+      <video id="video" autoplay playsinline muted></video>
+      <img id="aufnahme" alt="Aufgenommenes Profilbild" hidden>
+      <p id="kamera-hinweis" hidden></p>
+    </div>
+    <p class="leise zentriert">Das Bild wird nur gespeichert, wenn du auf „Übernehmen“ klickst.</p>
+  </div>
+  <footer class="blatt-fuss">
+    <button type="button" class="knopf-rand" id="kamera-zweit" data-schliessen>Abbrechen</button>
+    <button type="button" class="knopf" id="kamera-haupt"><span data-symbol="kamera"></span> <span>Auslösen</span></button>
+  </footer>
+</dialog>
+
 <script>
   seitenkopf(`Hallo ${NUTZER.name}!`);
-  document.getElementById("initiale").textContent = NUTZER.name[0];
   document.getElementById("name").textContent = NUTZER.name;
+
+  const meldung = document.getElementById("meldung");
+  const kreis = document.getElementById("profilbild");
+  const entfernen = document.getElementById("entfernen-knopf");
+  const datei = document.getElementById("datei");
+
+  /** Profilbild auf der Seite und oben im Nutzer-Chip anzeigen. */
+  function zeigeProfil(profil) {
+    profilbildEinsetzen(kreis, profil.profilbild_url);
+    profilbildEinsetzen(document.querySelector(".nutzer-chip .initiale"), profil.profilbild_url);
+    entfernen.hidden = !profil.profilbild_url;
+    document.getElementById("hochladen-knopf").textContent = profil.profilbild_url ? "Bild ändern" : "Bild hinzufügen";
+  }
+
+  async function hochladen(bild, dateiname) {
+    if (bild.size > MAX_BILD_MB * 1024 * 1024) {
+      return zeigeMeldung(meldung, `Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_BILD_MB} MB.`, "fehler");
+    }
+    const daten = new FormData();
+    daten.append("bild", bild, dateiname);
+    try {
+      const antwort = await fetch(`${API}/nutzer/ich/profilbild`, { method: "PUT", body: daten });
+      const inhalt = await antwort.json();
+      if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
+      zeigeProfil(inhalt);
+      zeigeMeldung(meldung, "Dein Profilbild wurde gespeichert.", "ok");
+    } catch {
+      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+    }
+  }
+
+  // ---------- Bild aus einer Datei ----------
+
+  document.getElementById("hochladen-knopf").onclick = () => datei.click();
+  datei.onchange = () => {
+    const gewaehlt = datei.files[0];
+    datei.value = "";
+    if (gewaehlt) hochladen(gewaehlt, gewaehlt.name);
+  };
+
+  entfernen.onclick = async () => {
+    if (!confirm("Profilbild wirklich entfernen?")) return;
+    try {
+      const antwort = await fetch(`${API}/nutzer/ich/profilbild`, { method: "DELETE" });
+      zeigeProfil(await antwort.json());
+      zeigeMeldung(meldung, "Dein Profilbild wurde entfernt.", "ok");
+    } catch {
+      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+    }
+  };
+
+  // ---------- Bild direkt mit der Kamera ----------
+  // getUserMedia geht nur in einer sicheren Umgebung (https oder localhost). Der Browser fragt
+  // beim ersten Mal, ob die Seite die Kamera benutzen darf.
+
+  const fenster = document.getElementById("kamera-fenster");
+  const video = document.getElementById("video");
+  const aufnahme = document.getElementById("aufnahme");
+  const hinweis = document.getElementById("kamera-hinweis");
+  const haupt = document.getElementById("kamera-haupt");
+  const zweit = document.getElementById("kamera-zweit");
+  let strom = null;   // laufende Kamera
+  let foto = null;    // aufgenommenes Bild (Blob)
+
+  function zustand(art, text) {
+    video.hidden = art !== "live";
+    aufnahme.hidden = art !== "foto";
+    hinweis.hidden = art !== "hinweis";
+    document.getElementById("buehne").classList.toggle("ohne-rahmen", art === "hinweis");
+    if (text) hinweis.textContent = text;
+    haupt.lastElementChild.textContent = { live: "Auslösen", foto: "Übernehmen", hinweis: "Bild aus Datei wählen" }[art];
+    haupt.firstElementChild.innerHTML = SYMBOL[{ live: "kamera", foto: "ok", hinweis: "hochladen" }[art]];
+    haupt.disabled = false;
+    zweit.textContent = art === "foto" ? "Nochmal" : "Abbrechen";
+    zweit.toggleAttribute("data-schliessen", art !== "foto");
+  }
+
+  function kameraAus() {
+    if (strom) strom.getTracks().forEach((spur) => spur.stop()); // Kamera-Licht geht aus
+    strom = null;
+  }
+
+  async function kameraAn() {
+    foto = null;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      return zustand("hinweis", "Dieser Browser erlaubt hier keinen Kamerazugriff. Du kannst stattdessen ein Bild aus einer Datei wählen.");
+    }
+    haupt.disabled = true;
+    try {
+      strom = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 1280 } }, audio: false });
+      video.srcObject = strom;
+      zustand("live");
+    } catch (fehler) {
+      const text = fehler.name === "NotAllowedError"
+        ? "Der Zugriff auf die Kamera wurde nicht erlaubt. Du kannst ihn in den Browser-Einstellungen (Schloss-Symbol neben der Adresse) freigeben oder ein Bild aus einer Datei wählen."
+        : "Es wurde keine Kamera gefunden oder sie wird gerade von einem anderen Programm benutzt.";
+      zustand("hinweis", text);
+    }
+  }
+
+  /** Quadratischen Ausschnitt aus der Mitte nehmen, gespiegelt wie die Vorschau, 600 × 600 px als JPEG. */
+  function ausloesen() {
+    if (!video.videoWidth) return; // Kamera liefert noch kein Bild
+    const seite = Math.min(video.videoWidth, video.videoHeight);
+    const leinwand = Object.assign(document.createElement("canvas"), { width: 600, height: 600 });
+    const stift = leinwand.getContext("2d");
+    stift.translate(600, 0);
+    stift.scale(-1, 1);
+    stift.drawImage(video, (video.videoWidth - seite) / 2, (video.videoHeight - seite) / 2, seite, seite, 0, 0, 600, 600);
+    leinwand.toBlob((blob) => {
+      foto = blob;
+      aufnahme.src = URL.createObjectURL(blob);
+      kameraAus();
+      zustand("foto");
+    }, "image/jpeg", 0.9);
+  }
+
+  document.getElementById("kamera-knopf").onclick = () => { fenster.showModal(); kameraAn(); };
+  haupt.onclick = () => {
+    if (!video.hidden) return ausloesen();
+    if (foto) { fenster.close(); return hochladen(foto, "kamera.jpg"); }
+    fenster.close();
+    datei.click(); // Hinweis-Zustand: Datei statt Kamera
+  };
+  zweit.onclick = () => (zweit.hasAttribute("data-schliessen") ? fenster.close() : kameraAn());
+  fenster.querySelector(".blatt-kopf [data-schliessen]").onclick = () => fenster.close();
+  fenster.onclose = kameraAus; // auch bei Esc
+  fenster.onclick = (e) => { if (e.target === fenster) fenster.close(); };
+
+  holeJson("/nutzer/ich")
+    .then(zeigeProfil)
+    .catch((fehler) => { kreis.textContent = NUTZER.name[0]; zeigeMeldung(meldung, fehler.message, "fehler"); });
 </script>
 </body>
 </html>

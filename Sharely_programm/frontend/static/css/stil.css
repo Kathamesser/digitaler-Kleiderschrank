@@ -76,6 +76,8 @@ svg { flex-shrink: 0; }
   width: 52px; height: 52px; border-radius: 50%; background: var(--primaer-mittel); color: var(--text);
   display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.4rem; flex-shrink: 0;
 }
+.initiale { overflow: hidden; }
+.initiale img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .initiale.gross { width: 150px; height: 150px; font-size: 3.6rem; border: 4px solid var(--flaeche); box-shadow: 0 0 0 2px var(--feld); }
 .initiale.mittel { width: 96px; height: 96px; font-size: 2.2rem; }
 .initiale.gelb { background: var(--gelb); }
@@ -532,6 +534,18 @@ textarea { resize: vertical; min-height: 90px; }
 .profil-kopf .bild { position: relative; }
 .profil-kopf .bild .symbolknopf { position: absolute; right: 0; bottom: 6px; width: 50px; height: 50px; border-radius: 50%; background: var(--primaer); color: var(--auf-dunkel); }
 .profil-kopf h2 { font-size: 2.6rem; }
+.profil-kopf .knoepfe { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* Kamera-Fenster fürs Profilbild: Vorschau quadratisch, gespiegelt wie ein Spiegel */
+.kamera-buehne {
+  position: relative; width: min(420px, 100%); aspect-ratio: 1; margin: 0 auto; border-radius: var(--rund-gross);
+  overflow: hidden; background: var(--feld); display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.kamera-buehne video, .kamera-buehne img { width: 100%; height: 100%; object-fit: cover; }
+.kamera-buehne video { transform: scaleX(-1); }
+.kamera-buehne::after { content: ""; position: absolute; inset: 8%; border-radius: 50%; box-shadow: 0 0 0 999px rgba(44, 58, 94, .35); pointer-events: none; }
+.kamera-buehne.ohne-rahmen::after { display: none; }
+.kamera-buehne p { padding: 0 30px; color: var(--text-leise); }
 .profil-kopf p { margin: 4px 0 18px; color: var(--text-leise); font-size: 1.15rem; }
 .menue-zeile {
   display: flex; align-items: center; gap: 18px; width: 100%; padding: 22px 26px; margin-bottom: 16px; border-radius: var(--rund);

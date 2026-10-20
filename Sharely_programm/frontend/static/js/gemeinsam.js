@@ -124,6 +124,19 @@ function seitenkopf(titel) {
   kopf.querySelector(".initiale").textContent = NUTZER.name[0];
   kopf.querySelector(".name").textContent = NUTZER.name;
   document.querySelector("main").prepend(kopf);
+  profilbildEinsetzen(kopf.querySelector(".initiale")).catch(() => {}); // ohne Backend bleibt der Buchstabe
+}
+
+/** Profilbild in einen Kreis (.initiale) setzen; ohne Bild bleibt der Anfangsbuchstabe.
+ *  url: schon bekannte Adresse (nach dem Hochladen), sonst wird das Profil geladen. */
+async function profilbildEinsetzen(kreis, url) {
+  if (url === undefined) url = (await holeJson("/nutzer/ich")).profilbild_url;
+  if (!url) {
+    kreis.textContent = NUTZER.name[0];
+    return;
+  }
+  const img = Object.assign(document.createElement("img"), { src: BACKEND + url, alt: "" });
+  kreis.replaceChildren(img);
 }
 
 /** Leiste am Seitenende mit großen Knöpfen (Mockups: „Hauptmenü“, „Garderobe“ …).
