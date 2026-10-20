@@ -391,7 +391,9 @@ textarea { resize: vertical; min-height: 90px; }
 /* ---------- Anmeldung ---------- */
 
 .anmelde-seite { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
-.anmelde-bild { position: relative; overflow: hidden; background: var(--feld); padding: 7vh 7vw; }
+/* Linke Hälfte immer genau fensterhoch und beim Scrollen stehend: Die Registrierung ist länger als die
+   Anmeldung, sonst würde die Hälfte mitwachsen und die Kreise beim Umschalten verrutschen. */
+.anmelde-bild { position: sticky; top: 0; align-self: start; height: 100vh; overflow: hidden; background: var(--feld); padding: 7vh 7vw; }
 .anmelde-bild .marke-klein { gap: 28px; }
 .anmelde-bild .logo-kachel { width: 14vh; height: 14vh; border-radius: 2.7vh; }
 .anmelde-bild .wortmarke { font-size: 2.2rem; display: block; }
@@ -559,7 +561,7 @@ a.menue-zeile { text-decoration: none; }
   .zwei-spalten, .leih-spalten, .freund-panels, .leih-links, .anmelde-seite { grid-template-columns: 1fr; gap: 26px; }
   .zahl-karten { grid-template-columns: 1fr 1fr; }
   .seiten-kacheln { grid-template-columns: 1fr; }
-  .anmelde-bild { padding: 40px 24px 260px; }
+  .anmelde-bild { position: relative; height: auto; padding: 40px 24px 260px; }
   .anmelde-bild h1 { margin-top: 40px; }
   .fenster, .anmelde-karte { padding: 26px 20px; }
   .blatt-kopf { padding: 24px 20px 10px; }
