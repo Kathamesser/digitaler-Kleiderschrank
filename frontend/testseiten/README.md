@@ -8,7 +8,7 @@ Schlichte HTML-Seiten ohne Framework nach den Wireframes der Technischen Konzept
 |---|---|---|
 | `index.html` | – | Übersicht aller Seiten |
 | `anmeldung.html` | 1, 2 | ohne Backend (Anmeldeverfahren offen), führt direkt zum Schrank |
-| `schrank.html` | 5, 6 | live: Liste, Suche, Filterleiste (Alles, Favoriten, Kategorien) und Filtermenü über das Symbol neben der Suche (alle Eigenschaften vom Hinzufügen außer Notiz) |
+| `schrank.html` | 5, 6 | live: Liste, Suche, Filterleiste (Alles, Favoriten, Kategorien) und Filtermenü über das Symbol neben der Suche (alle Eigenschaften vom Hinzufügen außer Notiz, dazu Leihen: Im Schrank / Verliehen / Geliehen) |
 | `kleidung-hochladen.html` | 7 | live: User Story 8, Foto + Eigenschaften speichern |
 | `kleidungsstueck.html?id=…` | 8 | live: Detailansicht; Bearbeiten/Löschen fehlen im Backend noch |
 | `outfits.html` | 9, 10 | Beispieldaten; leerer Zustand mit `outfits.html?leer` |

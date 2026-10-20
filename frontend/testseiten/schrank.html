@@ -59,6 +59,9 @@
       <span class="titel">Sichtbarkeit</span>
       <div class="pillen" id="f-sichtbar"></div>
 
+      <span class="titel">Leihen</span>
+      <div class="pillen" id="f-leihen"></div>
+
       <!-- Freitextfelder: angeboten werden die Werte, die im Schrank vorkommen -->
       <div id="f-groesse-abschnitt" hidden><span class="titel">Größe</span><div class="pillen" id="f-groesse"></div></div>
       <div id="f-marke-abschnitt" hidden><span class="titel">Marke</span><div class="pillen" id="f-marke"></div></div>
@@ -116,10 +119,11 @@
   // ---------- Filtermenü ----------
 
   const FREITEXT = ["groesse", "marke", "farbe", "material"];
-  const LISTEN = ["kategorie", "sichtbar", ...FREITEXT, "saison", "anlass", "herkunft"];
+  const LISTEN = ["kategorie", "sichtbar", "leihen", ...FREITEXT, "saison", "anlass", "herkunft"];
 
   pillen("f-kategorie", "kategorie", KATEGORIEN_MEHRZAHL, "checkbox");
   pillen("f-sichtbar", "sichtbar", { privat: "Privat", freunde: "Für Freunde sichtbar" }, "checkbox");
+  pillen("f-leihen", "leihen", { im_schrank: "Im Schrank", verliehen: "Verliehen", geliehen: "Geliehen" }, "checkbox");
   pillen("f-saison", "saison", SAISONS, "checkbox");
   pillen("f-anlass", "anlass", ANLAESSE, "checkbox");
   pillen("f-herkunft", "herkunft", HERKUENFTE, "checkbox");
@@ -155,6 +159,13 @@
     return f;
   }
 
+  /** Leihstand eines Teils. verliehen = mein Teil bei jemand anderem (status vom Backend),
+   *  geliehen = Teil eines Freundes bei mir. Dafür liefert die API noch nichts; Vorschlag fürs
+   *  Modul verleihen: geliehene Teile mit Feld geliehen_von in GET /api/kleidung mitschicken. */
+  function leihstand(k) {
+    return k.geliehen_von ? "geliehen" : k.status;
+  }
+
   /** Innerhalb einer Eigenschaft reicht ein Treffer (oder), zwischen Eigenschaften müssen alle passen (und).
    *  Teile ohne Angabe fallen raus, sobald nach dieser Eigenschaft gefiltert wird. */
   function passtZuFilter(k, f) {
@@ -162,6 +173,7 @@
     if (!einer(f.kategorie, k.kategorie)) return false;
     if (f.favorit && !k.favorit) return false;
     if (!einer(f.sichtbar, k.privat ? "privat" : "freunde")) return false;
+    if (!einer(f.leihen, leihstand(k))) return false;
     for (const feld of FREITEXT) if (!einer(f[feld], k[feld] && schluessel(k[feld]))) return false;
     for (const feld of ["saison", "anlass"]) {
       if (f[feld].length && !k[feld].some((wert) => f[feld].includes(wert))) return false;
