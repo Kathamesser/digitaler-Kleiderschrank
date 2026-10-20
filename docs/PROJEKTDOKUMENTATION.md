@@ -207,22 +207,25 @@ flowchart LR
 
 ### 4.4 Datenmodell
 
-Das ERM hat Manuel erstellt (`docs/datenmodell/ERM-SHARELY.md`, Diagramme in `ERM_Sharely.drawio` bzw. `erm_sharely.png` und `erm_teil3_mongodb.png`). Es ist abgeglichen mit Wireframes, User Storys und dem vorhandenen Code, aber **noch nicht im Team beschlossen**.
+Das ERM hat Manuel erstellt (`docs/datenmodell/ERM-SHARELY.md`, Diagramme in `ERM_Sharely.drawio` bzw. `erm_sharely.png` und `erm_teil3_mongodb.png`). Die erste Fassung vom 13.10.2026 beruhte auf den Wireframes der Technischen Konzeption. Am 20.10.2026 hat Manuel es an die Desktop-Mockups (`docs/mockups/desktop/`) angepasst und festgelegt; wo Mockups und Wireframes voneinander abweichen, gelten die Mockups. Offen sind nur noch zwei Punkte, die die Struktur nicht ändern: welche Maße je Kleidungsart erfasst werden und welche Kleidungsart welche 3D-Vorlage nutzt.
 
-**Entitäten:** Nutzer, Sitzung, Passwort-Reset, Figur, Kategorie, Kleidungsart, 3D-Kleidungsvorlage, Kleidungsstück, Produktquelle, Größentabelle mit Größeneinträgen, Outfit, Freigabe, Feedback, Leihvorgang, Folgen; n:m-Beziehungen über Zuordnungstabellen.
+**Entitäten:** Nutzer, Sitzung, Passwort-Reset, Figur, Freundschaft, Kleidungsstück, Kleidungsart, Kleidungsvorlage, Farbe, Material, Saison, Kategorie, Kleidungsmaß, Messpunkt, Produktquelle, Outfit, Leihvorgang, Neuigkeit, Ausgeblendete Kategorie; n:m-Beziehungen über Zuordnungstabellen.
 
 Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 
-- **Wunschartikel sind Kleidungsstücke mit `status = wunsch`** statt einer eigenen Entität — so funktionieren Kategorie, Passform und Anprobieren ohne doppelten Code.
-- **Zweistufige Einordnung:** Kategorie (feste Liste: Oberteile, Hosen, Röcke, Kleider, Jacken, Schuhe, Accessoires) und optional eine Kleidungsart (feste Liste je Kategorie, z. B. Jeans, Pullover). An der Kleidungsart hängt die 3D-Vorlage.
-- **Leihvorgang als eigene Entität** mit Verlauf (Anfrage, Annahme, Rückgabe) statt eines bloßen Status-Häkchens.
-- **Verschenken:** Das Teil des Schenkenden bekommt `status = verschenkt` und bleibt in seinem Archiv; der Empfänger bekommt eine Kopie mit Daten und Bild.
-- **Größentabelle als eigene Entität,** Grundlage für „passt / eng / weit“.
-- **Berechnetes wird nicht gespeichert:** Zähler im Profil, Passform-Bewertung, Zentimeter der Figur.
+- **Kleidungsart als Pflicht-Einordnung** (feste Liste: Tops, Pullover, Hosen, Röcke, Kleider, Jacken, Schuhe, Unterwäsche, Einteiler, Accessoires). Sie bestimmt die 3D-Vorlage, mehrere Arten können sich eine Vorlage teilen.
+- **Kategorien als freie Etiketten:** vorgegebene (Business, Freizeit, Winterkleidung …) und eigene je Nutzer, mehrere je Kleidungsstück oder Outfit. Der Anlass geht darin auf. Jeder Nutzer kann Kategorien für sich ausblenden.
+- **Feste Wertelisten** für Farbe, Material und Saison: im ERM als Wertetabellen (1. Normalform), in MongoDB als Enum im Code.
+- **Maße an den Messbändern des Avatars:** Ein Kleidungsstück speichert seine Maße in cm an denselben 22 Messpunkten wie die Avatar-GLB. Die Passform („passt / eng / weit“) vergleicht Messpunkt für Messpunkt ohne Umrechnung; Größentabellen entfallen.
+- **Status** `im_schrank`, `geliehen`, `verliehen`, `wunsch`. Wunschartikel und geliehene Teile sind Kleidungsstücke im eigenen Schrank; ein geliehenes Teil verweist auf seinen Leihvorgang.
+- **Leihvorgang als eigene Entität** mit Verlauf (Anfrage, Annahme, Zeitraum, Rückgabe). **Verschenken ist ein Besitzwechsel:** Das Teil gehört danach dem Empfänger, der Verlauf bleibt im Leihvorgang.
+- **Gegenseitige Freundschaft** mit Anfrage, Annehmen, Ablehnen und Blockieren. Freunde sehen alle Teile und Outfits außer privaten.
+- **Neuigkeiten** des Entwicklerteams; anlegen dürfen nur Admins (`Ist_Admin`, nur direkt in der Datenbank setzbar).
+- **Berechnetes wird nicht gespeichert:** Zähler, „überfällig“, Passform-Bewertung, Zentimeter der Figur.
 
-**Abbildung auf MongoDB:** Jede Entität mit eigenem Lebenszyklus wird eine Collection (`nutzer`, `kleidungsstuecke`, `outfits`, `figuren`, `leihvorgaenge` …), eingebettet wird nur, was ausschließlich zu einem Dokument gehört (Produktquelle, Größeneinträge, Outfit-Teile, Feedback). Da MongoDB keine Fremdschlüssel kennt, prüft die Service-Schicht die Regeln selbst, z. B. höchstens drei Figuren je Nutzer oder Outfits nur aus eigenen Teilen (`ERM-SHARELY.md` Abschnitt 7).
+**Abbildung auf MongoDB:** Jede Entität mit eigenem Lebenszyklus wird eine Collection (`nutzer`, `kleidungsstuecke`, `kleidungsarten`, `kategorien`, `outfits`, `figuren`, `freundschaften`, `leihvorgaenge`, `neuigkeiten` …). Eingebettet wird nur, was ausschließlich zu einem Dokument gehört (Maße, Produktquelle, Outfit-Teile, Reglerwerte); kleine feste Listen ohne eigene Daten stehen im Code. Da MongoDB keine Fremdschlüssel kennt, prüft die Service-Schicht die Regeln selbst, z. B. höchstens drei Figuren je Nutzer, Leihen nur unter Freunden oder nie Einblick in private Teile (`ERM-SHARELY.md` Abschnitt 7).
 
-Zur Besprechung stehen außerdem Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`), Grundregel: *Hat ein Wert eine technische Wirkung, kommt er aus einer festen Liste; dient er nur dem Filter, ist er ein freier Tag.*
+**Auswirkung auf den Code:** Kathas Modul `kleidung` (User Story 8) entspricht noch dem ERM vom 13.10.2026; die nötigen Anpassungen stehen in `ERM-SHARELY.md` Abschnitt 10. Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`) sind in die Fassung vom 20.10. eingeflossen (Grundregel feste Liste vs. freies Etikett, Wertetabellen, 3D-Vorlagen).
 
 ### 4.5 Benutzeroberfläche
 
@@ -274,7 +277,7 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 
 - **Die Maße werden am verformten Modell gemessen,** nicht über eine Umrechnungstabelle. 22 Messbänder (die 20 von MakeHuman plus Schrittlänge und Fußlänge) liegen in `docs/avatar/messpunkte.json`. So stimmt der Wert auch, wenn mehrere Regler zusammenwirken.
 - **Realitätsprüfung** gegen Größentabellen aus dem Handel: Die Standardfiguren entsprechen Damen 36 bzw. Herren 46; mit den Reglern ist der ganze Bereich der Konfektionsgrößen erreichbar (`ZENTIMETER.md` Abschnitt 3).
-- **Passform-Logik** (geplant, Phase 4): Größe des Kleidungsstücks → Größentabelle mit cm-Bereichen → Vergleich mit den cm der Figur → „passt / eng / weit“. Das ist reine Programmlogik ohne KI und damit gut dokumentierbare Eigenleistung. Die 3D-Kleidungsvorlage wächst mit denselben Morph-Werten mit.
+- **Passform-Logik** (geplant, Phase 4): Maße des Kleidungsstücks in cm an den Messpunkten der GLB → Vergleich Messpunkt für Messpunkt mit den cm der Figur → „passt / eng / weit“ (seit dem ERM vom 20.10.2026 ohne Größentabelle, siehe 4.4). Das ist reine Programmlogik ohne KI und damit gut dokumentierbare Eigenleistung. Die 3D-Kleidungsvorlage wächst mit denselben Morph-Werten mit.
 
 ---
 
@@ -339,9 +342,9 @@ Datenschutz ist Querschnittsthema seit Projektbeginn.
 - **Körpermaße und Aussehen sind trotzdem personenbezogene Daten.** Sie bleiben in der eigenen Datenbank, nicht bei einem KI-Anbieter. Gespeichert werden nur Reglerwerte; Zentimeter werden bei Bedarf berechnet.
 - **Trennung von Asset und Nutzerdaten:** Die GLB-Datei ist Teil der App und für alle gleich, personenbezogen ist nur die Reglerstellung.
 - **Bilder** liegen je Nutzer in einem eigenen, nicht öffentlichen Ordner und sind nur über einen Endpunkt abrufbar, der den Besitz prüft.
-- **Sichtbarkeit:** Bestätigte Freunde/Follower sehen den Schrank, außer Teilen mit `privat = true`.
-- **Löschkonzept** (ERM Abschnitt 8): Beim Löschen eines Kontos werden alle Teile, Outfits, Figuren, Sitzungen, Freigaben, Beziehungen und der Upload-Ordner gelöscht; in Verläufen anderer Nutzer wird der Verweis anonymisiert.
-- **Passwörter und Tokens** nur als Hash (Empfehlung: Argon2), Geheimnisse nur in der lokalen `.env`, die nie committet wird.
+- **Sichtbarkeit:** Bestätigte Freunde sehen Schrank und Outfits, außer Teilen und Outfits mit `privat = true`; private Einträge sieht nie jemand anderes (ERM vom 20.10.2026). Den Avatar sehen Freunde nur, wenn der Nutzer ihn freigibt.
+- **Löschkonzept** (ERM Abschnitt 8): Beim Löschen eines Kontos werden alle Teile, Outfits, Figuren, eigenen Kategorien, Sitzungen, Freundschaften, gelesenen Neuigkeiten und der Upload-Ordner gelöscht; in Verläufen anderer Nutzer wird der Verweis anonymisiert.
+- **Passwörter und Tokens** nur als Hash (Argon2, entschieden 20.10.2026), Geheimnisse nur in der lokalen `.env`, die nie committet wird.
 - **Lizenzen:** MakeHuman-Modelle stehen unter CC0; für jedes weitere Asset (Frisuren, Kleidungsvorlagen) wird die Lizenz geprüft und dokumentiert.
 
 ---
@@ -370,6 +373,12 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 13.10.2026 | Status `im_schrank`/`verliehen`/`verschenkt`; Verschenken mit Kopie für den Empfänger | Verlauf beim Schenkenden bleibt erhalten | Manuel | `ERM-SHARELY.md` |
 | 13.10.2026 | Name, Wärmegrad, Wasserdicht und Tags am Kleidungsstück gestrichen; `privat` neu | Vereinfachung | Manuel | `ERM-SHARELY.md` |
 | 13.10.2026 | Sichtbarkeit: bestätigte Follower sehen den Schrank außer privaten Teilen | Teilen ohne Kontrollverlust | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | ERM an die Desktop-Mockups angepasst: Kleidungsart als Pflicht-Einordnung, Kategorien als freie Etiketten (Anlass geht darin auf), Name wieder da, Farbe/Material/Saison als feste Listen | Die Mockups von Christian sind die verbindliche Oberfläche | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | Maße des Kleidungsstücks an den 22 Messbändern der Avatar-GLB, Größentabellen entfallen | Passform ohne Umrechnung, gleiche Messpunkte wie die Figur | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | Status `im_schrank`/`geliehen`/`verliehen`/`wunsch`; Verschenken als Besitzwechsel (ersetzt Kopie und Status `verschenkt` vom 13.10.) | wie in den Mockups | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | Gegenseitige Freundschaft statt Folgen; Freigabe und Feedback (US 2) gestrichen; private Teile und Outfits nie für andere sichtbar | Mockups, Entscheidung vom 04.10.2026 | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | Neuigkeiten des Entwicklerteams, nur Admins legen sie an (`Ist_Admin` nur in der Datenbank) | Mockup „Nachrichten“; keine Rollenwahl in der App | Manuel | `ERM-SHARELY.md` |
+| 20.10.2026 | Anmeldeverfahren: serverseitige Sitzung mit Token im httpOnly-Cookie, Sitzungen mit TTL-Index, Argon2, Passwort-Reset per befristetem Link | echtes Logout, kein Token im JavaScript-Speicher | Manuel (Empfehlung Claude vom 13.10.) | `BRAIN.md`, `ERM-SHARELY.md` |
 
 ---
 
@@ -414,8 +423,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 
 - Frontend-Framework: React oder Vue
 - KI-Anbieter für den Produktimport
-- Anmeldeverfahren; Empfehlung: serverseitige Sitzung mit Token im httpOnly-Cookie, Sitzungen in MongoDB mit TTL-Index, Passwörter mit Argon2
-- ERM beschließen, darunter: Folgen oder gegenseitige Freundschaft, Freigabe/Feedback aus US 2 umsetzen oder streichen, Tags wieder aufnehmen, Anlass/Saison als Wertetabellen, Startliste der 3D-Vorlagen
+- ERM-Restpunkte: Maße je Kleidungsart und Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian)
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)
 - Grenzen der Avatar-Regler: Körpergröße (Vorschlag −40 bis +45, etwa 144–205 cm) und Mindestalter (Vorschlag ca. 18 Jahre)
 - User Storys 5–10: Anforderungen sind Vorschläge von Claude und müssen vom Team geprüft werden; Issues #15/#16 auf GitHub angleichen
