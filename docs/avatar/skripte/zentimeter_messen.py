@@ -51,6 +51,9 @@ MH_RULER = {
 EXTRA = {
     "schrittlaenge": [4372],        # tiefster Punkt im Schritt; Maß = Höhe über dem Boden
     "fusslaenge": [12453, 11551],   # linke Ferse, linke Zehenspitze; Maß = Abstand in Laufrichtung
+    # rechter Schulterpunkt (8274) über den Rücken zum linken (1602, Spiegelpunkt); Maß = straffes Band
+    "schulterbreite_ruecken": [8274, 8273, 8237, 8243, 8249, 8229, 8227, 8228, 1550, 1549, 1548, 1551, 1571, 1565, 1559, 1601, 1602],
+    "armlaenge": [8274, 10037, 10548],  # Schulterpunkt, Ellbogen, Handgelenk; Maß = Ärmellänge
 }
 
 # Anzeige: Schlüssel -> (deutscher Name, Art, Reglerschlüssel aus FIGUR-DATENMODELL.md)
@@ -78,11 +81,13 @@ INFO = {
     "lowerleg-height": ("Unterschenkellänge", "laenge", "unterschenkellaenge_mass"),
     "schrittlaenge": ("Schrittlänge (Innenbein)", "hoehe_punkt", None),
     "fusslaenge": ("Fußlänge", "fuss", None),
+    "schulterbreite_ruecken": ("Schulterbreite (über den Rücken, Schulterpunkt bis Schulterpunkt)", "bogen", None),
+    "armlaenge": ("Armlänge (Schulterpunkt über Ellbogen bis Handgelenk)", "laenge", None),
 }
 
 # Für die Tabelle: welche Maße als Spalten in der Wirkungstabelle stehen
 SPALTEN = ["koerpergroesse", "bust-circ", "underbust-circ", "waist-circ", "hips-circ",
-           "neck-circ", "thigh-circ", "schrittlaenge", "fusslaenge"]
+           "neck-circ", "thigh-circ", "schulterbreite_ruecken", "armlaenge", "schrittlaenge", "fusslaenge"]
 
 
 def load_glb(path):
@@ -153,6 +158,8 @@ def measure(X, rings):
         p = X[idx]
         if art == "umfang":
             v = hull_perimeter(p)
+        elif art == "bogen":  # offenes Band über eine Wölbung: straff gespannt, ohne die Sehne
+            v = hull_perimeter(p) - float(np.linalg.norm(p[-1] - p[0]))
         elif art == "laenge":
             v = float(np.linalg.norm(np.diff(p, axis=0), axis=1).sum())
         elif art == "hoehe_punkt":

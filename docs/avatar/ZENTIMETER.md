@@ -14,7 +14,7 @@ Wir legen **keine feste Formel „Reglerwert → cm"** fest. Der Editor misst di
 
 | Datei | Inhalt |
 |---|---|
-| `messpunkte.json` | 22 Messbänder als Vertex-Indizes der GLB (Körper-Mesh) und als MakeHuman-Vertex-Nummern, dazu die cm-Werte der Standardfigur und die Wirkung jedes Targets in cm |
+| `messpunkte.json` | 24 Messbänder als Vertex-Indizes der GLB (Körper-Mesh) und als MakeHuman-Vertex-Nummern, dazu die cm-Werte der Standardfigur und die Wirkung jedes Targets in cm |
 | `ZENTIMETER-TABELLE.md` | dieselben Zahlen zum Lesen: Standardfigur und Wirkung jedes Targets auf die wichtigsten Maße |
 | `skripte/zentimeter_messen.py` | erzeugt beide Dateien aus `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` und `Sharely_programm/assets/avatar/werkstatt/figur_default.obj`. Aufruf im Repo-Ordner: `python docs/avatar/skripte/zentimeter_messen.py`. **Wird die GLB neu gebaut, muss das Skript erneut laufen**, weil sich die Vertex-Reihenfolge der GLB ändern kann. |
 
@@ -25,6 +25,10 @@ Wir legen **keine feste Formel „Reglerwert → cm"** fest. Der Editor misst di
 - **Körpergröße:** vom tiefsten bis zum höchsten Punkt des Körpers, ohne Haare und ohne Schuhe.
 - **Schrittlänge (Innenbein)**, neu, für Hosen: Höhe des tiefsten Punkts im Schritt über dem Boden.
 - **Fußlänge**, neu, für Schuhe: Abstand Ferse bis Zehenspitze in Laufrichtung, linker Fuß.
+- **Schulterbreite über den Rücken** (`schulterbreite_ruecken`), neu seit 20.10.2026, für Oberteile, Jacken und Kleider: vom rechten Schulterpunkt über den Rücken zum linken, gemessen wie ein straff gespanntes Maßband (Art `bogen`: konvexe Hülle der Punkte minus der geraden Verbindung der beiden Schulterpunkte). So misst man auch Kleidung von Naht zu Naht. Das MakeHuman-Band `shoulder-dist` misst nur eine Seite vom Hals bis zur Schulter und bleibt nur für den Regler.
+- **Armlänge** (`armlaenge`), neu seit 20.10.2026, für die Ärmellänge: Schulterpunkt über den Ellbogen bis zum Handgelenk. Ersetzt die Summe aus Ober- und Unterarmlänge, deren Bänder am Ellbogen nicht aneinander anschließen.
+
+Grundsatz (Christian, 20.10.2026): Alle Maße werden rundum am 3D-Körper genommen, nicht als Breite von vorn. Umfänge laufen ganz um den Körper, Breiten folgen der Wölbung des Körpers.
 
 ## 3. Realitätsprüfung
 
@@ -78,6 +82,7 @@ function messeCm(mesh, band) {
   if (band.art === "laenge") return 100 * pts.slice(1).reduce((s, p, k) => s + p.distanceTo(pts[k]), 0);
   if (band.art === "hoehe_punkt") return 100 * (pts[0].y - bodenY(mesh));   // bodenY: tiefster Punkt der Figur
   if (band.art === "fuss") return 100 * Math.abs(pts[1].z - pts[0].z);
+  if (band.art === "bogen") return 100 * (huellenUmfang(pts) - pts[0].distanceTo(pts[pts.length - 1]));
   return 100 * huellenUmfang(pts);   // "umfang": konvexe Hülle in der Bandebene, wie im Python-Skript
 }
 ```
@@ -97,4 +102,4 @@ Gespeichert wird danach wie immer nur der Reglerwert.
 ## 6. Bewusst nicht gelöst
 
 - Die Messbänder hängen an festen Vertices. Bei extremen Kombinationen kann ein Band leicht schräg liegen, etwa wenn die Taillenhöhe stark verschoben ist. Für die Passform-Ampel („passt/eng/weit") ist das genau genug.
-- Maße, für die es kein Messband gibt (Armlänge gesamt, Kopfumfang, Fußbreite), kommen bei Bedarf als neue Einträge in `EXTRA` im Skript dazu.
+- Maße, für die es kein Messband gibt (Kopfumfang, Fußbreite), kommen bei Bedarf als neue Einträge in `EXTRA` im Skript dazu.
