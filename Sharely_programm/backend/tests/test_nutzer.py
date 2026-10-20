@@ -23,13 +23,14 @@ def client(monkeypatch, tmp_path):
     async def finden(nutzer_id):
         return speicher.get(nutzer_id)
 
-    async def profilbild_setzen(nutzer_id, bild_pfad):
-        speicher.setdefault(nutzer_id, {})["profilbild_pfad"] = bild_pfad
+    async def profilbild_setzen(nutzer_id, bild_pfad, geaendert_am):
+        speicher.setdefault(nutzer_id, {}).update(profilbild_pfad=bild_pfad, geaendert_am=geaendert_am)
 
     monkeypatch.setattr(repository, "finden", finden)
     monkeypatch.setattr(repository, "profilbild_setzen", profilbild_setzen)
     monkeypatch.setattr(get_settings(), "upload_ordner", str(tmp_path))
     with TestClient(app) as c:
+        c.speicher = speicher  # für Prüfungen auf das gespeicherte Dokument
         yield c
 
 
@@ -61,6 +62,14 @@ def test_neues_bild_ersetzt_altes(client, tmp_path):
     assert erste != zweite  # neue Adresse, damit der Browser nicht das alte Bild zeigt
     dateien = list((tmp_path / TEST_NUTZER_ID).iterdir())
     assert [d.suffix for d in dateien] == [".png"]  # altes Bild ist gelöscht
+
+
+def test_aenderung_setzt_geaendert_am(client):
+    hochladen(client)
+    erstes = client.speicher[TEST_NUTZER_ID]["geaendert_am"]
+    assert erstes.tzinfo is not None  # Zeitpunkt in UTC wie erstellt_am beim Kleidungsstück
+    client.delete("/api/nutzer/ich/profilbild")
+    assert client.speicher[TEST_NUTZER_ID]["geaendert_am"] >= erstes
 
 
 def test_profilbild_entfernen(client, tmp_path):

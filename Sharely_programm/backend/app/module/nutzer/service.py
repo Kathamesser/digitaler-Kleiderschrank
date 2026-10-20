@@ -5,6 +5,7 @@ Obergrenzen und Berechnungen. Datenbankzugriffe laufen über repository.py.
 """
 
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from app.core.config import get_settings
@@ -46,7 +47,7 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
     datei.parent.mkdir(parents=True, exist_ok=True)
     datei.write_bytes(bild)
     try:
-        await repository.profilbild_setzen(nutzer_id, bild_pfad)
+        await repository.profilbild_setzen(nutzer_id, bild_pfad, datetime.now(timezone.utc))
     except Exception:
         datei.unlink(missing_ok=True)  # kein verwaistes Bild ohne Eintrag
         raise
@@ -58,7 +59,7 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
 async def profilbild_entfernen(nutzer_id: str) -> ProfilAntwort:
     alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     if alt:
-        await repository.profilbild_setzen(nutzer_id, None)
+        await repository.profilbild_setzen(nutzer_id, None, datetime.now(timezone.utc))
         (_upload_ordner() / alt).unlink(missing_ok=True)
     return await profil(nutzer_id)
 
