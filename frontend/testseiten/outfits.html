@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Wireframes 9 (Outfits) und 10 (Outfits leer). Beispieldaten: Das Modul outfits hat noch kein Backend.
+<!-- Mockup „Desktop · Outfits“. Beispieldaten: Das Modul outfits hat noch kein Backend.
      Leeren Zustand ansehen: outfits.html?leer -->
 <html lang="de">
 <head>
@@ -10,42 +10,103 @@
   <script src="gemeinsam.js"></script>
 </head>
 <body>
-<main class="seite mit-navigation">
-  <header class="kopfband">
-    <h1>Meine Outfits</h1>
-    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
-  </header>
+<main class="seite">
+  <div class="werkzeugleiste">
+    <label class="suche">
+      <span data-symbol="lupe"></span>
+      <input type="search" id="suche" placeholder="Outfits suchen" aria-label="Outfits suchen">
+    </label>
+    <a class="knopf" href="outfit-erstellen.html"><span data-symbol="plus"></span> Outfit erstellen</a>
+  </div>
 
-  <div class="hinweis">Beispieldaten: Outfits werden noch nicht gespeichert (Backend-Modul outfits fehlt).</div>
-  <div class="raster zwei" id="raster"></div>
+  <div class="chips">
+    <button type="button" class="chip aktiv">Alles</button>
+    <button type="button" class="chip" disabled title="Kommt noch: Outfits haben noch kein Backend"><span data-symbol="filter"></span> Filter</button>
+  </div>
 
-  <div class="leer" id="leer" hidden>
-    <div class="kachel" data-symbol="bild"></div>
-    <strong>Noch keine Outfits erstellt</strong>
-    <p>Kombiniere deine Kleidungsstücke</p>
-    <a class="knopf" href="outfit-erstellen.html">Outfit erstellen</a>
+  <div class="outfits-bereich inhalt-wachsen">
+    <div>
+      <div class="hinweis">Beispieldaten: Outfits werden noch nicht gespeichert (Backend-Modul outfits fehlt).</div>
+      <div class="raster" id="raster" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))"></div>
+      <div class="leer" id="leer" hidden>
+        <div class="kachel ton-beige" data-symbol="buegel"></div>
+        <strong>Noch keine Outfits erstellt</strong>
+        <p>Kombiniere deine Kleidungsstücke.</p>
+        <a class="knopf" href="outfit-erstellen.html"><span data-symbol="plus"></span> Outfit erstellen</a>
+      </div>
+    </div>
+
+    <aside class="avatar-panel" aria-label="Avatar">
+      <header>
+        <button type="button" class="symbolknopf" disabled title="Kommt mit dem 3D-Avatar" aria-label="Avatar einstellen" data-symbol="zahnrad"></button>
+        <h2 id="avatar-name"></h2>
+      </header>
+      <div class="avatar-buehne">
+        <button type="button" class="symbolknopf" disabled title="Kommt mit dem 3D-Avatar" aria-label="Avatar vergrößern" data-symbol="ausdehnen"></button>
+        <svg class="figur" viewBox="0 0 60 130" aria-hidden="true">
+          <circle cx="30" cy="14" r="12" fill="#d3c4ab"/>
+          <path d="M17 30h26l5 40-6 2-4-28v84h-7V82h-2v46h-7V44l-4 28-6-2Z" fill="#d3c4ab"/>
+        </svg>
+        Avatar
+      </div>
+      <div class="slots">
+        <div class="slot"><span data-symbol="buegel"></span>Slot 1 – leer</div>
+        <div class="slot"><span data-symbol="buegel"></span>Slot 2 – leer</div>
+        <button class="knopf" disabled title="Kommt mit dem 3D-Avatar">Jetzt anprobieren</button>
+        <button class="knopf" disabled title="Kommt mit dem 3D-Avatar">Jetzt anprobieren</button>
+      </div>
+    </aside>
   </div>
 </main>
-<a class="plus" href="outfit-erstellen.html" aria-label="Outfit erstellen" data-symbol="plus"></a>
 
 <script>
-  navigation("outfits");
+  seitenkopf("Meine Outfits");
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Zum Kleiderschrank", symbol: "schrank", href: "schrank.html" },
+  ]);
+  document.getElementById("avatar-name").textContent = NUTZER.name;
 
-  const BEISPIELE = ["Business Look", "Wochenende", "Winter Outfit", "Date Night"];
+  // Beispiele wie im Mockup, Anlass mit unseren Werten
+  const BEISPIELE = [
+    { name: "Business Look", anlass: "Edel", favorit: true, teile: [["Bluse", "ton-minze"], ["Chino", "ton-minze"], ["Handtasche", "ton-beige"], ["Stiefel", "ton-gelb"]] },
+    { name: "Wochenende", anlass: "Alltag", favorit: false, teile: [["T-Shirt", "ton-tuerkis"], ["Jeans", "ton-beige"], ["Sneaker", "ton-rosa"], ["Lederjacke", "ton-gelb"]] },
+    { name: "Winter Outfit", anlass: "Alltag", favorit: false, teile: [["Wintermantel", "ton-rosa"], ["Pullover", "ton-gelb"], ["Schal", "ton-tuerkis"], ["Stiefel", "ton-gelb"]] },
+    { name: "Date Night", anlass: "Edel", favorit: true, teile: [["Jumpsuit", "ton-rosa"], ["Lederjacke", "ton-gelb"], ["Handtasche", "ton-minze"], ["Stiefel", "ton-beige"]] },
+    { name: "Sommerabend", anlass: "Edel", favorit: false, teile: [["Sommerkleid", "ton-tuerkis"], ["Sandalen", "ton-minze"], ["Handtasche", "ton-beige"], ["Bluse", "ton-rosa"]] },
+    { name: "Sporttag", anlass: "Sport", favorit: false, teile: [["Hoodie", "ton-beige"], ["T-Shirt", "ton-tuerkis"], ["Chino", "ton-minze"], ["Sneaker", "ton-rosa"]] },
+  ];
   const outfits = new URLSearchParams(location.search).has("leer") ? [] : BEISPIELE;
 
-  const raster = document.getElementById("raster");
-  for (const name of outfits) {
-    const karte = document.createElement("div");
-    karte.className = "karte outfit";
-    const kachel = document.createElement("div");
-    kachel.className = "kachel";
-    for (let i = 0; i < 4; i++) kachel.insertAdjacentHTML("beforeend", `<span>${SYMBOL.bild}</span>`);
-    const text = document.createElement("p");
-    text.textContent = name;
-    karte.append(kachel, text);
-    raster.append(karte);
+  function outfitKarte(o) {
+    const karte = document.createElement("article");
+    karte.className = "outfit-karte";
+    const teile = document.createElement("div");
+    teile.className = "outfit-teile";
+    o.teile.forEach(([name, ton], i) => {
+      const teil = document.createElement("div");
+      teil.className = ton;
+      teil.innerHTML = SYMBOL.buegel;
+      teil.append(name);
+      if (i === 1) teil.insertAdjacentHTML("beforeend", `<span class="abzeichen rechts">${o.favorit ? SYMBOL.herzVoll : SYMBOL.herz}</span>`);
+      teile.append(teil);
+    });
+    const fuss = document.createElement("div");
+    fuss.className = "outfit-fuss";
+    fuss.innerHTML = "<strong></strong><small></small>";
+    fuss.querySelector("strong").textContent = o.name;
+    fuss.querySelector("small").textContent = `${o.anlass} · ${o.teile.length} Teile`;
+    karte.append(teile, fuss);
+    return karte;
   }
+
+  const raster = document.getElementById("raster");
+  function zeichne() {
+    const wort = document.getElementById("suche").value.trim().toLowerCase();
+    raster.replaceChildren(...outfits.filter((o) => o.name.toLowerCase().includes(wort)).map(outfitKarte));
+  }
+  document.getElementById("suche").oninput = zeichne;
+  zeichne();
   document.getElementById("leer").hidden = outfits.length > 0;
 </script>
 </body>

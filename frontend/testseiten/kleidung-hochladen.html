@@ -1,125 +1,155 @@
 <!doctype html>
-<!-- Wireframe 7 (Kleidungsstück hinzufügen), User Story 8. Speichert über POST /api/kleidung. -->
+<!-- Mockup „Desktop · Kleidungsstück hinzufügen (Overlay)“, User Story 8. Speichert über POST /api/kleidung.
+     Felder wie heute im Backend; Farbe und Material werden wie im Mockup gewählt und als Text gespeichert. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Hinzufügen</title>
+  <title>Sharely – Kleidungsstück hinzufügen</title>
   <link rel="stylesheet" href="stil.css">
   <script src="gemeinsam.js"></script>
 </head>
 <body>
 <main class="seite">
-  <header class="kopf">
-    <a class="zurueck" href="schrank.html" aria-label="Zurück zum Schrank" data-symbol="zurueck"></a>
-    <h1>Hinzufügen</h1>
-  </header>
+  <form class="fenster" id="formular" novalidate>
+    <header class="fenster-kopf">
+      <h2>Kleidungsstück hinzufügen</h2>
+      <a class="symbolknopf" href="schrank.html" aria-label="Schließen, zurück zum Schrank" data-symbol="schliessen"></a>
+    </header>
 
-  <form id="formular" novalidate>
-    <div class="bildrahmen">
-      <svg id="platzhalter" width="210" height="64" viewBox="0 0 210 64" aria-hidden="true">
-        <rect x="1" y="1" width="208" height="62" fill="none" stroke="#9a9a9a"/>
-        <circle cx="45" cy="17" r="7" fill="none" stroke="#9a9a9a"/>
-        <path d="M1 63 L100 36 L209 63" fill="none" stroke="#9a9a9a"/>
-      </svg>
-      <img id="vorschau" alt="Vorschau des Fotos" hidden>
+    <div class="zwei-spalten">
+      <div>
+        <div class="bildrahmen" id="bildrahmen">
+          <span class="platzhalter-symbol" id="platzhalter-symbol" data-symbol="kamera"></span>
+          <strong id="platzhalter-titel">Foto des Kleidungsstücks</strong>
+          <span class="leise" id="platzhalter-text">Hierher ziehen oder unten auswählen</span>
+          <img id="vorschau" alt="Vorschau des Fotos" hidden>
+        </div>
+        <div class="zeile" style="margin-top: 18px">
+          <button type="button" class="knopf-rand gruen" id="kamera-knopf"><span data-symbol="kamera"></span> Foto aufnehmen</button>
+          <button type="button" class="knopf-rand gruen" id="galerie-knopf"><span data-symbol="hochladen"></span> Bild hochladen</button>
+        </div>
+        <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
+        <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
+        <input type="file" id="galerie" accept="image/jpeg,image/png,image/webp" hidden>
+      </div>
+
+      <div>
+        <div class="zeile">
+          <label><span class="titel" style="margin-top: 0">Marke</span><input type="text" name="marke" maxlength="50" placeholder="z. B. Vaude"></label>
+          <div><span class="titel" style="margin-top: 0">Farbe</span><div class="farben" id="farben"></div></div>
+        </div>
+
+        <span class="titel">Kategorie</span>
+        <div class="pillen pillen-kasten" id="kategorien"></div>
+
+        <span class="titel">Anlass</span>
+        <div class="pillen pillen-kasten" id="anlaesse"></div>
+
+        <details class="aufklapper">
+          <summary><span data-symbol="lineal"></span> Weitere Angaben <span class="pfeil" data-symbol="unten"></span></summary>
+          <div class="aufklapper-inhalt">
+            <label><span class="titel">Größe</span><input type="text" name="groesse" maxlength="20" placeholder="z. B. M, 38"></label>
+            <span class="titel">Herkunft</span>
+            <div class="pillen" id="herkuenfte"></div>
+            <label><span class="titel">Notiz</span><textarea name="notiz" maxlength="1000"></textarea></label>
+          </div>
+        </details>
+
+        <div class="zeile">
+          <div><span class="titel">Saison</span><div class="pillen" id="saisons"></div></div>
+          <div><span class="titel">Material</span><div class="pillen" id="materialien"></div></div>
+        </div>
+
+        <div class="zeile">
+          <label><span class="titel">Kaufdatum</span><input type="date" name="kaufdatum" id="kaufdatum"></label>
+          <label><span class="titel">Preis (€)</span><input type="number" name="preis" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+        </div>
+
+        <div class="zeile">
+          <label class="schalter-kasten">
+            <span data-symbol="herz"></span><span class="text"><strong>Favorit</strong></span>
+            <span class="schalter"><input type="checkbox" name="favorit" value="true"><span class="bahn"></span></span>
+          </label>
+          <label class="schalter-kasten" title="Nur du siehst es, deine Freunde nicht">
+            <span data-symbol="schloss"></span><span class="text"><strong>Privat</strong></span>
+            <span class="schalter"><input type="checkbox" name="privat" value="true"><span class="bahn"></span></span>
+          </label>
+        </div>
+
+        <div id="meldung" class="meldung" role="status"></div>
+        <div class="zeile" style="margin-top: 26px; grid-template-columns: 1fr 1.6fr">
+          <a class="knopf-rand" href="schrank.html">Abbrechen</a>
+          <button type="submit" class="knopf" id="speichern"><span data-symbol="ok"></span> Speichern</button>
+        </div>
+      </div>
     </div>
-    <div class="knopfreihe">
-      <button type="button" class="knopf-rand klein" id="kamera-knopf">Foto aufnehmen</button>
-      <button type="button" class="knopf-rand klein" id="galerie-knopf">Galerie</button>
-    </div>
-    <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
-    <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
-    <input type="file" id="galerie" accept="image/jpeg,image/png,image/webp" hidden>
-
-    <span class="titel">Kategorie</span>
-    <div class="pillen" id="kategorien"></div>
-
-    <div class="schalter-zeile">
-      <span class="titel">Favorit</span>
-      <label class="schalter"><input type="checkbox" name="favorit" value="true" aria-label="Favorit"><span class="bahn"></span></label>
-    </div>
-    <div class="schalter-zeile">
-      <span class="titel">Privat<small>Nur du siehst es, deine Freunde nicht</small></span>
-      <label class="schalter"><input type="checkbox" name="privat" value="true" aria-label="Privat"><span class="bahn"></span></label>
-    </div>
-
-    <div class="zeile">
-      <label><span class="titel">Größe</span><input type="text" name="groesse" maxlength="20" placeholder="z. B. M, 38"></label>
-      <label><span class="titel">Marke</span><input type="text" name="marke" maxlength="50"></label>
-    </div>
-    <div class="zeile">
-      <label><span class="titel">Farbe</span><input type="text" name="farbe" maxlength="50"></label>
-      <label><span class="titel">Material</span><input type="text" name="material" maxlength="100" placeholder="z. B. Baumwolle"></label>
-    </div>
-
-    <span class="titel">Saison</span>
-    <div class="pillen" id="saisons"></div>
-
-    <span class="titel">Anlass</span>
-    <div class="pillen" id="anlaesse"></div>
-
-    <div class="zeile">
-      <label><span class="titel">Preis (€)</span><input type="number" name="preis" min="0" step="0.01" inputmode="decimal"></label>
-      <label><span class="titel">Kaufdatum</span><input type="date" name="kaufdatum" id="kaufdatum"></label>
-    </div>
-
-    <span class="titel">Herkunft</span>
-    <div class="pillen" id="herkuenfte"></div>
-
-    <label><span class="titel">Notiz</span><textarea name="notiz" maxlength="1000"></textarea></label>
-
-    <button type="submit" class="knopf breit" id="speichern" style="margin-top: 24px">Speichern</button>
-    <div id="meldung" class="meldung" role="status"></div>
   </form>
 </main>
 
 <script>
-  pillen("kategorien", "kategorie", KATEGORIEN, "radio");
-  pillen("saisons", "saison", SAISONS, "checkbox");
+  seitenkopf("Mein Kleiderschrank");
+
+  farbkreise("farben", "farbwahl", "checkbox");
+  pillen("kategorien", "kategorie", KATEGORIEN_MEHRZAHL, "radio");
   pillen("anlaesse", "anlass", ANLAESSE, "checkbox");
-  // Herkunft: Kästchen statt Radio, damit sie sich wieder abwählen lässt; höchstens eins aktiv
+  pillen("saisons", "saison", SAISONS, "checkbox");
+  pillen("materialien", "materialwahl", Object.fromEntries(MATERIALIEN.map((m) => [m.wert, m.text])), "checkbox");
   pillen("herkuenfte", "herkunft", HERKUENFTE, "checkbox");
-  document.getElementById("herkuenfte").onchange = (e) => {
-    for (const f of document.querySelectorAll('[name="herkunft"]')) if (f !== e.target) f.checked = false;
-  };
+
+  // Farbe und Herkunft: Kästchen statt Radio, damit sie sich wieder abwählen lassen; höchstens eins aktiv
+  for (const [box, name] of [["farben", "farbwahl"], ["herkuenfte", "herkunft"]]) {
+    document.getElementById(box).onchange = (e) => {
+      for (const f of document.querySelectorAll(`[name="${name}"]`)) if (f !== e.target) f.checked = false;
+    };
+  }
 
   document.getElementById("kaufdatum").max = new Date().toISOString().slice(0, 10);
 
   const formular = document.getElementById("formular");
+  const rahmen = document.getElementById("bildrahmen");
   const vorschau = document.getElementById("vorschau");
-  const platzhalter = document.getElementById("platzhalter");
   const meldung = document.getElementById("meldung");
   let bild = null;
+
+  function bildWaehlen(datei) {
+    if (!datei) return;
+    if (datei.size > MAX_BILD_MB * 1024 * 1024) {
+      return zeigeMeldung(meldung, `Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_BILD_MB} MB.`, "fehler");
+    }
+    bild = datei;
+    meldung.textContent = "";
+    vorschau.src = URL.createObjectURL(bild);
+    vorschau.hidden = false;
+    for (const id of ["platzhalter-symbol", "platzhalter-titel", "platzhalter-text"]) document.getElementById(id).hidden = true;
+  }
 
   for (const id of ["kamera", "galerie"]) {
     const eingabe = document.getElementById(id);
     document.getElementById(id + "-knopf").onclick = () => eingabe.click();
-    eingabe.onchange = () => {
-      const datei = eingabe.files[0];
-      eingabe.value = "";
-      if (!datei) return;
-      if (datei.size > MAX_BILD_MB * 1024 * 1024) {
-        return zeigeMeldung(meldung, `Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_BILD_MB} MB.`, "fehler");
-      }
-      bild = datei;
-      meldung.textContent = "";
-      vorschau.src = URL.createObjectURL(bild);
-      vorschau.hidden = false;
-      platzhalter.style.display = "none";
-    };
+    eingabe.onchange = () => { bildWaehlen(eingabe.files[0]); eingabe.value = ""; };
   }
+  // Foto per Ziehen und Ablegen (Mockup: „Hierher ziehen“)
+  rahmen.ondragover = (e) => { e.preventDefault(); rahmen.classList.add("ziehen"); };
+  rahmen.ondragleave = () => rahmen.classList.remove("ziehen");
+  rahmen.ondrop = (e) => { e.preventDefault(); rahmen.classList.remove("ziehen"); bildWaehlen(e.dataTransfer.files[0]); };
 
   formular.onsubmit = async (e) => {
     e.preventDefault();
-    if (!bild) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder aus der Galerie wählen.", "fehler");
+    if (!bild) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder hochladen.", "fehler");
     if (!formular.kategorie.value) return zeigeMeldung(meldung, "Bitte eine Kategorie auswählen.", "fehler");
 
     const daten = new FormData();
-    // leere Felder gar nicht erst schicken
-    for (const [feld, wert] of new FormData(formular)) {
+    const eingaben = new FormData(formular);
+    // leere Felder gar nicht erst schicken; Farb- und Materialwahl werden zu Text
+    for (const [feld, wert] of eingaben) {
+      if (feld === "farbwahl" || feld === "materialwahl") continue;
       if (wert.trim() !== "") daten.append(feld, wert);
     }
+    const farbe = FARBEN.find((f) => f.wert === eingaben.get("farbwahl"));
+    if (farbe) daten.append("farbe", farbe.text);
+    const material = MATERIALIEN.filter((m) => eingaben.getAll("materialwahl").includes(m.wert)).map((m) => m.text);
+    if (material.length) daten.append("material", material.join(", "));
     daten.append("bild", bild);
 
     const knopf = document.getElementById("speichern");

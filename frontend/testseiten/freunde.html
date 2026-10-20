@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Wireframe 17 (Freunde). Beispieldaten: Das Modul freunde hat noch kein Backend. -->
+<!-- Mockup „Desktop · Freunde“. Beispieldaten: Das Modul freunde hat noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -9,69 +9,144 @@
   <script src="gemeinsam.js"></script>
 </head>
 <body>
-<main class="seite mit-navigation">
-  <header class="kopfband">
-    <h1>Freunde</h1>
-    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
-  </header>
-
-  <label class="suche">
-    <span data-symbol="lupe"></span>
-    <input type="search" id="suche" placeholder="Freunde suchen" aria-label="Freunde suchen">
-  </label>
+<main class="seite">
+  <div class="werkzeugleiste">
+    <label class="suche">
+      <span data-symbol="lupe"></span>
+      <input type="search" id="suche" placeholder="Freunde suchen" aria-label="Freunde suchen">
+    </label>
+    <button type="button" class="knopf" disabled title="Kommt noch: Modul freunde fehlt"><span data-symbol="personPlus"></span> Freund hinzufügen</button>
+  </div>
 
   <div class="hinweis">Beispieldaten: Freunde haben noch kein Backend. Die Knöpfe ändern nur die Anzeige.</div>
 
-  <div class="abschnitt">Anfragen</div>
-  <ul class="liste" id="anfragen"></ul>
-  <div class="abschnitt">Folgt dir</div>
-  <ul class="liste" id="folgende"></ul>
+  <div class="freunde-bereich inhalt-wachsen">
+    <div>
+      <section class="weisse-karte" id="anfragen-karte">
+        <div class="karte-kopf"><h2>Anfragen</h2><span class="neu-marke" id="anfragen-zahl"></span></div>
+        <div id="anfragen"></div>
+      </section>
+      <section class="weisse-karte">
+        <div class="karte-kopf"><h2>Freundesliste</h2><small id="freunde-zahl"></small></div>
+        <ul class="freundesliste" id="freunde"></ul>
+      </section>
+    </div>
+
+    <section class="weisse-karte" id="freund" aria-live="polite">
+      <div class="freund-kopf">
+        <span class="initiale gross" id="f-initiale" style="width: 120px; height: 120px; font-size: 2.6rem"></span>
+        <div><h2 id="f-name"></h2><p id="f-seit"></p></div>
+      </div>
+      <div class="freund-panels">
+        <div class="panel gruen">
+          <h2>Kleiderschrank</h2>
+          <div class="panel-weiss"><span data-symbol="schrank"></span><b id="f-teile"></b><span>Geteilte Teile</span></div>
+          <a class="panel-link" title="Kommt noch">Kleiderschrank ansehen <span data-symbol="weiter"></span></a>
+        </div>
+        <div class="panel blau">
+          <h2>Garderobe</h2>
+          <div class="garderobe-innen">
+            <span class="avatar-kachel"><span><span data-symbol="person"></span>Avatar</span></span>
+            <div class="panel-weiss"><span data-symbol="buegel"></span><b id="f-outfits"></b><span>Geteilte Outfits</span></div>
+          </div>
+          <a class="panel-link" title="Kommt noch">Garderobe ansehen <span data-symbol="weiter"></span></a>
+        </div>
+      </div>
+      <div class="leih-links">
+        <a class="leih-link geliehen" href="verliehen.html"><span class="weiss-rund" data-symbol="links"></span><b id="f-geliehen"></b> Von dir geliehen <span class="pfeil" data-symbol="weiter"></span></a>
+        <a class="leih-link verliehen" href="verliehen.html"><span class="weiss-rund" data-symbol="rechts"></span><b id="f-verliehen"></b> Von dir verliehen <span class="pfeil" data-symbol="weiter"></span></a>
+      </div>
+    </section>
+  </div>
 </main>
 
 <script>
-  navigation("freunde");
+  seitenkopf("Meine Freunde");
+  fussleiste([{ text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" }]);
 
-  const ANFRAGEN = [{ name: "Lena", text: "möchte dir folgen" }];
-  const FOLGENDE = [
-    { name: "Jonas", text: "12 Kleidungsstücke", folgt: false },
-    { name: "Mia", text: "folgt dir bereits", folgt: true },
-    { name: "Sophie", text: "8 Kleidungsstücke", folgt: false },
+  const ANFRAGEN = [{ name: "Anna Klein", ton: "lila" }, { name: "Ben Fischer", ton: "gelb" }];
+  const FREUNDE = [
+    { name: "Lena Becker", ton: "gelb", seit: "März 2025", teile: 24, outfits: 5, geliehen: 2, verliehen: 1 },
+    { name: "Jonas Weber", ton: "", seit: "Juni 2025", teile: 12, outfits: 2, geliehen: 0, verliehen: 1 },
+    { name: "Mia Schulz", ton: "rosa", seit: "Januar 2026", teile: 31, outfits: 8, geliehen: 1, verliehen: 0 },
+    { name: "Tim Hoffmann", ton: "", seit: "Mai 2026", teile: 9, outfits: 1, geliehen: 0, verliehen: 0 },
+    { name: "Sara Yilmaz", ton: "beige", seit: "August 2026", teile: 17, outfits: 3, geliehen: 0, verliehen: 0 },
   ];
 
-  function eintrag(person, knopf) {
-    const li = document.createElement("li");
-    li.className = "eintrag";
-    li.dataset.name = person.name.toLowerCase();
-    li.innerHTML = `<span class="profilbild klein">${SYMBOL.person}</span><span class="text"><strong></strong><span></span></span>`;
-    li.querySelector("strong").textContent = person.name;
-    li.querySelector(".text span").textContent = person.text;
-    li.append(knopf);
-    return li;
+  function initiale(person) {
+    const el = document.createElement("span");
+    el.className = `initiale ${person.ton}`;
+    el.textContent = person.name[0];
+    return el;
   }
 
-  document.getElementById("anfragen").append(...ANFRAGEN.map((p) => {
-    const knopf = document.createElement("button");
-    knopf.className = "knopf-dunkel klein";
-    knopf.textContent = "Bestätigen";
-    knopf.onclick = () => { knopf.textContent = "Bestätigt"; knopf.disabled = true; };
-    return eintrag(p, knopf);
-  }));
+  function zeigeAnfragen() {
+    const box = document.getElementById("anfragen");
+    box.replaceChildren(...ANFRAGEN.map((p) => {
+      const zeile = document.createElement("div");
+      zeile.className = "anfrage";
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = p.name;
+      const fertig = (text) => { ANFRAGEN.splice(ANFRAGEN.indexOf(p), 1); zeigeAnfragen(); zeigeMeldungKurz(text); };
+      const annehmen = Object.assign(document.createElement("button"), { className: "knopf klein", textContent: "Annehmen", type: "button" });
+      annehmen.onclick = () => { FREUNDE.push({ ...p, seit: "heute", teile: 0, outfits: 0, geliehen: 0, verliehen: 0 }); zeigeFreunde(); fertig(`${p.name} ist jetzt in deiner Freundesliste.`); };
+      const ablehnen = Object.assign(document.createElement("button"), { className: "knopf-rand klein", textContent: "Ablehnen", type: "button" });
+      ablehnen.onclick = () => fertig(`Anfrage von ${p.name} abgelehnt.`);
+      const sperren = Object.assign(document.createElement("button"), { className: "symbolknopf", type: "button", innerHTML: SYMBOL.sperren });
+      sperren.setAttribute("aria-label", `${p.name} blockieren`);
+      sperren.onclick = () => fertig(`${p.name} blockiert.`);
+      zeile.append(initiale(p), name, annehmen, ablehnen, sperren);
+      return zeile;
+    }));
+    document.getElementById("anfragen-zahl").textContent = `${ANFRAGEN.length} neu`;
+    document.getElementById("anfragen-karte").hidden = !ANFRAGEN.length;
+  }
 
-  document.getElementById("folgende").append(...FOLGENDE.map((p) => {
-    const knopf = document.createElement("button");
-    const setze = () => {
-      knopf.className = p.folgt ? "knopf-dunkel klein" : "knopf-rand klein";
-      knopf.textContent = p.folgt ? "Folgt" : "Folgen";
-    };
-    knopf.onclick = () => { p.folgt = !p.folgt; setze(); };
-    setze();
-    return eintrag(p, knopf);
-  }));
+  function zeigeMeldungKurz(text) {
+    let el = document.getElementById("meldung");
+    if (!el) {
+      el = Object.assign(document.createElement("div"), { id: "meldung", role: "status" });
+      document.querySelector(".hinweis").after(el);
+    }
+    zeigeMeldung(el, text, "ok");
+  }
 
-  document.getElementById("suche").oninput = (e) => {
-    const wort = e.target.value.trim().toLowerCase();
-    for (const li of document.querySelectorAll(".eintrag")) li.hidden = !li.dataset.name.includes(wort);
-  };
+  let auswahl = FREUNDE[0];
+  function zeigeFreunde() {
+    const wort = document.getElementById("suche").value.trim().toLowerCase();
+    const liste = document.getElementById("freunde");
+    liste.replaceChildren(...FREUNDE.filter((p) => p.name.toLowerCase().includes(wort)).map((p) => {
+      const li = document.createElement("li");
+      const knopf = document.createElement("button");
+      knopf.type = "button";
+      knopf.setAttribute("aria-current", p === auswahl);
+      knopf.append(initiale(p), p.name);
+      knopf.insertAdjacentHTML("beforeend", `<span class="mehr">${SYMBOL.mehr}</span>`);
+      knopf.onclick = () => { auswahl = p; zeigeFreunde(); zeigeFreund(); };
+      li.append(knopf);
+      return li;
+    }));
+    document.getElementById("freunde-zahl").textContent = `${FREUNDE.length} Freunde`;
+  }
+
+  function zeigeFreund() {
+    const p = auswahl;
+    const kreis = document.getElementById("f-initiale");
+    kreis.className = `initiale gross ${p.ton}`;
+    kreis.textContent = p.name[0];
+    document.getElementById("f-name").textContent = p.name;
+    document.getElementById("f-seit").textContent = `Freunde seit ${p.seit}`;
+    document.getElementById("f-teile").textContent = p.teile;
+    document.getElementById("f-outfits").textContent = p.outfits;
+    document.getElementById("f-geliehen").textContent = p.geliehen;
+    document.getElementById("f-verliehen").textContent = p.verliehen;
+  }
+
+  document.getElementById("suche").oninput = zeigeFreunde;
+  zeigeAnfragen();
+  zeigeFreunde();
+  zeigeFreund();
 </script>
 </body>
 </html>

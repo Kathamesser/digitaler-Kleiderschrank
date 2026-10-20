@@ -1,62 +1,68 @@
 <!doctype html>
-<!-- Wireframe 13 (Verliehen). Beispieldaten: Das Modul verleihen hat noch kein Backend. -->
+<!-- Mockup „Freunde-Leih Verleihansicht“ (dort für einen Freund, hier für alle Freunde).
+     Beispieldaten: Das Modul verleihen hat noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Verliehen</title>
+  <title>Sharely – Leihen</title>
   <link rel="stylesheet" href="stil.css">
   <script src="gemeinsam.js"></script>
 </head>
 <body>
-<main class="seite mit-navigation">
-  <header class="kopfband">
-    <h1>Verliehen</h1>
-    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
-  </header>
-
-  <div class="umschalter" role="tablist">
-    <button type="button" role="tab" data-ansicht="verliehen" class="aktiv" aria-selected="true">Verliehen</button>
-    <button type="button" role="tab" data-ansicht="ausgeliehen" aria-selected="false">Ausgeliehen</button>
+<main class="seite">
+  <div class="fenster inhalt-wachsen">
+    <header class="fenster-kopf">
+      <h2><span>Leihen mit deinen Freunden<small>Was du dir geliehen und was du verliehen hast</small></span></h2>
+    </header>
+    <div class="hinweis">Beispieldaten: Verleihen und Verschenken haben noch kein Backend.</div>
+    <div class="leih-spalten">
+      <section class="leih-spalte geliehen">
+        <header><span class="weiss-rund" data-symbol="links"></span>
+          <div><h2>Von dir geliehen</h2><p>Teile von Freunden, die gerade bei dir sind</p></div><b id="anzahl-geliehen"></b></header>
+        <div id="geliehen"></div>
+      </section>
+      <section class="leih-spalte verliehen">
+        <header><span class="weiss-rund" data-symbol="rechts"></span>
+          <div><h2>Von dir verliehen</h2><p>Deine Teile, die gerade bei Freunden sind</p></div><b id="anzahl-verliehen"></b></header>
+        <div id="verliehen"></div>
+      </section>
+    </div>
   </div>
-
-  <div class="hinweis">Beispieldaten: Verleihen und Verschenken haben noch kein Backend.</div>
-  <ul class="liste" id="liste"></ul>
 </main>
 
 <script>
-  navigation("verliehen");
+  seitenkopf("Leihen");
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Zu den Freunden", symbol: "person", href: "freunde.html", art: "knopf-dunkel" },
+  ]);
 
-  // verliehen = meine Teile bei anderen, ausgeliehen = Teile anderer bei mir
+  // frist: ok = Rückgabedatum in der Zukunft, offen = unbefristet, ueberfaellig
   const BEISPIELE = {
-    verliehen: [
-      { titel: "Wintermantel", text: "an Lena · bis 15.10." },
-      { titel: "Handtasche", text: "an Jonas · unbefristet" },
-      { titel: "Jeans", text: "Anfrage von Mia · wartet" },
+    geliehen: [
+      { titel: "Lederjacke", text: "Jacken · von Lena · seit 02.10.2026", frist: "ok", fristText: "bis 24.10.2026", ton: "ton-gelb" },
+      { titel: "Seidenschal", text: "Accessoires · von Lena · seit 20.09.2026", frist: "offen", fristText: "unbefristet", ton: "ton-minze" },
     ],
-    ausgeliehen: [
-      { titel: "Abendkleid", text: "von Sophie · bis 30.10." },
+    verliehen: [
+      { titel: "Wintermantel", text: "Jacken · an Lena · seit 01.10.2026", frist: "ueberfaellig", fristText: "überfällig · 15.10.2026", ton: "ton-rosa" },
+      { titel: "Handtasche", text: "Accessoires · an Jonas · seit 05.10.2026", frist: "offen", fristText: "unbefristet", ton: "ton-beige" },
     ],
   };
 
-  const liste = document.getElementById("liste");
-  function zeige(ansicht) {
-    for (const tab of document.querySelectorAll(".umschalter button")) {
-      const aktiv = tab.dataset.ansicht === ansicht;
-      tab.classList.toggle("aktiv", aktiv);
-      tab.setAttribute("aria-selected", aktiv);
-    }
-    liste.replaceChildren(...BEISPIELE[ansicht].map(({ titel, text }) => {
-      const li = document.createElement("li");
-      li.className = "eintrag";
-      li.innerHTML = `<span class="vorschau">${SYMBOL.bild}</span><span class="text"><strong></strong><span></span></span>`;
-      li.querySelector("strong").textContent = titel;
-      li.querySelector(".text span").textContent = text;
-      return li;
+  for (const [art, liste] of Object.entries(BEISPIELE)) {
+    document.getElementById(`anzahl-${art}`).textContent = liste.length;
+    document.getElementById(art).replaceChildren(...liste.map((e) => {
+      const zeile = document.createElement("div");
+      zeile.className = "leih-eintrag";
+      zeile.innerHTML = `<span class="vorschau ${e.ton}">${SYMBOL.buegel}</span><span class="text"><strong></strong><small></small></span>
+        <span class="frist ${e.frist}">${SYMBOL.kalender} <span></span></span>${SYMBOL.weiter}`;
+      zeile.querySelector("strong").textContent = e.titel;
+      zeile.querySelector("small").textContent = e.text;
+      zeile.querySelector(".frist span").textContent = e.fristText;
+      return zeile;
     }));
   }
-  for (const tab of document.querySelectorAll(".umschalter button")) tab.onclick = () => zeige(tab.dataset.ansicht);
-  zeige("verliehen");
 </script>
 </body>
 </html>

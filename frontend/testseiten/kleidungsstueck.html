@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- Wireframe 8 (Kleidungsstück – Detailansicht). Daten live aus GET /api/kleidung/{id}. -->
+<!-- Mockup „Desktop · Kleidungsstück – Detailansicht (Overlay)“. Daten live aus GET /api/kleidung/{id}.
+     Bearbeiten, Löschen, Favorit umschalten, Verleihen und Anprobieren haben noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -10,66 +11,126 @@
 </head>
 <body>
 <main class="seite">
-  <header class="kopf">
-    <a class="zurueck" href="schrank.html" aria-label="Zurück zum Schrank" data-symbol="zurueck"></a>
-    <h1 id="titel">Kleidungsstück</h1>
-  </header>
-
   <div id="meldung" class="meldung" role="status"></div>
-  <div id="inhalt" hidden>
-    <div class="grossbild"><img id="bild" alt=""></div>
-    <dl class="eigenschaften" id="eigenschaften"></dl>
-    <p id="notiz" class="leise"></p>
-    <div class="knopfstapel">
-      <!-- Bearbeiten/Löschen: Endpunkte gibt es im Backend noch nicht -->
-      <button class="knopf breit" disabled title="Kommt noch: Bearbeiten-Endpunkt fehlt">Bearbeiten</button>
-      <button class="knopf breit" disabled title="Kommt noch: Löschen-Endpunkt fehlt">Löschen</button>
+
+  <article class="fenster" id="inhalt" hidden>
+    <header class="fenster-kopf">
+      <h2 id="titel">Kleidungsstück</h2>
+      <button type="button" class="symbolknopf rosa" id="herz" disabled title="Kommt noch: Ändern-Endpunkt fehlt"></button>
+      <a class="symbolknopf" href="schrank.html" aria-label="Schließen, zurück zum Schrank" data-symbol="schliessen"></a>
+    </header>
+
+    <div class="zwei-spalten">
+      <div>
+        <div class="grossbild" id="grossbild"><img id="bild" alt=""></div>
+        <div class="status-zeile" style="border-top: 1.5px solid var(--linie); padding-top: 22px">
+          <span class="titel">Status</span>
+          <span class="marke-pille" id="status"></span>
+        </div>
+      </div>
+
+      <div>
+        <dl class="eigenschaften" id="eigenschaften"></dl>
+
+        <details class="aufklapper" id="weitere" hidden>
+          <summary><span data-symbol="lineal"></span> Weitere Angaben <span class="pfeil" data-symbol="unten"></span></summary>
+          <div class="aufklapper-inhalt"><dl class="eigenschaften" id="weitere-liste"></dl></div>
+        </details>
+
+        <!-- Noch ohne Backend: Avatar, Verleihen, Ändern, Löschen -->
+        <button class="knopf-dunkel breit" style="margin-top: 30px" disabled title="Kommt mit dem 3D-Avatar"><span data-symbol="anprobieren"></span> Kleidung anprobieren</button>
+        <div class="zeile" style="margin-top: 18px">
+          <button class="knopf-rand gruen" disabled title="Kommt noch: Modul verleihen fehlt"><span data-symbol="senden"></span> Verleihen / Verschenken</button>
+          <button class="knopf-gefahr" disabled title="Kommt noch: Löschen-Endpunkt fehlt"><span data-symbol="muell"></span> Löschen</button>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 18px">
+          <button class="knopf" disabled title="Kommt noch: Bearbeiten-Endpunkt fehlt"><span data-symbol="stift"></span> Bearbeiten</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </article>
 </main>
 
 <script>
+  seitenkopf("Mein Kleiderschrank");
+
   const meldung = document.getElementById("meldung");
   const id = new URLSearchParams(location.search).get("id");
 
   const euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
-  const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE");
-  const liste = (werte, namen) => werte.map((w) => namen[w]).join(", ");
+  const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const STATUSTEXT = { im_schrank: ["haus", "Eigenes"], verliehen: ["rechts", "Verliehen"], verschenkt: ["senden", "Verschenkt"], wunsch: ["stern", "Wunschartikel"] };
+
+  /** Wert einer Zeile als Knoten: Text, Pillen oder eigener Inhalt. */
+  const pille = (text, klasse = "") => {
+    const el = document.createElement("span");
+    el.className = `marke-pille ${klasse}`;
+    el.textContent = text;
+    return el;
+  };
+
+  function zeile(dl, name, inhalt, symbol) {
+    const div = document.createElement("div");
+    const dt = document.createElement("dt");
+    if (symbol) dt.innerHTML = SYMBOL[symbol];
+    dt.append(name);
+    const dd = document.createElement("dd");
+    dd.append(...(Array.isArray(inhalt) ? inhalt : [inhalt]));
+    div.append(dt, dd);
+    dl.append(div);
+  }
 
   function zeige(k) {
     document.title = `Sharely – ${titelVon(k)}`;
     document.getElementById("titel").textContent = titelVon(k);
+    const herz = document.getElementById("herz");
+    herz.innerHTML = k.favorit ? SYMBOL.herzVoll : SYMBOL.herz;
+    herz.setAttribute("aria-label", k.favorit ? "Favorit" : "Kein Favorit");
+
+    const rahmen = document.getElementById("grossbild");
+    rahmen.classList.add(tonVon(k.id));
     const bild = document.getElementById("bild");
     bild.src = bildUrl(k);
     bild.alt = titelVon(k);
+    bild.onerror = () => { rahmen.innerHTML = SYMBOL.buegel; };
 
-    // Nur ausgefüllte Eigenschaften zeigen
-    const zeilen = [
-      ["Kategorie", KATEGORIEN[k.kategorie]],
-      ["Größe", k.groesse],
-      ["Marke", k.marke],
-      ["Farbe", k.farbe],
-      ["Material", k.material],
-      ["Saison", k.saison.length ? liste(k.saison, SAISONS) : null],
-      ["Anlass", k.anlass.length ? liste(k.anlass, ANLAESSE) : null],
-      ["Preis", k.preis != null ? euro.format(k.preis) : null],
-      ["Kaufdatum", k.kaufdatum ? datum(k.kaufdatum) : null],
-      ["Herkunft", HERKUENFTE[k.herkunft]],
-      ["Favorit", k.favorit ? "Ja" : "Nein"],
-      ["Sichtbar für", k.privat ? "Nur mich" : "Mich und Freunde"],
-    ];
+    const [statusSymbol, statusText] = STATUSTEXT[k.status] || ["haus", k.status];
+    document.getElementById("status").innerHTML = `${SYMBOL[statusSymbol]} `;
+    document.getElementById("status").append(statusText);
+
+    // Wie im Mockup; nur ausgefüllte Angaben zeigen
     const dl = document.getElementById("eigenschaften");
-    for (const [name, wert] of zeilen) {
-      if (!wert) continue;
-      const zeile = document.createElement("div");
-      const dt = document.createElement("dt");
-      const dd = document.createElement("dd");
-      dt.textContent = name;
-      dd.textContent = wert;
-      zeile.append(dt, dd);
-      dl.append(zeile);
+    zeile(dl, "Kategorie", pille(KATEGORIEN_MEHRZAHL[k.kategorie]));
+    if (k.anlass.length) zeile(dl, "Anlass", k.anlass.map((a) => {
+      const p = pille(ANLAESSE[a], "etikett");
+      p.insertAdjacentHTML("afterbegin", SYMBOL.etikett);
+      return p;
+    }));
+    if (k.farbe) {
+      const punkt = document.createElement("span");
+      punkt.className = "farbpunkt";
+      const erkannt = FARBEN.find((f) => erkannteWerte(k.farbe, FARBEN).has(f.wert));
+      punkt.style.background = erkannt ? erkannt.farbe : "var(--feld)";
+      zeile(dl, "Farbe", [punkt, k.farbe]);
     }
-    document.getElementById("notiz").textContent = k.notiz ? `Notiz: ${k.notiz}` : "";
+    if (k.saison.length) zeile(dl, "Saison", k.saison.map((s) => pille(SAISONS[s])));
+    if (k.material) zeile(dl, "Material", k.material.split(/,\s*/).map((m) => pille(m)));
+    if (k.kaufdatum) {
+      const kal = document.createElement("span");
+      kal.innerHTML = SYMBOL.kalender;
+      zeile(dl, "Kaufdatum", [kal.firstChild, datum(k.kaufdatum)]);
+    }
+    if (k.preis != null) zeile(dl, "Preis", euro.format(k.preis));
+    const schalter = document.createElement("span");
+    schalter.className = "schalter";
+    schalter.innerHTML = `<input type="checkbox" disabled aria-label="Privat" ${k.privat ? "checked" : ""}><span class="bahn"></span>`;
+    zeile(dl, "Privat", [schalter, k.privat ? "Nur für dich sichtbar" : "Für Freunde sichtbar"], "schloss");
+
+    // Angaben, die es im Mockup nicht gibt, aber im Datenmodell
+    const weitere = [["Größe", k.groesse], ["Marke", k.marke], ["Herkunft", HERKUENFTE[k.herkunft]], ["Notiz", k.notiz]].filter(([, w]) => w);
+    for (const [name, wert] of weitere) zeile(document.getElementById("weitere-liste"), name, wert);
+    document.getElementById("weitere").hidden = !weitere.length;
+
     document.getElementById("inhalt").hidden = false;
   }
 

@@ -1,67 +1,66 @@
 <!doctype html>
-<!-- Wireframes 5 (Schrank) und 6 (Schrank leer). Daten live aus GET /api/kleidung.
-     Filtermenü über das Symbol neben der Suche, Aufbau nach dem Desktop-Mockup „Kleidung filtern“. -->
+<!-- Mockups „Desktop · Kleiderschrank“ und „Desktop · Kleidung filtern (Overlay)“. Daten live aus GET /api/kleidung.
+     Filter mit den Werten, die beim Hinzufügen heute gespeichert werden (Entscheidung Katha, 20.10.2026). -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Schrank</title>
+  <title>Sharely – Kleiderschrank</title>
   <link rel="stylesheet" href="stil.css">
   <script src="gemeinsam.js"></script>
 </head>
 <body>
-<main class="seite mit-navigation">
-  <header class="kopfband">
-    <h1>Hallo Test-Nutzer!</h1>
-    <a href="profil.html" class="profilbild" aria-label="Mein Profil" data-symbol="person"></a>
-  </header>
-
-  <div class="suchzeile">
+<main class="seite">
+  <div class="werkzeugleiste">
     <label class="suche">
       <span data-symbol="lupe"></span>
       <input type="search" id="suche" placeholder="Im Schrank suchen" aria-label="Im Schrank suchen">
     </label>
-    <button type="button" class="filterknopf" id="filterknopf" aria-haspopup="dialog" aria-controls="filterblatt" aria-label="Filter">
-      <span data-symbol="filter"></span>
-      <span class="zahl" id="filterzahl" hidden></span>
+    <a class="knopf" href="kleidung-hochladen.html"><span data-symbol="plus"></span> Kleidungsstück hinzufügen</a>
+  </div>
+
+  <div class="chips">
+    <button type="button" class="chip" id="alles">Alles</button>
+    <button type="button" class="chip" id="filterknopf" aria-haspopup="dialog" aria-controls="filterblatt">
+      <span data-symbol="filter"></span> Filter <span class="zahl" id="filterzahl" hidden></span>
     </button>
   </div>
-  <div class="filterleiste" id="filter" role="toolbar" aria-label="Filter"></div>
 
-  <div id="meldung" class="meldung" role="status"></div>
-  <div class="raster" id="raster"></div>
+  <div class="inhalt-wachsen">
+    <div id="meldung" class="meldung" role="status"></div>
+    <div class="raster" id="raster"></div>
 
-  <div class="leer" id="leer" hidden>
-    <div class="kachel" data-symbol="bild"></div>
-    <strong>Noch keine Kleidungsstücke</strong>
-    <p>Füge dein erstes Teil hinzu</p>
-    <a class="knopf" href="kleidung-hochladen.html">Kleidungsstück hinzufügen</a>
+    <div class="leer" id="leer" hidden>
+      <div class="kachel ton-beige" data-symbol="buegel"></div>
+      <strong>Noch keine Kleidungsstücke</strong>
+      <p>Füge dein erstes Teil hinzu.</p>
+      <a class="knopf" href="kleidung-hochladen.html"><span data-symbol="plus"></span> Kleidungsstück hinzufügen</a>
+    </div>
   </div>
 </main>
-<a class="plus" href="kleidung-hochladen.html" aria-label="Kleidungsstück hinzufügen" data-symbol="plus"></a>
 
-<!-- Filtermenü nach dem Mockup „Kleidung filtern (Overlay)“ (docs/mockups/desktop/), aber mit den Werten,
-     die beim Hinzufügen heute gespeichert werden (Entscheidung Katha, 20.10.2026). -->
 <dialog class="blatt" id="filterblatt" aria-labelledby="filtertitel">
   <form id="filterformular" method="dialog">
     <header class="blatt-kopf">
       <h2 id="filtertitel"><span data-symbol="filter"></span>Kleidung filtern</h2>
-      <button type="button" class="schliessen" id="filter-schliessen" aria-label="Filter schließen" data-symbol="schliessen"></button>
+      <button type="button" class="symbolknopf" id="filter-schliessen" aria-label="Filter schließen" data-symbol="schliessen"></button>
     </header>
     <div class="blatt-inhalt">
-      <div class="filter-schalter">
+      <label class="schalter-kasten">
         <span data-symbol="herz"></span>
         <span class="text"><strong>Favorit</strong> – nur Lieblingsstücke anzeigen</span>
-        <label class="schalter"><input type="checkbox" name="favorit" value="true" aria-label="Nur Favoriten"><span class="bahn"></span></label>
-      </div>
-      <div class="filter-schalter">
+        <span class="schalter"><input type="checkbox" name="favorit" value="true"><span class="bahn"></span></span>
+      </label>
+      <label class="schalter-kasten">
         <span data-symbol="schloss"></span>
         <span class="text"><strong>Privat</strong> – nur Teile anzeigen, die Freunde nicht sehen</span>
-        <label class="schalter"><input type="checkbox" name="privat" value="true" aria-label="Nur private Teile"><span class="bahn"></span></label>
-      </div>
+        <span class="schalter"><input type="checkbox" name="privat" value="true"><span class="bahn"></span></span>
+      </label>
 
-      <div class="filter-titel"><span class="titel">Farbe</span><small data-zaehler="farbe" data-leer="mehrere"></small></div>
-      <div class="farben" id="f-farbe"></div>
+      <div class="farb-zeile">
+        <span class="titel">Farbe<small data-zaehler="farbe" data-leer="mehrere"></small></span>
+        <div class="farben" id="f-farbe"></div>
+      </div>
 
       <div class="auswahl-spalten">
         <div>
@@ -82,30 +81,41 @@
         </div>
       </div>
 
-      <span class="titel">Status</span>
-      <div class="pillen" id="f-status"></div>
-
-      <span class="titel">Kaufdatum</span>
-      <div class="zeile">
-        <label><small>von</small><input type="date" name="kauf_von" aria-label="Gekauft ab"></label>
-        <label><small>bis</small><input type="date" name="kauf_bis" aria-label="Gekauft bis"></label>
+      <div class="status-zeile">
+        <span class="titel">Status</span>
+        <div class="pillen" id="f-status"></div>
       </div>
 
-      <span class="titel">Preis (€)</span>
       <div class="zeile">
-        <label><small>von</small><input type="number" name="preis_von" min="0" step="0.01" inputmode="decimal" placeholder="0,00" aria-label="Preis von"></label>
-        <label><small>bis</small><input type="number" name="preis_bis" min="0" step="0.01" inputmode="decimal" placeholder="0,00" aria-label="Preis bis"></label>
+        <div>
+          <span class="titel">Kaufdatum</span>
+          <div class="von-bis">
+            <span>von</span><input type="date" name="kauf_von" aria-label="Gekauft ab">
+            <span>bis</span><input type="date" name="kauf_bis" aria-label="Gekauft bis">
+          </div>
+        </div>
+        <div>
+          <span class="titel">Preis</span>
+          <div class="von-bis">
+            <span>von</span><input type="number" name="preis_von" min="0" step="0.01" inputmode="decimal" placeholder="0,00 €" aria-label="Preis von">
+            <span>bis</span><input type="number" name="preis_bis" min="0" step="0.01" inputmode="decimal" placeholder="0,00 €" aria-label="Preis bis">
+          </div>
+        </div>
       </div>
     </div>
     <footer class="blatt-fuss">
       <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
-      <button type="submit" class="knopf-dunkel"><span data-symbol="ok"></span> <span id="filter-zeigen">Teile anzeigen</span></button>
+      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Teile anzeigen</span></button>
     </footer>
   </form>
 </dialog>
 
 <script>
-  navigation("schrank");
+  seitenkopf("Mein Kleiderschrank");
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Garderobe", symbol: "buegel", href: "outfits.html", art: "knopf-dunkel" },
+  ]);
 
   const raster = document.getElementById("raster");
   const leer = document.getElementById("leer");
@@ -115,7 +125,9 @@
   const formular = document.getElementById("filterformular");
   const filterzahl = document.getElementById("filterzahl");
   const filterknopf = document.getElementById("filterknopf");
+  const alles = document.getElementById("alles");
   let alle = [];
+  let geladen = false;
 
   // Bestätigung nach dem Hinzufügen (User Story 8), kommt von kleidung-hochladen.html
   const neu = new URLSearchParams(location.search).get("neu");
@@ -124,36 +136,8 @@
     history.replaceState(null, "", "schrank.html");
   }
 
-  // ---------- Filtermenü ----------
+  // ---------- Filter-Fenster ----------
 
-  // Farbe und Material sind beim Hinzufügen Freitext. Der Filter bietet wie im Mockup feste Werte an
-  // und erkennt sie im Text am Wortteil (woerter), z. B. „Hellblau“ → Blau, „Denim“ → Jeans.
-  const FARBEN = [
-    { wert: "schwarz", text: "Schwarz", farbe: "#2b2b2b", woerter: ["schwarz"] },
-    { wert: "weiss", text: "Weiß", farbe: "#ffffff", woerter: ["weiß", "weiss"] },
-    { wert: "grau", text: "Grau", farbe: "#9a9a9a", woerter: ["grau", "silber"] },
-    { wert: "beige", text: "Beige", farbe: "#e8dcc4", woerter: ["beige", "creme", "sand"] },
-    { wert: "braun", text: "Braun", farbe: "#8b5a3c", woerter: ["braun", "cognac"] },
-    { wert: "rot", text: "Rot", farbe: "#c94040", woerter: ["rot", "bordeaux"] },
-    { wert: "rosa", text: "Rosa", farbe: "#eda5b4", woerter: ["rosa", "pink"] },
-    { wert: "orange", text: "Orange", farbe: "#ef8c3a", woerter: ["orange"] },
-    { wert: "gelb", text: "Gelb", farbe: "#f0c63c", woerter: ["gelb", "gold"] },
-    { wert: "gruen", text: "Grün", farbe: "#4f9a58", woerter: ["grün", "gruen", "oliv", "khaki"] },
-    { wert: "blau", text: "Blau", farbe: "#3a72c4", woerter: ["blau", "türkis"] },
-    { wert: "dunkelblau", text: "Dunkelblau", farbe: "#2c3a5e", woerter: ["dunkelblau", "navy", "marine"] },
-    { wert: "lila", text: "Lila", farbe: "#8a5bb5", woerter: ["lila", "violett", "flieder"] },
-    { wert: "bunt", text: "Bunt", farbe: "conic-gradient(#c94040, #f0c63c, #4f9a58, #3a72c4, #8a5bb5, #c94040)", woerter: ["bunt", "mehrfarbig", "gemustert"] },
-  ];
-  const MATERIALIEN = [
-    { wert: "baumwolle", text: "Baumwolle", woerter: ["baumwolle", "cotton"] },
-    { wert: "polyester", text: "Polyester", woerter: ["polyester"] },
-    { wert: "wolle", text: "Wolle", woerter: ["wolle", "merino", "kaschmir"] },
-    { wert: "leinen", text: "Leinen", woerter: ["leinen"] },
-    { wert: "seide", text: "Seide", woerter: ["seide"] },
-    { wert: "leder", text: "Leder", woerter: ["leder"] },
-    { wert: "jeans", text: "Jeans", woerter: ["jeans", "denim"] },
-    { wert: "viskose", text: "Viskose", woerter: ["viskose"] },
-  ];
   const STATUS = [
     { wert: "im_schrank", text: "Eigenes", symbol: "haus" },
     { wert: "geliehen", text: "Geliehen", symbol: "links" },
@@ -162,16 +146,7 @@
   ];
   const LISTEN = ["farbe", "anlass", "material", "saison", "status"];
 
-  for (const { wert, text, farbe } of FARBEN) {
-    const label = document.createElement("label");
-    label.title = text;
-    const eingabe = Object.assign(document.createElement("input"), { type: "checkbox", name: "farbe", value: wert });
-    eingabe.setAttribute("aria-label", text);
-    const kreis = document.createElement("span");
-    kreis.style.background = farbe;
-    label.append(eingabe, kreis);
-    document.getElementById("f-farbe").append(label);
-  }
+  farbkreise("f-farbe", "farbe", "checkbox");
   pillen("f-kategorie", "kategorie", { alle: "Alle", ...KATEGORIEN_MEHRZAHL }, "radio");
   formular.querySelector('[name="kategorie"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
   pillen("f-anlass", "anlass", ANLAESSE, "checkbox");
@@ -185,19 +160,7 @@
   const heute = new Date().toISOString().slice(0, 10);
   for (const name of ["kauf_von", "kauf_bis"]) formular.elements[name].max = heute;
 
-  /** Welche festen Werte in einem Freitext stecken. Längere Wörter zuerst und dann aus dem Text
-   *  streichen, damit „Baumwolle“ nicht zusätzlich als „Wolle“ und „Dunkelblau“ nicht als „Blau“ zählt. */
-  function erkannteWerte(text, werte) {
-    let rest = (text || "").toLowerCase();
-    const gefunden = new Set();
-    const paare = werte.flatMap((w) => w.woerter.map((wort) => [wort, w.wert])).sort((a, b) => b[0].length - a[0].length);
-    for (const [wort, wert] of paare) {
-      if (rest.includes(wort)) { gefunden.add(wert); rest = rest.split(wort).join(" "); }
-    }
-    return gefunden;
-  }
-
-  /** Aktuelle Auswahl im Filtermenü. Leere Liste, "alle" bzw. null = kein Filter. */
+  /** Aktuelle Auswahl im Filter. Leere Liste, "alle" bzw. null = kein Filter. */
   function kriterien() {
     const daten = new FormData(formular);
     const f = { kategorie: daten.get("kategorie") || "alle" };
@@ -246,7 +209,7 @@
     return true;
   }
 
-  /** Wie viele Eigenschaften gerade filtern (Zahl am Filtersymbol). */
+  /** Wie viele Eigenschaften gerade filtern (Zahl am Filter-Knopf). */
   function anzahlAktiv(f) {
     return LISTEN.filter((name) => f[name].length).length + (f.kategorie !== "alle") + f.favorit + f.privat
       + (f.preisVon !== null || f.preisBis !== null) + Boolean(f.kaufVon || f.kaufBis);
@@ -263,33 +226,12 @@
 
   filterknopf.onclick = () => blatt.showModal();
   document.getElementById("filter-schliessen").onclick = () => blatt.close();
-  blatt.onclick = (e) => { if (e.target === blatt) blatt.close(); }; // Klick neben das Blatt
+  blatt.onclick = (e) => { if (e.target === blatt) blatt.close(); }; // Klick neben das Fenster
   formular.oninput = zeichne;
-  document.getElementById("filter-zuruecksetzen").onclick = () => { formular.reset(); zeichne(); };
-
-  // ---------- Filterleiste: Alles | Favoriten | Kategorien (Schnellwahl, setzt das Filtermenü) ----------
-
-  const filterWerte = { alles: "Alles", favoriten: "Favoriten", ...KATEGORIEN_MEHRZAHL };
-  const leiste = document.getElementById("filter");
-  for (const [wert, text] of Object.entries(filterWerte)) {
-    const knopf = document.createElement("button");
-    knopf.type = "button";
-    knopf.textContent = text;
-    knopf.dataset.wert = wert;
-    knopf.onclick = () => {
-      formular.elements.kategorie.value = KATEGORIEN[wert] ? wert : "alle";
-      formular.elements.favorit.checked = wert === "favoriten";
-      zeichne();
-    };
-    leiste.append(knopf);
-  }
+  const zuruecksetzen = () => { formular.reset(); zeichne(); };
+  document.getElementById("filter-zuruecksetzen").onclick = zuruecksetzen;
+  alles.onclick = zuruecksetzen; // „Alles“ = kein Filter
   suche.oninput = zeichne;
-
-  /** Welcher Knopf der Leiste zur Auswahl im Menü passt. */
-  function leistenWert(f) {
-    if (f.favorit) return f.kategorie === "alle" ? "favoriten" : null;
-    return f.kategorie === "alle" ? "alles" : f.kategorie;
-  }
 
   function passtZurSuche(k) {
     const wort = suche.value.trim().toLowerCase();
@@ -300,12 +242,10 @@
 
   function zeichne() {
     const f = kriterien();
-    const aktiv = leistenWert(f);
-    for (const knopf of leiste.children) knopf.classList.toggle("aktiv", knopf.dataset.wert === aktiv);
-
     const anzahl = anzahlAktiv(f);
     filterzahl.textContent = anzahl;
     filterzahl.hidden = !anzahl;
+    alles.classList.toggle("aktiv", anzahl === 0);
     filterknopf.setAttribute("aria-label", anzahl ? `Filter, ${anzahl} aktiv` : "Filter");
     zaehlerSetzen(f);
 
@@ -313,13 +253,13 @@
     document.getElementById("filter-zeigen").textContent =
       treffer.length === 1 ? "1 Teil anzeigen" : `${treffer.length} Teile anzeigen`;
     raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k)));
-    leer.hidden = alle.length > 0;
+    leer.hidden = !geladen || alle.length > 0;
     if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
   }
 
-  zaehlerSetzen(kriterien());
+  zeichne();
   holeJson("/kleidung")
-    .then((liste) => { alle = liste; zeichne(); })
+    .then((liste) => { alle = liste; geladen = true; zeichne(); })
     .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
 </script>
 </body>

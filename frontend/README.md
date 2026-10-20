@@ -6,7 +6,7 @@ Single-Page-App im Browser, responsiv für Desktop und Smartphone (Technische Ko
 
 ## Klick-Prototyp
 
-Bis das Framework feststeht, gibt es in `testseiten/` schlichte HTML-Seiten nach den Wireframes (Schrank, Hinzufügen, Detail, Outfits, Verliehen, Freunde, Profil, Anmeldung), teils live am Backend. Das Aussehen steckt komplett in `testseiten/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `testseiten/README.md`.
+Bis das Framework feststeht, gibt es in `testseiten/` HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `testseiten/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `testseiten/README.md`.
 
 ## Ordner
 

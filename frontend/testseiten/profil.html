@@ -1,50 +1,40 @@
 <!doctype html>
-<!-- Wireframe 18 (Eigenes Profil). Anzahl und „Zuletzt hinzugefügt“ live aus GET /api/kleidung,
-     Name und Follower sind Beispieldaten (Modul nutzer/freunde fehlt). -->
+<!-- Mockup „Desktop · Mein Profil (Overlay)“. Beispieldaten: Das Modul nutzer hat noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Profil</title>
+  <title>Sharely – Mein Profil</title>
   <link rel="stylesheet" href="stil.css">
   <script src="gemeinsam.js"></script>
 </head>
 <body>
 <main class="seite">
-  <header class="kopf">
-    <a class="zurueck" href="schrank.html" aria-label="Zurück zum Schrank" data-symbol="zurueck"></a>
-    <h1>Profil</h1>
-    <span class="rechts" title="Einstellungen kommen noch" data-symbol="zahnrad"></span>
-  </header>
-
-  <div class="profilkopf">
-    <div class="profilbild gross" data-symbol="person"></div>
-    <strong>Test-Nutzer</strong>
-    <span class="leise">style and share seit 2026</span>
-  </div>
-
-  <div class="zahlen">
-    <div><strong id="anzahl">–</strong><span>Kleidungsstücke</span></div>
-    <div><strong>18</strong><span>Follower</span></div>
-    <div><strong>21</strong><span>Folgt</span></div>
-  </div>
-
-  <button class="knopf breit" disabled title="Kommt noch: Modul nutzer fehlt">Profil bearbeiten</button>
-
-  <span class="titel" style="margin-top: 24px">Zuletzt hinzugefügt</span>
-  <div id="meldung" class="meldung" role="status"></div>
-  <div class="raster" id="raster"></div>
+  <section class="fenster" style="max-width: 820px">
+    <header class="fenster-kopf">
+      <h2>Mein Profil</h2>
+      <a class="symbolknopf" href="hauptmenue.html" aria-label="Schließen, zum Hauptmenü" data-symbol="schliessen"></a>
+    </header>
+    <div class="profil-kopf">
+      <div class="bild">
+        <span class="initiale gross" id="initiale"></span>
+        <button type="button" class="symbolknopf" disabled title="Kommt noch: Modul nutzer fehlt" aria-label="Profilbild ändern" data-symbol="kamera"></button>
+      </div>
+      <div>
+        <h2 id="name"></h2>
+        <p>Mitglied seit Oktober 2026</p>
+        <button type="button" class="knopf-rand gruen klein" disabled title="Kommt noch: Modul nutzer fehlt">Bild hinzufügen</button>
+      </div>
+    </div>
+    <a class="menue-zeile" href="anmeldung.html"><span data-symbol="personWechsel"></span> Nutzer wechseln <span class="pfeil" data-symbol="weiter"></span></a>
+    <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch: Modul nutzer fehlt"><span data-symbol="muell"></span> Account löschen</button>
+  </section>
 </main>
 
 <script>
-  holeJson("/kleidung")
-    .then((liste) => {
-      document.getElementById("anzahl").textContent = liste.length;
-      // Liste kommt neueste zuerst; private Teile gehören trotzdem dazu, es ist das eigene Profil
-      document.getElementById("raster").replaceChildren(...liste.slice(0, 3).map((k) => kleidungsKarte(k)));
-      if (!liste.length) document.getElementById("raster").innerHTML = '<p class="leise">Noch nichts hinzugefügt.</p>';
-    })
-    .catch((fehler) => zeigeMeldung(document.getElementById("meldung"), fehler.message, "fehler"));
+  seitenkopf(`Hallo ${NUTZER.name}!`);
+  document.getElementById("initiale").textContent = NUTZER.name[0];
+  document.getElementById("name").textContent = NUTZER.name;
 </script>
 </body>
 </html>

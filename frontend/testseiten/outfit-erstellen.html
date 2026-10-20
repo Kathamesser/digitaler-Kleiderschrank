@@ -1,41 +1,64 @@
 <!doctype html>
-<!-- Wireframe 11 (Outfit erstellen). Kleidungsstücke live aus GET /api/kleidung;
-     Speichern geht noch nicht, weil das Backend-Modul outfits fehlt. -->
+<!-- Mockups „Desktop · Outfit erstellen – Teile im Kleiderschrank auswählen“ und „Outfit speichern (Fenster)“.
+     Kleidungsstücke live aus GET /api/kleidung; Speichern geht noch nicht, weil das Backend-Modul outfits fehlt. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Outfit erstellen</title>
+  <title>Sharely – Outfit zusammenstellen</title>
   <link rel="stylesheet" href="stil.css">
   <script src="gemeinsam.js"></script>
 </head>
 <body>
 <main class="seite">
-  <header class="kopf">
-    <a class="zurueck" href="outfits.html" aria-label="Zurück zu den Outfits" data-symbol="zurueck"></a>
-    <h1>Outfit erstellen</h1>
-  </header>
-
-  <form id="formular" novalidate>
-    <label><span class="titel">Name des Outfits</span><input type="text" name="name" maxlength="100"></label>
-
-    <label class="suche" style="margin: 16px 0 0">
+  <div class="werkzeugleiste" style="margin-bottom: 14px">
+    <label class="suche">
       <span data-symbol="lupe"></span>
-      <input type="search" id="suche" placeholder="Kleidungsstück suchen" aria-label="Kleidungsstück suchen">
+      <input type="search" id="suche" placeholder="Im Schrank suchen" aria-label="Im Schrank suchen">
     </label>
+    <span class="auswahl-anzeige" role="status"><span data-symbol="ok"></span> <span id="anzahl">0 Teile ausgewählt</span></span>
+  </div>
+  <p class="leise zentriert" style="margin: 0 0 26px; font-size: 1.05rem">Tippe die Kleidungsstücke an, die zu deinem neuen Outfit gehören.</p>
 
-    <span class="titel">Kleidungsstücke auswählen</span>
-    <div class="raster" id="raster"></div>
-
-    <button type="submit" class="knopf breit" style="margin-top: 24px">Outfit speichern</button>
+  <div class="inhalt-wachsen">
     <div id="meldung" class="meldung" role="status"></div>
-  </form>
+    <div class="raster" id="raster"></div>
+  </div>
 </main>
 
+<dialog class="blatt schmal" id="speichern-fenster" aria-labelledby="speichern-titel">
+  <form id="formular" method="dialog" novalidate>
+    <header class="blatt-kopf">
+      <h2 id="speichern-titel">Outfit speichern</h2>
+      <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+    </header>
+    <div class="blatt-inhalt">
+      <div class="filter-titel"><span class="titel">Ausgewählte Teile</span><a href="#" class="link" data-schliessen>Auswahl ändern</a></div>
+      <div class="auswahl-vorschau" id="vorschau"></div>
+      <label><span class="titel">Name des Outfits</span><input type="text" name="name" maxlength="100" placeholder="z. B. Winterspaziergang"></label>
+      <span class="titel">Anlass</span>
+      <div class="pillen pillen-kasten" id="anlaesse"></div>
+      <div id="speichern-meldung" class="meldung" role="status"></div>
+    </div>
+    <footer class="blatt-fuss">
+      <button type="button" class="knopf-rand" data-schliessen>Abbrechen</button>
+      <button type="submit" class="knopf"><span data-symbol="ok"></span> Outfit speichern</button>
+    </footer>
+  </form>
+</dialog>
+
 <script>
+  seitenkopf("Outfit zusammenstellen");
+  fussleiste([
+    { text: "Abbrechen", symbol: "schliessen", href: "outfits.html", art: "knopf-rand" },
+    { text: "Bestätigen", symbol: "ok", onclick: oeffneSpeichern },
+  ]);
+  pillen("anlaesse", "anlass", ANLAESSE, "checkbox");
+
   const raster = document.getElementById("raster");
   const meldung = document.getElementById("meldung");
   const suche = document.getElementById("suche");
+  const fenster = document.getElementById("speichern-fenster");
   const gewaehlt = new Set();
   let alle = [];
 
@@ -43,25 +66,41 @@
     const wort = suche.value.trim().toLowerCase();
     const treffer = alle.filter((k) => !wort || titelVon(k).toLowerCase().includes(wort));
     raster.replaceChildren(...treffer.map((k) => {
-      const karte = kleidungsKarte({ ...k, favorit: false, privat: false }, { link: false });
-      karte.setAttribute("aria-pressed", gewaehlt.has(k.id));
-      if (gewaehlt.has(k.id)) {
-        karte.classList.add("gewaehlt");
-        karte.querySelector(".kachel").insertAdjacentHTML("beforeend", `<span class="abzeichen rechts dunkel">${SYMBOL.haken}</span>`);
-      }
-      karte.onclick = () => { gewaehlt.has(k.id) ? gewaehlt.delete(k.id) : gewaehlt.add(k.id); zeichne(); };
+      const karte = kleidungsKarte(k, { link: false });
+      const an = gewaehlt.has(k.id);
+      karte.setAttribute("aria-pressed", an);
+      karte.classList.toggle("gewaehlt", an);
+      karte.querySelector(".kachel").insertAdjacentHTML("beforeend", `<span class="abzeichen rechts kreis">${an ? SYMBOL.haken : ""}</span>`);
+      karte.onclick = () => { an ? gewaehlt.delete(k.id) : gewaehlt.add(k.id); zeichne(); };
       return karte;
     }));
     if (!alle.length) raster.innerHTML = '<p class="leise">Dein Schrank ist noch leer.</p>';
+    document.getElementById("anzahl").textContent = gewaehlt.size === 1 ? "1 Teil ausgewählt" : `${gewaehlt.size} Teile ausgewählt`;
   }
   suche.oninput = zeichne;
+
+  function oeffneSpeichern() {
+    if (gewaehlt.size < 2) return zeigeMeldung(meldung, "Bitte mindestens zwei Kleidungsstücke auswählen.", "fehler");
+    meldung.textContent = "";
+    const vorschau = document.getElementById("vorschau");
+    vorschau.replaceChildren(...alle.filter((k) => gewaehlt.has(k.id)).map((k) => {
+      const teil = document.createElement("div");
+      teil.className = tonVon(k.id);
+      const img = Object.assign(document.createElement("img"), { src: bildUrl(k), alt: titelVon(k) });
+      img.onerror = () => { teil.innerHTML = SYMBOL.buegel; teil.append(titelVon(k)); };
+      teil.append(img);
+      return teil;
+    }));
+    fenster.showModal();
+  }
+  for (const el of fenster.querySelectorAll("[data-schliessen]")) el.onclick = (e) => { e.preventDefault(); fenster.close(); };
 
   document.getElementById("formular").onsubmit = (e) => {
     e.preventDefault();
     const name = e.target.name.value.trim();
-    if (!name) return zeigeMeldung(meldung, "Bitte dem Outfit einen Namen geben.", "fehler");
-    if (gewaehlt.size < 2) return zeigeMeldung(meldung, "Bitte mindestens zwei Kleidungsstücke auswählen.", "fehler");
-    zeigeMeldung(meldung, `„${name}“ mit ${gewaehlt.size} Teilen wäre jetzt gespeichert. Das Backend-Modul outfits fehlt noch.`, "ok");
+    const ausgabe = document.getElementById("speichern-meldung");
+    if (!name) return zeigeMeldung(ausgabe, "Bitte dem Outfit einen Namen geben.", "fehler");
+    zeigeMeldung(ausgabe, `„${name}“ mit ${gewaehlt.size} Teilen wäre jetzt gespeichert. Das Backend-Modul outfits fehlt noch.`, "ok");
   };
 
   holeJson("/kleidung")

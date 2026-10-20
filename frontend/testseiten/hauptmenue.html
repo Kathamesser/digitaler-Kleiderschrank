@@ -1,0 +1,76 @@
+<!doctype html>
+<!-- Mockup „Desktop · Hauptmenü – Variante 2 (mit Garderobe)“. Zahlen im Kleiderschrank live aus GET /api/kleidung;
+     Outfits, Nachrichten und Angebote haben noch kein Backend. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Hauptmenü</title>
+  <link rel="stylesheet" href="stil.css">
+  <script src="gemeinsam.js"></script>
+</head>
+<body>
+<main class="seite">
+  <div id="meldung" class="meldung" role="status"></div>
+
+  <div class="hauptmenue">
+    <div>
+      <section class="panel gruen">
+        <h2><span class="symbol-kasten" data-symbol="schrank"></span>Mein Kleiderschrank</h2>
+        <div class="zahl-karten">
+          <a class="zahl-karte" href="schrank.html"><span class="rund ton-tuerkis" data-symbol="buegel"></span><b id="z-eigene">–</b><span>Eigene Artikel</span></a>
+          <a class="zahl-karte" href="schrank.html"><span class="rund ton-gelb" data-symbol="herz"></span><b id="z-wunsch">–</b><span>Wunschartikel</span></a>
+          <a class="zahl-karte" href="verliehen.html"><span class="rund ton-rosa" data-symbol="tausch"></span><b id="z-verliehen">–</b><span>Verliehene Artikel</span></a>
+          <a class="zahl-karte" href="verliehen.html"><span class="rund ton-minze" data-symbol="tausch"></span><b id="z-geliehen">–</b><span>Geliehene Artikel</span></a>
+        </div>
+      </section>
+
+      <section class="panel blau">
+        <h2><span class="symbol-kasten" data-symbol="buegel"></span>Meine Garderobe</h2>
+        <div class="garderobe-reihe">
+          <a class="avatar-kachel" href="outfits.html"><span><span data-symbol="person"></span>Avatar</span></a>
+          <a class="zahl-karte" href="outfits.html"><span class="rund ton-gelb" data-symbol="buegel"></span><b>0</b><span>Gespeicherte Outfits</span></a>
+        </div>
+      </section>
+    </div>
+
+    <nav class="seiten-kacheln" aria-label="Weitere Bereiche">
+      <a class="seiten-kachel" href="freunde.html">
+        <svg width="200" height="125" viewBox="0 0 200 125" aria-hidden="true">
+          <circle cx="40" cy="34" r="24" fill="#1f9a8a"/><circle cx="100" cy="26" r="25" fill="#f26b5b"/><circle cx="162" cy="34" r="24" fill="#f0b544"/>
+          <path d="M0 125a42 42 0 0 1 72-30v30Z" fill="#1f9a8a"/><path d="M200 125a42 42 0 0 0-72-30v30Z" fill="#f0b544"/><path d="M56 125a44 44 0 0 1 88 0Z" fill="#f26b5b"/>
+        </svg>
+        Freunde
+      </a>
+      <a class="seiten-kachel" aria-disabled="true" title="Kommt noch">
+        <span class="bald">kommt noch</span>
+        <svg width="118" height="90" viewBox="0 0 118 90" aria-hidden="true"><rect x="4" y="4" width="110" height="82" rx="10" fill="#bfe6e0" stroke="#2c3a5e" stroke-width="7"/><path d="m8 10 51 40 51-40" fill="none" stroke="#2c3a5e" stroke-width="7" stroke-linejoin="round"/></svg>
+        Nachrichten
+      </a>
+      <a class="seiten-kachel" aria-disabled="true" title="Kommt noch">
+        <span class="bald">kommt noch</span>
+        <svg width="96" height="112" viewBox="0 0 96 112" aria-hidden="true"><path d="M30 34V24a18 18 0 0 1 36 0v10" fill="none" stroke="#2c3a5e" stroke-width="7"/><path d="M6 34h84l-6 74H12Z" fill="#f6d58c" stroke="#2c3a5e" stroke-width="7" stroke-linejoin="round"/></svg>
+        Angebote
+      </a>
+    </nav>
+  </div>
+
+  <div class="abmelden-zeile"><a class="knopf-rot" href="anmeldung.html"><span data-symbol="abmelden"></span> Abmelden</a></div>
+</main>
+
+<script>
+  seitenkopf(`Hallo ${NUTZER.name}!`);
+
+  // geliehen_von: Vorschlag fürs Modul verleihen, siehe schrank.html (statusVon)
+  holeJson("/kleidung")
+    .then((liste) => {
+      const zaehle = (bedingung) => liste.filter(bedingung).length;
+      document.getElementById("z-eigene").textContent = zaehle((k) => !k.geliehen_von && k.status === "im_schrank");
+      document.getElementById("z-wunsch").textContent = zaehle((k) => k.status === "wunsch");
+      document.getElementById("z-verliehen").textContent = zaehle((k) => k.status === "verliehen");
+      document.getElementById("z-geliehen").textContent = zaehle((k) => k.geliehen_von);
+    })
+    .catch((fehler) => zeigeMeldung(document.getElementById("meldung"), fehler.message, "fehler"));
+</script>
+</body>
+</html>
