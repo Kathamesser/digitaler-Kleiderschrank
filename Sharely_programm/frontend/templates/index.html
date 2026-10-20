@@ -1,31 +1,116 @@
 <!doctype html>
-<!-- Übersicht aller Seiten -->
+<!-- Startseite der Web-App: Anmeldung. Mockups „Desktop 1 · Anmeldung“ und „Desktop 2 · Registrierung“. Noch ohne Backend: Das Anmeldeverfahren ist offen. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sharely – Seitenübersicht</title>
+  <title>Sharely – Anmelden</title>
   <link rel="stylesheet" href="../static/css/stil.css">
   <script src="../static/js/gemeinsam.js"></script>
 </head>
 <body>
-<main class="seite">
-  <section class="fenster" style="max-width: 900px">
-    <header class="fenster-kopf"><h2>Seitenübersicht</h2></header>
-    <p class="leise">Alle Seiten der Web-App nach den Desktop-Mockups (<code>docs/mockups/desktop/</code>). „Live“ = echte Daten aus dem Backend, „Beispiel“ = feste Beispieldaten.</p>
-    <ul class="liste">
-      <li class="eintrag"><span class="text"><strong><a href="anmeldung.html">Anmeldung / Registrierung</a></strong><span>Desktop 1, 2 · ohne Backend</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="hauptmenue.html">Hauptmenü</a></strong><span>Hauptmenü – Variante 2 · Zahlen im Kleiderschrank live</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="schrank.html">Kleiderschrank mit Filter</a></strong><span>Kleiderschrank, Kleidung filtern · live</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="kleidung-hochladen.html">Kleidungsstück hinzufügen</a></strong><span>Kleidungsstück hinzufügen · live</span></span></li>
-      <li class="eintrag"><span class="text"><strong>Kleidungsstück – Detailansicht</strong><span>Kleidungsstück – Detailansicht · live, über eine Kachel im Schrank</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="outfits.html">Outfits</a></strong><span>Outfits · Beispiel (<a href="outfits.html?leer">leer</a>)</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="outfit-erstellen.html">Outfit zusammenstellen</a></strong><span>Outfit erstellen, Outfit speichern · Auswahl live, Speichern fehlt</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="freunde.html">Freunde</a></strong><span>Freunde · Beispiel</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="verliehen.html">Leihen</a></strong><span>Freunde-Leih Verleihansicht · Beispiel</span></span></li>
-      <li class="eintrag"><span class="text"><strong><a href="profil.html">Mein Profil</a></strong><span>Mein Profil · Beispiel</span></span></li>
-    </ul>
+<main class="anmelde-seite">
+  <section class="anmelde-bild" aria-hidden="true">
+    <div class="marke-klein">
+      <span class="logo-kachel"><img src="../../assets/branding/sharely-logo.png" alt=""></span>
+      <span><span class="wortmarke">SHARELY</span><small>style and share</small></span>
+    </div>
+    <h1>Dein Kleiderschrank. Mit Freunden geteilt.</h1>
+    <span class="deko streifen"></span>
+    <span class="deko karo"></span>
+    <span class="deko punkte"></span>
+  </section>
+
+  <section class="anmelde-formular">
+    <div class="anmelde-karte">
+      <h2 id="titel">Willkommen zurück</h2>
+      <p class="unterzeile" id="unterzeile">Melde dich an, um deinen Schrank zu öffnen.</p>
+
+      <div class="umschalter" role="tablist">
+        <button type="button" role="tab" id="tab-anmelden" class="aktiv" aria-selected="true">Anmelden</button>
+        <button type="button" role="tab" id="tab-registrieren" aria-selected="false">Registrieren</button>
+      </div>
+
+      <form id="anmelden" novalidate>
+        <label><span class="feldname">Nutzername</span><input type="text" name="nutzername" autocomplete="username" placeholder="z. B. kleiderliebe" required></label>
+        <label for="passwort-anmelden" class="feldname">Passwort</label>
+        <div class="passwortfeld">
+          <input type="password" id="passwort-anmelden" name="passwort" autocomplete="current-password" placeholder="Dein Passwort" required>
+          <button type="button" class="zeigen" aria-label="Passwort anzeigen" data-symbol="auge"></button>
+        </div>
+        <a class="vergessen link" href="#" onclick="return false" title="Seite kommt noch">Passwort vergessen?</a>
+        <button type="submit" class="knopf breit">Anmelden</button>
+        <div class="meldung" role="status"></div>
+        <p class="link-zeile">Neu bei Sharely? <a class="link" href="#" data-wechsel="registrieren">Konto erstellen</a></p>
+      </form>
+
+      <form id="registrieren" novalidate hidden>
+        <label><span class="feldname">E-Mail-Adresse</span><input type="email" name="email" autocomplete="email" placeholder="name@beispiel.de" required></label>
+        <label><span class="feldname">Nutzername</span><input type="text" name="nutzername" autocomplete="username" placeholder="So sehen dich deine Freunde" required></label>
+        <div class="zeile">
+          <label><span class="feldname">Passwort</span><input type="password" name="passwort" autocomplete="new-password" placeholder="Mind. 8 Zeichen" required></label>
+          <label><span class="feldname">Passwort wiederholen</span><input type="password" name="passwort2" autocomplete="new-password" placeholder="Bestätigen" required></label>
+        </div>
+        <button type="submit" class="knopf breit">Registrieren</button>
+        <div class="meldung" role="status"></div>
+        <p class="link-zeile">Schon ein Konto? <a class="link" href="#" data-wechsel="anmelden">Anmelden</a></p>
+      </form>
+
+      <p class="leise zentriert">Hinweis: Anmeldung und Registrierung prüfen noch nichts beim Backend und führen direkt zum Hauptmenü.</p>
+    </div>
   </section>
 </main>
+
+<script>
+  const TEXTE = {
+    anmelden: ["Willkommen zurück", "Melde dich an, um deinen Schrank zu öffnen."],
+    registrieren: ["Konto erstellen", "Leg los und füll deinen digitalen Schrank."],
+  };
+  const tabs = { anmelden: document.getElementById("tab-anmelden"), registrieren: document.getElementById("tab-registrieren") };
+  function wechsle(ziel) {
+    for (const [name, tab] of Object.entries(tabs)) {
+      const aktiv = name === ziel;
+      tab.classList.toggle("aktiv", aktiv);
+      tab.setAttribute("aria-selected", aktiv);
+      document.getElementById(name).hidden = !aktiv;
+    }
+    document.getElementById("titel").textContent = TEXTE[ziel][0];
+    document.getElementById("unterzeile").textContent = TEXTE[ziel][1];
+  }
+  tabs.anmelden.onclick = () => wechsle("anmelden");
+  tabs.registrieren.onclick = () => wechsle("registrieren");
+  for (const link of document.querySelectorAll("[data-wechsel]")) {
+    link.onclick = (e) => { e.preventDefault(); wechsle(link.dataset.wechsel); };
+  }
+
+  const zeigen = document.querySelector(".zeigen");
+  zeigen.onclick = () => {
+    const feld = document.getElementById("passwort-anmelden");
+    feld.type = feld.type === "password" ? "text" : "password";
+    zeigen.setAttribute("aria-label", feld.type === "password" ? "Passwort anzeigen" : "Passwort verbergen");
+  };
+
+  document.getElementById("anmelden").onsubmit = (e) => {
+    e.preventDefault();
+    const f = e.target;
+    if (!f.nutzername.value.trim() || !f.passwort.value) {
+      return zeigeMeldung(f.querySelector(".meldung"), "Bitte Nutzername und Passwort eingeben.", "fehler");
+    }
+    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+  };
+
+  document.getElementById("registrieren").onsubmit = (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const meldung = f.querySelector(".meldung");
+    if (!f.email.value.includes("@")) return zeigeMeldung(meldung, "Bitte eine gültige E-Mail-Adresse eingeben.", "fehler");
+    if (!f.nutzername.value.trim()) return zeigeMeldung(meldung, "Bitte einen Nutzernamen wählen.", "fehler");
+    if (f.passwort.value.length < 8 || !/[^A-Za-z0-9]/.test(f.passwort.value)) {
+      return zeigeMeldung(meldung, "Das Passwort braucht mindestens 8 Zeichen und ein Sonderzeichen.", "fehler");
+    }
+    if (f.passwort.value !== f.passwort2.value) return zeigeMeldung(meldung, "Die Passwörter stimmen nicht überein.", "fehler");
+    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+  };
+</script>
 </body>
 </html>

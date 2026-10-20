@@ -14,7 +14,7 @@ Sharely_programm/         alles, was die Anwendung zum Laufen braucht
     app/module/           ein Ordner je Fachbereich (router → service → repository)
     tests/                pytest
   frontend/               Web-App im Browser (Sharely_programm/frontend/README.md)
-    templates/            die Seiten (HTML), Start: templates/index.html
+    templates/            die Seiten (HTML), Start: templates/index.html (Anmeldung)
     static/css/           Aussehen (stil.css)
     static/js/            gemeinsame Bausteine (gemeinsam.js)
     src/avatar-editor/    3D-Avatar-Editor mit Three.js

@@ -540,14 +540,6 @@ a.menue-zeile { text-decoration: none; }
 .menue-zeile.gefahr { border-color: var(--rot); color: var(--rot); }
 .menue-zeile:disabled { cursor: not-allowed; }
 
-/* ---------- Seitenübersicht ---------- */
-
-.liste { list-style: none; margin: 0; padding: 0; }
-.eintrag { display: flex; align-items: center; gap: 14px; padding: 16px 4px; border-bottom: 1.5px solid var(--linie); }
-.eintrag .text { flex: 1; min-width: 0; }
-.eintrag .text strong { display: block; font-size: 1.1rem; }
-.eintrag .text span { font-size: .9rem; color: var(--text-leise); }
-
 /* ---------- Schmalere Bildschirme ---------- */
 
 @media (max-width: 1200px) {

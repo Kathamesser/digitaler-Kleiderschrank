@@ -6,8 +6,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 
 | Seite | Mockup | Daten |
 |---|---|---|
-| `index.html` | – | Übersicht aller Seiten |
-| `anmeldung.html` | Desktop 1, 2 | ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
+| `index.html` | Desktop 1, 2 | Startseite: Anmeldung und Registrierung, ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
 | `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), Rest Platzhalter |
 | `schrank.html` | Kleiderschrank, Kleidung filtern | live: Liste, Suche (Name, Kleidungsart, Farbe, Material), „Alles“ und Filter-Fenster (Favorit, Privat, Farbe, Kleidungsart, Material, Saison, Status, Kaufdatum, Preis; Kategorie nur zur Ansicht, bis es das Modul Kategorien gibt). Ganzjährige Teile passen zu jeder Saison. „Geliehen“ = Status `geliehen` |
 | `kleidung-hochladen.html` | Kleidungsstück hinzufügen | live: User Story 8; Foto per Kamera, Datei oder Ziehen; Name, Farbe, Kleidungsart, Maße (22 Messpunkte), Saison, Material, Kaufdatum, Preis, Favorit, Privat, Status (Eigenes/Geliehen/Wunschartikel; „Verliehen“ gesperrt). Kategorien nur zur Ansicht |
@@ -48,6 +47,6 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
-3. Im Browser öffnen: http://localhost:5173/frontend/templates/
+3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter) oder direkt http://localhost:5173/frontend/templates/
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.
