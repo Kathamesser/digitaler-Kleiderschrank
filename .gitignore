@@ -8,9 +8,9 @@ __pycache__/
 # Datenbank & Uploads gehören nicht ins Repo
 instance/
 *.db
-uploads/*
-!uploads/.gitkeep
-!uploads/README.md
+Sharely_programm/uploads/*
+!Sharely_programm/uploads/.gitkeep
+!Sharely_programm/uploads/README.md
 
 # Geheimnisse (API-Schlüssel etc.) — niemals committen
 .env
@@ -19,8 +19,8 @@ uploads/*
 .claude/settings.local.json
 
 # Avatar: beim Neubau erzeugte Arbeitsdateien (lassen sich jederzeit neu bauen)
-assets/avatar/werkstatt/Avatar_Aussehen_spaeter/
+Sharely_programm/assets/avatar/werkstatt/Avatar_Aussehen_spaeter/
 
 # Frontend
 node_modules/
-frontend/dist/
+Sharely_programm/frontend/dist/

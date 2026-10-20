@@ -1,4 +1,4 @@
-"""Einstiegspunkt des Backends. Start (im Ordner backend/): uvicorn app.main:app --reload"""
+"""Einstiegspunkt des Backends. Start (im Ordner Sharely_programm/backend/): uvicorn app.main:app --reload"""
 
 from contextlib import asynccontextmanager
 

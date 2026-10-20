@@ -1,4 +1,4 @@
-"""Einstellungen aus Umgebungsvariablen bzw. der Datei backend/.env (Vorlage: .env.example)."""
+"""Einstellungen aus Umgebungsvariablen bzw. der Datei Sharely_programm/backend/.env (Vorlage: .env.example)."""
 
 from functools import lru_cache
 

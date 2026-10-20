@@ -1,12 +1,12 @@
 {
   // Gemeinsame VS-Code-Einstellungen fürs Team. Persönliches gehört in die Benutzereinstellungen.
 
-  // Python aus der virtuellen Umgebung des Backends (anlegen: siehe backend/README.md)
-  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+  // Python aus der virtuellen Umgebung des Backends (anlegen: siehe Sharely_programm/backend/README.md)
+  "python.defaultInterpreterPath": "${workspaceFolder}/Sharely_programm/backend/.venv/Scripts/python.exe",
 
   // Tests im Testing-Bereich (Reagenzglas links) mit pytest
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
-  "python.testing.cwd": "${workspaceFolder}/backend",
+  "python.testing.cwd": "${workspaceFolder}/Sharely_programm/backend",
   "python.testing.pytestArgs": ["tests"]
 }

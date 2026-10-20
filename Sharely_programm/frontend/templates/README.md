@@ -1,6 +1,6 @@
 # Templates (Seiten der Web-App)
 
-HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Seit 20.10.2026 sind sie keine Testseiten mehr, sondern die Seiten der Web-App (Ordner bis dahin `frontend/testseiten/`, Entscheidung Katha). Sie laufen ohne Framework, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks folgen seit 20.10.2026 Manuels ERM (`docs/datenmodell/ERM-SHARELY.md`), das selbst nach den Mockups gebaut ist.
+HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/`, seit 20.10.2026; vorher Graustufen nach den Wireframes der Technischen Konzeption). Seit 20.10.2026 sind sie keine Testseiten mehr, sondern die Seiten der Web-App (Ordner bis dahin `Sharely_programm/frontend/testseiten/`, Entscheidung Katha). Sie laufen ohne Framework, solange React oder Vue noch nicht entschieden ist. Die Felder eines Kleidungsstücks folgen seit 20.10.2026 Manuels ERM (`docs/datenmodell/ERM-SHARELY.md`), das selbst nach den Mockups gebaut ist.
 
 ## Seiten
 
@@ -31,19 +31,22 @@ Schriften (DM Sans, Fraunces) kommen von Google Fonts; ohne Internet fallen die 
 ## Weiterverwenden mit React oder Vue
 
 - `stil.css` kann fast unverändert übernommen werden (Klassennamen bleiben).
-- Das HTML jeder Seite wird zur Seiten-Komponente (z. B. in `frontend/src/seiten/`), wiederkehrende Teile (Kachel, Kopf- und Fußleiste) zu Komponenten (z. B. `src/komponenten/`). In React wird dabei z. B. `class` zu `className`.
+- Das HTML jeder Seite wird zur Seiten-Komponente (z. B. in `Sharely_programm/frontend/src/seiten/`), wiederkehrende Teile (Kachel, Kopf- und Fußleiste) zu Komponenten (z. B. `src/komponenten/`). In React wird dabei z. B. `class` zu `className`.
 - Die Backend-Aufrufe aus `gemeinsam.js` und den Seiten wandern in ein eigenes Modul (z. B. `src/api/`).
 
 Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werden.
 
 ## Starten
 
-1. MongoDB und Backend starten (siehe `backend/README.md`).
-2. In einem zweiten Terminal **im Hauptordner des Repos** einen einfachen Webserver auf Port 5173 starten (Hauptordner, damit die Seiten das Logo aus `assets/branding/` finden). Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`):
+1. MongoDB und Backend starten (siehe `Sharely_programm/backend/README.md`).
+2. In einem zweiten Terminal **im Ordner `Sharely_programm`** einen einfachen Webserver auf Port 5173 starten (dort, damit die Seiten das Logo aus `assets/branding/` finden):
 
    ```bash
+   cd Sharely_programm
    python -m http.server 5173
    ```
+
+   Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
 3. Im Browser öffnen: http://localhost:5173/frontend/templates/
 

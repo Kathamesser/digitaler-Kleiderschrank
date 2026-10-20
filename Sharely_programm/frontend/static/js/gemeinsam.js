@@ -9,7 +9,7 @@ const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzd
 // Platzhalter, bis es Anmeldung und Modul nutzer gibt
 const NUTZER = { name: "Test-Nutzer" };
 
-// Werte wie in backend/app/module/kleidung/schemas.py (ERM vom 20.10.2026)
+// Werte wie in Sharely_programm/backend/app/module/kleidung/schemas.py (ERM vom 20.10.2026)
 const KLEIDUNGSARTEN = {
   tops: "Tops", pullover: "Pullover", hosen: "Hosen", roecke: "Röcke", kleider: "Kleider",
   jacken: "Jacken", schuhe: "Schuhe", unterwaesche: "Unterwäsche", einteiler: "Einteiler", accessoires: "Accessoires",

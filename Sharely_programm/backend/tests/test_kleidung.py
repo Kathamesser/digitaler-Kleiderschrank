@@ -161,7 +161,7 @@ def test_ungueltige_masse_werden_abgelehnt(client):
 
 
 def test_messpunkte_wie_in_der_glb():
-    datei = Path(__file__).parents[2] / "docs" / "avatar" / "messpunkte.json"
+    datei = Path(__file__).parents[3] / "docs" / "avatar" / "messpunkte.json"  # Repo-Hauptordner
     schluessel = json.loads(datei.read_text(encoding="utf-8"))["masse"].keys()
     assert {m.value for m in Messpunkt} == set(schluessel)
 

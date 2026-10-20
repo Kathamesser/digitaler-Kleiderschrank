@@ -1,14 +1,14 @@
 # Avatar-Pipeline: von MakeHuman zur GLB-Datei
 
-Stand: 12.10.2026 · Umsetzung des Konzepts aus `docs/planung/AVATAR-3D-KONZEPT.md` (Werkstatt/Schaufenster). Seit 12.10.2026 liegen die fertige GLB und alles für einen Neubau im Repo unter `assets/avatar/` (Anleitung: `assets/avatar/README.md`), die Skripte hier in `skripte/`. Nur die MakeHuman-Einzelexporte (`Formsammlung`) liegen weiterhin allein auf Christians Rechner unter `Abschlussprojekt\Avatar-Editor_Datein\Figuren\`.
+Stand: 12.10.2026 · Umsetzung des Konzepts aus `docs/planung/AVATAR-3D-KONZEPT.md` (Werkstatt/Schaufenster). Seit 12.10.2026 liegen die fertige GLB und alles für einen Neubau im Repo unter `Sharely_programm/assets/avatar/` (Anleitung: `Sharely_programm/assets/avatar/README.md`), die Skripte hier in `skripte/`. Nur die MakeHuman-Einzelexporte (`Formsammlung`) liegen weiterhin allein auf Christians Rechner unter `Abschlussprojekt\Avatar-Editor_Datein\Figuren\`.
 
 ## Ergebnis
 
 | Datei | Inhalt |
 |---|---|
-| `assets/avatar/Avatar_Editorgeruest.glb` | Web-Avatar für Three.js: neutrale Standardfigur plus 114 Morph Targets (Auswahl: `REGLER-AUSWAHL.md`, Bedeutung: `AVATAR-REGLER.md`). 8 MB, komprimiert etwa 3 MB. Alle Targets starten auf 0. |
-| `assets/avatar/werkstatt/Avatar_Aussehen_spaeter/` | `.blend` mit den übrigen 423 Shape Keys (Gesicht, Kopf, Hände, Herkunft …) plus Namensliste, für später. Entsteht beim Neubau, nicht im Repo. |
-| `assets/avatar/werkstatt/avatar_shapekeys.blend` | Zwischenstand mit allen 547 Shape Keys |
+| `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` | Web-Avatar für Three.js: neutrale Standardfigur plus 114 Morph Targets (Auswahl: `REGLER-AUSWAHL.md`, Bedeutung: `AVATAR-REGLER.md`). 8 MB, komprimiert etwa 3 MB. Alle Targets starten auf 0. |
+| `Sharely_programm/assets/avatar/werkstatt/Avatar_Aussehen_spaeter/` | `.blend` mit den übrigen 423 Shape Keys (Gesicht, Kopf, Hände, Herkunft …) plus Namensliste, für später. Entsteht beim Neubau, nicht im Repo. |
+| `Sharely_programm/assets/avatar/werkstatt/avatar_shapekeys.blend` | Zwischenstand mit allen 547 Shape Keys |
 | `Figuren\Formsammlung\` (nur Christians Rechner) | 554 MakeHuman-Exporte (OBJ und MTL), je Regler eine Min- und eine Max-Figur |
 | `Figuren\_export_liste.txt` (nur Christians Rechner; GitHub hält die Dateinamen fälschlich für Zugangsschlüssel und blockiert sie) | Zuordnung Datei → MakeHuman-Regler und Wert |
 

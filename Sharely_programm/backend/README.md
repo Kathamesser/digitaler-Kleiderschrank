@@ -5,7 +5,7 @@ Client-Server-Architektur mit einem **modular aufgebauten Monolithen** als Backe
 ## Starten
 
 ```bash
-cd backend
+cd Sharely_programm/backend
 python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
@@ -15,12 +15,12 @@ uvicorn app.main:app --reload
 
 Dann im Browser: http://localhost:8000/api/health (Lebenszeichen) und http://localhost:8000/docs (alle Endpunkte zum Ausprobieren). MongoDB muss für die Fach-Endpunkte laufen, lokal oder über MongoDB Atlas (Adresse in `.env`).
 
-Tests: `.venv\Scripts\python -m pytest` im Ordner `backend/` (macOS/Linux: `.venv/bin/python -m pytest`). In VS Code: einmal „Python: Select Interpreter“ → `backend\.venv\Scripts\python.exe`, dann laufen die Tests im Testing-Bereich (Reagenzglas links); die Einstellungen dafür stehen in `.vscode/settings.json`. **Nicht** die Testdatei mit ▶ „Run Python File“ starten: Das nimmt oft das globale Python ohne pytest (Fehler `No module named 'pytest'`) und führt keine Tests aus.
+Tests: `.venv\Scripts\python -m pytest` im Ordner `Sharely_programm/backend/` (macOS/Linux: `.venv/bin/python -m pytest`). In VS Code: einmal „Python: Select Interpreter“ → `backend\.venv\Scripts\python.exe`, dann laufen die Tests im Testing-Bereich (Reagenzglas links); die Einstellungen dafür stehen in `.vscode/settings.json`. **Nicht** die Testdatei mit ▶ „Run Python File“ starten: Das nimmt oft das globale Python ohne pytest (Fehler `No module named 'pytest'`) und führt keine Tests aus.
 
 ## Aufbau
 
 ```
-backend/
+Sharely_programm/backend/
 ├── app/
 │   ├── main.py            Einstieg: App, Router der Module, /api/health
 │   ├── core/

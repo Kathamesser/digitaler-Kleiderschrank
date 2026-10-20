@@ -190,7 +190,7 @@ flowchart LR
         M["8 Module<br/>router → service → repository"]
     end
     DB[("MongoDB")]
-    FS[["uploads/&lt;nutzer_id&gt;/<br/>Bilddateien"]]
+    FS[["Sharely_programm/uploads/&lt;nutzer_id&gt;/<br/>Bilddateien"]]
     KI(["KI-Anbieter<br/>(Produktimport, offen)"])
     UI -- "JSON über HTTP" --> API
     ED -- "Reglerwerte laden/speichern" --> API
@@ -203,7 +203,7 @@ flowchart LR
 - Die rechenintensive 3D-Darstellung läuft im Browser auf der Grafikkarte des Nutzers, der Server liefert nur Daten.
 - Frontend und Backend können über die REST-API parallel von verschiedenen Teammitgliedern entwickelt werden.
 - Das Backend besteht aus acht Fachmodulen: `nutzer`, `kleidung`, `outfits`, `freunde`, `verleihen`, `figuren`, `produktimport`, `passform`. Jedes Modul hat dieselben Schichten: `router.py` (HTTP) → `service.py` (Geschäftslogik) → `repository.py` (einziger Datenbankzugriff), dazu `schemas.py` (Pydantic-Modelle). Module rufen sich nur über ihre Services auf. Dadurch ließe sich z. B. der KI-Import später als eigener Dienst herauslösen.
-- Details: `backend/README.md`.
+- Details: `Sharely_programm/backend/README.md`.
 
 ### 4.4 Datenmodell
 
@@ -229,7 +229,7 @@ Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 
 ### 4.5 Benutzeroberfläche
 
-Katha hat 21 Wireframes erstellt (Technische Konzeption Kapitel 3): Anmeldung und Passwort (1–4), Schrank (5–8), Outfits (9–12), Verliehen (13–16), Freunde (17), Profil und Einstellungen (18–21). Navigation über eine untere Leiste wie in mobilen Apps. Als Logo dient ein Schaf mit Kleiderbügel (`assets/branding/sharely-logo.png`).
+Katha hat 21 Wireframes erstellt (Technische Konzeption Kapitel 3): Anmeldung und Passwort (1–4), Schrank (5–8), Outfits (9–12), Verliehen (13–16), Freunde (17), Profil und Einstellungen (18–21). Navigation über eine untere Leiste wie in mobilen Apps. Als Logo dient ein Schaf mit Kleiderbügel (`Sharely_programm/assets/branding/sharely-logo.png`).
 
 ### 4.6 API
 
@@ -265,7 +265,7 @@ flowchart LR
     D --> F["zentimeter_messen.py<br/>messpunkte.json"]
 ```
 
-Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundform, 20 Maße aus Größentabellen, Körperform, Arme/Beine/Füße, 20 Figurtypen). Gesicht, Kopf und Hände sind für später ausgelagert. Der Neubau aus den Repo-Dateien ergibt eine bit-identische GLB. Gelöste Stolperfallen (gleiche Vertex-Zahl, Achsendrehung in Blender 5, Dateigröße durch flache Schattierung, Startwerte der Targets) stehen in `docs/avatar/AVATAR-PIPELINE.md`.
+Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundform, 20 Maße aus Größentabellen, Körperform, Arme/Beine/Füße, 20 Figurtypen). Gesicht, Kopf und Hände sind für später ausgelagert. Der Neubau aus den Repo-Dateien ergibt eine bit-identische GLB. Gelöste Stolperfallen (gleiche Vertex-Zahl, Achsendrehung in Blender 5, Dateigröße durch flache Schattierung, Startwerte der Targets) stehen in `docs/avatar/AVATAR-PIPELINE.md`.
 
 ### 5.3 Regler und gespeicherte Figur
 
@@ -285,9 +285,9 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 
 ### 6.1 Projektgerüst (13.10.2026)
 
-- `backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Platzhalter für die Anmeldung) und den acht Modulen; `/api/health` als Lebenszeichen.
-- `frontend/`: Ordnerstruktur und README; das Framework-Gerüst wird erst nach der Entscheidung React/Vue erzeugt. Der Avatar-Editor (`src/avatar-editor/`) ist bewusst framework-unabhängig.
-- `uploads/`: Bildablage, nur lokal, nicht im Repo.
+- `Sharely_programm/backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Platzhalter für die Anmeldung) und den acht Modulen; `/api/health` als Lebenszeichen.
+- `Sharely_programm/frontend/`: Ordnerstruktur und README; das Framework-Gerüst wird erst nach der Entscheidung React/Vue erzeugt. Der Avatar-Editor (`src/avatar-editor/`) ist bewusst framework-unabhängig.
+- `Sharely_programm/uploads/`: Bildablage, nur lokal, nicht im Repo.
 - VS-Code-Einstellungen und `pytest.ini` fürs ganze Team.
 
 ### 6.2 User Story 8: Kleidungsstück digitalisieren (13.10.2026, an das ERM angepasst am 20.10.2026)
@@ -309,7 +309,7 @@ Ergebnis: `assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morph Targets (Grundf
 
 ### 6.3 Klick-Prototyp (13./14.10.2026)
 
-Neun HTML-Seiten ohne Framework nach den Wireframes in `frontend/testseiten/` (seit 20.10.2026 `frontend/templates/`, im Design der Desktop-Mockups): Anmeldung, Schrank, Kleidungsstück hinzufügen und Detail, Outfits, Outfit erstellen, Verliehen, Freunde, Profil. Schrank, Hinzufügen und Detail laufen live am Backend, die übrigen mit Beispieldaten. Der Schrank hat Suche, Schnellfilter und ein Filtermenü über alle Eigenschaften. Das gesamte Aussehen steckt in `stil.css` mit Variablen in `:root`, damit es später ins Framework übernommen werden kann.
+Neun HTML-Seiten ohne Framework nach den Wireframes in `Sharely_programm/frontend/testseiten/` (seit 20.10.2026 `Sharely_programm/frontend/templates/`, im Design der Desktop-Mockups): Anmeldung, Schrank, Kleidungsstück hinzufügen und Detail, Outfits, Outfit erstellen, Verliehen, Freunde, Profil. Schrank, Hinzufügen und Detail laufen live am Backend, die übrigen mit Beispieldaten. Der Schrank hat Suche, Schnellfilter und ein Filtermenü über alle Eigenschaften. Das gesamte Aussehen steckt in `stil.css` mit Variablen in `:root`, damit es später ins Framework übernommen werden kann.
 
 ### 6.4 Avatar
 
@@ -321,7 +321,7 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 
 ### 7.1 Automatisierte Tests
 
-- Backend-Tests mit `pytest` und dem FastAPI-Testclient (`backend/tests/`), lauffähig ohne MongoDB über ein Ersatz-Repository.
+- Backend-Tests mit `pytest` und dem FastAPI-Testclient (`Sharely_programm/backend/tests/`), lauffähig ohne MongoDB über ein Ersatz-Repository.
 - Stand 20.10.2026 (nach der Umstellung auf das ERM): **19 Tests, alle grün** (`test_health.py`: 1, `test_kleidung.py`: 18). Geprüft werden u. a. Anlegen mit nur den Pflichtfeldern und mit allen Eigenschaften, alle Kleidungsarten, Status beim Anlegen (verliehen und verschenkt abgelehnt), Ganzjährig, ungültige Farbe/Material/Kategorie-ID/Maße, Messpunkte gleich der GLB-Liste, fehlendes, ungültiges und zu großes Bild, Kaufdatum in der Zukunft, Abruf von Bild und Liste, unbekanntes Kleidungsstück.
 - Zusätzlich wurde User Story 8 gegen eine lokale MongoDB mit Wegwerf-Datenbank durchgespielt.
 
@@ -471,8 +471,8 @@ Bisherige Erkenntnisse, die ins Fazit gehören können (aus dem Wissensspeicher 
 | `docs/datenmodell/ERM-VORSCHLAEGE-2026-10-16.md` | Vorschläge zur ERM-Besprechung |
 | `docs/api/README.md` | API-Absprachen und Endpunkte |
 | `docs/avatar/` | Regler, Pipeline, Figurtypen, Figur-Datenmodell, Zentimeter, Skripte |
-| `assets/avatar/README.md` | Avatar-Dateien und Neubau |
-| `backend/README.md`, `frontend/README.md`, `frontend/templates/README.md` | Aufbau, Start, Tests |
+| `Sharely_programm/assets/avatar/README.md` | Avatar-Dateien und Neubau |
+| `Sharely_programm/backend/README.md`, `Sharely_programm/frontend/README.md`, `Sharely_programm/frontend/templates/README.md` | Aufbau, Start, Tests |
 
 ### 13.2 Glossar
 

@@ -18,6 +18,6 @@ Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML
 | `static/js/` | `gemeinsam.js`: Backend-Adresse, Auswahlwerte, Symbole, Kopf- und Fußleiste, Kacheln |
 | `src/avatar-editor/` | siehe oben |
 
-Das Logo liegt nur in `assets/branding/` und wird von den Seiten direkt von dort geladen. Ordner für ein Framework (z. B. `src/seiten/`, `src/komponenten/`, `src/api/`) werden erst angelegt, wenn React oder Vue entschieden ist (Ordnerstruktur aufgeräumt am 20.10.2026).
+Das Logo liegt nur in `Sharely_programm/assets/branding/` und wird von den Seiten direkt von dort geladen. Ordner für ein Framework (z. B. `src/seiten/`, `src/komponenten/`, `src/api/`) werden erst angelegt, wenn React oder Vue entschieden ist (Ordnerstruktur aufgeräumt am 20.10.2026).
 
-Die Avatar-GLB liegt zentral in `assets/avatar/Avatar_Editorgeruest.glb` und wird nicht kopiert. Wie sie im Browser ankommt (Build-Schritt kopiert sie oder das Backend liefert sie aus), wird mit dem Framework festgelegt.
+Die Avatar-GLB liegt zentral in `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` und wird nicht kopiert. Wie sie im Browser ankommt (Build-Schritt kopiert sie oder das Backend liefert sie aus), wird mit dem Framework festgelegt.

@@ -10,7 +10,7 @@ Datenbank: **MongoDB** (Technische Konzeption 2.2). Das ERM beschreibt die Daten
 - `docs/planung/Userstory.md` (User Stories 1–10), Use Cases der Technischen Konzeption
 - `docs/avatar/FIGUR-DATENMODELL.md` (Figur, entschieden am 12.10.2026)
 - Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`): Tags, Wertetabellen, 3D-Vorlagen
-- Kathas Umsetzung von User Story 8 (`backend/app/module/kleidung`)
+- Kathas Umsetzung von User Story 8 (`Sharely_programm/backend/app/module/kleidung`)
 
 ## 2. Diagramme
 
@@ -173,7 +173,7 @@ Noch offen (Manuel: „bleibt erstmal offen“):
 
 ## 10. Auswirkungen auf den bestehenden Code
 
-Kathas Modul `backend/app/module/kleidung` (User Story 8) entsprach dem ERM vom 13.10.2026. **Umgesetzt am 20.10.2026 (Katha/Claude(Laptop.Code)):** alle Punkte der Tabelle; `kategorie_ids`, `masse` und `leihvorgang_id` sind vorbereitet, aber noch ohne eigene Logik. Prüfregeln und Indizes in MongoDB fehlen noch. Felder: `docs/api/README.md`.
+Kathas Modul `Sharely_programm/backend/app/module/kleidung` (User Story 8) entsprach dem ERM vom 13.10.2026. **Umgesetzt am 20.10.2026 (Katha/Claude(Laptop.Code)):** alle Punkte der Tabelle; `kategorie_ids`, `masse` und `leihvorgang_id` sind vorbereitet, aber noch ohne eigene Logik. Prüfregeln und Indizes in MongoDB fehlen noch. Felder: `docs/api/README.md`.
 
 | Heute im Code | Laut ERM vom 20.10.2026 |
 |---|---|

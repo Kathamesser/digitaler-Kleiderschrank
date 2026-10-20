@@ -5,7 +5,7 @@
 # Aufruf in Blender (Scripting-Tab: Open > diese Datei > Run Script) oder:
 #   blender -b --python docs/avatar/skripte/blender_editorgeruest_bauen.py
 # Die Pfade ergeben sich aus dem Repo, das Skript läuft also auf jedem Rechner mit
-# einem Clone. Erklärung der Dateien: assets/avatar/README.md
+# einem Clone. Erklärung der Dateien: Sharely_programm/assets/avatar/README.md
 
 import bpy
 import os
@@ -27,12 +27,12 @@ def repo_ordner():
         pass
     for k in kandidaten:
         repo = os.path.normpath(os.path.join(os.path.dirname(k), "..", "..", ".."))
-        if os.path.isdir(os.path.join(repo, "assets", "avatar")):
+        if os.path.isdir(os.path.join(repo, "Sharely_programm", "assets", "avatar")):
             return repo
     raise RuntimeError("Repo nicht gefunden. Bitte das Skript aus docs/avatar/skripte/ im Repo-Clone öffnen.")
 
 
-ASSET_DIR = os.path.join(repo_ordner(), "assets", "avatar")
+ASSET_DIR = os.path.join(repo_ordner(), "Sharely_programm", "assets", "avatar")
 WERKSTATT = os.path.join(ASSET_DIR, "werkstatt")
 SOURCE = os.path.join(WERKSTATT, "avatar_shapekeys.blend")
 GLB_PATH = os.path.join(ASSET_DIR, "Avatar_Editorgeruest.glb")
@@ -155,7 +155,7 @@ for img in bpy.data.images:   # Texturpfad relativ zum Unterordner anpassen
 bpy.ops.wm.save_as_mainfile(filepath=LATER_BLEND, relative_remap=False)
 with open(os.path.join(LATER_DIR, "Shape_Keys_Liste.txt"), "w", encoding="utf-8") as f:
     f.write("Shape Keys in Avatar_Aussehen_spaeter.blend (%d)\n" % len(later))
-    f.write("Quelle: assets/avatar/werkstatt/avatar_shapekeys.blend, Basis = figur_default\n\n")
+    f.write("Quelle: Sharely_programm/assets/avatar/werkstatt/avatar_shapekeys.blend, Basis = figur_default\n\n")
     f.write("\n".join(later) + "\n")
 
 print("Editorgerüst: %d Shape Keys -> %s" % (len(editor_data), GLB_PATH))

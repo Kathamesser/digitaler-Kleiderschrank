@@ -2,8 +2,8 @@
 #
 # Aufruf (Python 3 mit numpy, kein Blender nötig), im Repo-Ordner:
 #   python docs/avatar/skripte/zentimeter_messen.py
-# Ohne Angaben nimmt es assets/avatar/Avatar_Editorgeruest.glb und
-# assets/avatar/werkstatt/figur_default.obj und schreibt nach docs/avatar/.
+# Ohne Angaben nimmt es Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb und
+# Sharely_programm/assets/avatar/werkstatt/figur_default.obj und schreibt nach docs/avatar/.
 # Andere Dateien: python zentimeter_messen.py <glb> <figur_default.obj> <Ausgabeordner>
 #
 # Ergebnis im Ausgabeordner:
@@ -222,8 +222,8 @@ if __name__ == "__main__":
         main(*sys.argv[1:])
     elif len(sys.argv) == 1:
         repo = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-        main(os.path.join(repo, "assets", "avatar", "Avatar_Editorgeruest.glb"),
-             os.path.join(repo, "assets", "avatar", "werkstatt", "figur_default.obj"),
+        main(os.path.join(repo, "Sharely_programm", "assets", "avatar", "Avatar_Editorgeruest.glb"),
+             os.path.join(repo, "Sharely_programm", "assets", "avatar", "werkstatt", "figur_default.obj"),
              os.path.join(repo, "docs", "avatar"))
     else:
         sys.exit("Aufruf: python zentimeter_messen.py [<glb> <figur_default.obj> <ausgabeordner>]")

@@ -10,7 +10,7 @@ Alle Endpunkte liegen unter `/api/<modul>`, z. B. `/api/kleidung`, `/api/outfits
 ## Absprachen
 
 - **Fehlermeldungen:** Fehler kommen im FastAPI-Format `{"detail": "…"}`. Bei fachlichen Fehlern ist `detail` ein deutscher Satz, den das Frontend direkt anzeigen kann (z. B. „Das Bild ist zu groß. Erlaubt sind höchstens 10 MB.“). Bei Eingabefehlern (Status 422) ist `detail` eine Liste mit den betroffenen Feldern.
-- **Anmeldung (vorläufig, 13.10.2026):** Solange das Anmeldeverfahren offen ist, gehören alle Anfragen einem festen Test-Nutzer (`aktueller_nutzer()` in `backend/app/core/sicherheit.py`). Endpunkte holen den Nutzer immer über `Depends(aktueller_nutzer)`; später wird nur diese Funktion ersetzt.
+- **Anmeldung (vorläufig, 13.10.2026):** Solange das Anmeldeverfahren offen ist, gehören alle Anfragen einem festen Test-Nutzer (`aktueller_nutzer()` in `Sharely_programm/backend/app/core/sicherheit.py`). Endpunkte holen den Nutzer immer über `Depends(aktueller_nutzer)`; später wird nur diese Funktion ersetzt.
 - **Bilder:** Hochgeladene Bilder sind nicht öffentlich erreichbar. Sie werden über den Endpunkt des Objekts abgerufen (z. B. `GET /api/kleidung/{id}/bild`), der prüft, ob das Bild dem Nutzer gehört. Die Adresse steht in der Antwort als `bild_url`.
 
 - **Kleidungsstück-Felder (ERM vom 20.10.2026, umgesetzt am 20.10.2026):**
