@@ -137,7 +137,7 @@ MESSPUNKTE_JE_KLEIDUNGSART = {
         "upperarm-circ": (False, 25, 45),
     },
     # Innenlänge Schuh = Fußlänge + 1,5 cm (Pariser Stich)
-    "schuhe": {"fusslaenge": (True, 1, 2), "calf-circ": (False, 0, 6)},
+    "schuhe": {"fusslaenge": (True, 1, 2), "calf-circ": (False, 0, 15)},
     # BH und Slip stecken in einer Art, deshalb alles optional
     "unterwaesche": {
         "underbust-circ": (False, -10, 0), "bust-circ": (False, -5, 5),

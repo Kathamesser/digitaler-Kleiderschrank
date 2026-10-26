@@ -51,7 +51,7 @@ Umfänge in % des Körpermaßes, Längen in cm. Die Werte sind aus den Quellen o
 | Kleider | Brust +5 bis +15 %, Taille +3 bis +20 %, Hüfte +4 bis +25 % | Unterbrust +3 bis +15 %, Schulterbreite −1 bis +3 cm |
 | Einteiler | Brust +5 bis +20 %, Taille +3 bis +25 %, Hüfte +4 bis +20 % | Schrittlänge −6 bis 0 cm, Rückenlänge −1 bis +4 cm |
 | Unterwäsche | – | Unterbrust −10 bis 0 %, Brust −5 bis +5 %, Taille −15 bis 0 %, Hüfte −15 bis 0 % |
-| Schuhe | Fußlänge +1 bis +2 cm | Wade (Stiefel) 0 bis +6 cm |
+| Schuhe | Fußlänge +1 bis +2 cm | Wade (Stiefel) 0 bis +15 % (etwa 0 bis 6 cm) |
 
 Begründungen in Kurzform:
 - **Taille bei Hosen und Röcken** nur 0 bis 5 %: Der Bund sitzt, der Gürtel hält, mehr ist sofort „weit“.
