@@ -247,8 +247,14 @@ COLLECTIONS: dict[str, dict] = {
                     "bsonType": "array",
                     "items": {
                         "bsonType": "object",
-                        "required": ["messpunkt", "pflicht"],
-                        "properties": {"messpunkt": auswahl(wl.MESSPUNKTE), "pflicht": JA_NEIN},
+                        "required": ["messpunkt", "pflicht", "zugabe_min", "zugabe_max", "einheit"],
+                        "properties": {
+                            "messpunkt": auswahl(wl.MESSPUNKTE),
+                            "pflicht": JA_NEIN,
+                            "zugabe_min": ZAHL,
+                            "zugabe_max": ZAHL,
+                            "einheit": auswahl(["prozent", "cm"]),
+                        },
                     },
                 },
             },
@@ -332,8 +338,9 @@ def stammdaten() -> dict[str, list[dict]]:
     return {
         "kleidungsarten": [
             {"_id": schluessel, "name": name, "reihenfolge": i, "vorlage_id": None,
-             "messpunkte": [{"messpunkt": m, "pflicht": p}
-                            for m, p in wl.MESSPUNKTE_JE_KLEIDUNGSART[schluessel].items()]}
+             "messpunkte": [{"messpunkt": m, "pflicht": p, "zugabe_min": lo, "zugabe_max": hi,
+                             "einheit": wl.einheit_der_zugabe(m)}
+                            for m, (p, lo, hi) in wl.MESSPUNKTE_JE_KLEIDUNGSART[schluessel].items()]}
             for i, (schluessel, name) in enumerate(wl.KLEIDUNGSARTEN.items(), start=1)
         ],
         "kategorien": [{"nutzer_id": None, "name": name} for name in wl.VORGEGEBENE_KATEGORIEN],

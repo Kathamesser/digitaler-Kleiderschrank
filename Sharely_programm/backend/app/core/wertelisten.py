@@ -101,29 +101,59 @@ MESSPUNKTE = {
 }
 
 # Welche Messpunkte bei einer Kleidungsart abgefragt und für die Passform
-# verglichen werden (besprochen mit Christian, 20.10.2026). True = Pflicht:
-# bestimmt die Ampel „passt / eng / weit“. False = optional: gibt nur einen
-# Hinweis (z. B. „Ärmel zu kurz“). Liegt zusätzlich in `kleidungsarten.messpunkte`.
+# verglichen werden (besprochen mit Christian, 20.10.2026), mit der Zugabe,
+# bei der das Teil „passt“ (Startwerte, entschieden von Christian, 26.10.2026;
+# Herleitung: docs/datenmodell/ZUGABEN.md).
+#   (pflicht, zugabe_min, zugabe_max)
+#   pflicht = True: bestimmt die Ampel „passt / eng / weit“; False: nur Hinweis
+#   zugabe = Maß Kleidungsstück − Maß Figur, bei Umfängen in Prozent des
+#   Körpermaßes, bei Längen in cm (siehe einheit_der_zugabe).
+# Liegt zusätzlich in `kleidungsarten.messpunkte`.
 MESSPUNKTE_JE_KLEIDUNGSART = {
-    "tops": {"bust-circ": True, "waist-circ": True, "schulterbreite_ruecken": False, "armlaenge": False,
-             "neck-circ": False, "upperarm-circ": False, "napetowaist-dist": False},
-    "pullover": {"bust-circ": True, "waist-circ": True, "schulterbreite_ruecken": False, "armlaenge": False,
-                 "upperarm-circ": False, "napetowaist-dist": False},
-    # Schrittlänge optional, weil Shorts mit unter „Hosen“ fallen
-    "hosen": {"waist-circ": True, "hips-circ": True, "schrittlaenge": False, "thigh-circ": False,
-              "ankle-circ": False},
-    "roecke": {"waist-circ": True, "hips-circ": True},
-    "kleider": {"bust-circ": True, "waist-circ": True, "hips-circ": True, "underbust-circ": False,
-                "schulterbreite_ruecken": False},
-    "jacken": {"bust-circ": True, "waist-circ": True, "hips-circ": False, "schulterbreite_ruecken": False,
-               "armlaenge": False, "upperarm-circ": False},
-    "schuhe": {"fusslaenge": True, "calf-circ": False},
+    "tops": {
+        "bust-circ": (True, 4, 15), "waist-circ": (True, 3, 25),
+        "schulterbreite_ruecken": (False, -1, 3), "armlaenge": (False, -3, 3), "neck-circ": (False, 2, 6),
+        "upperarm-circ": (False, 8, 25), "napetowaist-dist": (False, -2, 6),
+    },
+    "pullover": {
+        "bust-circ": (True, 6, 25), "waist-circ": (True, 5, 35),
+        "schulterbreite_ruecken": (False, -1, 6), "armlaenge": (False, -2, 4),
+        "upperarm-circ": (False, 10, 35), "napetowaist-dist": (False, -2, 8),
+    },
+    # Schrittlänge optional, weil Shorts mit unter „Hosen“ fallen. Sie ist
+    # negativ, weil das Körpermaß bis zum Boden geht.
+    "hosen": {
+        "waist-circ": (True, 0, 5), "hips-circ": (True, 3, 15),
+        "schrittlaenge": (False, -6, 0), "thigh-circ": (False, 5, 30), "ankle-circ": (False, 0, 100),
+    },
+    "roecke": {"waist-circ": (True, 0, 5), "hips-circ": (True, 3, 20)},
+    "kleider": {
+        "bust-circ": (True, 5, 15), "waist-circ": (True, 3, 20), "hips-circ": (True, 4, 25),
+        "underbust-circ": (False, 3, 15), "schulterbreite_ruecken": (False, -1, 3),
+    },
+    "jacken": {
+        "bust-circ": (True, 10, 25), "waist-circ": (True, 10, 35),
+        "hips-circ": (False, 5, 25), "schulterbreite_ruecken": (False, 0, 4), "armlaenge": (False, 0, 4),
+        "upperarm-circ": (False, 25, 45),
+    },
+    # Innenlänge Schuh = Fußlänge + 1,5 cm (Pariser Stich)
+    "schuhe": {"fusslaenge": (True, 1, 2), "calf-circ": (False, 0, 6)},
     # BH und Slip stecken in einer Art, deshalb alles optional
-    "unterwaesche": {"underbust-circ": False, "bust-circ": False, "waist-circ": False, "hips-circ": False},
-    "einteiler": {"bust-circ": True, "waist-circ": True, "hips-circ": True, "schrittlaenge": False,
-                  "napetowaist-dist": False},
+    "unterwaesche": {
+        "underbust-circ": (False, -10, 0), "bust-circ": (False, -5, 5),
+        "waist-circ": (False, -15, 0), "hips-circ": (False, -15, 0),
+    },
+    "einteiler": {
+        "bust-circ": (True, 5, 20), "waist-circ": (True, 3, 25), "hips-circ": (True, 4, 20),
+        "schrittlaenge": (False, -6, 0), "napetowaist-dist": (False, -1, 4),
+    },
     "accessoires": {},
 }
+
+
+def einheit_der_zugabe(messpunkt: str) -> str:
+    """Umfänge (Schlüssel endet auf -circ) in Prozent, alles andere in cm."""
+    return "prozent" if messpunkt.endswith("-circ") else "cm"
 
 # Vorgegebene Kategorien (für alle Nutzer, Nutzer können sie ausblenden und
 # eigene ergänzen). Liegen in der Collection `kategorien` mit nutzer_id = null.

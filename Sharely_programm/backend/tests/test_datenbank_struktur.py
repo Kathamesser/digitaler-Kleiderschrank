@@ -99,7 +99,8 @@ BEISPIELE = {
                          "preis": 149.0, "erstellt_am": JETZT, "geaendert_am": JETZT,
                          "masse": [{"messpunkt": "bust-circ", "wert_cm": 104.5}], "quelle": None},
     "kleidungsarten": {"_id": "jacken", "name": "Jacken", "reihenfolge": 6, "vorlage_id": None,
-                       "messpunkte": [{"messpunkt": "bust-circ", "pflicht": True}]},
+                       "messpunkte": [{"messpunkt": "bust-circ", "pflicht": True, "zugabe_min": 10,
+                                       "zugabe_max": 25, "einheit": "prozent"}]},
     "kleidungsvorlagen": {"name": "Jacke", "modell_datei": "assets/kleidung/jacke.glb", "ebene": 3},
     "kategorien": {"nutzer_id": None, "name": "Business"},
     "outfits": {"nutzer_id": ObjectId(), "name": "Business Look", "favorit": True, "privat": False,
@@ -142,7 +143,18 @@ def test_messpunkte_je_kleidungsart():
     for art, punkte in wl.MESSPUNKTE_JE_KLEIDUNGSART.items():
         assert set(punkte) <= set(wl.MESSPUNKTE), art
     assert wl.MESSPUNKTE_JE_KLEIDUNGSART["accessoires"] == {}
-    assert wl.MESSPUNKTE_JE_KLEIDUNGSART["hosen"]["waist-circ"] is True
+    assert wl.MESSPUNKTE_JE_KLEIDUNGSART["hosen"]["waist-circ"] == (True, 0, 5)
+    for art, punkte in wl.MESSPUNKTE_JE_KLEIDUNGSART.items():
+        for messpunkt, (pflicht, lo, hi) in punkte.items():
+            assert isinstance(pflicht, bool) and lo < hi, (art, messpunkt)
+
+
+def test_einheit_der_zugabe_passt_zur_messart():
+    """Umfänge in Prozent, Längen in cm, wie die Messart in messpunkte.json."""
+    datei = json.loads((REPO / "docs/avatar/messpunkte.json").read_text(encoding="utf-8"))
+    for messpunkt, band in datei["masse"].items():
+        erwartet = "prozent" if band["art"] == "umfang" else "cm"
+        assert wl.einheit_der_zugabe(messpunkt) == erwartet, messpunkt
 
 
 def test_stammdaten_erfuellen_pruefregeln():
@@ -162,7 +174,9 @@ def test_stammdaten_erfuellen_pruefregeln():
     ("outfits", {"teile": []}, "teile"),
     ("figuren", {"regler": {"gewicht": 150}}, "gewicht"),
     ("freundschaften", {"status": "folgt"}, "status"),
-    ("kleidungsarten", {"messpunkte": [{"messpunkt": "nase", "pflicht": True}]}, "messpunkt"),
+    ("kleidungsarten", {"messpunkte": [{"messpunkt": "waist-circ", "pflicht": True}]}, "zugabe_min"),
+    ("kleidungsarten", {"messpunkte": [{"messpunkt": "nase", "pflicht": True, "zugabe_min": 0,
+                                    "zugabe_max": 5, "einheit": "cm"}]}, "messpunkt"),
 ])
 def test_pruefregel_lehnt_falsches_ab(name, falsch, feld):
     """Gegenprobe: Falsche Werte werden erkannt."""
