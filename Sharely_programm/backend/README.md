@@ -17,15 +17,31 @@ Dann im Browser: http://localhost:8000/api/health (Lebenszeichen) und http://loc
 
 Tests: `.venv\Scripts\python -m pytest` im Ordner `Sharely_programm/backend/` (macOS/Linux: `.venv/bin/python -m pytest`). In VS Code: einmal „Python: Select Interpreter“ → `backend\.venv\Scripts\python.exe`, dann laufen die Tests im Testing-Bereich (Reagenzglas links); die Einstellungen dafür stehen in `.vscode/settings.json`. **Nicht** die Testdatei mit ▶ „Run Python File“ starten: Das nimmt oft das globale Python ohne pytest (Fehler `No module named 'pytest'`) und führt keine Tests aus.
 
+## Datenbank einrichten
+
+Einmal nach dem ersten Start und immer, wenn sich das Datenmodell ändert (MongoDB muss laufen, Adresse in `.env`):
+
+```bash
+cd Sharely_programm/backend
+.venv\Scripts\python -m app.datenbank_einrichten               # macOS/Linux: .venv/bin/python -m …
+.venv\Scripts\python -m app.datenbank_einrichten --pruefen     # nur anzeigen, was fehlt oder abweicht
+.venv\Scripts\python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten und vorgegebene Kategorien
+```
+
+Das legt alle 13 Collections aus dem ERM an (`docs/datenmodell/ERM-SHARELY.md`), jeweils mit Prüfregel (`$jsonSchema`) und Indizes. Ohne `--stammdaten` legt es keine Daten an; es löscht nie etwas, mehrfaches Ausführen schadet nicht. Was eingerichtet wird, steht in `app/core/datenbank_struktur.py`. Die Prüfregeln prüfen nur Pflichtfelder, Datentypen und feste Wertelisten (Farbe, Material, Saison, Status, Messpunkte …); die Listen stehen an einer Stelle in `app/core/wertelisten.py`, die Module bauen ihre Enums daraus. Ändert sich dort etwas, das Skript erneut ausführen. Tests dazu: `tests/test_datenbank_struktur.py`.
+
 ## Aufbau
 
 ```
 Sharely_programm/backend/
 ├── app/
 │   ├── main.py            Einstieg: App, Router der Module, /api/health
+│   ├── datenbank_einrichten.py  Skript: Datenbank nach dem ERM einrichten
 │   ├── core/
 │   │   ├── config.py      Einstellungen aus .env
 │   │   ├── datenbank.py   MongoDB-Verbindung (get_db)
+│   │   ├── datenbank_struktur.py  Collections, Prüfregeln, Indizes (nach dem ERM)
+│   │   ├── wertelisten.py  feste Listen (Kleidungsart, Farbe, Material, …)
 │   │   └── sicherheit.py  Passwort-Hashing, Anmeldung (Verfahren noch offen)
 │   └── module/            ein Ordner je Fachbereich
 │       ├── nutzer/        Registrierung, Login, Passwort, Profil
@@ -56,4 +72,4 @@ Jedes Modul hat dieselben vier Dateien. Die Richtung ist immer **router → serv
 
 Module rufen sich untereinander nur über ihre `service.py` auf, nie direkt über die Repositories eines anderen Moduls. So bleiben die Module austauschbar und könnten später einzeln herausgelöst werden (z. B. der KI-Import).
 
-Die Router sind in `main.py` schon eingehängt und erscheinen unter `/api/<modul>`, sobald sie den ersten Endpunkt haben. Das Datenmodell steht in `docs/datenmodell/README.md`.
+Die Router sind in `main.py` schon eingehängt und erscheinen unter `/api/<modul>`, sobald sie den ersten Endpunkt haben. Das Datenmodell steht in `docs/datenmodell/ERM-SHARELY.md`.

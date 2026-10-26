@@ -33,3 +33,7 @@ Alle Endpunkte liegen unter `/api/<modul>`, z. B. `/api/kleidung`, `/api/outfits
 | GET | `/api/kleidung` | Alle Kleidungsstücke des Nutzers, neueste zuerst | 1 (Grundform) |
 | GET | `/api/kleidung/{id}` | Ein Kleidungsstück | 1 |
 | GET | `/api/kleidung/{id}/bild` | Bild eines Kleidungsstücks | 8 |
+| GET | `/api/nutzer/ich` | Eigenes Profil, bisher nur `profilbild_url` (`null` ohne Bild) | Mockup „Mein Profil“ |
+| PUT | `/api/nutzer/ich/profilbild` | Profilbild hochladen oder ersetzen (multipart, Feld `bild`, JPEG/PNG/WebP, höchstens `MAX_BILD_MB`); das alte Bild wird gelöscht | Mockup „Mein Profil“ |
+| DELETE | `/api/nutzer/ich/profilbild` | Profilbild löschen (Datei und Verweis) | Mockup „Mein Profil“ |
+| GET | `/api/nutzer/ich/profilbild` | Das Profilbild selbst, nur für den Nutzer; die Adresse aus `profilbild_url` enthält `?v=…`, das sich mit jedem neuen Bild ändert | Mockup „Mein Profil“ |

@@ -15,7 +15,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | `outfit-erstellen.html` | Outfit erstellen, Outfit speichern | Auswahl aus dem echten Schrank, Speichern fehlt im Backend |
 | `freunde.html` | Freunde | Beispieldaten |
 | `verliehen.html` | Freunde-Leih Verleihansicht | Beispieldaten (für alle Freunde statt für einen) |
-| `profil.html` | Mein Profil | Beispieldaten |
+| `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ Beispieldaten |
 
 Noch nicht angelegt: Passwort zurücksetzen (Desktop 3, 4), Nachrichten, Angebote, Garderobe und Kleiderschrank eines Freundes, Detailansichten von Outfits und Teilen eines Freundes, Leih-Detailansicht, Anfrage stellen, Freund hinzufügen, Outfits filtern.
 

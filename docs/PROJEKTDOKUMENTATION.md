@@ -225,7 +225,9 @@ Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 
 **Abbildung auf MongoDB:** Jede Entität mit eigenem Lebenszyklus wird eine Collection (`nutzer`, `kleidungsstuecke`, `kleidungsarten`, `kategorien`, `outfits`, `figuren`, `freundschaften`, `leihvorgaenge`, `neuigkeiten` …). Eingebettet wird nur, was ausschließlich zu einem Dokument gehört (Maße, Produktquelle, Outfit-Teile, Reglerwerte); kleine feste Listen ohne eigene Daten stehen im Code. Da MongoDB keine Fremdschlüssel kennt, prüft die Service-Schicht die Regeln selbst, z. B. höchstens drei Figuren je Nutzer, Leihen nur unter Freunden oder nie Einblick in private Teile (`ERM-SHARELY.md` Abschnitt 7).
 
-**Auswirkung auf den Code:** Kathas Modul `kleidung` (User Story 8) entspricht noch dem ERM vom 13.10.2026; die nötigen Anpassungen stehen in `ERM-SHARELY.md` Abschnitt 10. Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`) sind in die Fassung vom 20.10. eingeflossen (Grundregel feste Liste vs. freies Etikett, Wertetabellen, 3D-Vorlagen).
+**Umsetzung in der Datenbank (20.10.2026):** Die Struktur ist im Backend beschrieben (`Sharely_programm/backend/app/core/datenbank_struktur.py`) und wird per Skript eingerichtet (`python -m app.datenbank_einrichten`). Jede Collection bekommt eine Prüfregel (`$jsonSchema` mit Pflichtfeldern, Datentypen und festen Wertelisten, `validationLevel: moderate`) und ihre Indizes; das Skript ist idempotent, ergänzt nur Fehlendes und löscht nie etwas. Die festen Listen stehen an einer Stelle (`app/core/wertelisten.py`), damit Code und Datenbank nicht auseinanderlaufen.
+
+**Auswirkung auf den Code:** Kathas Modul `kleidung` (User Story 8) und die Seiten sind seit 20.10.2026 auf dieses ERM umgestellt (`ERM-SHARELY.md` Abschnitt 10). Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`) sind in die Fassung vom 20.10. eingeflossen (Grundregel feste Liste vs. freies Etikett, Wertetabellen, 3D-Vorlagen).
 
 ### 4.5 Benutzeroberfläche
 
@@ -382,6 +384,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 20.10.2026 | Gegenseitige Freundschaft statt Folgen; Freigabe und Feedback (US 2) gestrichen; private Teile und Outfits nie für andere sichtbar | Mockups, Entscheidung vom 04.10.2026 | Manuel | `ERM-SHARELY.md` |
 | 20.10.2026 | Neuigkeiten des Entwicklerteams, nur Admins legen sie an (`Ist_Admin` nur in der Datenbank) | Mockup „Nachrichten“; keine Rollenwahl in der App | Manuel | `ERM-SHARELY.md` |
 | 20.10.2026 | Anmeldeverfahren: serverseitige Sitzung mit Token im httpOnly-Cookie, Sitzungen mit TTL-Index, Argon2, Passwort-Reset per befristetem Link | echtes Logout, kein Token im JavaScript-Speicher | Manuel (Empfehlung Claude vom 13.10.) | `BRAIN.md`, `ERM-SHARELY.md` |
+| 20.10.2026 | Datenbankstruktur per Skript statt manuell, Prüfregeln (`$jsonSchema`) und Indizes je Collection; feste Listen zentral in `wertelisten.py` | Code und Datenbank laufen nicht auseinander, jeder hat dieselbe Struktur | Manuel | `Sharely_programm/backend/README.md` |
 
 ---
 
@@ -426,6 +429,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 
 - Frontend-Framework: React oder Vue
 - KI-Anbieter für den Produktimport
+- Gemeinsame Entwicklungsdatenbank auf MongoDB Atlas (Vorschlag Manuel, 20.10.2026; das Schul-WLAN blockiert Port 27017)
 - ERM-Restpunkte: Maße je Kleidungsart und Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian)
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)
 - Grenzen der Avatar-Regler: Körpergröße (Vorschlag −40 bis +45, etwa 144–205 cm) und Mindestalter (Vorschlag ca. 18 Jahre)
