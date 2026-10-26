@@ -98,7 +98,8 @@ BEISPIELE = {
                          "material": "polyester", "saison": ["herbst", "winter"], "kaufdatum": JETZT,
                          "preis": 149.0, "erstellt_am": JETZT, "geaendert_am": JETZT,
                          "masse": [{"messpunkt": "bust-circ", "wert_cm": 104.5}], "quelle": None},
-    "kleidungsarten": {"_id": "jacken", "name": "Jacken", "reihenfolge": 6, "vorlage_id": None},
+    "kleidungsarten": {"_id": "jacken", "name": "Jacken", "reihenfolge": 6, "vorlage_id": None,
+                       "messpunkte": [{"messpunkt": "bust-circ", "pflicht": True}]},
     "kleidungsvorlagen": {"name": "Jacke", "modell_datei": "assets/kleidung/jacke.glb", "ebene": 3},
     "kategorien": {"nutzer_id": None, "name": "Business"},
     "outfits": {"nutzer_id": ObjectId(), "name": "Business Look", "favorit": True, "privat": False,
@@ -135,6 +136,15 @@ def test_messpunkte_wie_in_der_glb():
     assert set(wl.MESSPUNKTE) == set(datei["masse"])
 
 
+def test_messpunkte_je_kleidungsart():
+    """Jede Kleidungsart hat eine Liste, nur bekannte Messpunkte."""
+    assert set(wl.MESSPUNKTE_JE_KLEIDUNGSART) == set(wl.KLEIDUNGSARTEN)
+    for art, punkte in wl.MESSPUNKTE_JE_KLEIDUNGSART.items():
+        assert set(punkte) <= set(wl.MESSPUNKTE), art
+    assert wl.MESSPUNKTE_JE_KLEIDUNGSART["accessoires"] == {}
+    assert wl.MESSPUNKTE_JE_KLEIDUNGSART["hosen"]["waist-circ"] is True
+
+
 def test_stammdaten_erfuellen_pruefregeln():
     for name, eintraege in stammdaten().items():
         for eintrag in eintraege:
@@ -152,6 +162,7 @@ def test_stammdaten_erfuellen_pruefregeln():
     ("outfits", {"teile": []}, "teile"),
     ("figuren", {"regler": {"gewicht": 150}}, "gewicht"),
     ("freundschaften", {"status": "folgt"}, "status"),
+    ("kleidungsarten", {"messpunkte": [{"messpunkt": "nase", "pflicht": True}]}, "messpunkt"),
 ])
 def test_pruefregel_lehnt_falsches_ab(name, falsch, feld):
     """Gegenprobe: Falsche Werte werden erkannt."""

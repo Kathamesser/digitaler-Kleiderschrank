@@ -53,9 +53,10 @@ const MATERIALIEN = {
   baumwolle: "Baumwolle", polyester: "Polyester", wolle: "Wolle", leinen: "Leinen", seide: "Seide",
   leder: "Leder", jeans: "Jeans", viskose: "Viskose", sonstiges: "Sonstiges",
 };
-// Die 22 Messbänder der Avatar-GLB (docs/avatar/messpunkte.json), Reihenfolge von oben nach unten
+// Die 24 Messbänder der Avatar-GLB (docs/avatar/messpunkte.json), Reihenfolge von oben nach unten
 const MESSPUNKTE = {
   "neck-circ": "Halsumfang", "neck-height": "Halslänge", "shoulder-dist": "Schulterbreite (eine Seite)",
+  "schulterbreite_ruecken": "Schulterbreite (über den Rücken)", "armlaenge": "Armlänge",
   "frontchest-dist": "Brustbreite vorn", "bust-circ": "Brustumfang", "underbust-circ": "Unterbrustumfang",
   "upperarm-circ": "Oberarmumfang", "upperarm-length": "Oberarmlänge", "lowerarm-length": "Unterarmlänge",
   "wrist-circ": "Handgelenkumfang", "napetowaist-dist": "Rückenlänge", "waist-circ": "Taillenumfang",

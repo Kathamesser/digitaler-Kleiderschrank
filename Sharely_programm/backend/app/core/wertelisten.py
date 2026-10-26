@@ -96,6 +96,33 @@ MESSPUNKTE = {
     "knee-circ": "Knieumfang",
     "schrittlaenge": "Schrittlänge",
     "fusslaenge": "Fußlänge",
+    "schulterbreite_ruecken": "Schulterbreite",
+    "armlaenge": "Armlänge",
+}
+
+# Welche Messpunkte bei einer Kleidungsart abgefragt und für die Passform
+# verglichen werden (besprochen mit Christian, 20.10.2026). True = Pflicht:
+# bestimmt die Ampel „passt / eng / weit“. False = optional: gibt nur einen
+# Hinweis (z. B. „Ärmel zu kurz“). Liegt zusätzlich in `kleidungsarten.messpunkte`.
+MESSPUNKTE_JE_KLEIDUNGSART = {
+    "tops": {"bust-circ": True, "waist-circ": True, "schulterbreite_ruecken": False, "armlaenge": False,
+             "neck-circ": False, "upperarm-circ": False, "napetowaist-dist": False},
+    "pullover": {"bust-circ": True, "waist-circ": True, "schulterbreite_ruecken": False, "armlaenge": False,
+                 "upperarm-circ": False, "napetowaist-dist": False},
+    # Schrittlänge optional, weil Shorts mit unter „Hosen“ fallen
+    "hosen": {"waist-circ": True, "hips-circ": True, "schrittlaenge": False, "thigh-circ": False,
+              "ankle-circ": False},
+    "roecke": {"waist-circ": True, "hips-circ": True},
+    "kleider": {"bust-circ": True, "waist-circ": True, "hips-circ": True, "underbust-circ": False,
+                "schulterbreite_ruecken": False},
+    "jacken": {"bust-circ": True, "waist-circ": True, "hips-circ": False, "schulterbreite_ruecken": False,
+               "armlaenge": False, "upperarm-circ": False},
+    "schuhe": {"fusslaenge": True, "calf-circ": False},
+    # BH und Slip stecken in einer Art, deshalb alles optional
+    "unterwaesche": {"underbust-circ": False, "bust-circ": False, "waist-circ": False, "hips-circ": False},
+    "einteiler": {"bust-circ": True, "waist-circ": True, "hips-circ": True, "schrittlaenge": False,
+                  "napetowaist-dist": False},
+    "accessoires": {},
 }
 
 # Vorgegebene Kategorien (für alle Nutzer, Nutzer können sie ausblenden und
