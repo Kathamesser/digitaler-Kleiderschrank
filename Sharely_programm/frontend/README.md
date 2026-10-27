@@ -12,7 +12,7 @@ Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML
 
 | Ordner | Inhalt |
 |---|---|
-| `src/avatar-editor/` | 3D-Avatar-Editor mit Three.js: lädt die GLB, setzt die Regler auf die Morph Targets, Drehen/Zoomen. Bewusst **unabhängig vom Framework** gehalten, kann also schon jetzt entstehen. Grundlage: `docs/avatar/AVATAR-REGLER.md`, `docs/planung/AVATAR-3D-KONZEPT.md` |
+| `src/avatar-editor/` | 3D-Avatar-Editor mit Three.js: lädt die GLB, setzt die Regler auf die Morph Targets, Drehen/Zoomen, misst cm. Bewusst **unabhängig vom Framework** gehalten. Seit 27.10.2026 als Avatar-Konfigurator (`templates/avatar-konfigurator.html`), Details im README dort. Grundlage: `docs/avatar/AVATAR-REGLER.md`, `docs/planung/AVATAR-3D-KONZEPT.md` |
 | `templates/` | Die Seiten der Web-App als HTML, eine Datei je Seite (Übersicht und Start: `templates/README.md`) |
 | `static/css/` | `stil.css`: das gesamte Aussehen, Farben und Schriften als Variablen in `:root` |
 | `static/js/` | `gemeinsam.js`: Backend-Adresse, Auswahlwerte, Symbole, Kopf- und Fußleiste, Kacheln |

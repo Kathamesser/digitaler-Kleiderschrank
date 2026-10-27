@@ -20,6 +20,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | `freund-garderobe.html?freund=lena` | Garderobe eines Freundes, Outfit eines Freundes – Detailansicht | Beispieldaten; freigegebener Avatar, Klick auf ein verfügbares Teil im Outfit öffnet die Anfrage |
 | `nachrichten.html` | Nachrichten | Beispieldaten: Leih- und Geschenkanfragen annehmen/ablehnen, Neuigkeiten mit „Neu“, „Mehr lesen“ und „Alle gelesen“ |
 | `verliehen.html` | Freunde-Leih Verleihansicht, Leih-Detailansicht | Beispieldaten (für alle Freunde statt für einen); Klick auf einen Eintrag öffnet die Leihdetails, „überfällig“ wird aus dem Rückgabedatum berechnet |
+| `avatar-konfigurator.html` | kein Mockup | Avatar mit Schiebereglern einstellen (3D, Three.js), cm-Maße live am Avatar; Entwurf nur im Browser, bis das Modul figuren steht. Erreichbar über das Zahnrad am Avatar in `outfits.html`. Details: `../src/avatar-editor/README.md` |
 | `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ Beispieldaten |
 
 Seit 27.10.2026 hat jedes Desktop-Mockup eine Seite oder ein Fenster. Fenster (Mockups „Overlay“/„Fenster“) sind `<dialog>`-Elemente in der Seite, aus der sie geöffnet werden. Noch nicht angelegt: Angebote (kein Mockup, laut ERM „kommen später“).
