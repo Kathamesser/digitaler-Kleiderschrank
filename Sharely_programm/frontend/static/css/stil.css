@@ -424,27 +424,27 @@ textarea { resize: vertical; min-height: 90px; }
 
 /* ---------- Outfits ---------- */
 
-.outfits-bereich { display: grid; grid-template-columns: 1fr 470px; gap: 34px; align-items: start; }
+.outfits-bereich { display: grid; grid-template-columns: 1fr 340px; gap: 26px; align-items: start; }
 .outfit-karte { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 14px 14px 20px; }
 .outfit-teile { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .outfit-teile > div { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-weight: 500; font-size: .95rem; }
 .outfit-teile > div > svg, .slot svg { width: 34px; height: 34px; stroke-width: 1.6; }
 .outfit-teile > div .abzeichen { top: 8px; right: 8px; }
-.outfit-fuss { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 8px 0; }
+.outfit-fuss { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; padding: 14px 8px 0; }
 .outfit-fuss strong { font-size: 1.25rem; font-weight: 500; }
 .outfit-fuss small { color: var(--text-leise); font-size: .95rem; }
-.avatar-panel { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 26px; }
-.avatar-panel header { display: grid; grid-template-columns: 52px 1fr 52px; align-items: center; margin-bottom: 18px; }
-.avatar-panel h2 { text-align: center; font-size: 2.2rem; }
+.avatar-panel { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 20px; }
+.avatar-panel header { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; margin-bottom: 18px; }
+.avatar-panel h2 { text-align: center; font-size: 1.8rem; }
 .avatar-buehne {
   position: relative; aspect-ratio: 1.1; border: 1.5px dashed var(--feld-rand); border-radius: var(--rund-gross); background: var(--feld);
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 30px; color: var(--text-leise); gap: 10px;
 }
 .avatar-buehne .figur { width: 120px; height: 260px; }
 .avatar-buehne .symbolknopf { position: absolute; top: 14px; right: 14px; width: 48px; height: 48px; background: var(--flaeche); }
-.slots { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.slots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
 .slot { border: 1.5px dashed var(--feld-rand); border-radius: var(--rund); background: #fbf8f3; aspect-ratio: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-leise); font-weight: 500; }
-.slots .knopf { margin-top: 0; }
+.slots .knopf { margin-top: 0; padding-inline: 8px; font-size: .9rem; white-space: nowrap; }
 
 /* Ausgewählte Teile im Speichern-Fenster */
 .auswahl-vorschau { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; background: var(--feld); border-radius: var(--rund); padding: 14px; }

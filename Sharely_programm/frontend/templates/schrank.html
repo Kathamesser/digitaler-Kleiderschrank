@@ -105,7 +105,7 @@
     </div>
     <footer class="blatt-fuss">
       <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
-      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Teile anzeigen</span></button>
+      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Filter anwenden</span></button>
     </footer>
   </form>
 </dialog>
@@ -240,8 +240,7 @@
     zaehlerSetzen(f);
 
     const treffer = alle.filter((k) => passtZuFilter(k, f) && passtZurSuche(k));
-    document.getElementById("filter-zeigen").textContent =
-      treffer.length === 1 ? "1 Teil anzeigen" : `${treffer.length} Teile anzeigen`;
+    document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
     raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k)));
     leer.hidden = !geladen || alle.length > 0;
     if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
