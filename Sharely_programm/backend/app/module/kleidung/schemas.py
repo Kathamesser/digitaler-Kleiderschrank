@@ -85,7 +85,7 @@ class StatusBeimAnlegen(str, Enum):
 
 
 class Messpunkt(str, Enum):
-    """Die 22 Messbänder der Avatar-GLB, Schlüssel wie in
+    """Die 24 Messbänder der Avatar-GLB, Schlüssel wie in
     docs/avatar/messpunkte.json (ein Test prüft, dass beide gleich sind)."""
 
     neck_circ = "neck-circ"
@@ -110,6 +110,8 @@ class Messpunkt(str, Enum):
     knee_circ = "knee-circ"
     schrittlaenge = "schrittlaenge"
     fusslaenge = "fusslaenge"
+    schulterbreite_ruecken = "schulterbreite_ruecken"
+    armlaenge = "armlaenge"
 
 
 class Mass(BaseModel):

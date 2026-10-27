@@ -931,6 +931,66 @@
     11551
    ],
    "standardfigur_cm": 23.4
+  },
+  "schulterbreite_ruecken": {
+   "name": "Schulterbreite (über den Rücken, Schulterpunkt bis Schulterpunkt)",
+   "art": "bogen",
+   "regler": null,
+   "glb_vertices": [
+    8951,
+    8950,
+    8914,
+    8920,
+    8926,
+    8906,
+    8904,
+    8905,
+    1655,
+    1654,
+    1653,
+    1657,
+    1677,
+    1671,
+    1665,
+    1713,
+    1714
+   ],
+   "makehuman_vertices": [
+    8274,
+    8273,
+    8237,
+    8243,
+    8249,
+    8229,
+    8227,
+    8228,
+    1550,
+    1549,
+    1548,
+    1551,
+    1571,
+    1565,
+    1559,
+    1601,
+    1602
+   ],
+   "standardfigur_cm": 39.3
+  },
+  "armlaenge": {
+   "name": "Armlänge (Schulterpunkt über Ellbogen bis Handgelenk)",
+   "art": "laenge",
+   "regler": null,
+   "glb_vertices": [
+    8951,
+    10897,
+    11488
+   ],
+   "makehuman_vertices": [
+    8274,
+    10037,
+    10548
+   ],
+   "standardfigur_cm": 52.2
   }
  },
  "koerpergroesse": {
@@ -963,7 +1023,9 @@
    "ankle-circ": -2.4,
    "knee-circ": -0.6,
    "schrittlaenge": -4.8,
-   "fusslaenge": -2.4
+   "fusslaenge": -2.4,
+   "schulterbreite_ruecken": -3.3,
+   "armlaenge": -4.4
   },
   "max_gender": {
    "koerpergroesse": 7.1,
@@ -988,7 +1050,9 @@
    "ankle-circ": 2.8,
    "knee-circ": 1.4,
    "schrittlaenge": 5.0,
-   "fusslaenge": 2.4
+   "fusslaenge": 2.4,
+   "schulterbreite_ruecken": 3.6,
+   "armlaenge": 4.5
   },
   "min_age": {
    "koerpergroesse": -105.8,
@@ -1013,7 +1077,9 @@
    "ankle-circ": -9.9,
    "knee-circ": -18.6,
    "schrittlaenge": -55.9,
-   "fusslaenge": -14.8
+   "fusslaenge": -14.8,
+   "schulterbreite_ruecken": -24.3,
+   "armlaenge": -32.5
   },
   "max_age": {
    "koerpergroesse": -2.2,
@@ -1038,7 +1104,9 @@
    "ankle-circ": 1.0,
    "knee-circ": 0.3,
    "schrittlaenge": 0.4,
-   "fusslaenge": -0.1
+   "fusslaenge": -0.1,
+   "schulterbreite_ruecken": -2.1,
+   "armlaenge": -2.5
   },
   "min_weight": {
    "koerpergroesse": 0.0,
@@ -1063,7 +1131,9 @@
    "ankle-circ": 0.3,
    "knee-circ": -3.5,
    "schrittlaenge": -0.2,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.3,
+   "armlaenge": -0.2
   },
   "max_weight": {
    "koerpergroesse": 0.0,
@@ -1088,7 +1158,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 1.8,
    "schrittlaenge": -0.4,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.6,
+   "armlaenge": 0.3
   },
   "min_muscle": {
    "koerpergroesse": 0.0,
@@ -1113,7 +1185,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -0.6,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.3,
+   "armlaenge": -0.2
   },
   "max_muscle": {
    "koerpergroesse": 0.0,
@@ -1138,7 +1212,9 @@
    "ankle-circ": 0.2,
    "knee-circ": -1.1,
    "schrittlaenge": 0.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.4,
+   "armlaenge": -0.3
   },
   "min_height": {
    "koerpergroesse": -36.7,
@@ -1163,7 +1239,9 @@
    "ankle-circ": -2.2,
    "knee-circ": -3.6,
    "schrittlaenge": -22.7,
-   "fusslaenge": -2.7
+   "fusslaenge": -2.7,
+   "schulterbreite_ruecken": -4.6,
+   "armlaenge": -11.2
   },
   "max_height": {
    "koerpergroesse": 72.3,
@@ -1188,7 +1266,9 @@
    "ankle-circ": 9.5,
    "knee-circ": 9.7,
    "schrittlaenge": 42.4,
-   "fusslaenge": 11.1
+   "fusslaenge": 11.1,
+   "schulterbreite_ruecken": 11.6,
+   "armlaenge": 24.6
   },
   "min_bodyproportions": {
    "koerpergroesse": -0.3,
@@ -1213,7 +1293,9 @@
    "ankle-circ": 1.4,
    "knee-circ": 1.8,
    "schrittlaenge": -2.0,
-   "fusslaenge": 0.8
+   "fusslaenge": 0.8,
+   "schulterbreite_ruecken": -2.9,
+   "armlaenge": 0.3
   },
   "max_bodyproportions": {
    "koerpergroesse": 0.5,
@@ -1238,7 +1320,9 @@
    "ankle-circ": -0.3,
    "knee-circ": 0.3,
    "schrittlaenge": 1.8,
-   "fusslaenge": -0.5
+   "fusslaenge": -0.5,
+   "schulterbreite_ruecken": 3.2,
+   "armlaenge": 0.2
   },
   "min_torso_scale-horiz-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1263,7 +1347,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -6.2,
+   "armlaenge": 0.0
   },
   "max_torso_scale-horiz-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1288,7 +1374,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 6.5,
+   "armlaenge": 0.0
   },
   "min_torso_scale-depth-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1313,7 +1401,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -1.0,
+   "armlaenge": -0.0
   },
   "max_torso_scale-depth-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1338,7 +1428,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 3.8,
+   "armlaenge": 0.0
   },
   "min_torso_scale-vert-decr-incr": {
    "koerpergroesse": -4.3,
@@ -1363,7 +1455,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.1,
+   "armlaenge": 0.0
   },
   "max_torso_scale-vert-decr-incr": {
    "koerpergroesse": 10.3,
@@ -1388,7 +1482,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_torso_vshape-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1413,7 +1509,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -4.8,
+   "armlaenge": 0.0
   },
   "max_torso_vshape-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1438,7 +1536,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 4.9,
+   "armlaenge": 0.0
   },
   "min_torso_muscle-pectoral-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1463,7 +1563,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_torso_muscle-pectoral-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1488,7 +1590,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_torso_muscle-dorsi-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1513,7 +1617,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_torso_muscle-dorsi-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1538,7 +1644,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_hip_scale-horiz-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1563,7 +1671,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_hip_scale-horiz-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1588,7 +1698,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_hip_scale-depth-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1613,7 +1725,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_hip_scale-depth-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1638,7 +1752,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_hip_scale-vert-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1663,7 +1779,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 2.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_hip_scale-vert-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1688,7 +1806,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -2.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_hip_waist-down-up": {
    "koerpergroesse": 0.0,
@@ -1713,7 +1833,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -0.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_hip_waist-down-up": {
    "koerpergroesse": 0.0,
@@ -1738,7 +1860,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_stomach_pregnant-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1763,7 +1887,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_stomach_pregnant-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1788,7 +1914,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_buttocks_volume-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1813,7 +1941,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_buttocks_volume-decr-incr": {
    "koerpergroesse": 0.0,
@@ -1838,7 +1968,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_breast_breastsize": {
    "koerpergroesse": 0.0,
@@ -1863,7 +1995,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_breast_breastsize": {
    "koerpergroesse": 0.0,
@@ -1888,7 +2022,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_breast_breastfirmness": {
    "koerpergroesse": 0.0,
@@ -1913,7 +2049,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_breast_breastfirmness": {
    "koerpergroesse": 0.0,
@@ -1938,7 +2076,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_armslegs_upperlegs-height-decr-incr": {
    "koerpergroesse": -7.5,
@@ -1963,7 +2103,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -7.4,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": 0.0
   },
   "max_armslegs_upperlegs-height-decr-incr": {
    "koerpergroesse": 10.4,
@@ -1988,7 +2130,9 @@
    "ankle-circ": -0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 10.4,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": -0.0
   },
   "min_armslegs_lowerlegs-height-decr-incr": {
    "koerpergroesse": -5.9,
@@ -2013,7 +2157,9 @@
    "ankle-circ": -0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -5.9,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": -0.0
   },
   "max_armslegs_lowerlegs-height-decr-incr": {
    "koerpergroesse": 8.1,
@@ -2038,7 +2184,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 8.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_ankle-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2063,7 +2211,9 @@
    "ankle-circ": 5.7,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.4
+   "fusslaenge": 0.4,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_bust-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2088,7 +2238,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 3.6,
+   "armlaenge": 0.0
   },
   "max_measure_calf-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2113,7 +2265,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.3,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_frontchest-dist-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2138,7 +2292,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_hips-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2163,7 +2319,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_knee-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2188,7 +2346,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 6.5,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_lowerarm-length-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2213,7 +2373,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 6.5
   },
   "max_measure_lowerleg-height-decr-incr": {
    "koerpergroesse": 8.1,
@@ -2238,7 +2400,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 8.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_napetowaist-dist-decr-incr": {
    "koerpergroesse": 7.8,
@@ -2263,7 +2427,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.4,
+   "armlaenge": 0.0
   },
   "max_measure_neck-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2288,7 +2454,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_neck-height-decr-incr": {
    "koerpergroesse": 3.0,
@@ -2313,7 +2481,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_shoulder-dist-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2338,7 +2508,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 4.6,
+   "armlaenge": 0.0
   },
   "max_measure_thigh-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2363,7 +2535,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_underbust-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2388,7 +2562,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_upperarm-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2413,7 +2589,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_upperarm-length-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2438,7 +2616,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 6.9
   },
   "max_measure_upperleg-height-decr-incr": {
    "koerpergroesse": 10.4,
@@ -2463,7 +2643,9 @@
    "ankle-circ": -0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 10.4,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": -0.0
   },
   "max_measure_waist-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2488,7 +2670,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_measure_waisttohip-dist-decr-incr": {
    "koerpergroesse": 7.6,
@@ -2513,7 +2697,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": 0.0
   },
   "max_measure_wrist-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2538,7 +2724,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.1
   },
   "min_measure_ankle-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2563,7 +2751,9 @@
    "ankle-circ": -5.7,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": -0.4
+   "fusslaenge": -0.4,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_bust-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2588,7 +2778,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -1.3,
+   "armlaenge": 0.2
   },
   "min_measure_calf-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2613,7 +2805,9 @@
    "ankle-circ": 0.0,
    "knee-circ": -0.3,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_frontchest-dist-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2638,7 +2832,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_hips-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2663,7 +2859,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_knee-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2688,7 +2886,9 @@
    "ankle-circ": 0.0,
    "knee-circ": -3.6,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_lowerarm-length-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2713,7 +2913,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": -4.5
   },
   "min_measure_lowerleg-height-decr-incr": {
    "koerpergroesse": -5.9,
@@ -2738,7 +2940,9 @@
    "ankle-circ": -0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -5.9,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": -0.0
   },
   "min_measure_napetowaist-dist-decr-incr": {
    "koerpergroesse": -4.6,
@@ -2763,7 +2967,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.1,
+   "armlaenge": 0.0
   },
   "min_measure_neck-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2788,7 +2994,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_neck-height-decr-incr": {
    "koerpergroesse": -3.0,
@@ -2813,7 +3021,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_shoulder-dist-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2838,7 +3048,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -2.4,
+   "armlaenge": 0.0
   },
   "min_measure_thigh-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2863,7 +3075,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_underbust-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2888,7 +3102,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_upperarm-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2913,7 +3129,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_upperarm-length-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2938,7 +3156,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": -4.8
   },
   "min_measure_upperleg-height-decr-incr": {
    "koerpergroesse": -7.5,
@@ -2963,7 +3183,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -7.4,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": 0.0
   },
   "min_measure_waist-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -2988,7 +3210,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_waisttohip-dist-decr-incr": {
    "koerpergroesse": -4.8,
@@ -3013,7 +3237,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_measure_wrist-circ-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3038,7 +3264,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": -0.0
   },
   "max_figur_frau_apfel": {
    "koerpergroesse": 0.0,
@@ -3063,7 +3291,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -2.7,
+   "armlaenge": 0.8
   },
   "max_figur_frau_raute": {
    "koerpergroesse": 0.0,
@@ -3088,7 +3318,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -4.1,
+   "armlaenge": 1.3
   },
   "max_figur_frau_sanduhr-kurvig": {
    "koerpergroesse": 0.0,
@@ -3113,7 +3345,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.3,
+   "armlaenge": -0.1
   },
   "max_figur_frau_v-form": {
    "koerpergroesse": 0.0,
@@ -3138,7 +3372,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 2.2,
+   "armlaenge": -0.6
   },
   "max_figur_frau_saeule": {
    "koerpergroesse": 0.0,
@@ -3163,7 +3399,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -1.9,
+   "armlaenge": 0.6
   },
   "max_figur_frau_bauchbetont": {
    "koerpergroesse": 0.0,
@@ -3188,7 +3426,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 2.5,
    "schrittlaenge": -0.3,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -1.3,
+   "armlaenge": 0.6
   },
   "max_figur_frau_sanduhr-schlank": {
    "koerpergroesse": 0.0,
@@ -3213,7 +3453,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.7,
+   "armlaenge": -0.2
   },
   "max_figur_frau_birne-kraeftig": {
    "koerpergroesse": 0.0,
@@ -3238,7 +3480,9 @@
    "ankle-circ": 8.3,
    "knee-circ": 12.2,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.2
+   "fusslaenge": 0.2,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_figur_frau_rechteck": {
    "koerpergroesse": 0.0,
@@ -3263,7 +3507,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.9,
+   "armlaenge": -0.3
   },
   "max_figur_frau_vollschlank": {
    "koerpergroesse": 0.0,
@@ -3288,7 +3534,9 @@
    "ankle-circ": 9.5,
    "knee-circ": 11.2,
    "schrittlaenge": 0.1,
-   "fusslaenge": -0.1
+   "fusslaenge": -0.1,
+   "schulterbreite_ruecken": 0.8,
+   "armlaenge": 1.0
   },
   "max_figur_frau_birne": {
    "koerpergroesse": 0.0,
@@ -3313,7 +3561,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -4.9,
+   "armlaenge": 1.5
   },
   "max_figur_mann_apfel": {
    "koerpergroesse": 0.0,
@@ -3338,7 +3588,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -1.4,
+   "armlaenge": 0.4
   },
   "max_figur_mann_hueftbetont": {
    "koerpergroesse": 0.0,
@@ -3363,7 +3615,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 2.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_figur_mann_v-form": {
    "koerpergroesse": 0.0,
@@ -3388,7 +3642,9 @@
    "ankle-circ": 0.0,
    "knee-circ": -0.0,
    "schrittlaenge": 0.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 2.1,
+   "armlaenge": -0.2
   },
   "max_figur_mann_saeule": {
    "koerpergroesse": 0.0,
@@ -3413,7 +3669,9 @@
    "ankle-circ": 0.0,
    "knee-circ": -0.5,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -2.4,
+   "armlaenge": 0.7
   },
   "max_figur_mann_bauchbetont": {
    "koerpergroesse": 0.0,
@@ -3438,7 +3696,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_figur_mann_rechteck": {
    "koerpergroesse": 0.0,
@@ -3463,7 +3723,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_figur_mann_vollschlank": {
    "koerpergroesse": 0.0,
@@ -3488,7 +3750,9 @@
    "ankle-circ": 9.1,
    "knee-circ": 12.3,
    "schrittlaenge": 0.1,
-   "fusslaenge": 0.6
+   "fusslaenge": 0.6,
+   "schulterbreite_ruecken": -0.0,
+   "armlaenge": 0.9
   },
   "max_figur_mann_trapez": {
    "koerpergroesse": 0.0,
@@ -3513,7 +3777,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 1.5,
+   "armlaenge": -0.1
   },
   "max_figur_mann_birne": {
    "koerpergroesse": 0.0,
@@ -3538,7 +3804,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": -0.1,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -2.2,
+   "armlaenge": 0.6
   },
   "min_armslegs_foot-scale-decr-incr": {
    "koerpergroesse": 0.3,
@@ -3563,7 +3831,9 @@
    "ankle-circ": -4.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.3,
-   "fusslaenge": -4.8
+   "fusslaenge": -4.8,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_armslegs_foot-scale-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3588,7 +3858,9 @@
    "ankle-circ": 6.1,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 7.2
+   "fusslaenge": 7.2,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_armslegs_upperarm-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3613,7 +3885,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": -0.1,
+   "armlaenge": -0.3
   },
   "max_armslegs_upperarm-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3638,7 +3912,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.2,
+   "armlaenge": 0.5
   },
   "min_armslegs_upperleg-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3663,7 +3939,9 @@
    "ankle-circ": 0.0,
    "knee-circ": -0.2,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_armslegs_upperleg-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3688,7 +3966,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 6.5,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_armslegs_lowerleg-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3713,7 +3993,9 @@
    "ankle-circ": -0.1,
    "knee-circ": -0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_armslegs_lowerleg-fat-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3738,7 +4020,9 @@
    "ankle-circ": 0.5,
    "knee-circ": 0.0,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "min_armslegs_leg-valgus-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3763,7 +4047,9 @@
    "ankle-circ": 0.1,
    "knee-circ": 0.1,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   },
   "max_armslegs_leg-valgus-decr-incr": {
    "koerpergroesse": 0.0,
@@ -3788,7 +4074,9 @@
    "ankle-circ": 0.0,
    "knee-circ": 0.4,
    "schrittlaenge": 0.0,
-   "fusslaenge": 0.0
+   "fusslaenge": 0.0,
+   "schulterbreite_ruecken": 0.0,
+   "armlaenge": 0.0
   }
  }
 }

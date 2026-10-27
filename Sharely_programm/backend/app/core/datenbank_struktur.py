@@ -242,6 +242,21 @@ COLLECTIONS: dict[str, dict] = {
                 "name": TEXT,
                 "reihenfolge": GANZZAHL,
                 "vorlage_id": ID_ODER_NULL,
+                # Messpunkte für Eingabe und Passform, siehe wl.MESSPUNKTE_JE_KLEIDUNGSART
+                "messpunkte": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "object",
+                        "required": ["messpunkt", "pflicht", "zugabe_min", "zugabe_max", "einheit"],
+                        "properties": {
+                            "messpunkt": auswahl(wl.MESSPUNKTE),
+                            "pflicht": JA_NEIN,
+                            "zugabe_min": ZAHL,
+                            "zugabe_max": ZAHL,
+                            "einheit": auswahl(["prozent", "cm"]),
+                        },
+                    },
+                },
             },
         ),
         "indizes": [],
@@ -322,7 +337,10 @@ def stammdaten() -> dict[str, list[dict]]:
     Kategorien. Werden nur mit `--stammdaten` eingespielt."""
     return {
         "kleidungsarten": [
-            {"_id": schluessel, "name": name, "reihenfolge": i, "vorlage_id": None}
+            {"_id": schluessel, "name": name, "reihenfolge": i, "vorlage_id": None,
+             "messpunkte": [{"messpunkt": m, "pflicht": p, "zugabe_min": lo, "zugabe_max": hi,
+                             "einheit": wl.einheit_der_zugabe(m)}
+                            for m, (p, lo, hi) in wl.MESSPUNKTE_JE_KLEIDUNGSART[schluessel].items()]}
             for i, (schluessel, name) in enumerate(wl.KLEIDUNGSARTEN.items(), start=1)
         ],
         "kategorien": [{"nutzer_id": None, "name": name} for name in wl.VORGEGEBENE_KATEGORIEN],

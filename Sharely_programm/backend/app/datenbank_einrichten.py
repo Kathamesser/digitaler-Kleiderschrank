@@ -4,8 +4,9 @@ Aufruf im Ordner backend/ mit aktivierter .venv:
 
     python -m app.datenbank_einrichten               # einrichten bzw. aktualisieren
     python -m app.datenbank_einrichten --pruefen     # nur anzeigen, was fehlt oder abweicht
-    python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten und
-                                                     # vorgegebene Kategorien einspielen
+    python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten (mit
+                                                     # Messpunkten) und vorgegebene
+                                                     # Kategorien einspielen
 
 Die Verbindung kommt aus backend/.env (MONGODB_URL, MONGODB_DATENBANK).
 Das Skript kann beliebig oft laufen: Vorhandenes bleibt, Fehlendes kommt dazu,
@@ -99,13 +100,14 @@ def einrichten(db: Database, nur_pruefen: bool = False) -> tuple[list[str], list
 
 def stammdaten_einspielen(db: Database) -> list[str]:
     """Kleidungsarten und vorgegebene Kategorien anlegen, falls sie fehlen.
-    Vorhandene Einträge bleiben, eine schon gesetzte 3D-Vorlage wird nicht überschrieben."""
+    Vorhandene Einträge bleiben, eine schon gesetzte 3D-Vorlage wird nicht überschrieben.
+    Name, Reihenfolge und Messpunkte kommen immer aus dem Code."""
     daten = stammdaten()
     neu_arten = 0
     for art in daten["kleidungsarten"]:
         ergebnis = db["kleidungsarten"].update_one(
             {"_id": art["_id"]},
-            {"$set": {"name": art["name"], "reihenfolge": art["reihenfolge"]},
+            {"$set": {"name": art["name"], "reihenfolge": art["reihenfolge"], "messpunkte": art["messpunkte"]},
              "$setOnInsert": {"vorlage_id": art["vorlage_id"]}},
             upsert=True,
         )
