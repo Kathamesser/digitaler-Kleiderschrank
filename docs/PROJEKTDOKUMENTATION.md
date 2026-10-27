@@ -346,6 +346,7 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 - Filtermenü des Schranks mit 13 Filterfällen in headless Chrome geprüft.
 - Alle Seiten nach den Desktop-Mockups (27.10.2026): Chrome über das DevTools-Protokoll ferngesteuert, Seiten geladen, Fenster per Klick geöffnet, 18 Ansichten als Screenshot mit den Mockups verglichen und die Konsole auf Fehler geprüft (keine). Gefundene Darstellungsfehler wurden behoben.
 - Datenbank: `python -m app.datenbank_einrichten --pruefen` gleicht Atlas nur lesend mit dem Code ab.
+- Profilbild auf Atlas (27.10.2026, nach Variante A): Test-Nutzer per `--stammdaten` angelegt (zweiter Lauf „schon vorhanden“), dann über die Profilseite ein Testbild hochgeladen und entfernt, alle Aufrufe ohne Fehler.
 - Avatar: Neubau der GLB bit-identisch reproduziert; Zentimeter-Werte gegen Größentabellen des Handels geprüft; Regler auf gleichmäßige Wirkung getestet (Taille in Viertelschritten).
 
 ### 7.3 Geplant
@@ -453,7 +454,6 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 
 - Frontend-Framework: React oder Vue
 - KI-Anbieter für den Produktimport
-- Platzhalter-Nutzer vs. Prüfregel `nutzer`: Auf Atlas schlägt das Hochladen eines Profilbilds fehl, bis geklärt ist, wie der Test-Nutzer in die Collection `nutzer` kommt (Katha/Manuel)
 - ERM-Restpunkt: Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian); Messpunkte und Zugaben je Kleidungsart sind seit 26.10.2026 mit Startwerten umgesetzt, Bestätigung durch Manuel steht aus
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)
 - Grenzen der Avatar-Regler: Körpergröße (Vorschlag −40 bis +45, etwa 144–205 cm) und Mindestalter (Vorschlag ca. 18 Jahre)
