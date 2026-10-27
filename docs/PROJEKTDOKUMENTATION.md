@@ -405,6 +405,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 26.10.2026 | Messpunkte je Kleidungsart (Pflicht/optional) mit Zugabe-Spannen: Umfänge in Prozent, Längen in cm; Startwerte, später anpassbar | Bewegungszugabe wächst mit der Körpergröße; Grundlage der Passform-Ampel | Christian (Bestätigung Manuel steht aus) | `ZUGABEN.md` |
 | 27.10.2026 | Seiten folgen den Mockups; wo ein Mockup vom ERM abweicht, gilt das ERM | das ERM ist das festgelegte Datenmodell | Katha | `frontend/templates/README.md` |
 | 27.10.2026 | Fenster aus den Mockups als `<dialog>` in der aufrufenden Seite; Beispieldaten ohne Backend zentral in `beispieldaten.js` | Seiten bleiben einzeln aufrufbar, Beispieldaten lassen sich in einem Schritt entfernen | Claude bei der Umsetzung im Auftrag von Katha | `frontend/templates/README.md` |
+| 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
 
 ---
 

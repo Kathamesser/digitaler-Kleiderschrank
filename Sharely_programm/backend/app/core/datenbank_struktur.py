@@ -15,7 +15,10 @@ Dieses Modul importiert absichtlich kein pymongo: Es ist reine Beschreibung
 und lässt sich ohne laufende Datenbank testen.
 """
 
+from datetime import datetime, timezone
+
 from app.core import wertelisten as wl
+from app.core.sicherheit import TEST_NUTZER_ID
 
 # ---------------------------------------------------------------- Bausteine
 
@@ -332,10 +335,39 @@ def index_name(index: dict) -> str:
     return "_".join(f"{feld}_{richtung}" for feld, richtung in index["felder"])
 
 
+# PLATZHALTER bis zum echten Login (Entscheidung Manuel/Katha, 27.10.2026):
+# Alle Anfragen gehören vorerst dem Test-Nutzer aus app/core/sicherheit.py.
+# Damit z. B. das Profilbild seinen `nutzer`-Eintrag speichern kann, muss es ihn
+# geben und er muss die Prüfregel erfüllen. Das Passwort-Feld enthält absichtlich
+# keinen gültigen Argon2-Hash, mit diesem Konto kann sich niemand anmelden.
+# Fällt weg, sobald die echte Registrierung steht.
+PLATZHALTER_NUTZER = {
+    "nutzername": "testnutzer_platzhalter",
+    "email": "test-nutzer@sharely.invalid",
+    "passwort_hash": "!kein-login-platzhalter",
+    "ist_admin": False,
+}
+
+
+def platzhalter_nutzer() -> dict:
+    """Der Test-Nutzer als Dokument (mit `_id` als Text, wird beim Einspielen
+    zur ObjectId)."""
+    return {"_id": TEST_NUTZER_ID, **PLATZHALTER_NUTZER, "erstellt_am": datetime.now(timezone.utc)}
+
+
+def platzhalter_nutzer_ergaenzen() -> list[dict]:
+    """Update-Pipeline für den Test-Nutzer: legt ihn an oder ergänzt nur fehlende
+    Felder. Vorhandene Werte (z. B. ein schon gespeichertes Profilbild aus der
+    Zeit vor den Prüfregeln) bleiben unverändert."""
+    felder = {k: v for k, v in platzhalter_nutzer().items() if k != "_id"}
+    return [{"$set": {k: {"$ifNull": [f"${k}", {"$literal": v}]} for k, v in felder.items()}}]
+
+
 def stammdaten() -> dict[str, list[dict]]:
-    """Feste Einträge, die die App braucht: Kleidungsarten und vorgegebene
-    Kategorien. Werden nur mit `--stammdaten` eingespielt."""
+    """Feste Einträge, die die App braucht: Kleidungsarten, vorgegebene
+    Kategorien und der Test-Nutzer. Werden nur mit `--stammdaten` eingespielt."""
     return {
+        "nutzer": [platzhalter_nutzer()],
         "kleidungsarten": [
             {"_id": schluessel, "name": name, "reihenfolge": i, "vorlage_id": None,
              "messpunkte": [{"messpunkt": m, "pflicht": p, "zugabe_min": lo, "zugabe_max": hi,

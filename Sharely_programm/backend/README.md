@@ -25,10 +25,10 @@ Einmal nach dem ersten Start und immer, wenn sich das Datenmodell ändert (Mongo
 cd Sharely_programm/backend
 .venv\Scripts\python -m app.datenbank_einrichten               # macOS/Linux: .venv/bin/python -m …
 .venv\Scripts\python -m app.datenbank_einrichten --pruefen     # nur anzeigen, was fehlt oder abweicht
-.venv\Scripts\python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten und vorgegebene Kategorien
+.venv\Scripts\python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten, vorgegebene Kategorien und Test-Nutzer
 ```
 
-Das legt alle 13 Collections aus dem ERM an (`docs/datenmodell/ERM-SHARELY.md`), jeweils mit Prüfregel (`$jsonSchema`) und Indizes. Ohne `--stammdaten` legt es keine Daten an; es löscht nie etwas, mehrfaches Ausführen schadet nicht. Was eingerichtet wird, steht in `app/core/datenbank_struktur.py`. Die Prüfregeln prüfen nur Pflichtfelder, Datentypen und feste Wertelisten (Farbe, Material, Saison, Status, Messpunkte …); die Listen stehen an einer Stelle in `app/core/wertelisten.py`, die Module bauen ihre Enums daraus. Ändert sich dort etwas, das Skript erneut ausführen. Tests dazu: `tests/test_datenbank_struktur.py`.
+Das legt alle 13 Collections aus dem ERM an (`docs/datenmodell/ERM-SHARELY.md`), jeweils mit Prüfregel (`$jsonSchema`) und Indizes. Ohne `--stammdaten` legt es keine Daten an. Mit `--stammdaten` kommt auch der Test-Nutzer aus `app/core/sicherheit.py` dazu (Platzhalter bis zum echten Login, ohne gültiges Passwort), damit z. B. das Profilbild die Prüfregel für `nutzer` erfüllt; es löscht nie etwas, mehrfaches Ausführen schadet nicht. Was eingerichtet wird, steht in `app/core/datenbank_struktur.py`. Die Prüfregeln prüfen nur Pflichtfelder, Datentypen und feste Wertelisten (Farbe, Material, Saison, Status, Messpunkte …); die Listen stehen an einer Stelle in `app/core/wertelisten.py`, die Module bauen ihre Enums daraus. Ändert sich dort etwas, das Skript erneut ausführen. Tests dazu: `tests/test_datenbank_struktur.py`.
 
 ## Aufbau
 

@@ -5,8 +5,9 @@ Aufruf im Ordner backend/ mit aktivierter .venv:
     python -m app.datenbank_einrichten               # einrichten bzw. aktualisieren
     python -m app.datenbank_einrichten --pruefen     # nur anzeigen, was fehlt oder abweicht
     python -m app.datenbank_einrichten --stammdaten  # zusätzlich Kleidungsarten (mit
-                                                     # Messpunkten) und vorgegebene
-                                                     # Kategorien einspielen
+                                                     # Messpunkten), vorgegebene
+                                                     # Kategorien und den Test-Nutzer
+                                                     # einspielen
 
 Die Verbindung kommt aus backend/.env (MONGODB_URL, MONGODB_DATENBANK).
 Das Skript kann beliebig oft laufen: Vorhandenes bleibt, Fehlendes kommt dazu,
@@ -19,12 +20,13 @@ Was eingerichtet wird, steht in app/core/datenbank_struktur.py.
 import argparse
 import sys
 
+from bson import ObjectId
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.errors import OperationFailure, PyMongoError
 
 from app.core.config import get_settings
-from app.core.datenbank_struktur import COLLECTIONS, index_name, stammdaten
+from app.core.datenbank_struktur import COLLECTIONS, index_name, stammdaten, platzhalter_nutzer_ergaenzen
 
 # „moderate“: Bereits gespeicherte Dokumente, die nicht passen, bleiben änderbar.
 # Neue und korrekte Dokumente werden voll geprüft.
@@ -99,9 +101,10 @@ def einrichten(db: Database, nur_pruefen: bool = False) -> tuple[list[str], list
 
 
 def stammdaten_einspielen(db: Database) -> list[str]:
-    """Kleidungsarten und vorgegebene Kategorien anlegen, falls sie fehlen.
+    """Kleidungsarten, vorgegebene Kategorien und den Test-Nutzer anlegen, falls sie fehlen.
     Vorhandene Einträge bleiben, eine schon gesetzte 3D-Vorlage wird nicht überschrieben.
-    Name, Reihenfolge und Messpunkte kommen immer aus dem Code."""
+    Name, Reihenfolge und Messpunkte kommen immer aus dem Code. Beim Test-Nutzer werden
+    nur fehlende Felder ergänzt (z. B. ein Profilbild bleibt erhalten)."""
     daten = stammdaten()
     neu_arten = 0
     for art in daten["kleidungsarten"]:
@@ -116,7 +119,18 @@ def stammdaten_einspielen(db: Database) -> list[str]:
     for kategorie in daten["kategorien"]:
         ergebnis = db["kategorien"].update_one(kategorie, {"$setOnInsert": kategorie}, upsert=True)
         neu_kategorien += ergebnis.upserted_id is not None
+    test_nutzer = daten["nutzer"][0]
+    ergebnis = db["nutzer"].update_one(
+        {"_id": ObjectId(test_nutzer["_id"])}, platzhalter_nutzer_ergaenzen(), upsert=True
+    )
+    if ergebnis.upserted_id is not None:
+        zustand = "angelegt"
+    elif ergebnis.modified_count:
+        zustand = "fehlende Felder ergänzt"
+    else:
+        zustand = "schon vorhanden"
     return [
+        f"nutzer (Test-Nutzer bis zum echten Login): {zustand}",
         f"kleidungsarten: {neu_arten} neu, {len(daten['kleidungsarten']) - neu_arten} schon vorhanden",
         f"kategorien (vorgegeben): {neu_kategorien} neu, {len(daten['kategorien']) - neu_kategorien} schon vorhanden",
     ]
@@ -125,7 +139,7 @@ def stammdaten_einspielen(db: Database) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="MongoDB-Datenbank nach dem ERM einrichten.")
     parser.add_argument("--pruefen", action="store_true", help="nichts ändern, nur Abweichungen anzeigen")
-    parser.add_argument("--stammdaten", action="store_true", help="Kleidungsarten und vorgegebene Kategorien einspielen")
+    parser.add_argument("--stammdaten", action="store_true", help="Kleidungsarten, vorgegebene Kategorien und den Test-Nutzer einspielen")
     args = parser.parse_args()
 
     settings = get_settings()

@@ -13,7 +13,8 @@ import pytest
 from bson import ObjectId
 
 from app.core import wertelisten as wl
-from app.core.datenbank_struktur import COLLECTIONS, index_name, stammdaten
+from app.core.datenbank_struktur import COLLECTIONS, index_name, stammdaten, platzhalter_nutzer_ergaenzen
+from app.core.sicherheit import TEST_NUTZER_ID
 
 REPO = Path(__file__).resolve().parents[3]  # tests → backend → Sharely_programm → Repo
 JETZT = datetime.now(timezone.utc)
@@ -155,6 +156,43 @@ def test_einheit_der_zugabe_passt_zur_messart():
     for messpunkt, band in datei["masse"].items():
         erwartet = "prozent" if band["art"] == "umfang" else "cm"
         assert wl.einheit_der_zugabe(messpunkt) == erwartet, messpunkt
+
+
+def _pipeline_anwenden(dokument: dict, pipeline: list[dict]) -> dict:
+    """Nachbau von $set mit $ifNull/$literal, so wie platzhalter_nutzer_ergaenzen sie nutzt."""
+    ergebnis = dict(dokument)
+    for stufe in pipeline:
+        for feld, ausdruck in stufe["$set"].items():
+            quelle, ersatz = ausdruck["$ifNull"]
+            vorhanden = dokument.get(quelle.removeprefix("$"))
+            ergebnis[feld] = vorhanden if vorhanden is not None else ersatz["$literal"]
+    return ergebnis
+
+
+def test_test_nutzer_passt_zur_pruefregel():
+    """Der Platzhalter-Nutzer (bis zum echten Login) muss die Prüfregel erfüllen,
+    sonst kann z. B. das Profilbild nicht gespeichert werden."""
+    (test_nutzer,) = stammdaten()["nutzer"]
+    assert test_nutzer["_id"] == TEST_NUTZER_ID
+    assert not test_nutzer["passwort_hash"].startswith("$argon2")  # kein Login möglich
+    ohne_id = {k: v for k, v in test_nutzer.items() if k != "_id"}
+    assert verstoesse(ohne_id, schema("nutzer")) == []
+    # So speichert das Profilbild (app/module/nutzer/repository.py): nur $set auf zwei Felder.
+    mit_bild = {**ohne_id, "profilbild_pfad": f"{TEST_NUTZER_ID}/profilbild_x.png", "geaendert_am": JETZT}
+    assert verstoesse(mit_bild, schema("nutzer")) == []
+
+
+def test_test_nutzer_ergaenzen_behaelt_vorhandenes():
+    """Ein alter Test-Nutzer (nur Profilbild, vor den Prüfregeln angelegt) wird ergänzt,
+    sein Profilbild bleibt; ein neuer bekommt alle Pflichtfelder."""
+    alt = {"profilbild_pfad": "alt.png", "geaendert_am": JETZT}
+    ergaenzt = _pipeline_anwenden(alt, platzhalter_nutzer_ergaenzen())
+    assert ergaenzt["profilbild_pfad"] == "alt.png"
+    assert verstoesse(ergaenzt, schema("nutzer")) == []
+    neu = _pipeline_anwenden({}, platzhalter_nutzer_ergaenzen())
+    assert verstoesse(neu, schema("nutzer")) == []
+    eigener_name = _pipeline_anwenden({"nutzername": "katha_test"}, platzhalter_nutzer_ergaenzen())
+    assert eigener_name["nutzername"] == "katha_test"
 
 
 def test_stammdaten_erfuellen_pruefregeln():
