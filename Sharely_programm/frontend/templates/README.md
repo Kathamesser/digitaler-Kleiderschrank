@@ -60,6 +60,6 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
-3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter; `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht) oder direkt http://localhost:5173/frontend/templates/
+3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter; `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht). Nach einem `git pull` die Seite mit **Strg+F5** neu laden, sonst nimmt der Browser womöglich noch die alte `gemeinsam.js` aus dem Zwischenspeicher. oder direkt http://localhost:5173/frontend/templates/
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.
