@@ -1,0 +1,71 @@
+<!doctype html>
+<!-- Mockup „Desktop 4 · Neues Passwort setzen“. Ziel des Reset-Links (später mit ?token=…). Noch ohne Backend. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Neues Passwort</title>
+  <link rel="stylesheet" href="../static/css/stil.css">
+  <script src="../static/js/gemeinsam.js"></script>
+</head>
+<body>
+<main class="anmelde-seite">
+  <section class="anmelde-bild" aria-hidden="true">
+    <div class="marke-klein">
+      <span class="logo-kachel"><img src="../../assets/branding/sharely-logo.png" alt=""></span>
+      <span><span class="wortmarke">SHARELY</span><small>style and share</small></span>
+    </div>
+    <h1>Dein Kleiderschrank. Mit Freunden geteilt.</h1>
+    <span class="deko streifen"></span>
+    <span class="deko karo"></span>
+    <span class="deko punkte"></span>
+  </section>
+
+  <section class="anmelde-formular">
+    <div class="anmelde-spalte">
+      <a class="zurueck-link" href="index.html"><span data-symbol="zurueck"></span> Zur Anmeldung</a>
+      <div class="anmelde-karte">
+        <h2 class="kleiner">Neues Passwort</h2>
+        <p class="unterzeile">Vergib ein neues Passwort für dein Konto.</p>
+        <form id="formular" novalidate>
+          <label><span class="feldname">Neues Passwort</span><input type="password" name="passwort" autocomplete="new-password" required></label>
+          <label><span class="feldname">Neues Passwort wiederholen</span><input type="password" name="passwort2" autocomplete="new-password" required></label>
+          <!-- Gleiche Regeln wie bei der Registrierung (index.html) -->
+          <ul class="pruefliste" aria-live="polite">
+            <li id="r-laenge">Mindestens 8 Zeichen</li>
+            <li id="r-sonder">Mindestens ein Sonderzeichen</li>
+            <li id="r-gleich">Beide Passwörter stimmen überein</li>
+          </ul>
+          <button type="submit" class="knopf breit">Passwort speichern</button>
+          <div class="meldung" id="meldung" role="status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const formular = document.getElementById("formular");
+
+  function pruefe() {
+    const p = formular.passwort.value;
+    const regeln = {
+      "r-laenge": p.length >= 8,
+      "r-sonder": /[^A-Za-z0-9]/.test(p),
+      "r-gleich": p !== "" && p === formular.passwort2.value,
+    };
+    for (const [id, ok] of Object.entries(regeln)) document.getElementById(id).classList.toggle("erfuellt", ok);
+    return Object.values(regeln).every(Boolean);
+  }
+  formular.oninput = pruefe;
+
+  formular.onsubmit = (e) => {
+    e.preventDefault();
+    const meldung = document.getElementById("meldung");
+    if (!pruefe()) return zeigeMeldung(meldung, "Bitte alle drei Punkte erfüllen.", "fehler");
+    zeigeMeldung(meldung, "Dein Passwort wäre jetzt geändert. Das Backend dafür fehlt noch.", "ok");
+    meldung.insertAdjacentHTML("beforeend", '\n<a class="link" href="index.html">Zur Anmeldung</a>');
+  };
+</script>
+</body>
+</html>

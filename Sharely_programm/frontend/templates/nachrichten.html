@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- Mockup „Desktop · Nachrichten“. Beispieldaten: Leihvorgänge (Status angefragt) und Neuigkeiten haben noch kein Backend. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Nachrichten</title>
+  <link rel="stylesheet" href="../static/css/stil.css">
+  <script src="../static/js/gemeinsam.js"></script>
+  <script src="../static/js/beispieldaten.js"></script>
+</head>
+<body>
+<main class="seite">
+  <div class="hinweis">Beispieldaten: Anfragen und Neuigkeiten haben noch kein Backend. Die Knöpfe ändern nur die Anzeige.</div>
+  <div id="meldung" class="meldung" role="status"></div>
+
+  <div class="zwei-karten inhalt-wachsen">
+    <section class="weisse-karte">
+      <div class="karte-titel">
+        <span class="symbol-kasten-klein" data-symbol="tausch"></span>
+        <div><h2>Leih- &amp; Geschenkanfragen</h2><p>Freunde, die etwas aus deinem Schrank möchten</p></div>
+      </div>
+      <div id="anfragen"></div>
+    </section>
+
+    <section class="weisse-karte">
+      <div class="karte-titel">
+        <span class="symbol-kasten-klein weiss"><img src="../../assets/branding/sharely-logo.png" alt=""></span>
+        <div><h2>Neuigkeiten von Sharely</h2><p>Updates und Hinweise vom Entwicklerteam</p></div>
+        <button type="button" class="link" id="alle-gelesen">Alle gelesen</button>
+      </div>
+      <div id="neuigkeiten"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+  seitenkopf("Nachrichten");
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Freunde", symbol: "freunde", href: "freunde.html", art: "knopf-gelb" },
+  ]);
+
+  const anfragen = [...LEIHANFRAGEN_BEISPIEL];
+  const meldung = document.getElementById("meldung");
+
+  function zeigeAnfragen() {
+    const box = document.getElementById("anfragen");
+    if (!anfragen.length) {
+      box.innerHTML = '<p class="leise">Keine offenen Anfragen.</p>';
+      return;
+    }
+    box.replaceChildren(...anfragen.map((a) => {
+      const karte = document.createElement("article");
+      karte.className = "anfrage-karte";
+      const leihen = a.typ === "leihen";
+      const frist = a.bis ? `bis ${a.bis}` : "unbefristet";
+      karte.innerHTML = `
+        <span class="initiale ${a.ton}"></span>
+        <div class="text"><strong></strong><span></span><small></small></div>
+        <span class="typ-marke ${a.typ}">${leihen ? SYMBOL.tausch : SYMBOL.geschenk} ${leihen ? "Leihen" : "Geschenk"}</span>
+        <div class="aktionen">
+          <span class="teil"><span class="mini-kachel ${a.teilTon}">${SYMBOL.buegel}</span><span class="teil-name"></span></span>
+          <button type="button" class="knopf">Annehmen</button>
+          <button type="button" class="knopf-rand">Ablehnen</button>
+        </div>`;
+      karte.querySelector(".initiale").textContent = a.von[0];
+      karte.querySelector("strong").textContent = a.von;
+      karte.querySelector(".text span").textContent = leihen
+        ? `möchte deine ${a.teil} leihen · ${frist}`
+        : `möchte deine ${a.teil} geschenkt bekommen`;
+      karte.querySelector("small").textContent = a.wann;
+      karte.querySelector(".teil-name").textContent = a.teil;
+      const fertig = (text) => { anfragen.splice(anfragen.indexOf(a), 1); zeigeAnfragen(); zeigeMeldung(meldung, text, "ok"); };
+      const vorname = a.von.split(" ")[0];
+      // Annehmen: leihen → Teil wird verliehen; verschenken → Besitzwechsel (ERM Entscheidung 4)
+      karte.querySelector(".knopf").onclick = () => fertig(leihen
+        ? `${a.teil} ist jetzt an ${vorname} verliehen.`
+        : `${a.teil} gehört jetzt ${vorname}.`);
+      karte.querySelector(".knopf-rand").onclick = () => fertig(`Anfrage von ${vorname} abgelehnt.`);
+      return karte;
+    }));
+  }
+
+  const TYPEN = { update: ["Update", "update"], hinweis: ["Hinweis", "warnung"], info: ["Info", "info"] };
+  function zeigeNeuigkeiten() {
+    document.getElementById("neuigkeiten").replaceChildren(...NEUIGKEITEN_BEISPIEL.map((n) => {
+      const karte = document.createElement("article");
+      karte.className = `neuigkeit ${n.gelesen ? "" : "ungelesen"}`;
+      const [typText, symbol] = TYPEN[n.typ];
+      karte.innerHTML = `
+        <div class="oben"><span class="typ-marke typ-${n.typ}">${SYMBOL[symbol]} ${typText}</span><span>${n.datum}</span>
+          ${n.gelesen ? "" : '<span class="neu-punkt">Neu</span>'}</div>
+        <h3></h3><p class="kurz"></p>
+        <details><summary>Mehr lesen ${SYMBOL.unten}</summary><p class="lang"></p></details>`;
+      karte.querySelector("h3").textContent = n.titel;
+      karte.querySelector(".kurz").textContent = n.text;
+      karte.querySelector(".lang").textContent = n.mehr;
+      // Aufklappen = gelesen (gemerkt je Nutzer, ERM Zuordnung_Neuigk_Nutzer)
+      karte.querySelector("details").ontoggle = (e) => {
+        if (e.target.open && !n.gelesen) { n.gelesen = true; karte.classList.remove("ungelesen"); karte.querySelector(".neu-punkt").remove(); }
+      };
+      return karte;
+    }));
+  }
+  document.getElementById("alle-gelesen").onclick = () => {
+    for (const n of NEUIGKEITEN_BEISPIEL) n.gelesen = true;
+    zeigeNeuigkeiten();
+  };
+
+  zeigeAnfragen();
+  zeigeNeuigkeiten();
+</script>
+</body>
+</html>

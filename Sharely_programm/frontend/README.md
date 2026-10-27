@@ -6,7 +6,7 @@ Single-Page-App im Browser, responsiv für Desktop und Smartphone (Technische Ko
 
 ## Seiten (Templates)
 
-Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML-Seiten im Design der Desktop-Mockups (Anmeldung, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde, Leihen, Profil), teils live am Backend. Das Aussehen steckt komplett in `static/css/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `templates/README.md`.
+Bis das Framework feststeht, liegen die Seiten der Web-App in `templates/`: HTML-Seiten im Design der Desktop-Mockups (alle Desktop-Mockups: Anmeldung, Passwort, Hauptmenü, Schrank, Hinzufügen, Detail, Outfits, Freunde samt Schrank und Garderobe eines Freundes, Leihen, Nachrichten, Profil), teils live am Backend. Das Aussehen steckt komplett in `static/css/stil.css` mit Variablen in `:root`; die Datei kann später ins Framework übernommen werden. Details: `templates/README.md`.
 
 ## Ordner
 

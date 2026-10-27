@@ -7,23 +7,34 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | Seite | Mockup | Daten |
 |---|---|---|
 | `index.html` | Desktop 1, 2 | Startseite: Anmeldung und Registrierung, ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
-| `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), Rest Platzhalter |
+| `passwort-vergessen.html` | Desktop 3 | E-Mail für den Reset-Link, ohne Backend; Meldung verrät nicht, ob es das Konto gibt |
+| `passwort-neu.html` | Desktop 4 | Ziel des Reset-Links: neues Passwort mit Prüfliste (8 Zeichen, Sonderzeichen, gleich), ohne Backend |
+| `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), „x neu“ bei Nachrichten aus Beispieldaten, Rest Platzhalter |
 | `schrank.html` | Kleiderschrank, Kleidung filtern | live: Liste, Suche (Name, Kleidungsart, Farbe, Material), „Alles“ und Filter-Fenster (Favorit, Privat, Farbe, Kleidungsart, Material, Saison, Status, Kaufdatum, Preis; Kategorie nur zur Ansicht, bis es das Modul Kategorien gibt). Ganzjährige Teile passen zu jeder Saison. „Geliehen“ = Status `geliehen` |
 | `kleidung-hochladen.html` | Kleidungsstück hinzufügen | live: User Story 8; Foto per Kamera, Datei oder Ziehen; Name, Farbe, Kleidungsart, Maße (24 Messpunkte), Saison, Material, Kaufdatum, Preis, Favorit, Privat, Status (Eigenes/Geliehen/Wunschartikel; „Verliehen“ gesperrt). Kategorien nur zur Ansicht |
-| `kleidungsstueck.html?id=…` | Kleidungsstück – Detailansicht | live, mit Maßen; Kategorien nur als Anzahl (Namen kommen mit dem Modul Kategorien); Bearbeiten, Löschen, Verleihen, Anprobieren fehlen im Backend noch |
-| `outfits.html` | Outfits | Beispieldaten; leerer Zustand mit `outfits.html?leer` |
+| `kleidungsstueck.html?id=…` | Kleidungsstück – Detailansicht, Anfrage stellen – Leihen / Verschenken | live, mit Maßen; Kategorien nur als Anzahl (Namen kommen mit dem Modul Kategorien). „Verleihen / Verschenken“ öffnet das Fenster „Anfrage senden“ (Beispiel-Freunde, nur bei Status Eigenes); Bearbeiten, Löschen, Anprobieren und das Senden fehlen im Backend noch |
+| `outfits.html` | Outfits, Outfit – Detailansicht, Outfits filtern | Beispieldaten; Klick auf ein Outfit öffnet die Detailansicht (Favorit, Löschen nur in der Anzeige), Filter nach Name, Kategorie und Kleidungsstück; leerer Zustand mit `outfits.html?leer` |
 | `outfit-erstellen.html` | Outfit erstellen, Outfit speichern | Auswahl aus dem echten Schrank, Speichern fehlt im Backend |
-| `freunde.html` | Freunde | Beispieldaten |
-| `verliehen.html` | Freunde-Leih Verleihansicht | Beispieldaten (für alle Freunde statt für einen) |
+| `freunde.html` | Freunde, Freund hinzufügen | Beispieldaten; „Freund hinzufügen“ sucht über den genauen Nutzernamen (Beispiele: `AnnaK`, `paul.m`); Links zu Kleiderschrank und Garderobe des Freundes |
+| `freund-schrank.html?freund=lena` | Kleiderschrank eines Freundes, Kleidungsstück eines Freundes – Detailansicht, Anfrage an Freund | Beispieldaten; Status Verfügbar / Bei dir / Verliehen, „Nur verfügbare“; Detail und Anfrage (Leihen oder Geschenkt bekommen) als Fenster |
+| `freund-garderobe.html?freund=lena` | Garderobe eines Freundes, Outfit eines Freundes – Detailansicht | Beispieldaten; freigegebener Avatar, Klick auf ein verfügbares Teil im Outfit öffnet die Anfrage |
+| `nachrichten.html` | Nachrichten | Beispieldaten: Leih- und Geschenkanfragen annehmen/ablehnen, Neuigkeiten mit „Neu“, „Mehr lesen“ und „Alle gelesen“ |
+| `verliehen.html` | Freunde-Leih Verleihansicht, Leih-Detailansicht | Beispieldaten (für alle Freunde statt für einen); Klick auf einen Eintrag öffnet die Leihdetails, „überfällig“ wird aus dem Rückgabedatum berechnet |
 | `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ Beispieldaten |
 
-Noch nicht angelegt: Passwort zurücksetzen (Desktop 3, 4), Nachrichten, Angebote, Garderobe und Kleiderschrank eines Freundes, Detailansichten von Outfits und Teilen eines Freundes, Leih-Detailansicht, Anfrage stellen, Freund hinzufügen, Outfits filtern.
+Seit 27.10.2026 hat jedes Desktop-Mockup eine Seite oder ein Fenster. Fenster (Mockups „Overlay“/„Fenster“) sind `<dialog>`-Elemente in der Seite, aus der sie geöffnet werden. Noch nicht angelegt: Angebote (kein Mockup, laut ERM „kommen später“).
+
+Wo die Mockups vom ERM abweichen, gilt das ERM: Farbe „Mint“ gibt es nicht (Beispiel jetzt Grün), Outfits zeigen Kategorien statt Anlass, Outfit-Detail zeigt zusätzlich „Privat“.
+
+Beispieldaten für alles ohne Backend stehen gesammelt in `../static/js/beispieldaten.js` und fliegen raus, sobald die Module stehen.
 
 Schriften (DM Sans, Fraunces) kommen von Google Fonts; ohne Internet fallen die Seiten auf Systemschriften zurück.
 
 ## Aufbau
 
 - `../static/css/stil.css`: das gesamte Aussehen. Ganz oben stehen alle Farben, Schrift, Rundungen und Abstände als Variablen (`:root`). **Design ändern = zuerst diese Variablen ändern, dann die Bausteine darunter.** Alle Seiten ziehen automatisch mit.
+- `../static/js/beispieldaten.js`: Beispieldaten für Freunde, Teile und Outfits eines Freundes, Leihanfragen und Neuigkeiten.
+- `../static/js/anfrage.js`: Fenster „Anfrage an …“ (Teil eines Freundes anfragen), genutzt von `freund-schrank.html` und `freund-garderobe.html`.
 - `../static/js/gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
 - Je Seite eine HTML-Datei hier in `templates/` mit nur dem, was die Seite selbst braucht. Sie binden `../static/css/stil.css` und `../static/js/gemeinsam.js` ein.
 

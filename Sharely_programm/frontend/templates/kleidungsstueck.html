@@ -1,5 +1,6 @@
 <!doctype html>
 <!-- Mockup „Desktop · Kleidungsstück – Detailansicht (Overlay)“. Daten live aus GET /api/kleidung/{id}.
+     Verleihen/Verschenken öffnet das Fenster aus dem Mockup „Anfrage stellen – Leihen / Verschenken (Overlay)“ mit Beispiel-Freunden.
      Bearbeiten, Löschen, Favorit umschalten, Verleihen und Anprobieren haben noch kein Backend. -->
 <html lang="de">
 <head>
@@ -8,6 +9,7 @@
   <title>Sharely – Kleidungsstück</title>
   <link rel="stylesheet" href="../static/css/stil.css">
   <script src="../static/js/gemeinsam.js"></script>
+  <script src="../static/js/beispieldaten.js"></script>
 </head>
 <body>
 <main class="seite">
@@ -40,7 +42,7 @@
         <!-- Noch ohne Backend: Avatar, Verleihen, Ändern, Löschen -->
         <button class="knopf-dunkel breit" style="margin-top: 30px" disabled title="Kommt mit dem 3D-Avatar"><span data-symbol="anprobieren"></span> Kleidung anprobieren</button>
         <div class="zeile" style="margin-top: 18px">
-          <button class="knopf-rand gruen" disabled title="Kommt noch: Modul verleihen fehlt"><span data-symbol="senden"></span> Verleihen / Verschenken</button>
+          <button type="button" class="knopf-rand gruen" id="verleihen"><span data-symbol="senden"></span> Verleihen / Verschenken</button>
           <button class="knopf-gefahr" disabled title="Kommt noch: Löschen-Endpunkt fehlt"><span data-symbol="muell"></span> Löschen</button>
         </div>
         <div style="display: flex; justify-content: flex-end; margin-top: 18px">
@@ -50,6 +52,49 @@
     </div>
   </article>
 </main>
+
+<!-- Leihvorgang mit Typ, Empfänger, bis (leer = unbefristet) und Notiz (ERM Entscheidung 8); beim Verschenken wechselt
+     nach dem Annehmen der Besitzer (ERM Entscheidung 4) -->
+<dialog class="blatt" id="anfrage" aria-labelledby="a-titel">
+  <form id="a-formular" method="dialog" novalidate>
+    <header class="blatt-kopf">
+      <button type="button" class="symbolknopf" data-schliessen aria-label="Zurück zum Kleidungsstück" data-symbol="zurueck"></button>
+      <h2 id="a-titel">Anfrage senden</h2>
+      <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+    </header>
+    <div class="blatt-inhalt">
+      <div class="zeile" style="gap: 44px">
+        <div>
+          <div class="teil-kopf"><span class="vorschau" id="a-vorschau" data-symbol="buegel"></span><span><strong id="a-teil"></strong><small id="a-herkunft"></small></span></div>
+          <div class="umschalter dunkel" role="radiogroup" style="margin-top: 22px">
+            <button type="button" role="radio" data-typ="leihen"><span data-symbol="rechts"></span> Leihen</button>
+            <button type="button" role="radio" data-typ="verschenken"><span data-symbol="geschenk"></span> Verschenken</button>
+          </div>
+          <div class="titel-zeile">
+            <span class="titel">An wen?</span>
+            <label class="suche"><span data-symbol="lupe"></span><input type="search" id="a-suche" placeholder="Freund suchen" aria-label="Freund suchen"></label>
+          </div>
+          <div class="wahl-liste" id="a-freunde"></div>
+        </div>
+        <div style="display: flex; flex-direction: column">
+          <div id="a-rueckgabe">
+            <span class="titel" style="margin-top: 0">Rückgabedatum</span>
+            <input type="date" name="bis" aria-label="Rückgabedatum">
+            <label class="haekchen"><input type="checkbox" name="unbefristet"> Ohne festes Rückgabedatum</label>
+          </div>
+          <label><span class="titel">Notiz <small style="display: inline">(optional)</small></span>
+            <textarea name="notiz" maxlength="500" rows="5" placeholder="z. B. Bitte nur chemisch reinigen."></textarea></label>
+          <div class="zusammenfassung" id="a-zusammenfassung" hidden></div>
+          <div class="meldung" id="a-meldung" role="status"></div>
+          <div class="zeile" style="grid-template-columns: 1fr 2fr; margin-top: auto; padding-top: 22px">
+            <button type="button" class="knopf-rand" data-schliessen>Abbrechen</button>
+            <button type="submit" class="knopf"><span data-symbol="senden"></span> Anfrage senden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</dialog>
 
 <script>
   seitenkopf("Mein Kleiderschrank");
@@ -135,8 +180,90 @@
     }
     document.getElementById("masse").hidden = !masse.length;
 
+    // Verleihen und Verschenken gehen nur bei eigenen Teilen, die gerade im Schrank liegen
+    const verleihen = document.getElementById("verleihen");
+    verleihen.disabled = k.status !== "im_schrank";
+    if (verleihen.disabled) verleihen.title = "Geht nur bei eigenen Teilen, die gerade im Schrank sind";
+    verleihen.onclick = () => anfrageOeffnen(k);
+
     document.getElementById("inhalt").hidden = false;
   }
+
+  // ---------- Fenster „Anfrage senden“ (noch ohne Backend: Modul verleihen fehlt) ----------
+
+  const anfrage = document.getElementById("anfrage");
+  const aFormular = document.getElementById("a-formular");
+  const aMeldung = document.getElementById("a-meldung");
+  fensterVerdrahten(anfrage);
+  let teil = null;
+  let typ = "leihen";
+  aFormular.bis.min = new Date().toISOString().slice(0, 10);
+
+  function zeigeFreundeZurWahl() {
+    const wort = document.getElementById("a-suche").value.trim().toLowerCase();
+    const gewaehlt = aFormular.querySelector("[name=empfaenger]:checked")?.value;
+    document.getElementById("a-freunde").replaceChildren(...FREUNDE_BEISPIEL
+      .filter((p) => p.name.toLowerCase().includes(wort))
+      .map((p) => {
+        const label = document.createElement("label");
+        label.innerHTML = `<span class="initiale klein ${p.ton}"></span><span></span><input type="radio" name="empfaenger">`;
+        label.querySelector(".initiale").textContent = p.name[0];
+        label.querySelector("span + span").textContent = p.name;
+        const radio = label.querySelector("input");
+        radio.value = p.id;
+        radio.checked = p.id === gewaehlt;
+        radio.setAttribute("aria-label", p.name);
+        return label;
+      }));
+  }
+
+  /** „Leihanfrage an Lena: Wintermantel“ */
+  function zusammenfassen() {
+    const id = aFormular.querySelector("[name=empfaenger]:checked")?.value;
+    const empfaenger = FREUNDE_BEISPIEL.find((p) => p.id === id);
+    const box = document.getElementById("a-zusammenfassung");
+    box.hidden = !empfaenger;
+    if (!empfaenger) return;
+    box.innerHTML = SYMBOL[typ === "leihen" ? "rechts" : "geschenk"];
+    box.append(`${typ === "leihen" ? "Leihanfrage" : "Geschenk"} an ${empfaenger.name.split(" ")[0]}: ${titelVon(teil)}`);
+  }
+
+  function typSetzen(neu) {
+    typ = neu;
+    for (const knopf of anfrage.querySelectorAll("[data-typ]")) {
+      knopf.classList.toggle("aktiv", knopf.dataset.typ === typ);
+      knopf.setAttribute("aria-checked", knopf.dataset.typ === typ);
+    }
+    document.getElementById("a-rueckgabe").hidden = typ !== "leihen"; // Geschenke kommen nicht zurück
+    zusammenfassen();
+  }
+  for (const knopf of anfrage.querySelectorAll("[data-typ]")) knopf.onclick = () => typSetzen(knopf.dataset.typ);
+  document.getElementById("a-suche").oninput = zeigeFreundeZurWahl;
+  aFormular.unbefristet.onchange = () => { aFormular.bis.disabled = aFormular.unbefristet.checked; if (aFormular.unbefristet.checked) aFormular.bis.value = ""; };
+  aFormular.onchange = zusammenfassen;
+
+  function anfrageOeffnen(k) {
+    teil = k;
+    aFormular.reset();
+    aFormular.bis.disabled = false;
+    aMeldung.textContent = "";
+    document.getElementById("a-suche").value = "";
+    document.getElementById("a-vorschau").className = `vorschau ${tonVon(k.id)}`;
+    document.getElementById("a-teil").textContent = titelVon(k);
+    document.getElementById("a-herkunft").textContent = `${KLEIDUNGSARTEN[k.kleidungsart]} · aus deinem Schrank`;
+    zeigeFreundeZurWahl();
+    typSetzen("leihen");
+    anfrage.showModal();
+  }
+
+  aFormular.onsubmit = (e) => {
+    e.preventDefault();
+    if (!aFormular.querySelector("[name=empfaenger]:checked")) return zeigeMeldung(aMeldung, "Bitte auswählen, an wen die Anfrage geht.", "fehler");
+    if (typ === "leihen" && !aFormular.bis.value && !aFormular.unbefristet.checked) {
+      return zeigeMeldung(aMeldung, "Bitte ein Rückgabedatum wählen oder „Ohne festes Rückgabedatum“ ankreuzen.", "fehler");
+    }
+    zeigeMeldung(aMeldung, "Die Anfrage wäre jetzt gesendet. Das Backend-Modul verleihen fehlt noch.", "ok");
+  };
 
   if (!id) zeigeMeldung(meldung, "Kein Kleidungsstück ausgewählt.", "fehler");
   else holeJson(`/kleidung/${encodeURIComponent(id)}`)
