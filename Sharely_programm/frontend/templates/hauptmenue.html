@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Mockup „Desktop · Hauptmenü – Variante 2 (mit Garderobe)“. Zahlen im Kleiderschrank live aus GET /api/kleidung;
-     Outfits, Nachrichten und Angebote haben noch kein Backend. -->
+     Outfits, Nachrichten und Angebote haben noch kein Backend (Zahl bei Nachrichten aus beispieldaten.js). -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -8,6 +8,7 @@
   <title>Sharely – Hauptmenü</title>
   <link rel="stylesheet" href="../static/css/stil.css">
   <script src="../static/js/gemeinsam.js"></script>
+  <script src="../static/js/beispieldaten.js"></script>
 </head>
 <body>
 <main class="seite">
@@ -42,8 +43,8 @@
         </svg>
         Freunde
       </a>
-      <a class="seiten-kachel" aria-disabled="true" title="Kommt noch">
-        <span class="bald">kommt noch</span>
+      <a class="seiten-kachel" href="nachrichten.html">
+        <span class="neu-marke gruen" id="nachrichten-neu" style="position: absolute; top: 14px; right: 14px"></span>
         <svg width="118" height="90" viewBox="0 0 118 90" aria-hidden="true"><rect x="4" y="4" width="110" height="82" rx="10" fill="#bfe6e0" stroke="#2c3a5e" stroke-width="7"/><path d="m8 10 51 40 51-40" fill="none" stroke="#2c3a5e" stroke-width="7" stroke-linejoin="round"/></svg>
         Nachrichten
       </a>
@@ -60,6 +61,11 @@
 
 <script>
   seitenkopf(`Hallo ${NUTZER.name}!`);
+
+  // Beispieldaten, bis Leihvorgänge und Neuigkeiten ein Backend haben: offene Anfragen + ungelesene Neuigkeiten
+  const neu = LEIHANFRAGEN_BEISPIEL.length + NEUIGKEITEN_BEISPIEL.filter((n) => !n.gelesen).length;
+  document.getElementById("nachrichten-neu").textContent = `${neu} neu`;
+  document.getElementById("nachrichten-neu").hidden = !neu;
 
   holeJson("/kleidung")
     .then((liste) => {

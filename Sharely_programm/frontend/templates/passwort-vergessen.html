@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- Mockup „Desktop 3 · Passwort zurücksetzen anfordern“. Noch ohne Backend: Der Reset-Link (Collection passwort_resets,
+     ERM Entscheidung 13) kommt mit dem Modul nutzer. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Passwort zurücksetzen</title>
+  <link rel="stylesheet" href="../static/css/stil.css">
+  <script src="../static/js/gemeinsam.js"></script>
+</head>
+<body>
+<main class="anmelde-seite">
+  <section class="anmelde-bild" aria-hidden="true">
+    <div class="marke-klein">
+      <span class="logo-kachel"><img src="../../assets/branding/sharely-logo.png" alt=""></span>
+      <span><span class="wortmarke">SHARELY</span><small>style and share</small></span>
+    </div>
+    <h1>Dein Kleiderschrank. Mit Freunden geteilt.</h1>
+    <span class="deko streifen"></span>
+    <span class="deko karo"></span>
+    <span class="deko punkte"></span>
+  </section>
+
+  <section class="anmelde-formular">
+    <div class="anmelde-spalte">
+      <a class="zurueck-link" href="index.html"><span data-symbol="zurueck"></span> Zur Anmeldung</a>
+      <div class="anmelde-karte">
+        <h2 class="kleiner">Passwort zurücksetzen</h2>
+        <p class="unterzeile">Gib deine E-Mail-Adresse ein. Wir schicken dir einen Link zum Zurücksetzen deines Passworts.</p>
+        <form id="formular" novalidate>
+          <label><span class="feldname">E-Mail-Adresse</span><input type="email" name="email" autocomplete="email" placeholder="name@beispiel.de" required></label>
+          <button type="submit" class="knopf breit">Link senden</button>
+          <div class="meldung" id="meldung" role="status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  document.getElementById("formular").onsubmit = (e) => {
+    e.preventDefault();
+    const meldung = document.getElementById("meldung");
+    if (!e.target.email.value.includes("@")) return zeigeMeldung(meldung, "Bitte eine gültige E-Mail-Adresse eingeben.", "fehler");
+    // Gleiche Antwort, ob es das Konto gibt oder nicht: verrät nicht, welche Adressen registriert sind
+    zeigeMeldung(meldung, "Falls es ein Konto mit dieser Adresse gibt, ist der Link unterwegs.", "ok");
+    meldung.insertAdjacentHTML("beforeend", '\n<a class="link" href="passwort-neu.html">Vorschau: Seite aus dem Link öffnen</a>');
+  };
+</script>
+</body>
+</html>

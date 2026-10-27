@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Mockup „Freunde-Leih Verleihansicht“ (dort für einen Freund, hier für alle Freunde).
+<!-- Mockups „Freunde-Leih Verleihansicht“ (dort für einen Freund, hier für alle Freunde) und „Leih-Detailansicht (Overlay)“.
      Beispieldaten: Das Modul verleihen hat noch kein Backend. -->
 <html lang="de">
 <head>
@@ -16,6 +16,7 @@
       <h2><span>Leihen mit deinen Freunden<small>Was du dir geliehen und was du verliehen hast</small></span></h2>
     </header>
     <div class="hinweis">Beispieldaten: Verleihen und Verschenken haben noch kein Backend.</div>
+    <div id="meldung" class="meldung" role="status"></div>
     <div class="leih-spalten">
       <section class="leih-spalte geliehen">
         <header><span class="weiss-rund" data-symbol="links"></span>
@@ -31,6 +32,25 @@
   </div>
 </main>
 
+<dialog class="blatt schmal" id="details" aria-labelledby="d-titel">
+  <header class="blatt-kopf">
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Zurück" data-symbol="zurueck"></button>
+    <h2 id="d-titel">Leihdetails</h2>
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+  </header>
+  <div class="blatt-inhalt">
+    <div class="teil-kopf" style="padding: 18px">
+      <span class="vorschau" id="d-vorschau" style="width: 150px; height: 150px" data-symbol="buegel"></span>
+      <span><strong id="d-teil"></strong><small id="d-herkunft"></small>
+        <a class="link" style="display: block; margin-top: 6px" title="Kommt mit dem Modul verleihen">Kleidungsstück ansehen</a></span>
+      <span class="pfeil" data-symbol="weiter"></span>
+    </div>
+    <dl class="eigenschaften" id="d-eigenschaften" style="margin-top: 14px"></dl>
+    <div class="meldung" id="d-meldung" role="status"></div>
+    <button type="button" class="knopf breit" id="d-zurueck" style="margin-top: 26px"><span data-symbol="ok"></span> Als zurückgegeben markieren</button>
+  </div>
+</dialog>
+
 <script>
   seitenkopf("Leihen");
   fussleiste([
@@ -38,31 +58,101 @@
     { text: "Zu den Freunden", symbol: "person", href: "freunde.html", art: "knopf-dunkel" },
   ]);
 
-  // frist: ok = Rückgabedatum in der Zukunft, offen = unbefristet, ueberfaellig
+  // Felder wie der Leihvorgang im ERM: Person, seit, bis (null = unbefristet), Notiz; überfällig wird berechnet
   const BEISPIELE = {
     geliehen: [
-      { titel: "Lederjacke", text: "Jacken · von Lena · seit 02.10.2026", frist: "ok", fristText: "bis 24.10.2026", ton: "ton-gelb" },
-      { titel: "Seidenschal", text: "Accessoires · von Lena · seit 20.09.2026", frist: "offen", fristText: "unbefristet", ton: "ton-minze" },
+      { titel: "Lederjacke", art: "jacken", person: "Lena Becker", personTon: "gelb", seit: "2026-10-02", bis: "2026-11-24", notiz: "", ton: "ton-gelb" },
+      { titel: "Seidenschal", art: "accessoires", person: "Lena Becker", personTon: "gelb", seit: "2026-09-20", bis: null, notiz: "", ton: "ton-minze" },
     ],
     verliehen: [
-      { titel: "Wintermantel", text: "Jacken · an Lena · seit 01.10.2026", frist: "ueberfaellig", fristText: "überfällig · 15.10.2026", ton: "ton-rosa" },
-      { titel: "Handtasche", text: "Accessoires · an Jonas · seit 05.10.2026", frist: "offen", fristText: "unbefristet", ton: "ton-beige" },
+      { titel: "Wintermantel", art: "jacken", person: "Lena Becker", personTon: "gelb", seit: "2026-10-01", bis: "2026-10-15", notiz: "Bitte nur chemisch reinigen.", ton: "ton-rosa" },
+      { titel: "Handtasche", art: "accessoires", person: "Jonas Weber", personTon: "", seit: "2026-10-05", bis: null, notiz: "", ton: "ton-beige" },
     ],
   };
+  const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const heute = new Date().toISOString().slice(0, 10);
 
-  for (const [art, liste] of Object.entries(BEISPIELE)) {
-    document.getElementById(`anzahl-${art}`).textContent = liste.length;
-    document.getElementById(art).replaceChildren(...liste.map((e) => {
-      const zeile = document.createElement("div");
-      zeile.className = "leih-eintrag";
-      zeile.innerHTML = `<span class="vorschau ${e.ton}">${SYMBOL.buegel}</span><span class="text"><strong></strong><small></small></span>
-        <span class="frist ${e.frist}">${SYMBOL.kalender} <span></span></span>${SYMBOL.weiter}`;
-      zeile.querySelector("strong").textContent = e.titel;
-      zeile.querySelector("small").textContent = e.text;
-      zeile.querySelector(".frist span").textContent = e.fristText;
-      return zeile;
-    }));
+  /** [Klasse, Text] der Frist: ok, offen (unbefristet) oder überfällig */
+  function frist(e) {
+    if (!e.bis) return ["offen", "unbefristet"];
+    if (e.bis < heute) return ["ueberfaellig", `überfällig · ${datum(e.bis)}`];
+    return ["ok", `bis ${datum(e.bis)}`];
   }
+
+  function zeichne() {
+    for (const [art, liste] of Object.entries(BEISPIELE)) {
+      document.getElementById(`anzahl-${art}`).textContent = liste.length;
+      document.getElementById(art).replaceChildren(...liste.map((e) => {
+        const zeile = document.createElement("button");
+        zeile.type = "button";
+        zeile.className = "leih-eintrag klickbar";
+        const [klasse, text] = frist(e);
+        zeile.innerHTML = `<span class="vorschau ${e.ton}">${SYMBOL.buegel}</span><span class="text"><strong></strong><small></small></span>
+          <span class="frist ${klasse}">${SYMBOL.kalender} <span></span></span>${SYMBOL.weiter}`;
+        zeile.querySelector("strong").textContent = e.titel;
+        zeile.querySelector("small").textContent =
+          `${KLEIDUNGSARTEN[e.art]} · ${art === "geliehen" ? "von" : "an"} ${e.person.split(" ")[0]} · seit ${datum(e.seit)}`;
+        zeile.querySelector(".frist span").textContent = text;
+        zeile.onclick = () => zeigeDetails(e, art);
+        return zeile;
+      }));
+    }
+  }
+
+  // ---------- Leihdetails ----------
+
+  const details = document.getElementById("details");
+  fensterVerdrahten(details);
+
+  function zeile(dl, name, inhalt) {
+    const div = document.createElement("div");
+    div.innerHTML = "<dt></dt><dd></dd>";
+    div.querySelector("dt").textContent = name;
+    div.querySelector("dd").append(...inhalt);
+    dl.append(div);
+  }
+
+  function zeigeDetails(e, art) {
+    const verliehen = art === "verliehen";
+    document.getElementById("d-vorschau").className = `vorschau ${e.ton}`;
+    document.getElementById("d-teil").textContent = e.titel;
+    document.getElementById("d-herkunft").textContent =
+      `${KLEIDUNGSARTEN[e.art]} · ${verliehen ? "aus deinem Schrank" : `aus ${genitiv(e.person)} Schrank`}`;
+    document.getElementById("d-meldung").textContent = "";
+
+    const dl = document.getElementById("d-eigenschaften");
+    dl.replaceChildren();
+    const person = Object.assign(document.createElement("span"), { className: `initiale klein ${e.personTon}`, textContent: e.person[0] });
+    zeile(dl, verliehen ? "An" : "Von", [person, e.person]);
+    const typ = Object.assign(document.createElement("span"), { className: "marke-pille" });
+    typ.innerHTML = SYMBOL[verliehen ? "rechts" : "links"];
+    typ.append(verliehen ? "Verliehen" : "Geliehen");
+    zeile(dl, "Typ", [typ]);
+    zeile(dl, verliehen ? "Verliehen seit" : "Geliehen seit", [datum(e.seit)]);
+    const kal = document.createElement("span");
+    kal.innerHTML = SYMBOL.kalender;
+    zeile(dl, "Rückgabedatum", e.bis ? [kal.firstChild, datum(e.bis)] : ["unbefristet"]);
+    const ueberfaellig = e.bis && e.bis < heute;
+    const status = Object.assign(document.createElement("span"), {
+      className: `punkt-marke ${ueberfaellig ? "bei_dir" : "verfuegbar"}`,
+      textContent: ueberfaellig ? `Überfällig seit ${datum(e.bis)}` : "Läuft",
+    });
+    zeile(dl, "Status", [status]);
+    if (e.notiz) zeile(dl, "Notiz", [e.notiz]);
+
+    // Zurückgeben markiert der Besitzer, also nur bei verliehenen Teilen
+    const knopf = document.getElementById("d-zurueck");
+    knopf.hidden = !verliehen;
+    knopf.onclick = () => {
+      BEISPIELE.verliehen.splice(BEISPIELE.verliehen.indexOf(e), 1);
+      details.close();
+      zeichne();
+      zeigeMeldung(document.getElementById("meldung"), `${e.titel} ist zurück in deinem Schrank (nur in der Anzeige, das Backend-Modul verleihen fehlt noch).`, "ok");
+    };
+    details.showModal();
+  }
+
+  zeichne();
 </script>
 </body>
 </html>

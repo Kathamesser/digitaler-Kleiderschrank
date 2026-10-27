@@ -595,3 +595,140 @@ a.menue-zeile { text-decoration: none; }
 .masse-raster { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; }
 .masse-raster label { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 10px; font-size: .92rem; }
 @media (max-width: 700px) { .masse-raster { grid-template-columns: 1fr; } }
+
+/* ---------- Passwort zurücksetzen (Desktop 3, 4) ---------- */
+
+.anmelde-spalte { width: min(612px, 100%); }
+.anmelde-spalte .anmelde-karte { width: 100%; }
+.anmelde-karte h2.kleiner { font-size: 2.3rem; }
+.zurueck-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; margin-bottom: 22px; }
+.pruefliste { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 8px; color: var(--text-leise); font-size: .95rem; }
+.pruefliste li { display: flex; align-items: center; gap: 10px; }
+.pruefliste li::before { content: ""; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--text-leise); flex-shrink: 0; }
+.pruefliste li.erfuellt { color: var(--primaer); }
+.pruefliste li.erfuellt::before {
+  border-color: var(--primaer); background: var(--primaer) no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ---------- Nachrichten ---------- */
+
+.zwei-karten { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+.zwei-karten > .weisse-karte { margin-top: 0; }
+.karte-titel { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.karte-titel h2 { font-size: 1.75rem; }
+.karte-titel p { margin: 2px 0 0; color: var(--text-leise); font-size: .95rem; }
+.karte-titel .link { margin-left: auto; align-self: flex-start; margin-top: 8px; background: none; border: none; font: inherit; font-weight: 700; cursor: pointer; }
+.symbol-kasten-klein { width: 40px; height: 40px; border-radius: 10px; background: var(--primaer-hell); color: var(--primaer); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.symbol-kasten-klein.weiss { background: var(--flaeche); border: 1.5px solid var(--linie); }
+.symbol-kasten-klein img { width: 80%; }
+.anfrage-karte { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 16px; background: #faf6ef; border: 1.5px solid var(--linie); border-radius: var(--rund); padding: 16px; }
+.anfrage-karte + .anfrage-karte { margin-top: 12px; }
+.anfrage-karte .initiale { grid-row: span 2; }
+.anfrage-karte .text strong { display: block; font-size: 1.15rem; font-weight: 500; }
+.anfrage-karte .text span { display: block; margin: 2px 0; }
+.anfrage-karte .text small { color: var(--text-leise); }
+.anfrage-karte .aktionen { grid-column: 2 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.anfrage-karte .teil { display: flex; align-items: center; gap: 12px; margin-right: auto; font-weight: 500; }
+.mini-kachel { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.typ-marke { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--rund-pille); font-weight: 700; font-size: .85rem; white-space: nowrap; align-self: start; }
+.typ-marke svg { width: 15px; height: 15px; }
+.typ-marke.leihen, .typ-marke.typ-update { background: var(--primaer-hell); color: var(--primaer); }
+.typ-marke.verschenken, .typ-marke.typ-hinweis { background: var(--rosa); color: var(--rot); }
+.typ-marke.typ-info { background: var(--feld); color: var(--text); }
+.neuigkeit { border: 1.5px solid var(--linie); border-radius: var(--rund); padding: 16px 20px; background: #faf6ef; }
+.neuigkeit + .neuigkeit { margin-top: 12px; }
+.neuigkeit .typ-marke { align-self: center; }
+.neuigkeit.ungelesen { border-color: var(--primaer); background: var(--flaeche); }
+.neuigkeit .oben { display: flex; align-items: center; gap: 12px; font-size: .9rem; color: var(--text-leise); }
+.neu-punkt { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--rot); font-weight: 700; }
+.neu-punkt::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.neuigkeit h3 { font-size: 1.2rem; margin: 10px 0 6px; }
+.neuigkeit p { margin: 0 0 8px; }
+.neuigkeit summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; color: var(--primaer); font-weight: 700; cursor: pointer; }
+.neuigkeit summary::-webkit-details-marker { display: none; }
+.neuigkeit summary svg { width: 15px; height: 15px; transition: transform .2s; }
+.neuigkeit details[open] summary svg { transform: rotate(180deg); }
+.knopf-gelb { background: #e8a93a; border-color: #e8a93a; color: var(--text); }
+
+/* ---------- Kleiderschrank und Garderobe eines Freundes ---------- */
+
+.freund-leiste { display: grid; grid-template-columns: 1fr minmax(0, 720px) 1fr; align-items: center; gap: 16px; margin-bottom: 22px; }
+.freund-leiste .suche { min-height: 48px; }
+.freund-chip { justify-self: start; display: inline-flex; align-items: center; gap: 14px; background: var(--flaeche); border-radius: 20px; box-shadow: var(--schatten); padding: 10px 22px 10px 10px; }
+.freund-chip .symbolknopf { width: 44px; height: 44px; border-radius: 10px; }
+.freund-chip strong { display: block; font-size: 1.2rem; font-weight: 500; }
+.freund-chip small { color: var(--text-leise); }
+.punkt-marke { display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 3px 10px; border-radius: var(--rund-pille); font-weight: 700; font-size: .85rem; white-space: nowrap; }
+.punkt-marke::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.punkt-marke.verfuegbar { background: var(--primaer-hell); color: var(--primaer); }
+.punkt-marke.bei_dir { background: var(--rosa); color: var(--rot); }
+.punkt-marke.verliehen { background: var(--feld); color: var(--text-leise); }
+.karte .punkt-marke { margin: 10px 6px 0; }
+.karte.ausgegraut .kachel > svg { opacity: .45; }
+.avatar-panel > p { margin: 14px 0 0; color: var(--text-leise); font-size: .95rem; text-align: center; }
+.outfit-karte.klickbar { cursor: pointer; border: none; font: inherit; color: inherit; text-align: left; width: 100%; }
+
+/* ---------- Detail-Fenster (Outfit, Teil eines Freundes) ---------- */
+
+.blatt.klein { width: min(720px, calc(100% - 32px)); }
+.blatt-kopf .titel-block { flex: 1; }
+.herkunft { display: flex; align-items: center; gap: 8px; margin: 6px 0 0; color: var(--text-leise); font-size: 1rem; }
+.initiale.mini { width: 24px; height: 24px; font-size: .75rem; }
+.initiale.klein { width: 40px; height: 40px; font-size: 1rem; }
+.outfit-gross { background: var(--feld); border-radius: var(--rund-gross); padding: 12px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 10px; }
+.outfit-gross > div { min-height: 150px; border-radius: var(--rund); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-weight: 500; }
+.outfit-gross svg { width: 44px; height: 44px; stroke-width: 1.6; }
+.teile-liste { list-style: none; margin: 0; padding: 0; }
+.teile-liste li > * {
+  width: 100%; display: flex; align-items: center; gap: 16px; padding: 10px 0; border: none; border-bottom: 1.5px solid var(--linie);
+  background: none; font: inherit; color: inherit; text-align: left;
+}
+.teile-liste button { cursor: pointer; }
+.teile-liste strong { display: block; font-weight: 500; font-size: 1.1rem; }
+.teile-liste small { color: var(--text-leise); }
+.teile-liste .rechts { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.unten-knoepfe { display: grid; gap: 16px; margin-top: 28px; }
+.unten-knoepfe .zeile { gap: 16px; }
+
+/* ---------- Anfragen (Leihen, Verschenken, Freund hinzufügen) ---------- */
+
+.umschalter button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.umschalter.dunkel { margin: 0; }
+.umschalter.dunkel button { font-size: 1.05rem; color: var(--text); }
+.umschalter.dunkel button.aktiv { background: var(--dunkel); color: var(--auf-dunkel); }
+.teil-kopf { display: flex; align-items: center; gap: 20px; background: #faf6ef; border: 1.5px solid var(--linie); border-radius: var(--rund); padding: 12px; text-decoration: none; color: inherit; }
+.teil-kopf .vorschau { width: 76px; height: 76px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.teil-kopf .vorschau svg { width: 34px; height: 34px; }
+.teil-kopf strong { display: block; font-family: var(--schrift-titel); font-size: 1.4rem; }
+.teil-kopf small { color: var(--text-leise); font-size: 1rem; }
+.teil-kopf .pfeil { margin-left: auto; padding-right: 12px; }
+.wahl-liste { border: 1.5px solid var(--feld-rand); border-radius: var(--rund); padding: 8px; max-height: 300px; overflow-y: auto; }
+.wahl-liste label { display: flex; align-items: center; gap: 16px; padding: 8px 14px; border-radius: 12px; font-weight: 500; font-size: 1.05rem; cursor: pointer; }
+.wahl-liste label:has(input:checked) { background: var(--primaer-hell); }
+.wahl-liste input { margin-left: auto; width: 22px; height: 22px; accent-color: var(--primaer); }
+.titel-zeile { display: flex; align-items: center; gap: 16px; margin: 22px 0 12px; }
+.titel-zeile .titel { margin: 0; }
+.titel-zeile .suche { flex: 1; min-height: 44px; padding: 0 16px; }
+.titel-zeile .suche input { font-size: 1rem; }
+.haekchen { display: flex; align-items: center; gap: 10px; margin-top: 10px; cursor: pointer; }
+.haekchen input { width: 20px; height: 20px; margin: 0; accent-color: var(--primaer); }
+.zusammenfassung { display: flex; align-items: center; gap: 14px; background: var(--primaer-hell); color: var(--primaer); font-weight: 700; border-radius: var(--rund); padding: 16px 20px; margin-top: 22px; }
+.info-kasten { display: flex; gap: 12px; font-size: 1rem; background: #faf6ef; border-radius: var(--rund); padding: 14px 18px; margin-top: 16px; line-height: 1.5; }
+.info-kasten svg { color: var(--primaer); margin-top: 3px; }
+.treffer { display: flex; align-items: center; gap: 16px; border: 1.5px solid var(--primaer); background: var(--primaer-hell); border-radius: var(--rund); padding: 12px 18px; margin-top: 16px; }
+.treffer strong { display: block; font-weight: 500; font-size: 1.15rem; }
+.treffer small { color: var(--primaer); }
+.treffer > :last-child { margin-left: auto; color: var(--primaer); }
+.leih-eintrag.klickbar { cursor: pointer; width: calc(100% - 28px); border: none; background: none; font: inherit; color: inherit; text-align: left; }
+.leih-eintrag.klickbar:hover { background: #faf6ef; }
+
+@media (max-width: 1200px) {
+  .zwei-karten { grid-template-columns: 1fr; }
+  .freund-leiste { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .anfrage-karte { grid-template-columns: auto 1fr; }
+  .anfrage-karte .typ-marke { grid-column: 2; }
+  .titel-zeile { flex-wrap: wrap; }
+}.teile-liste button:disabled { cursor: default; }

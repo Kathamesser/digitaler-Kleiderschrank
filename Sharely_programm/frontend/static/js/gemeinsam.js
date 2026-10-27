@@ -107,7 +107,24 @@ const SYMBOL = {
   sperren: svg('<circle cx="12" cy="12" r="8"/><path d="m6.5 6.5 11 11"/>'),
   mehr: svg('<circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/>'),
   ausdehnen: svg('<path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/>'),
+  geschenk: svg('<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9S10.5 4 8 4.5 7.5 9 12 9Zm0 0s1.5-5 4-4.5S16.5 9 12 9Z"/>'),
+  info: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.2"/>'),
+  warnung: svg('<path d="M12 4 2.8 19.5h18.4Z"/><path d="M12 10v4.5M12 17v.2"/>'),
+  update: svg('<path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 19.5h14"/>'),
+  freunde: svg('<circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M15 14.5a5 5 0 0 1 6.5 4.8"/>'),
 };
+
+/** <dialog> verdrahten: Knöpfe mit data-schliessen und ein Klick neben das Fenster schließen es. */
+function fensterVerdrahten(fenster) {
+  for (const el of fenster.querySelectorAll("[data-schliessen]")) el.onclick = (e) => { e.preventDefault(); fenster.close(); };
+  fenster.addEventListener("click", (e) => { if (e.target === fenster) fenster.close(); });
+}
+
+/** „Lenas“, „Jonas’“: Vorname im Genitiv für Titel wie „Lenas Kleiderschrank“. */
+function genitiv(name) {
+  const vorname = name.split(" ")[0];
+  return /[sßxz]$/i.test(vorname) ? `${vorname}’` : `${vorname}s`;
+}
 
 /** Kopfzeile wie in den Mockups: Logo mit SHARELY links, Seitentitel mittig, Nutzer rechts. */
 function seitenkopf(titel) {

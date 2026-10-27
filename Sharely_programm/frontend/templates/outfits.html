@@ -1,6 +1,6 @@
 <!doctype html>
-<!-- Mockup „Desktop · Outfits“. Beispieldaten: Das Modul outfits hat noch kein Backend.
-     Leeren Zustand ansehen: outfits.html?leer -->
+<!-- Mockups „Desktop · Outfits“, „Outfit – Detailansicht (Overlay)“ und „Outfits filtern (Overlay)“.
+     Beispieldaten: Das Modul outfits hat noch kein Backend. Leeren Zustand ansehen: outfits.html?leer -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -20,13 +20,16 @@
   </div>
 
   <div class="chips">
-    <button type="button" class="chip aktiv">Alles</button>
-    <button type="button" class="chip" disabled title="Kommt noch: Outfits haben noch kein Backend"><span data-symbol="filter"></span> Filter</button>
+    <button type="button" class="chip" id="alles">Alles</button>
+    <button type="button" class="chip" id="filterknopf" aria-haspopup="dialog" aria-controls="filterblatt">
+      <span data-symbol="filter"></span> Filter <span class="zahl" id="filterzahl" hidden></span>
+    </button>
   </div>
 
   <div class="outfits-bereich inhalt-wachsen">
     <div>
       <div class="hinweis">Beispieldaten: Outfits werden noch nicht gespeichert (Backend-Modul outfits fehlt).</div>
+      <div id="meldung" class="meldung" role="status"></div>
       <div class="raster" id="raster" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))"></div>
       <div class="leer" id="leer" hidden>
         <div class="kachel ton-beige" data-symbol="buegel"></div>
@@ -59,6 +62,61 @@
   </div>
 </main>
 
+<dialog class="blatt" id="detail" aria-labelledby="d-titel">
+  <header class="blatt-kopf">
+    <h2 id="d-titel"></h2>
+    <button type="button" class="symbolknopf rosa" id="d-herz"></button>
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+  </header>
+  <div class="blatt-inhalt">
+    <div class="zwei-spalten">
+      <div class="outfit-gross" id="d-teile-gross"></div>
+      <div>
+        <dl class="eigenschaften" id="d-eigenschaften"></dl>
+        <span class="titel">Enthaltene Teile</span>
+        <ul class="teile-liste" id="d-teile"></ul>
+        <div class="unten-knoepfe">
+          <button type="button" class="knopf-dunkel" disabled title="Kommt mit dem 3D-Avatar"><span data-symbol="anprobieren"></span> Kleidung anprobieren</button>
+          <div class="zeile">
+            <button type="button" class="knopf-gefahr" id="d-loeschen"><span data-symbol="muell"></span> Löschen</button>
+            <button type="button" class="knopf" disabled title="Kommt noch: Modul outfits fehlt"><span data-symbol="stift"></span> Bearbeiten</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="blatt" id="filterblatt" aria-labelledby="filtertitel">
+  <form id="filterformular" method="dialog">
+    <header class="blatt-kopf">
+      <h2 id="filtertitel"><span data-symbol="filter"></span>Outfits filtern</h2>
+      <button type="button" class="symbolknopf" data-schliessen aria-label="Filter schließen" data-symbol="schliessen"></button>
+    </header>
+    <div class="blatt-inhalt">
+      <span class="titel" style="margin-top: 0">Name</span>
+      <label class="suche" style="min-height: 52px">
+        <span data-symbol="lupe"></span>
+        <input type="search" name="name" placeholder="z. B. Business Look" aria-label="Name des Outfits">
+      </label>
+      <div class="zeile" style="gap: 22px">
+        <div>
+          <div class="filter-titel"><span class="titel">Kategorie</span><small data-zaehler="kategorie" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-kategorie"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Kleidungsstück</span><small data-zaehler="teil" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-teil"></div>
+        </div>
+      </div>
+    </div>
+    <footer class="blatt-fuss">
+      <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
+      <button type="submit" class="knopf-dunkel"><span data-symbol="ok"></span> <span id="filter-zeigen">Filter anwenden</span></button>
+    </footer>
+  </form>
+</dialog>
+
 <script>
   seitenkopf("Meine Outfits");
   fussleiste([
@@ -67,20 +125,23 @@
   ]);
   document.getElementById("avatar-name").textContent = NUTZER.name;
 
-  // Beispiele wie im Mockup; Kategorie statt Anlass (Anlass geht laut ERM vom 20.10.2026 in den Kategorien auf)
+  // Beispiele wie im Mockup; Kategorien statt Anlass (Anlass geht laut ERM vom 20.10.2026 in den Kategorien auf).
+  // Teil: [Name, Pastellton, Kleidungsart]
   const BEISPIELE = [
-    { name: "Business Look", kategorie: "Business", favorit: true, teile: [["Bluse", "ton-minze"], ["Chino", "ton-minze"], ["Handtasche", "ton-beige"], ["Stiefel", "ton-gelb"]] },
-    { name: "Wochenende", kategorie: "Freizeit", favorit: false, teile: [["T-Shirt", "ton-tuerkis"], ["Jeans", "ton-beige"], ["Sneaker", "ton-rosa"], ["Lederjacke", "ton-gelb"]] },
-    { name: "Winter Outfit", kategorie: "Freizeit", favorit: false, teile: [["Wintermantel", "ton-rosa"], ["Pullover", "ton-gelb"], ["Schal", "ton-tuerkis"], ["Stiefel", "ton-gelb"]] },
-    { name: "Date Night", kategorie: "Abend", favorit: true, teile: [["Jumpsuit", "ton-rosa"], ["Lederjacke", "ton-gelb"], ["Handtasche", "ton-minze"], ["Stiefel", "ton-beige"]] },
-    { name: "Sommerabend", kategorie: "Abend", favorit: false, teile: [["Sommerkleid", "ton-tuerkis"], ["Sandalen", "ton-minze"], ["Handtasche", "ton-beige"], ["Bluse", "ton-rosa"]] },
-    { name: "Sporttag", kategorie: "Sport", favorit: false, teile: [["Hoodie", "ton-beige"], ["T-Shirt", "ton-tuerkis"], ["Chino", "ton-minze"], ["Sneaker", "ton-rosa"]] },
+    { name: "Business Look", kategorien: ["Business", "Lieblingsteile"], favorit: true, privat: false, teile: [["Bluse", "ton-minze", "tops"], ["Chino", "ton-beige", "hosen"], ["Handtasche", "ton-tuerkis", "accessoires"], ["Stiefel", "ton-gelb", "schuhe"]] },
+    { name: "Wochenende", kategorien: ["Freizeit"], favorit: false, privat: false, teile: [["T-Shirt", "ton-tuerkis", "tops"], ["Jeans", "ton-beige", "hosen"], ["Sneaker", "ton-rosa", "schuhe"], ["Lederjacke", "ton-gelb", "jacken"]] },
+    { name: "Winter Outfit", kategorien: ["Freizeit", "Winterkleidung"], favorit: false, privat: false, teile: [["Wintermantel", "ton-rosa", "jacken"], ["Pullover", "ton-gelb", "pullover"], ["Schal", "ton-tuerkis", "accessoires"], ["Stiefel", "ton-gelb", "schuhe"]] },
+    { name: "Date Night", kategorien: ["Abend"], favorit: true, privat: true, teile: [["Jumpsuit", "ton-rosa", "einteiler"], ["Lederjacke", "ton-gelb", "jacken"], ["Handtasche", "ton-minze", "accessoires"], ["Stiefel", "ton-beige", "schuhe"]] },
+    { name: "Sommerabend", kategorien: ["Abend", "Sommerkleidung"], favorit: false, privat: false, teile: [["Sommerkleid", "ton-tuerkis", "kleider"], ["Sandalen", "ton-minze", "schuhe"], ["Handtasche", "ton-beige", "accessoires"], ["Bluse", "ton-rosa", "tops"]] },
+    { name: "Sporttag", kategorien: ["Sport"], favorit: false, privat: false, teile: [["Hoodie", "ton-beige", "pullover"], ["T-Shirt", "ton-tuerkis", "tops"], ["Chino", "ton-minze", "hosen"], ["Sneaker", "ton-rosa", "schuhe"]] },
   ];
   const outfits = new URLSearchParams(location.search).has("leer") ? [] : BEISPIELE;
+  const meldung = document.getElementById("meldung");
 
   function outfitKarte(o) {
-    const karte = document.createElement("article");
-    karte.className = "outfit-karte";
+    const karte = document.createElement("button");
+    karte.type = "button";
+    karte.className = "outfit-karte klickbar";
     const teile = document.createElement("div");
     teile.className = "outfit-teile";
     o.teile.forEach(([name, ton], i) => {
@@ -95,19 +156,145 @@
     fuss.className = "outfit-fuss";
     fuss.innerHTML = "<strong></strong><small></small>";
     fuss.querySelector("strong").textContent = o.name;
-    fuss.querySelector("small").textContent = `${o.kategorie} · ${o.teile.length} Teile`;
+    fuss.querySelector("small").textContent = `${o.kategorien[0]} · ${o.teile.length} Teile`;
     karte.append(teile, fuss);
+    karte.onclick = () => zeigeDetail(o);
     return karte;
   }
 
+  // ---------- Filter-Fenster ----------
+
+  const blatt = document.getElementById("filterblatt");
+  const formular = document.getElementById("filterformular");
+  const filterzahl = document.getElementById("filterzahl");
+  const filterknopf = document.getElementById("filterknopf");
+  const alles = document.getElementById("alles");
+  fensterVerdrahten(blatt);
+
+  /** Checkbox-Liste wie im Filter des Kleiderschranks; werte: [[wert, Beschriftung, Ton]] */
+  function auswahlliste(ziel, name, werte) {
+    for (const [wert, text, ton, art] of werte) {
+      const label = document.createElement("label");
+      label.innerHTML = `<input type="checkbox" name="${name}">${ton ? `<span class="mini-kachel ${ton}">${SYMBOL.buegel}</span>` : ""}<span><span class="text"></span>${art ? '<small class="leise" style="display: block"></small>' : ""}</span>`;
+      label.querySelector("input").value = wert;
+      label.querySelector(".text").textContent = text;
+      if (art) label.querySelector("small").textContent = KLEIDUNGSARTEN[art];
+      document.getElementById(ziel).append(label);
+    }
+  }
+  auswahlliste("f-kategorie", "kategorie", KATEGORIEN_VORGABE.map((k) => [k, k]));
+  // Kleidungsstücke, die in Outfits vorkommen (später: alle Teile aus dem eigenen Schrank)
+  const teileImOutfit = new Map(outfits.flatMap((o) => o.teile).map(([name, ton, art]) => [name, [name, name, ton, art]]));
+  auswahlliste("f-teil", "teil", [...teileImOutfit.values()]);
+
+  function kriterien() {
+    const daten = new FormData(formular);
+    return { name: (daten.get("name") || "").trim().toLowerCase(), kategorie: daten.getAll("kategorie"), teil: daten.getAll("teil") };
+  }
+  const anzahlAktiv = (f) => Boolean(f.name) + Boolean(f.kategorie.length) + Boolean(f.teil.length);
+  // Innerhalb einer Liste reicht ein Treffer (oder), zwischen Name, Kategorie und Teil müssen alle passen (und)
+  const passtZuFilter = (o, f) => o.name.toLowerCase().includes(f.name)
+    && (!f.kategorie.length || f.kategorie.some((k) => o.kategorien.includes(k)))
+    && (!f.teil.length || f.teil.some((t) => o.teile.some(([name]) => name === t)));
+
+  filterknopf.onclick = () => blatt.showModal();
+  formular.oninput = zeichne;
+  const zuruecksetzen = () => { formular.reset(); zeichne(); };
+  document.getElementById("filter-zuruecksetzen").onclick = zuruecksetzen;
+  alles.onclick = zuruecksetzen;
+
+  // ---------- Liste ----------
+
   const raster = document.getElementById("raster");
   function zeichne() {
+    const f = kriterien();
+    const anzahl = anzahlAktiv(f);
+    filterzahl.textContent = anzahl;
+    filterzahl.hidden = !anzahl;
+    alles.classList.toggle("aktiv", anzahl === 0);
+    for (const el of formular.querySelectorAll("[data-zaehler]")) {
+      const n = f[el.dataset.zaehler].length;
+      el.textContent = n ? `${n} gewählt` : el.dataset.leer;
+    }
+    document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
+
     const wort = document.getElementById("suche").value.trim().toLowerCase();
-    raster.replaceChildren(...outfits.filter((o) => o.name.toLowerCase().includes(wort)).map(outfitKarte));
+    const treffer = outfits.filter((o) => o.name.toLowerCase().includes(wort) && passtZuFilter(o, f));
+    raster.replaceChildren(...treffer.map(outfitKarte));
+    if (outfits.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
+    document.getElementById("leer").hidden = outfits.length > 0;
   }
   document.getElementById("suche").oninput = zeichne;
+
+  // ---------- Detail-Fenster ----------
+
+  const detail = document.getElementById("detail");
+  fensterVerdrahten(detail);
+  let offen = null;
+
+  function herzZeigen() {
+    const herz = document.getElementById("d-herz");
+    herz.innerHTML = offen.favorit ? SYMBOL.herzVoll : SYMBOL.herz;
+    herz.setAttribute("aria-label", offen.favorit ? "Favorit entfernen" : "Als Favorit markieren");
+  }
+  document.getElementById("d-herz").onclick = () => { offen.favorit = !offen.favorit; herzZeigen(); zeichne(); };
+
+  function zeile(dl, name, inhalt, symbol) {
+    const div = document.createElement("div");
+    div.innerHTML = "<dt></dt><dd></dd>";
+    if (symbol) div.querySelector("dt").innerHTML = SYMBOL[symbol];
+    div.querySelector("dt").append(name);
+    div.querySelector("dd").append(...inhalt);
+    dl.append(div);
+  }
+
+  function zeigeDetail(o) {
+    offen = o;
+    document.getElementById("d-titel").textContent = o.name;
+    herzZeigen();
+    document.getElementById("d-teile-gross").replaceChildren(...o.teile.map(([name, ton]) => {
+      const kachel = document.createElement("div");
+      kachel.className = ton;
+      kachel.innerHTML = SYMBOL.buegel;
+      kachel.append(name);
+      return kachel;
+    }));
+
+    const dl = document.getElementById("d-eigenschaften");
+    dl.replaceChildren();
+    zeile(dl, "Name", [o.name]);
+    zeile(dl, "Kategorien", o.kategorien.map((k) => {
+      const p = Object.assign(document.createElement("span"), { className: "marke-pille etikett" });
+      p.innerHTML = SYMBOL.etikett;
+      p.append(k);
+      return p;
+    }));
+    // Privat am Outfit (ERM, entschieden von Manuel am 20.10.2026)
+    const schalter = document.createElement("span");
+    schalter.className = "schalter";
+    schalter.innerHTML = `<input type="checkbox" disabled aria-label="Privat" ${o.privat ? "checked" : ""}><span class="bahn"></span>`;
+    zeile(dl, "Privat", [schalter, o.privat ? "Nur für dich sichtbar" : "Für Freunde sichtbar"], "schloss");
+
+    document.getElementById("d-teile").replaceChildren(...o.teile.map(([name, ton, art]) => {
+      const li = document.createElement("li");
+      // Später Link auf kleidungsstueck.html?id=…; die Beispiel-Teile haben keine ID
+      li.innerHTML = `<div><span class="mini-kachel ${ton}">${SYMBOL.buegel}</span><span><strong></strong><small></small></span><span class="rechts">${SYMBOL.weiter}</span></div>`;
+      li.querySelector("strong").textContent = name;
+      li.querySelector("small").textContent = KLEIDUNGSARTEN[art];
+      return li;
+    }));
+    detail.showModal();
+  }
+
+  document.getElementById("d-loeschen").onclick = () => {
+    if (!confirm(`Outfit „${offen.name}“ löschen? Die Kleidungsstücke bleiben im Schrank.`)) return;
+    outfits.splice(outfits.indexOf(offen), 1);
+    detail.close();
+    zeichne();
+    zeigeMeldung(meldung, `„${offen.name}“ gelöscht (nur in der Anzeige, das Backend-Modul outfits fehlt noch).`, "ok");
+  };
+
   zeichne();
-  document.getElementById("leer").hidden = outfits.length > 0;
 </script>
 </body>
 </html>

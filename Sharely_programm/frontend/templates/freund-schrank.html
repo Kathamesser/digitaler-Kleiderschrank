@@ -1,0 +1,169 @@
+<!doctype html>
+<!-- Mockups „Desktop · Kleiderschrank eines Freundes“, „Kleidungsstück eines Freundes – Detailansicht (Overlay)“ und
+     „Anfrage an Freund (Fenster)“. Aufruf: freund-schrank.html?freund=lena. Beispieldaten: Module freunde und verleihen fehlen.
+     Zu sehen sind nur geteilte Teile (privat = false, ERM Entscheidung 10). -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Kleiderschrank eines Freundes</title>
+  <link rel="stylesheet" href="../static/css/stil.css">
+  <script src="../static/js/gemeinsam.js"></script>
+  <script src="../static/js/beispieldaten.js"></script>
+  <script src="../static/js/anfrage.js"></script>
+</head>
+<body>
+<main class="seite">
+  <div class="freund-leiste">
+    <div class="freund-chip">
+      <a class="symbolknopf" href="freunde.html" aria-label="Zurück zu den Freunden" data-symbol="zurueck"></a>
+      <span class="initiale" id="f-initiale"></span>
+      <span><strong id="f-name"></strong><small id="f-zahl"></small></span>
+    </div>
+    <label class="suche">
+      <span data-symbol="lupe"></span>
+      <input type="search" id="suche">
+    </label>
+  </div>
+
+  <div class="chips">
+    <button type="button" class="chip" id="alles">Alles</button>
+    <button type="button" class="chip" id="nur-verfuegbare" aria-pressed="false">Nur verfügbare</button>
+    <button type="button" class="chip" disabled title="Kommt noch"><span data-symbol="filter"></span> Filter</button>
+  </div>
+
+  <div class="inhalt-wachsen">
+    <div class="hinweis">Beispieldaten: Freunde und Verleihen haben noch kein Backend.</div>
+    <div class="raster" id="raster"></div>
+  </div>
+</main>
+
+<dialog class="blatt" id="detail" aria-labelledby="d-titel">
+  <header class="blatt-kopf">
+    <div class="titel-block">
+      <h2 id="d-titel"></h2>
+      <p class="herkunft"><span class="initiale mini" id="d-initiale"></span><span id="d-herkunft"></span></p>
+    </div>
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+  </header>
+  <div class="blatt-inhalt">
+    <div class="zwei-spalten">
+      <div>
+        <div class="grossbild" id="d-bild"></div>
+        <div class="status-zeile" style="border-top: 1.5px solid var(--linie); padding-top: 22px">
+          <span class="titel">Status</span><span class="punkt-marke" id="d-status"></span>
+        </div>
+      </div>
+      <div>
+        <dl class="eigenschaften" id="d-eigenschaften"></dl>
+        <details class="aufklapper">
+          <summary><span data-symbol="lineal"></span> Maße <span class="pfeil" data-symbol="unten"></span></summary>
+          <div class="aufklapper-inhalt"><p class="leise" style="margin: 0">Beispieldaten ohne Maße.</p></div>
+        </details>
+        <div class="zeile" style="margin-top: 30px">
+          <button type="button" class="knopf-dunkel" disabled title="Kommt mit dem 3D-Avatar"><span data-symbol="anprobieren"></span> Kleidung anprobieren</button>
+          <button type="button" class="knopf" id="d-anfragen"><span data-symbol="links"></span> Ausleihen / Verschenken anfragen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const freund = freundAusAdresse();
+  const wessen = genitiv(freund.name);
+  seitenkopf(`${wessen} Kleiderschrank`);
+  document.title = `Sharely – ${wessen} Kleiderschrank`;
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Freunde", symbol: "freunde", href: "freunde.html", art: "knopf-gelb" },
+  ]);
+
+  document.getElementById("f-initiale").className = `initiale ${freund.ton}`;
+  document.getElementById("f-initiale").textContent = freund.name[0];
+  document.getElementById("f-name").textContent = freund.name;
+  document.getElementById("f-zahl").textContent = `${freund.teile} geteilte Teile`;
+  const suche = document.getElementById("suche");
+  suche.placeholder = `In ${wessen} Schrank suchen`;
+  suche.setAttribute("aria-label", suche.placeholder);
+
+  const nurVerfuegbare = document.getElementById("nur-verfuegbare");
+  const alles = document.getElementById("alles");
+  let nurFrei = false;
+
+  function karte(t) {
+    const k = document.createElement("button");
+    k.type = "button";
+    k.className = `karte ${t.verfuegbarkeit === "verliehen" ? "ausgegraut" : ""}`;
+    k.innerHTML = `<div class="kachel ${t.ton}">${SYMBOL.buegel}</div><strong></strong><small></small>
+      <span class="punkt-marke ${t.verfuegbarkeit}">${VERFUEGBARKEIT[t.verfuegbarkeit]}</span>`;
+    k.querySelector("strong").textContent = t.name;
+    k.querySelector("small").textContent = KLEIDUNGSARTEN[t.kleidungsart];
+    k.onclick = () => zeigeDetail(t);
+    return k;
+  }
+
+  function zeichne() {
+    const wort = suche.value.trim().toLowerCase();
+    const treffer = FREUND_TEILE_BEISPIEL.filter((t) =>
+      (!nurFrei || t.verfuegbarkeit === "verfuegbar")
+      && (!wort || [t.name, KLEIDUNGSARTEN[t.kleidungsart]].some((x) => x.toLowerCase().includes(wort))));
+    document.getElementById("raster").replaceChildren(...treffer.map(karte));
+    if (!treffer.length) document.getElementById("raster").innerHTML = '<p class="leise">Nichts gefunden.</p>';
+    alles.classList.toggle("aktiv", !nurFrei);
+    nurVerfuegbare.classList.toggle("aktiv", nurFrei);
+    nurVerfuegbare.setAttribute("aria-pressed", nurFrei);
+  }
+  suche.oninput = zeichne;
+  alles.onclick = () => { nurFrei = false; suche.value = ""; zeichne(); };
+  nurVerfuegbare.onclick = () => { nurFrei = !nurFrei; zeichne(); };
+
+  // ---------- Detail-Fenster ----------
+
+  const detail = document.getElementById("detail");
+  fensterVerdrahten(detail);
+
+  function zeile(dl, name, inhalt) {
+    const div = document.createElement("div");
+    div.innerHTML = "<dt></dt><dd></dd>";
+    div.querySelector("dt").textContent = name;
+    div.querySelector("dd").append(...inhalt);
+    dl.append(div);
+  }
+  const pille = (text) => Object.assign(document.createElement("span"), { className: "marke-pille", textContent: text });
+
+  function zeigeDetail(t) {
+    document.getElementById("d-titel").textContent = t.name;
+    document.getElementById("d-initiale").className = `initiale mini ${freund.ton}`;
+    document.getElementById("d-initiale").textContent = freund.name[0];
+    document.getElementById("d-herkunft").textContent = `aus ${wessen} Kleiderschrank`;
+    const bild = document.getElementById("d-bild");
+    bild.className = `grossbild ${t.ton}`;
+    bild.innerHTML = SYMBOL.buegel;
+    const status = document.getElementById("d-status");
+    status.className = `punkt-marke ${t.verfuegbarkeit}`;
+    status.textContent = VERFUEGBARKEIT[t.verfuegbarkeit];
+
+    const dl = document.getElementById("d-eigenschaften");
+    dl.replaceChildren();
+    zeile(dl, "Kleidungsart", [pille(KLEIDUNGSARTEN[t.kleidungsart])]);
+    zeile(dl, "Kategorien", t.kategorien.map(pille));
+    zeile(dl, "Saison", t.saison.map((s) => pille(SAISONS[s])));
+    zeile(dl, "Material", [pille(MATERIALIEN[t.material])]);
+    const farbe = FARBEN.find((f) => f.wert === t.farbe);
+    const punkt = Object.assign(document.createElement("span"), { className: "farbpunkt" });
+    punkt.style.background = farbe.farbe;
+    zeile(dl, "Farbe", [punkt, farbe.text]);
+
+    // Anfragen geht nur, wenn das Teil gerade bei der Freundin liegt
+    const anfragen = document.getElementById("d-anfragen");
+    anfragen.disabled = t.verfuegbarkeit !== "verfuegbar";
+    anfragen.title = t.verfuegbarkeit === "bei_dir" ? "Das Teil ist schon bei dir" : t.verfuegbarkeit === "verliehen" ? "Gerade verliehen" : "";
+    anfragen.onclick = () => anfrageOeffnen(freund, t);
+    detail.showModal();
+  }
+
+  zeichne();
+</script>
+</body>
+</html>

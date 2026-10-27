@@ -1,0 +1,177 @@
+<!doctype html>
+<!-- Mockups „Desktop · Garderobe eines Freundes“ und „Outfit eines Freundes – Detailansicht (Overlay)“.
+     Aufruf: freund-garderobe.html?freund=lena. Beispieldaten: Module freunde, outfits und verleihen fehlen.
+     Zu sehen sind nur geteilte Outfits (privat = false) und der Avatar, wenn er für Freunde freigegeben ist. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Garderobe eines Freundes</title>
+  <link rel="stylesheet" href="../static/css/stil.css">
+  <script src="../static/js/gemeinsam.js"></script>
+  <script src="../static/js/beispieldaten.js"></script>
+  <script src="../static/js/anfrage.js"></script>
+</head>
+<body>
+<main class="seite">
+  <div class="freund-leiste">
+    <div class="freund-chip">
+      <a class="symbolknopf" href="freunde.html" aria-label="Zurück zu den Freunden" data-symbol="zurueck"></a>
+      <span class="initiale" id="f-initiale"></span>
+      <span><strong id="f-name"></strong><small id="f-zahl"></small></span>
+    </div>
+    <label class="suche">
+      <span data-symbol="lupe"></span>
+      <input type="search" id="suche">
+    </label>
+  </div>
+
+  <div class="chips">
+    <button type="button" class="chip aktiv" id="alles">Alles</button>
+    <button type="button" class="chip" disabled title="Kommt noch"><span data-symbol="filter"></span> Filter</button>
+  </div>
+
+  <div class="outfits-bereich inhalt-wachsen">
+    <div>
+      <div class="hinweis">Beispieldaten: Freunde und Outfits haben noch kein Backend.</div>
+      <div class="raster" id="raster" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))"></div>
+    </div>
+    <aside class="avatar-panel" aria-label="Avatar">
+      <h2 class="zentriert" id="avatar-titel" style="margin-bottom: 18px"></h2>
+      <div class="avatar-buehne">
+        <button type="button" class="symbolknopf" disabled title="Kommt mit dem 3D-Avatar" aria-label="Avatar vergrößern" data-symbol="ausdehnen"></button>
+        <svg class="figur" viewBox="0 0 60 130" aria-hidden="true">
+          <circle cx="30" cy="14" r="12" fill="#d3c4ab"/>
+          <path d="M17 30h26l5 40-6 2-4-28v84h-7V82h-2v46h-7V44l-4 28-6-2Z" fill="#d3c4ab"/>
+        </svg>
+        Avatar
+      </div>
+      <p id="avatar-text"></p>
+    </aside>
+  </div>
+</main>
+
+<dialog class="blatt" id="detail" aria-labelledby="d-titel">
+  <header class="blatt-kopf">
+    <div class="titel-block">
+      <h2 id="d-titel"></h2>
+      <p class="herkunft"><span class="initiale mini" id="d-initiale"></span><span id="d-herkunft"></span></p>
+    </div>
+    <button type="button" class="symbolknopf" data-schliessen aria-label="Schließen" data-symbol="schliessen"></button>
+  </header>
+  <div class="blatt-inhalt">
+    <div class="zwei-spalten">
+      <div class="outfit-gross" id="d-teile-gross"></div>
+      <div>
+        <dl class="eigenschaften"><div><dt>Kategorien</dt><dd id="d-kategorien"></dd></div></dl>
+        <span class="titel">Enthaltene Teile</span>
+        <ul class="teile-liste" id="d-teile"></ul>
+        <p class="leise" id="d-tipp"></p>
+        <div class="unten-knoepfe">
+          <button type="button" class="knopf-dunkel" disabled title="Kommt mit dem 3D-Avatar"><span data-symbol="anprobieren"></span> Outfit anprobieren</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const freund = freundAusAdresse();
+  const wessen = genitiv(freund.name);
+  const vorname = freund.name.split(" ")[0];
+  seitenkopf(`${wessen} Garderobe`);
+  document.title = `Sharely – ${wessen} Garderobe`;
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Freunde", symbol: "freunde", href: "freunde.html", art: "knopf-gelb" },
+    { text: `${wessen} Kleiderschrank`, symbol: "schrank", href: `freund-schrank.html?freund=${freund.id}` },
+  ]);
+
+  document.getElementById("f-initiale").className = `initiale ${freund.ton}`;
+  document.getElementById("f-initiale").textContent = freund.name[0];
+  document.getElementById("f-name").textContent = freund.name;
+  document.getElementById("f-zahl").textContent = `${freund.outfits} geteilte Outfits`;
+  document.getElementById("avatar-titel").textContent = `${wessen} Avatar`;
+  // Figur.Fuer_Freunde_sichtbar (ERM); in den Beispieldaten immer freigegeben
+  document.getElementById("avatar-text").textContent = `${vorname} hat den Avatar für Freunde freigegeben.`;
+  const suche = document.getElementById("suche");
+  suche.placeholder = `${wessen} Outfits suchen`;
+  suche.setAttribute("aria-label", suche.placeholder);
+
+  const teilVon = (name) => FREUND_TEILE_BEISPIEL.find((t) => t.name === name);
+
+  function outfitKarte(o) {
+    const karte = document.createElement("button");
+    karte.type = "button";
+    karte.className = "outfit-karte klickbar";
+    const teile = document.createElement("div");
+    teile.className = "outfit-teile";
+    for (const name of o.teile) {
+      const teil = document.createElement("div");
+      teil.className = teilVon(name).ton;
+      teil.innerHTML = SYMBOL.buegel;
+      teil.append(name);
+      teile.append(teil);
+    }
+    const fuss = document.createElement("div");
+    fuss.className = "outfit-fuss";
+    fuss.innerHTML = "<strong></strong><small></small>";
+    fuss.querySelector("strong").textContent = o.name;
+    fuss.querySelector("small").textContent = `${o.kategorien[0]} · ${o.teile.length} Teile`;
+    karte.append(teile, fuss);
+    karte.onclick = () => zeigeDetail(o);
+    return karte;
+  }
+
+  function zeichne() {
+    const wort = suche.value.trim().toLowerCase();
+    const treffer = FREUND_OUTFITS_BEISPIEL.filter((o) => o.name.toLowerCase().includes(wort));
+    document.getElementById("raster").replaceChildren(...treffer.map(outfitKarte));
+    if (!treffer.length) document.getElementById("raster").innerHTML = '<p class="leise">Nichts gefunden.</p>';
+  }
+  suche.oninput = zeichne;
+  document.getElementById("alles").onclick = () => { suche.value = ""; zeichne(); };
+
+  // ---------- Detail-Fenster ----------
+
+  const detail = document.getElementById("detail");
+  fensterVerdrahten(detail);
+
+  function zeigeDetail(o) {
+    document.getElementById("d-titel").textContent = o.name;
+    document.getElementById("d-initiale").className = `initiale mini ${freund.ton}`;
+    document.getElementById("d-initiale").textContent = freund.name[0];
+    document.getElementById("d-herkunft").textContent = `aus ${wessen} Garderobe`;
+    document.getElementById("d-kategorien").replaceChildren(...o.kategorien.map((k) =>
+      Object.assign(document.createElement("span"), { className: "marke-pille", textContent: k })));
+
+    const teile = o.teile.map(teilVon);
+    document.getElementById("d-teile-gross").replaceChildren(...teile.map((t) => {
+      const kachel = document.createElement("div");
+      kachel.className = t.ton;
+      kachel.innerHTML = SYMBOL.buegel;
+      kachel.append(t.name);
+      return kachel;
+    }));
+    document.getElementById("d-teile").replaceChildren(...teile.map((t) => {
+      const li = document.createElement("li");
+      const knopf = document.createElement("button");
+      knopf.type = "button";
+      knopf.innerHTML = `<span class="mini-kachel ${t.ton}">${SYMBOL.buegel}</span><span><strong></strong><small></small></span>
+        <span class="rechts"><span class="punkt-marke ${t.verfuegbarkeit}">${VERFUEGBARKEIT[t.verfuegbarkeit]}</span>${SYMBOL.weiter}</span>`;
+      knopf.querySelector("strong").textContent = t.name;
+      knopf.querySelector("small").textContent = KLEIDUNGSARTEN[t.kleidungsart];
+      // Nur Teile, die gerade bei der Freundin liegen, lassen sich anfragen
+      knopf.disabled = t.verfuegbarkeit !== "verfuegbar";
+      knopf.onclick = () => anfrageOeffnen(freund, t);
+      li.append(knopf);
+      return li;
+    }));
+    document.getElementById("d-tipp").textContent = `Tippe ein Teil an, um es bei ${vorname} anzufragen.`;
+    detail.showModal();
+  }
+
+  zeichne();
+</script>
+</body>
+</html>
