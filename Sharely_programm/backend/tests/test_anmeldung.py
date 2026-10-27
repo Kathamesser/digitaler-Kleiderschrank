@@ -101,6 +101,8 @@ def test_cookie_ist_httponly_und_token_nur_als_hash(client):
     cookie = antwort.headers["set-cookie"]
     assert cookie.startswith("sharely_sitzung=")
     assert "HttpOnly" in cookie and "samesite=lax" in cookie.lower()
+    # kein Ablaufdatum: endet, wenn der Browser geschlossen wird
+    assert "max-age" not in cookie.lower() and "expires" not in cookie.lower()
     token = client.cookies["sharely_sitzung"]
     assert len(client.sitzungen.eintraege) == 1
     assert token not in str(client.sitzungen.eintraege)

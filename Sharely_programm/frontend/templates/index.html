@@ -112,11 +112,6 @@
     }
   }
 
-  // Schon angemeldet (Sitzung noch gültig)? Dann gleich ins Hauptmenü.
-  api("/nutzer/ich", { weiterleiten: false })
-    .then((antwort) => { if (antwort.ok) location.replace("hauptmenue.html"); })
-    .catch(() => {});
-
   document.getElementById("anmelden").onsubmit = (e) => {
     e.preventDefault();
     const f = e.target;

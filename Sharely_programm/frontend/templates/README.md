@@ -6,7 +6,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 
 | Seite | Mockup | Daten |
 |---|---|---|
-| `index.html` | Desktop 1, 2 | live: Anmeldung und Registrierung (`/api/nutzer/anmelden`, `/registrieren`), danach ins Hauptmenü; mit gültiger Sitzung direkt ins Hauptmenü |
+| `index.html` | Desktop 1, 2 | live: Anmeldung und Registrierung (`/api/nutzer/anmelden`, `/registrieren`), danach ins Hauptmenü; zeigt immer das Formular, auch wenn man noch angemeldet ist |
 | `passwort-vergessen.html` | Desktop 3 | E-Mail für den Reset-Link, ohne Backend; Meldung verrät nicht, ob es das Konto gibt |
 | `passwort-neu.html` | Desktop 4 | Ziel des Reset-Links: neues Passwort mit Prüfliste (8 Zeichen, Sonderzeichen, gleich), ohne Backend |
 | `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), „x neu“ bei Nachrichten aus Beispieldaten, Rest Platzhalter |

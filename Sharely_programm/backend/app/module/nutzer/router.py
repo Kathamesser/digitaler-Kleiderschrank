@@ -23,16 +23,15 @@ Nutzer = Annotated[str, Depends(aktueller_nutzer)]
 
 
 async def _sitzung_setzen(antwort: Response, nutzer_id: str) -> None:
-    """Sitzung starten und das Token als Cookie mitschicken. httpOnly: JavaScript im
-    Browser kommt nicht heran. SameSite=Lax: Andere Websites können es nicht mitsenden."""
-    settings = get_settings()
+    """Sitzung starten und das Token als Cookie mitschicken. Ohne max_age: Das Cookie
+    endet, wenn der Browser geschlossen wird. httpOnly: JavaScript im Browser kommt
+    nicht heran. SameSite=Lax: Andere Websites können es nicht mitsenden."""
     antwort.set_cookie(
         COOKIE_NAME,
         await sitzung_starten(nutzer_id),
-        max_age=settings.sitzung_tage * 24 * 60 * 60,
         httponly=True,
         samesite="lax",
-        secure=settings.cookie_secure,
+        secure=get_settings().cookie_secure,
     )
 
 

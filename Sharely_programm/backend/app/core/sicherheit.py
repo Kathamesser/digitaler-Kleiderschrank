@@ -54,7 +54,7 @@ async def sitzung_starten(nutzer_id: str) -> str:
         "nutzer_id": ObjectId(nutzer_id),
         "token_hash": _token_hash(token),
         "erstellt_am": jetzt,
-        "laeuft_ab_am": jetzt + timedelta(days=get_settings().sitzung_tage),
+        "laeuft_ab_am": jetzt + timedelta(hours=get_settings().sitzung_stunden),
     })
     return token
 
