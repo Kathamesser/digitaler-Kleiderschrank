@@ -51,15 +51,17 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 ## Starten
 
 1. MongoDB und Backend starten (siehe `Sharely_programm/backend/README.md`).
-2. In einem zweiten Terminal **im Ordner `Sharely_programm`** einen einfachen Webserver auf Port 5173 starten (dort, damit die Seiten das Logo aus `assets/branding/` finden):
+2. In einem zweiten Terminal den Seiten-Server auf Port 5173 starten:
 
    ```bash
    cd Sharely_programm
-   python -m http.server 5173
+   python seiten_server.py
    ```
+
+   Er arbeitet wie `python -m http.server 5173`, sagt dem Browser aber, dass er bei jeder Datei nachfragen soll, ob sie sich geändert hat. Mit `http.server` lief nach einem `git pull` sonst oft noch die alte `gemeinsam.js` aus dem Browser-Zwischenspeicher (14.10. und 27.10.2026).
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
-3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter; `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht). Nach einem `git pull` die Seite mit **Strg+F5** neu laden, sonst nimmt der Browser womöglich noch die alte `gemeinsam.js` aus dem Zwischenspeicher. oder direkt http://localhost:5173/frontend/templates/
+3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter) oder direkt http://localhost:5173/frontend/templates/. `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht. Sieht eine Seite trotzdem nach einem alten Stand aus: **Strg+F5**.
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.

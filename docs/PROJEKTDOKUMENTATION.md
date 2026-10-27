@@ -437,6 +437,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 27.10.2026 | Seiten folgen den Mockups; wo ein Mockup vom ERM abweicht, gilt das ERM | das ERM ist das festgelegte Datenmodell | Katha | `frontend/templates/README.md` |
 | 27.10.2026 | Fenster aus den Mockups als `<dialog>` in der aufrufenden Seite; Beispieldaten ohne Backend zentral in `beispieldaten.js` | Seiten bleiben einzeln aufrufbar, Beispieldaten lassen sich in einem Schritt entfernen | Claude bei der Umsetzung im Auftrag von Katha | `frontend/templates/README.md` |
 | 27.10.2026 | Umsetzung der Anmeldung: Login mit Nutzername (wie im Mockup), Nutzername eindeutig ohne Rücksicht auf Groß-/Kleinschreibung, Sitzung 14 Tage, nach der Registrierung gleich angemeldet | Startwerte bei der Umsetzung, vom Team änderbar (`sitzung_tage` in `config.py`) | Claude bei der Umsetzung im Auftrag von Katha | `docs/api/README.md` |
+| 27.10.2026 | Eigener Seiten-Server `seiten_server.py` statt `python -m http.server` (Browser fragt bei jeder Datei nach Änderungen) | Veraltete `gemeinsam.js` aus dem Browser-Zwischenspeicher hat zweimal Fehler vorgetäuscht (14.10., 27.10.) | Claude bei der Fehlersuche im Auftrag von Katha | `frontend/templates/README.md` |
 | 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
 
 ---
@@ -459,7 +460,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 16.10.2026 | ERM-Prüfung und Vorschläge für die nächste Teambesprechung |
 | 20.10.2026 | ERM an die Desktop-Mockups angepasst, Modul `kleidung` und Seiten umgestellt, Datenbankstruktur per Skript, Profilbild, Ordner `Sharely_programm/` |
 | 26.10.2026 | Gemeinsame Atlas-Datenbank eingerichtet; Messpunkte und Zugaben je Kleidungsart |
-| 27.10.2026 | Alle Desktop-Mockups als Seiten oder Fenster umgesetzt; Messpunkte-Branch nach `main` zusammengeführt; Test-Nutzer in Atlas; Registrierung, Login und Logout |
+| 27.10.2026 | Alle Desktop-Mockups als Seiten oder Fenster umgesetzt; Messpunkte-Branch nach `main` zusammengeführt; Test-Nutzer in Atlas; Registrierung, Login und Logout; eigener Seiten-Server gegen veraltete Dateien im Browser |
 
 ### 10.2 Soll-Ist-Vergleich (Stand Woche 15)
 
