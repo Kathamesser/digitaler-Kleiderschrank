@@ -58,7 +58,7 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
    python seiten_server.py
    ```
 
-   Er arbeitet wie `python -m http.server 5173`, sagt dem Browser aber, dass er bei jeder Datei nachfragen soll, ob sie sich geändert hat. Mit `http.server` lief nach einem `git pull` sonst oft noch die alte `gemeinsam.js` aus dem Browser-Zwischenspeicher (14.10. und 27.10.2026).
+   Er arbeitet wie `python -m http.server 5173 --bind 127.0.0.1` (nur auf dem eigenen Rechner erreichbar), sagt dem Browser aber, dass er bei jeder Datei nachfragen soll, ob sie sich geändert hat. Mit `http.server` lief nach einem `git pull` sonst oft noch die alte `gemeinsam.js` aus dem Browser-Zwischenspeicher (14.10. und 27.10.2026).
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 

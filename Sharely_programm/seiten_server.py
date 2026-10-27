@@ -25,6 +25,7 @@ class OhneVeralteteDateien(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     ordner = Path(__file__).resolve().parent  # immer Sharely_programm, egal von wo gestartet
-    server = ThreadingHTTPServer(("", PORT), partial(OhneVeralteteDateien, directory=str(ordner)))
+    # Nur auf diesem Rechner erreichbar, nicht für andere im (Schul-)Netz
+    server = ThreadingHTTPServer(("127.0.0.1", PORT), partial(OhneVeralteteDateien, directory=str(ordner)))
     print(f"Sharely-Seiten: http://localhost:{PORT}/  (beenden mit Strg+C)")
     server.serve_forever()
