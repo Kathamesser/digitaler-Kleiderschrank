@@ -252,6 +252,10 @@ async function api(pfad, { weiterleiten = true, ...optionen } = {}) {
     location.href = "index.html";
     throw new Error("Bitte melde dich an.");
   }
+  // 500er: Das Backend schickt dann nur Text, kein JSON (z. B. wenn Atlas nicht erreichbar ist)
+  if (antwort.status >= 500) {
+    throw new Error(`Das Backend hat einen Fehler gemeldet (${antwort.status}). Ist die Datenbank erreichbar? Bitte gleich noch einmal versuchen.`);
+  }
   return antwort;
 }
 
