@@ -207,7 +207,7 @@ flowchart LR
 
 ### 4.4 Datenmodell
 
-Das ERM hat Manuel erstellt (`docs/datenmodell/ERM-SHARELY.md`, Diagramme in `ERM_Sharely.drawio` bzw. `erm_sharely.png` und `erm_teil3_mongodb.png`). Die erste Fassung vom 13.10.2026 beruhte auf den Wireframes der Technischen Konzeption. Am 20.10.2026 hat Manuel es an die Desktop-Mockups (`docs/mockups/desktop/`) angepasst und festgelegt; wo Mockups und Wireframes voneinander abweichen, gelten die Mockups. Offen sind nur noch zwei Punkte, die die Struktur nicht ändern: welche Maße je Kleidungsart erfasst werden und welche Kleidungsart welche 3D-Vorlage nutzt.
+Das ERM hat Manuel erstellt (`docs/datenmodell/ERM-SHARELY.md`, Diagramme in `ERM_Sharely.drawio` bzw. `erm_sharely.png` und `erm_teil3_mongodb.png`). Die erste Fassung vom 13.10.2026 beruhte auf den Wireframes der Technischen Konzeption. Am 20.10.2026 hat Manuel es an die Desktop-Mockups (`docs/mockups/desktop/`) angepasst und festgelegt; wo Mockups und Wireframes voneinander abweichen, gelten die Mockups. Offen waren danach nur noch zwei Punkte, die die Struktur nicht ändern: welche Maße je Kleidungsart erfasst werden und welche Kleidungsart welche 3D-Vorlage nutzt. Den ersten hat Christian am 26.10.2026 mit Startwerten umgesetzt (Messpunkte und Zugaben je Kleidungsart, siehe unten; Bestätigung durch Manuel steht aus), der zweite ist weiter offen.
 
 **Entitäten:** Nutzer, Sitzung, Passwort-Reset, Figur, Freundschaft, Kleidungsstück, Kleidungsart, Kleidungsvorlage, Farbe, Material, Saison, Kategorie, Kleidungsmaß, Messpunkt, Produktquelle, Outfit, Leihvorgang, Neuigkeit, Ausgeblendete Kategorie; n:m-Beziehungen über Zuordnungstabellen.
 
@@ -216,7 +216,8 @@ Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 - **Kleidungsart als Pflicht-Einordnung** (feste Liste: Tops, Pullover, Hosen, Röcke, Kleider, Jacken, Schuhe, Unterwäsche, Einteiler, Accessoires). Sie bestimmt die 3D-Vorlage, mehrere Arten können sich eine Vorlage teilen.
 - **Kategorien als freie Etiketten:** vorgegebene (Business, Freizeit, Winterkleidung …) und eigene je Nutzer, mehrere je Kleidungsstück oder Outfit. Der Anlass geht darin auf. Jeder Nutzer kann Kategorien für sich ausblenden.
 - **Feste Wertelisten** für Farbe, Material und Saison: im ERM als Wertetabellen (1. Normalform), in MongoDB als Enum im Code.
-- **Maße an den Messbändern des Avatars:** Ein Kleidungsstück speichert seine Maße in cm an denselben 22 Messpunkten wie die Avatar-GLB. Die Passform („passt / eng / weit“) vergleicht Messpunkt für Messpunkt ohne Umrechnung; Größentabellen entfallen.
+- **Maße an den Messbändern des Avatars:** Ein Kleidungsstück speichert seine Maße in cm an denselben 24 Messpunkten wie die Avatar-GLB (22 bis zum 20.10.2026, dann ergänzt um Schulterbreite über den Rücken und Armlänge). Die Passform („passt / eng / weit“) vergleicht Messpunkt für Messpunkt ohne Umrechnung; Größentabellen entfallen.
+- **Messpunkte und Zugaben je Kleidungsart (26.10.2026, Christian):** Jede Kleidungsart kennt ihre Messpunkte, jeweils Pflicht (bestimmt die Passform-Ampel) oder optional (nur Hinweis), mit einer Zugabe-Spanne für „passt“: Umfänge in Prozent des Körpermaßes, Längen in cm, weil die nötige Bewegungszugabe mit der Körpergröße wächst. Startwerte aus einer Recherche zur Schnittkonstruktion, sie werden nach Tests mit echten Teilen angepasst (`docs/datenmodell/ZUGABEN.md`, Werte in `wertelisten.MESSPUNKTE_JE_KLEIDUNGSART`, in der Datenbank an `kleidungsarten.messpunkte`).
 - **Status** `im_schrank`, `geliehen`, `verliehen`, `wunsch`. Wunschartikel und geliehene Teile sind Kleidungsstücke im eigenen Schrank; ein geliehenes Teil verweist auf seinen Leihvorgang.
 - **Leihvorgang als eigene Entität** mit Verlauf (Anfrage, Annahme, Zeitraum, Rückgabe). **Verschenken ist ein Besitzwechsel:** Das Teil gehört danach dem Empfänger, der Verlauf bleibt im Leihvorgang.
 - **Gegenseitige Freundschaft** mit Anfrage, Annehmen, Ablehnen und Blockieren. Freunde sehen alle Teile und Outfits außer privaten.
@@ -226,6 +227,8 @@ Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 **Abbildung auf MongoDB:** Jede Entität mit eigenem Lebenszyklus wird eine Collection (`nutzer`, `kleidungsstuecke`, `kleidungsarten`, `kategorien`, `outfits`, `figuren`, `freundschaften`, `leihvorgaenge`, `neuigkeiten` …). Eingebettet wird nur, was ausschließlich zu einem Dokument gehört (Maße, Produktquelle, Outfit-Teile, Reglerwerte); kleine feste Listen ohne eigene Daten stehen im Code. Da MongoDB keine Fremdschlüssel kennt, prüft die Service-Schicht die Regeln selbst, z. B. höchstens drei Figuren je Nutzer, Leihen nur unter Freunden oder nie Einblick in private Teile (`ERM-SHARELY.md` Abschnitt 7).
 
 **Umsetzung in der Datenbank (20.10.2026):** Die Struktur ist im Backend beschrieben (`Sharely_programm/backend/app/core/datenbank_struktur.py`) und wird per Skript eingerichtet (`python -m app.datenbank_einrichten`). Jede Collection bekommt eine Prüfregel (`$jsonSchema` mit Pflichtfeldern, Datentypen und festen Wertelisten, `validationLevel: moderate`) und ihre Indizes; das Skript ist idempotent, ergänzt nur Fehlendes und löscht nie etwas. Die festen Listen stehen an einer Stelle (`app/core/wertelisten.py`), damit Code und Datenbank nicht auseinanderlaufen.
+
+**Gemeinsame Datenbank auf MongoDB Atlas (26.10.2026):** Seit 26.10.2026 gibt es eine gemeinsame Entwicklungsdatenbank auf MongoDB Atlas (kostenloser M0-Cluster in Frankfurt, angelegt von Christian, Datenbank nach dem ERM eingerichtet von Manuel). Jedes Teammitglied hat einen eigenen Datenbank-Benutzer; Zugangsdaten stehen nur in der lokalen `.env`, dort liegen auch nur Testdaten. Bilder bleiben im lokalen Upload-Ordner. Zwei Lehren aus dem Betrieb: Das Schul-WLAN sperrt den Port 27017, und Atlas lässt nur freigegebene IP-Adressen zu, nach einem Netzwechsel muss die neue Adresse unter *Network Access* eingetragen werden. Am 27.10.2026 lagen Christians Prüfregeln für die Messpunkte schon in Atlas, der Code dazu aber erst auf einem Branch; Katha hat ihn nach `main` zusammengeführt, seitdem meldet `datenbank_einrichten --pruefen` wieder „Alles schon auf dem Stand des ERM“. Lehre: Änderungen an der Datenbankstruktur erst in den Code auf `main`, dann in Atlas.
 
 **Auswirkung auf den Code:** Kathas Modul `kleidung` (User Story 8) und die Seiten sind seit 20.10.2026 auf dieses ERM umgestellt (`ERM-SHARELY.md` Abschnitt 10). Christians Vorschläge vom 16.10.2026 (`ERM-VORSCHLAEGE-2026-10-16.md`) sind in die Fassung vom 20.10. eingeflossen (Grundregel feste Liste vs. freies Etikett, Wertetabellen, 3D-Vorlagen).
 
@@ -277,7 +280,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 ### 5.4 Zentimeter und Passform
 
-- **Die Maße werden am verformten Modell gemessen,** nicht über eine Umrechnungstabelle. 22 Messbänder (die 20 von MakeHuman plus Schrittlänge und Fußlänge) liegen in `docs/avatar/messpunkte.json`. So stimmt der Wert auch, wenn mehrere Regler zusammenwirken.
+- **Die Maße werden am verformten Modell gemessen,** nicht über eine Umrechnungstabelle. 24 Messbänder (die 20 von MakeHuman plus Schrittlänge, Fußlänge, Schulterbreite über den Rücken und Armlänge) liegen in `docs/avatar/messpunkte.json`. So stimmt der Wert auch, wenn mehrere Regler zusammenwirken.
 - **Realitätsprüfung** gegen Größentabellen aus dem Handel: Die Standardfiguren entsprechen Damen 36 bzw. Herren 46; mit den Reglern ist der ganze Bereich der Konfektionsgrößen erreichbar (`ZENTIMETER.md` Abschnitt 3).
 - **Passform-Logik** (geplant, Phase 4): Maße des Kleidungsstücks in cm an den Messpunkten der GLB → Vergleich Messpunkt für Messpunkt mit den cm der Figur → „passt / eng / weit“ (seit dem ERM vom 20.10.2026 ohne Größentabelle, siehe 4.4). Das ist reine Programmlogik ohne KI und damit gut dokumentierbare Eigenleistung. Die 3D-Kleidungsvorlage wächst mit denselben Morph-Werten mit.
 
@@ -313,6 +316,15 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 Neun HTML-Seiten ohne Framework nach den Wireframes in `Sharely_programm/frontend/testseiten/` (seit 20.10.2026 `Sharely_programm/frontend/templates/`, im Design der Desktop-Mockups): Anmeldung, Schrank, Kleidungsstück hinzufügen und Detail, Outfits, Outfit erstellen, Verliehen, Freunde, Profil. Schrank, Hinzufügen und Detail laufen live am Backend, die übrigen mit Beispieldaten. Der Schrank hat Suche, Schnellfilter und ein Filtermenü über alle Eigenschaften. Das gesamte Aussehen steckt in `stil.css` mit Variablen in `:root`, damit es später ins Framework übernommen werden kann.
 
+**Alle Desktop-Mockups umgesetzt (27.10.2026, Katha):** Zuerst wurden die vorhandenen Seiten per Screenshot mit den Mockups verglichen und Abweichungen angeglichen (Outfit-Karten zeigen Kategorien statt Anlass, Filter-Knopf „Filter anwenden (n)“). Danach kamen alle fehlenden Bildschirme dazu, jetzt 15 Seiten:
+
+- **Neue Seiten:** Passwort vergessen und Neues Passwort (mit Prüfliste), Nachrichten (Leih- und Geschenkanfragen, Neuigkeiten des Entwicklerteams), Kleiderschrank und Garderobe eines Freundes.
+- **Neue Fenster** (Mockups „Overlay“/„Fenster“) als `<dialog>` in der Seite, aus der sie geöffnet werden: Outfit-Detail, Outfits filtern, Freund hinzufügen, Anfrage senden (Leihen/Verschenken), Anfrage an einen Freund (Leihen/Geschenkt bekommen), Kleidungsstück und Outfit eines Freundes, Leihdetails.
+- **Regel bei Widersprüchen:** Wo ein Mockup vom ERM abweicht, gilt das ERM (Entscheidung Katha, 27.10.2026). Beispiele: Die Farbe „Mint“ gibt es nicht, Outfits zeigen Kategorien statt Anlass, das Outfit-Detail zeigt zusätzlich „Privat“.
+- **Beispieldaten an einer Stelle:** Was noch kein Backend hat (Freunde, Outfits, Verleihen, Neuigkeiten), läuft mit Beispieldaten aus `static/js/beispieldaten.js`, die beim Anbinden der Module in einem Schritt entfallen. Die Seiten speichern davon nichts.
+
+Übersicht aller Seiten: `Sharely_programm/frontend/templates/README.md`.
+
 ### 6.4 Avatar
 
 Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. Nächster Schritt: Three.js-Testseite mit Reglern (Christian).
@@ -325,12 +337,15 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 
 - Backend-Tests mit `pytest` und dem FastAPI-Testclient (`Sharely_programm/backend/tests/`), lauffähig ohne MongoDB über ein Ersatz-Repository.
 - Stand 20.10.2026 (nach der Umstellung auf das ERM): **19 Tests, alle grün** (`test_health.py`: 1, `test_kleidung.py`: 18). Geprüft werden u. a. Anlegen mit nur den Pflichtfeldern und mit allen Eigenschaften, alle Kleidungsarten, Status beim Anlegen (verliehen und verschenkt abgelehnt), Ganzjährig, ungültige Farbe/Material/Kategorie-ID/Maße, Messpunkte gleich der GLB-Liste, fehlendes, ungültiges und zu großes Bild, Kaufdatum in der Zukunft, Abruf von Bild und Liste, unbekanntes Kleidungsstück.
+- Stand 27.10.2026: **71 Tests, alle grün**, dazu u. a. Tests für die Datenbankstruktur (Prüfregeln, Indizes, Wertelisten, Messpunkte und Zugaben je Kleidungsart) und das Profilbild.
 - Zusätzlich wurde User Story 8 gegen eine lokale MongoDB mit Wegwerf-Datenbank durchgespielt.
 
 ### 7.2 Manuelle Prüfungen
 
 - Testseiten per Screenshot gegen die Wireframes geprüft, Konsole ohne Fehler.
 - Filtermenü des Schranks mit 13 Filterfällen in headless Chrome geprüft.
+- Alle Seiten nach den Desktop-Mockups (27.10.2026): Chrome über das DevTools-Protokoll ferngesteuert, Seiten geladen, Fenster per Klick geöffnet, 18 Ansichten als Screenshot mit den Mockups verglichen und die Konsole auf Fehler geprüft (keine). Gefundene Darstellungsfehler wurden behoben.
+- Datenbank: `python -m app.datenbank_einrichten --pruefen` gleicht Atlas nur lesend mit dem Code ab.
 - Avatar: Neubau der GLB bit-identisch reproduziert; Zentimeter-Werte gegen Größentabellen des Handels geprüft; Regler auf gleichmäßige Wirkung getestet (Taille in Viertelschritten).
 
 ### 7.3 Geplant
@@ -385,6 +400,11 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 20.10.2026 | Neuigkeiten des Entwicklerteams, nur Admins legen sie an (`Ist_Admin` nur in der Datenbank) | Mockup „Nachrichten“; keine Rollenwahl in der App | Manuel | `ERM-SHARELY.md` |
 | 20.10.2026 | Anmeldeverfahren: serverseitige Sitzung mit Token im httpOnly-Cookie, Sitzungen mit TTL-Index, Argon2, Passwort-Reset per befristetem Link | echtes Logout, kein Token im JavaScript-Speicher | Manuel (Empfehlung Claude vom 13.10.) | `BRAIN.md`, `ERM-SHARELY.md` |
 | 20.10.2026 | Datenbankstruktur per Skript statt manuell, Prüfregeln (`$jsonSchema`) und Indizes je Collection; feste Listen zentral in `wertelisten.py` | Code und Datenbank laufen nicht auseinander, jeder hat dieselbe Struktur | Manuel | `Sharely_programm/backend/README.md` |
+| 20.10.2026 | Zwei Messbänder ergänzt (jetzt 24): Schulterbreite über den Rücken, Armlänge | alle Maße rundum am 3D-Körper | Christian | `ERM-SHARELY.md`, `ZENTIMETER.md` |
+| 20.10.2026 | Gemeinsamer Atlas-Cluster kommt von Christian (Manuels Cluster war nur der Vorab-Test) | ein Konto, das Team wird eingeladen | Manuel | `BRAIN.md` |
+| 26.10.2026 | Messpunkte je Kleidungsart (Pflicht/optional) mit Zugabe-Spannen: Umfänge in Prozent, Längen in cm; Startwerte, später anpassbar | Bewegungszugabe wächst mit der Körpergröße; Grundlage der Passform-Ampel | Christian (Bestätigung Manuel steht aus) | `ZUGABEN.md` |
+| 27.10.2026 | Seiten folgen den Mockups; wo ein Mockup vom ERM abweicht, gilt das ERM | das ERM ist das festgelegte Datenmodell | Katha | `frontend/templates/README.md` |
+| 27.10.2026 | Fenster aus den Mockups als `<dialog>` in der aufrufenden Seite; Beispieldaten ohne Backend zentral in `beispieldaten.js` | Seiten bleiben einzeln aufrufbar, Beispieldaten lassen sich in einem Schritt entfernen | Claude bei der Umsetzung im Auftrag von Katha | `frontend/templates/README.md` |
 
 ---
 
@@ -404,6 +424,9 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 13.10.2026 | Projektname Sharely, Konzeption und Logo im Repo, Backend-Gerüst, User Story 8, Klick-Prototyp, ERM von Manuel |
 | 14.10.2026 | Filtermenü im Schrank |
 | 16.10.2026 | ERM-Prüfung und Vorschläge für die nächste Teambesprechung |
+| 20.10.2026 | ERM an die Desktop-Mockups angepasst, Modul `kleidung` und Seiten umgestellt, Datenbankstruktur per Skript, Profilbild, Ordner `Sharely_programm/` |
+| 26.10.2026 | Gemeinsame Atlas-Datenbank eingerichtet; Messpunkte und Zugaben je Kleidungsart |
+| 27.10.2026 | Alle Desktop-Mockups als Seiten oder Fenster umgesetzt; Messpunkte-Branch nach `main` zusammengeführt |
 
 ### 10.2 Soll-Ist-Vergleich (Stand Woche 15)
 
@@ -429,8 +452,8 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 
 - Frontend-Framework: React oder Vue
 - KI-Anbieter für den Produktimport
-- Gemeinsame Entwicklungsdatenbank auf MongoDB Atlas (Vorschlag Manuel, 20.10.2026; das Schul-WLAN blockiert Port 27017)
-- ERM-Restpunkte: Maße je Kleidungsart und Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian)
+- Platzhalter-Nutzer vs. Prüfregel `nutzer`: Auf Atlas schlägt das Hochladen eines Profilbilds fehl, bis geklärt ist, wie der Test-Nutzer in die Collection `nutzer` kommt (Katha/Manuel)
+- ERM-Restpunkt: Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian); Messpunkte und Zugaben je Kleidungsart sind seit 26.10.2026 mit Startwerten umgesetzt, Bestätigung durch Manuel steht aus
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)
 - Grenzen der Avatar-Regler: Körpergröße (Vorschlag −40 bis +45, etwa 144–205 cm) und Mindestalter (Vorschlag ca. 18 Jahre)
 - User Storys 5–10: Anforderungen sind Vorschläge von Claude und müssen vom Team geprüft werden; Issues #15/#16 auf GitHub angleichen

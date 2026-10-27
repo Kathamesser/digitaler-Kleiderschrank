@@ -169,6 +169,7 @@ Alle anderen Fragen sind von Manuel am 20.10.2026 entschieden (siehe Abschnitt 5
 
 Noch offen (Manuel: „bleibt erstmal offen“):
 1. **Welche Maße je Kleidungsart?** Z. B. Hose: Taillenumfang, Hüftumfang, Schrittlänge; Schuhe: Fußlänge. Lässt sich später als Liste an der Kleidungsvorlage hinterlegen, ohne das ERM umzubauen.
+   *Stand 27.10.2026:* Christian hat am 26.10.2026 Startwerte umgesetzt, als Liste an der Kleidungsart (`kleidungsarten.messpunkte`, Pflicht/optional mit Zugabe-Spanne, `ZUGABEN.md`, Änderungsverlauf unten); seit 27.10.2026 auf `main` und in Atlas. Bestätigung durch Manuel steht aus.
 2. **Welche Kleidungsart nutzt welche 3D-Vorlage?** Startvorschlag von Christian: Oberteil (Tops, Pullover), Hose, Jacke, Rock, Kleid (Kleider, Einteiler), Schuh; Accessoires und Unterwäsche ohne Vorlage. Betrifft nur die Daten in `kleidungsarten`, nicht die Struktur.
 
 ## 10. Auswirkungen auf den bestehenden Code
