@@ -6,7 +6,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 
 | Seite | Mockup | Daten |
 |---|---|---|
-| `index.html` | Desktop 1, 2 | Startseite: Anmeldung und Registrierung, ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
+| `index.html` | Desktop 1, 2 | live: Anmeldung und Registrierung (`/api/nutzer/anmelden`, `/registrieren`), danach ins Hauptmenü; mit gültiger Sitzung direkt ins Hauptmenü |
 | `passwort-vergessen.html` | Desktop 3 | E-Mail für den Reset-Link, ohne Backend; Meldung verrät nicht, ob es das Konto gibt |
 | `passwort-neu.html` | Desktop 4 | Ziel des Reset-Links: neues Passwort mit Prüfliste (8 Zeichen, Sonderzeichen, gleich), ohne Backend |
 | `hauptmenue.html` | Hauptmenü – Variante 2 | Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), „x neu“ bei Nachrichten aus Beispieldaten, Rest Platzhalter |
@@ -20,7 +20,9 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | `freund-garderobe.html?freund=lena` | Garderobe eines Freundes, Outfit eines Freundes – Detailansicht | Beispieldaten; freigegebener Avatar, Klick auf ein verfügbares Teil im Outfit öffnet die Anfrage |
 | `nachrichten.html` | Nachrichten | Beispieldaten: Leih- und Geschenkanfragen annehmen/ablehnen, Neuigkeiten mit „Neu“, „Mehr lesen“ und „Alle gelesen“ |
 | `verliehen.html` | Freunde-Leih Verleihansicht, Leih-Detailansicht | Beispieldaten (für alle Freunde statt für einen); Klick auf einen Eintrag öffnet die Leihdetails, „überfällig“ wird aus dem Rückgabedatum berechnet |
-| `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ Beispieldaten |
+| `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ live; „Nutzer wechseln“ meldet ab |
+
+**Anmeldung (seit 27.10.2026):** Alle Seiten mit Kopfzeile laden über `seitenkopf()` den angemeldeten Nutzer (`ich()` in `gemeinsam.js`) und zeigen dessen Namen. Ohne Anmeldung leitet `api()` zu `index.html` weiter. Knöpfe und Links mit `data-abmelden` melden ab (Hauptmenü „Abmelden“, Profil „Nutzer wechseln“). Ohne Anmeldung erreichbar sind nur `index.html` und die beiden Passwort-Seiten.
 
 Seit 27.10.2026 hat jedes Desktop-Mockup eine Seite oder ein Fenster. Fenster (Mockups „Overlay“/„Fenster“) sind `<dialog>`-Elemente in der Seite, aus der sie geöffnet werden. Noch nicht angelegt: Angebote (kein Mockup, laut ERM „kommen später“).
 
@@ -58,6 +60,6 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
-3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter) oder direkt http://localhost:5173/frontend/templates/
+3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter; `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht) oder direkt http://localhost:5173/frontend/templates/
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.

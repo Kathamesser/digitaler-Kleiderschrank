@@ -118,7 +118,7 @@ Beispiel: Nutzer **1** —— **cn** Kleidungsstueck heißt: Ein Nutzer hat kein
 10. **Freigabe und Feedback (User Story 2) sind gestrichen.** Die Mockups zeigen kein Teilen an einzelne Freunde und kein Feedback. „Geteilt“ heißt: für alle Freunde sichtbar, bei Kleidungsstücken und Outfits über `Privat = false` (Schalter am Outfit entschieden von Manuel, 20.10.2026).
 11. **Nicht gespeichert, weil berechnet:** Zähler im Hauptmenü und bei Freunden, „überfällig“, „Verfügbar / Bei dir“, Passform-Bewertung, Zentimeter der Figur.
 12. **Kategorien ausblenden (entschieden von Manuel, 20.10.2026):** Kategorien sind Filter. Jeder Nutzer kann jede Kategorie, auch eine vorgegebene, für sich ausblenden; eigene Kategorien kann er zusätzlich löschen. Ausgeblendete Kategorien erscheinen nicht mehr in Auswahl und Filter, bleiben an bestehenden Teilen und Outfits aber erhalten.
-13. **Anmeldeverfahren wie in `BRAIN.md` empfohlen (entschieden von Manuel, 20.10.2026):** serverseitige Sitzung, zufälliges Token im httpOnly-Cookie, Sitzungen in der Collection `sitzungen` mit TTL-Index, Passwörter mit Argon2. Dazu Passwort-Reset per befristetem Link.
+13. **Anmeldeverfahren wie in `BRAIN.md` empfohlen (entschieden von Manuel, 20.10.2026):** serverseitige Sitzung, zufälliges Token im httpOnly-Cookie, Sitzungen in der Collection `sitzungen` mit TTL-Index, Passwörter mit Argon2. Dazu Passwort-Reset per befristetem Link. *Stand 27.10.2026:* Registrierung, Login und Logout umgesetzt (Collections `nutzer` und `sitzungen`), Passwort-Reset (`passwort_resets`) noch nicht.
 14. **Löschen (entschieden von Manuel, 20.10.2026):** Jeder Nutzer kann seine Kleidungsstücke jederzeit löschen, ohne Schnappschuss für den Verlauf (siehe Abschnitt 8).
 
 ## 6. Abbildung auf MongoDB

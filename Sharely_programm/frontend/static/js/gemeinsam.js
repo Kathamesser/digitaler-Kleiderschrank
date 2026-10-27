@@ -6,8 +6,27 @@ const BACKEND = "http://localhost:8000";
 const API = `${BACKEND}/api`;
 const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzdem selbst
 
-// Platzhalter, bis es Anmeldung und Modul nutzer gibt
-const NUTZER = { name: "Test-Nutzer" };
+// Der angemeldete Nutzer (GET /nutzer/ich), einmal je Seite geladen. Ohne Anmeldung
+// leitet api() zur Anmeldeseite weiter.
+let ichLaden;
+function ich() {
+  return (ichLaden ??= holeJson("/nutzer/ich"));
+}
+
+/** Abmelden: Sitzung im Backend beenden, dann zur Anmeldeseite. Jeder Knopf oder Link
+ *  mit data-abmelden macht das (Hauptmenü „Abmelden“, Profil „Nutzer wechseln“). */
+async function abmelden() {
+  try {
+    await api("/nutzer/abmelden", { method: "POST" });
+  } finally {
+    location.href = "index.html";
+  }
+}
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("[data-abmelden]")) return;
+  e.preventDefault();
+  abmelden();
+});
 
 // Werte wie in Sharely_programm/backend/app/module/kleidung/schemas.py (ERM vom 20.10.2026)
 const KLEIDUNGSARTEN = {
@@ -127,7 +146,9 @@ function genitiv(name) {
   return /[sßxz]$/i.test(vorname) ? `${vorname}’` : `${vorname}s`;
 }
 
-/** Kopfzeile wie in den Mockups: Logo mit SHARELY links, Seitentitel mittig, Nutzer rechts. */
+/** Kopfzeile wie in den Mockups: Logo mit SHARELY links, Seitentitel mittig, Nutzer rechts.
+ *  titel: Text oder Funktion (nutzer) => Text, z. B. für „Hallo …!“.
+ *  Lädt den Nutzer; ohne Anmeldung geht es damit auf jeder inneren Seite zur Anmeldung. */
 function seitenkopf(titel) {
   const kopf = document.createElement("header");
   kopf.className = "seitenkopf";
@@ -138,19 +159,24 @@ function seitenkopf(titel) {
     </a>
     <h1></h1>
     <a class="nutzer-chip" href="profil.html" aria-label="Mein Profil"><span class="initiale"></span><span class="name"></span></a>`;
-  kopf.querySelector("h1").textContent = titel;
-  kopf.querySelector(".initiale").textContent = NUTZER.name[0];
-  kopf.querySelector(".name").textContent = NUTZER.name;
+  if (typeof titel === "string") kopf.querySelector("h1").textContent = titel;
   document.querySelector("main").prepend(kopf);
-  profilbildEinsetzen(kopf.querySelector(".initiale")).catch(() => {}); // ohne Backend bleibt der Buchstabe
+  ich()
+    .then((nutzer) => {
+      if (typeof titel === "function") kopf.querySelector("h1").textContent = titel(nutzer);
+      kopf.querySelector(".name").textContent = nutzer.nutzername;
+      return profilbildEinsetzen(kopf.querySelector(".initiale"), nutzer.profilbild_url);
+    })
+    .catch(() => {}); // ohne Backend bleibt der Kopf ohne Namen
 }
 
-/** Profilbild in einen Kreis (.initiale) setzen; ohne Bild bleibt der Anfangsbuchstabe.
+/** Profilbild in einen Kreis (.initiale) setzen; ohne Bild steht dort der Anfangsbuchstabe.
  *  url: schon bekannte Adresse (nach dem Hochladen), sonst wird das Profil geladen. */
 async function profilbildEinsetzen(kreis, url) {
-  if (url === undefined) url = (await holeJson("/nutzer/ich")).profilbild_url;
+  const nutzer = await ich();
+  if (url === undefined) url = nutzer.profilbild_url;
   if (!url) {
-    kreis.textContent = NUTZER.name[0];
+    kreis.textContent = nutzer.nutzername[0].toUpperCase();
     return;
   }
   const img = Object.assign(document.createElement("img"), { src: BACKEND + url, alt: "" });
@@ -212,13 +238,25 @@ function farbkreise(ziel, name, typ) {
 }
 
 /** GET ans Backend; wirft bei Fehlern eine Meldung, die man direkt anzeigen kann. */
-async function holeJson(pfad) {
+/** Aufruf ans Backend mit dem Sitzungs-Cookie (credentials). Antwortet das Backend mit 401
+ *  (nicht angemeldet), geht es zur Anmeldeseite; weiterleiten: false schaltet das ab
+ *  (Anmeldeseite selbst, dort heißt 401 „Passwort falsch“). */
+async function api(pfad, { weiterleiten = true, ...optionen } = {}) {
   let antwort;
   try {
-    antwort = await fetch(`${API}${pfad}`);
+    antwort = await fetch(`${API}${pfad}`, { credentials: "include", ...optionen });
   } catch {
     throw new Error("Keine Verbindung zum Backend. Läuft es auf Port 8000?");
   }
+  if (antwort.status === 401 && weiterleiten) {
+    location.href = "index.html";
+    throw new Error("Bitte melde dich an.");
+  }
+  return antwort;
+}
+
+async function holeJson(pfad) {
+  const antwort = await api(pfad);
   const inhalt = await antwort.json();
   if (!antwort.ok) throw new Error(fehlerText(inhalt));
   return inhalt;

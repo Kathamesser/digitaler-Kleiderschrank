@@ -17,7 +17,7 @@ JPEG = b"\xff\xd8\xff\xe0" + b"\x00" * 100
 
 
 @pytest.fixture
-def client(monkeypatch, tmp_path):
+def client(monkeypatch, tmp_path, als_test_nutzer):
     speicher: dict[str, dict] = {}
 
     async def finden(nutzer_id):
@@ -41,7 +41,8 @@ def hochladen(client, bild=JPEG, dateiname="ich.jpg"):
 def test_ohne_profilbild(client):
     antwort = client.get("/api/nutzer/ich")
     assert antwort.status_code == 200
-    assert antwort.json() == {"id": TEST_NUTZER_ID, "profilbild_url": None}
+    assert antwort.json()["id"] == TEST_NUTZER_ID
+    assert antwort.json()["profilbild_url"] is None
     assert client.get("/api/nutzer/ich/profilbild").status_code == 404
 
 

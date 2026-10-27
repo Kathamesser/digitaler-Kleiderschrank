@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- Startseite der Web-App: Anmeldung. Mockups „Desktop 1 · Anmeldung“ und „Desktop 2 · Registrierung“. Noch ohne Backend: Das Anmeldeverfahren ist offen. -->
+<!-- Startseite der Web-App: Anmeldung. Mockups „Desktop 1 · Anmeldung“ und „Desktop 2 · Registrierung“.
+     POST /api/nutzer/anmelden bzw. /registrieren; das Backend setzt dabei das Sitzungs-Cookie (ERM-Entscheidung 13). -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -55,8 +56,6 @@
         <div class="meldung" role="status"></div>
         <p class="link-zeile">Schon ein Konto? <a class="link" href="#" data-wechsel="anmelden">Anmelden</a></p>
       </form>
-
-      <p class="leise zentriert">Hinweis: Anmeldung und Registrierung prüfen noch nichts beim Backend und führen direkt zum Hauptmenü.</p>
     </div>
   </section>
 </main>
@@ -90,13 +89,39 @@
     zeigen.setAttribute("aria-label", feld.type === "password" ? "Passwort anzeigen" : "Passwort verbergen");
   };
 
+  /** Formulardaten ans Backend schicken; bei Erfolg ist man angemeldet und kommt ins Hauptmenü. */
+  async function absenden(form, pfad, daten) {
+    const meldung = form.querySelector(".meldung");
+    const knopf = form.querySelector("[type=submit]");
+    knopf.disabled = true;
+    try {
+      const antwort = await api(pfad, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(daten),
+        weiterleiten: false,
+      });
+      if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(await antwort.json()), "fehler");
+      location.href = "hauptmenue.html";
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
+    } finally {
+      knopf.disabled = false;
+    }
+  }
+
+  // Schon angemeldet (Sitzung noch gültig)? Dann gleich ins Hauptmenü.
+  api("/nutzer/ich", { weiterleiten: false })
+    .then((antwort) => { if (antwort.ok) location.replace("hauptmenue.html"); })
+    .catch(() => {});
+
   document.getElementById("anmelden").onsubmit = (e) => {
     e.preventDefault();
     const f = e.target;
     if (!f.nutzername.value.trim() || !f.passwort.value) {
       return zeigeMeldung(f.querySelector(".meldung"), "Bitte Nutzername und Passwort eingeben.", "fehler");
     }
-    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+    absenden(f, "/nutzer/anmelden", { nutzername: f.nutzername.value.trim(), passwort: f.passwort.value });
   };
 
   document.getElementById("registrieren").onsubmit = (e) => {
@@ -109,7 +134,7 @@
       return zeigeMeldung(meldung, "Das Passwort braucht mindestens 8 Zeichen und ein Sonderzeichen.", "fehler");
     }
     if (f.passwort.value !== f.passwort2.value) return zeigeMeldung(meldung, "Die Passwörter stimmen nicht überein.", "fehler");
-    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+    absenden(f, "/nutzer/registrieren", { email: f.email.value.trim(), nutzername: f.nutzername.value.trim(), passwort: f.passwort.value });
   };
 </script>
 </body>

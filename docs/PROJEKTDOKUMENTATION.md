@@ -141,7 +141,7 @@ Die User Storys stammen aus dem GitHub-Kanban-Board und stehen vollständig mit 
 | 3 | Kleidungssimulation (Avatar) | vom Team | Avatar-Rohling fertig, Editor folgt |
 | 4 | Kleidungsstücke/Outfits kennzeichnen (Herz) | vom Team | Favorit am Kleidungsstück umgesetzt, Outfits offen |
 | 5 | Nach Kategorie filtern | Vorschlag Claude | Filter im Prototyp (im Browser) |
-| 6 | Login/Logout | Vorschlag Claude | offen, Anmeldeverfahren noch nicht entschieden |
+| 6 | Login/Logout | Vorschlag Claude | **umgesetzt** (27.10.2026): Registrierung, Login, Logout |
 | 7 | Passwort zurücksetzen | Vorschlag Claude | offen |
 | 8 | Kleidungsstück digitalisieren | Vorschlag Claude | **umgesetzt** (13.10.2026) |
 | 9 | Kleidungsstück verleihen | Vorschlag Claude | offen, im ERM modelliert |
@@ -290,7 +290,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 ### 6.1 Projektgerüst (13.10.2026)
 
-- `Sharely_programm/backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Platzhalter für die Anmeldung) und den acht Modulen; `/api/health` als Lebenszeichen.
+- `Sharely_programm/backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Anmeldung, bis 27.10.2026 als Platzhalter) und den acht Modulen; `/api/health` als Lebenszeichen.
 - `Sharely_programm/frontend/`: Ordnerstruktur und README; das Framework-Gerüst wird erst nach der Entscheidung React/Vue erzeugt. Der Avatar-Editor (`src/avatar-editor/`) ist bewusst framework-unabhängig.
 - `Sharely_programm/uploads/`: Bildablage, nur lokal, nicht im Repo.
 - VS-Code-Einstellungen und `pytest.ini` fürs ganze Team.
@@ -310,7 +310,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 - **Entfallen** gegenüber dem Stand vom 13.10.2026: Kategorie (jetzt Kleidungsart), Anlass (geht in den Kategorien auf), Größe, Marke, Herkunft, Notiz.
 - **Ablauf der Umstellung:** Erst festgelegt (Katha, 13.10.2026), dann vom ERM eingeholt: Die Desktop-Mockups vom 20.10.2026 verlangten andere Felder, Manuel hat das ERM danach ausgerichtet, der Code folgte am selben Tag. Prüfregeln und Indizes in MongoDB baut Manuels Sitzung getrennt.
 - **Bildprüfung am Dateiinhalt** (JPEG, PNG, WebP; höchstens 10 MB), zufälliger Dateiname, Upload-Ordner nicht öffentlich.
-- **Anmeldung als Platzhalter:** `aktueller_nutzer()` liefert vorerst einen festen Test-Nutzer.
+- **Anmeldung:** Bis 27.10.2026 lieferte `aktueller_nutzer()` einen festen Test-Nutzer, seitdem den angemeldeten Nutzer (siehe 6.5).
 
 ### 6.3 Klick-Prototyp (13./14.10.2026)
 
@@ -329,6 +329,23 @@ Neun HTML-Seiten ohne Framework nach den Wireframes in `Sharely_programm/fronten
 
 Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. Nächster Schritt: Three.js-Testseite mit Reglern (Christian).
 
+### 6.5 User Story 6: Registrierung, Login, Logout (27.10.2026)
+
+| Endpunkt | Zweck |
+|---|---|
+| `POST /api/nutzer/registrieren` | Konto anlegen (E-Mail, Nutzername, Passwort), danach gleich angemeldet |
+| `POST /api/nutzer/anmelden` | mit Nutzername und Passwort anmelden |
+| `POST /api/nutzer/abmelden` | Sitzung beenden |
+| `GET /api/nutzer/ich` | eigenes Profil mit Nutzername, E-Mail, „Mitglied seit“, Profilbild |
+
+- **Verfahren** wie in ERM-Entscheidung 13 (Manuel, 20.10.2026): Beim Anmelden entsteht ein zufälliges Token (`secrets.token_urlsafe`). Der Browser bekommt es als httpOnly-Cookie. JavaScript kommt nicht an das Cookie heran, und SameSite=Lax schützt vor fremden Websites. In der Collection `sitzungen` steht nur der SHA-256-Hash des Tokens mit Ablaufzeit. Nach 14 Tagen löscht MongoDB die Sitzung über den TTL-Index; das Backend prüft die Ablaufzeit zusätzlich selbst. Abmelden löscht die Sitzung in der Datenbank, nicht nur das Cookie.
+- **Passwörter** werden nur als Argon2id-Hash gespeichert (`pwdlib`). Regeln wie in den Mockups: mindestens 8 Zeichen und ein Sonderzeichen.
+- **Nutzername:** 3–30 Zeichen (Buchstaben, Ziffern, Punkt, Unterstrich, Bindestrich). Er ist eindeutig, Groß- und Kleinschreibung zählen dabei nicht. Die E-Mail wird kleingeschrieben gespeichert. Doppelte Werte fängt zusätzlich der eindeutige Index in MongoDB ab.
+- **Falsche Anmeldung:** Für falschen Namen und falsches Passwort gibt es dieselbe Meldung. Bei unbekanntem Namen prüft das Backend trotzdem einen Hash. So lässt sich weder an der Meldung noch an der Antwortzeit ablesen, welche Nutzernamen es gibt. Die Registrierung meldet dagegen, wenn eine E-Mail schon vergeben ist, weil man sonst nicht weiterkommt.
+- **Frontend:** Die Anmeldeseite schickt die Formulare ans Backend. Alle inneren Seiten laden den angemeldeten Nutzer und zeigen dessen Namen statt „Test-Nutzer“. Ohne Anmeldung geht es zur Anmeldeseite. „Abmelden“ im Hauptmenü und „Nutzer wechseln“ im Profil beenden die Sitzung.
+- **Test-Nutzer:** Der Platzhalter-Nutzer aus dem Einrichtungsskript kann sich nicht anmelden, weil sein Passwort-Hash kein Argon2-Hash ist. Was bisher unter ihm gespeichert wurde, ist in der App nicht mehr zu sehen. Ob er samt Daten gelöscht wird, entscheidet das Team (siehe 11.1).
+- **Noch offen:** Passwort zurücksetzen (US 7, braucht E-Mail-Versand), Passwort ändern, Konto löschen, Begrenzung der Anmeldeversuche.
+
 ---
 
 ## 7. Qualitätssicherung
@@ -338,6 +355,7 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 - Backend-Tests mit `pytest` und dem FastAPI-Testclient (`Sharely_programm/backend/tests/`), lauffähig ohne MongoDB über ein Ersatz-Repository.
 - Stand 20.10.2026 (nach der Umstellung auf das ERM): **19 Tests, alle grün** (`test_health.py`: 1, `test_kleidung.py`: 18). Geprüft werden u. a. Anlegen mit nur den Pflichtfeldern und mit allen Eigenschaften, alle Kleidungsarten, Status beim Anlegen (verliehen und verschenkt abgelehnt), Ganzjährig, ungültige Farbe/Material/Kategorie-ID/Maße, Messpunkte gleich der GLB-Liste, fehlendes, ungültiges und zu großes Bild, Kaufdatum in der Zukunft, Abruf von Bild und Liste, unbekanntes Kleidungsstück.
 - Stand 27.10.2026: **71 Tests, alle grün**, dazu u. a. Tests für die Datenbankstruktur (Prüfregeln, Indizes, Wertelisten, Messpunkte und Zugaben je Kleidungsart) und das Profilbild.
+- Stand 27.10.2026 nach der Anmeldung: **90 Tests, alle grün**. Neu in `test_anmeldung.py`: kein Zugriff ohne Anmeldung, Registrierung meldet gleich an, Passwort nur als Argon2-Hash, Cookie httpOnly und Token nur als Hash gespeichert, Eingabeprüfung, E-Mail und Nutzername nur einmal (auch bei anderer Groß-/Kleinschreibung), Anmelden und Abmelden, gleiche Meldung bei falschem Namen oder Passwort, Test-Nutzer kann sich nicht anmelden, abgelaufene Sitzung gilt nicht. Ein weiterer Test prüft, dass Nutzer und Sitzung zur Prüfregel in MongoDB passen. Die übrigen Tests umgehen die Anmeldung über die Fixture `als_test_nutzer`.
 - Zusätzlich wurde User Story 8 gegen eine lokale MongoDB mit Wegwerf-Datenbank durchgespielt.
 
 ### 7.2 Manuelle Prüfungen
@@ -347,6 +365,18 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
 - Alle Seiten nach den Desktop-Mockups (27.10.2026): Chrome über das DevTools-Protokoll ferngesteuert, Seiten geladen, Fenster per Klick geöffnet, 18 Ansichten als Screenshot mit den Mockups verglichen und die Konsole auf Fehler geprüft (keine). Gefundene Darstellungsfehler wurden behoben.
 - Datenbank: `python -m app.datenbank_einrichten --pruefen` gleicht Atlas nur lesend mit dem Code ab.
 - Profilbild auf Atlas (27.10.2026, nach Variante A): Test-Nutzer per `--stammdaten` angelegt (zweiter Lauf „schon vorhanden“), dann über die Profilseite ein Testbild hochgeladen und entfernt, alle Aufrufe ohne Fehler.
+- Anmeldung im Browser (27.10.2026) gegen eine lokale Wegwerf-Datenbank mit der Struktur aus dem Einrichtungsskript (keine Test-Konten in Atlas). Geprüft wurden:
+  - ohne Anmeldung Weiterleitung zur Anmeldeseite;
+  - Registrieren mit zu kurzem und mit gültigem Passwort;
+  - Name und „Mitglied seit“ im Profil;
+  - Cookie für JavaScript nicht lesbar;
+  - Abmelden, danach kein Zugriff mehr;
+  - falsches Passwort;
+  - Anmelden mit anderer Groß-/Kleinschreibung;
+  - Profilbild hochladen und anzeigen;
+  - doppelter Nutzername.
+
+  Die Konsole zeigte keine Fehler. Die Wegwerf-Datenbank wurde danach gelöscht.
 - Avatar: Neubau der GLB bit-identisch reproduziert; Zentimeter-Werte gegen Größentabellen des Handels geprüft; Regler auf gleichmäßige Wirkung getestet (Taille in Viertelschritten).
 
 ### 7.3 Geplant
@@ -406,6 +436,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 26.10.2026 | Messpunkte je Kleidungsart (Pflicht/optional) mit Zugabe-Spannen: Umfänge in Prozent, Längen in cm; Startwerte, später anpassbar | Bewegungszugabe wächst mit der Körpergröße; Grundlage der Passform-Ampel | Christian (Bestätigung Manuel steht aus) | `ZUGABEN.md` |
 | 27.10.2026 | Seiten folgen den Mockups; wo ein Mockup vom ERM abweicht, gilt das ERM | das ERM ist das festgelegte Datenmodell | Katha | `frontend/templates/README.md` |
 | 27.10.2026 | Fenster aus den Mockups als `<dialog>` in der aufrufenden Seite; Beispieldaten ohne Backend zentral in `beispieldaten.js` | Seiten bleiben einzeln aufrufbar, Beispieldaten lassen sich in einem Schritt entfernen | Claude bei der Umsetzung im Auftrag von Katha | `frontend/templates/README.md` |
+| 27.10.2026 | Umsetzung der Anmeldung: Login mit Nutzername (wie im Mockup), Nutzername eindeutig ohne Rücksicht auf Groß-/Kleinschreibung, Sitzung 14 Tage, nach der Registrierung gleich angemeldet | Startwerte bei der Umsetzung, vom Team änderbar (`sitzung_tage` in `config.py`) | Claude bei der Umsetzung im Auftrag von Katha | `docs/api/README.md` |
 | 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
 
 ---
@@ -428,7 +459,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 16.10.2026 | ERM-Prüfung und Vorschläge für die nächste Teambesprechung |
 | 20.10.2026 | ERM an die Desktop-Mockups angepasst, Modul `kleidung` und Seiten umgestellt, Datenbankstruktur per Skript, Profilbild, Ordner `Sharely_programm/` |
 | 26.10.2026 | Gemeinsame Atlas-Datenbank eingerichtet; Messpunkte und Zugaben je Kleidungsart |
-| 27.10.2026 | Alle Desktop-Mockups als Seiten oder Fenster umgesetzt; Messpunkte-Branch nach `main` zusammengeführt |
+| 27.10.2026 | Alle Desktop-Mockups als Seiten oder Fenster umgesetzt; Messpunkte-Branch nach `main` zusammengeführt; Test-Nutzer in Atlas; Registrierung, Login und Logout |
 
 ### 10.2 Soll-Ist-Vergleich (Stand Woche 15)
 
@@ -436,7 +467,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 |---|---|
 | 0 Analyse & Konzept (bis 29.07.) | weitgehend erledigt; User Storys (22.09.) und Technische Konzeption (04.10.) später als geplant. Ein Lasten-/Pflichtenheft gibt es nicht als eigenes Dokument. |
 | 1 Architektur, API & Design (bis 19.08.) | Architektur, Wireframes und Repo-Struktur fertig; ERM liegt vor, Beschluss offen; Frontend-Framework und CI/CD offen. Avatar-Machbarkeit über den GLB-Rohling nachgewiesen, der drehbare Three.js-Prototyp mit Reglern fehlt noch. |
-| 2 Kleiderschrank-Kernfunktion (bis 16.09.) | teilweise: Anlegen mit Foto, Liste, Detail und Filter fertig; Login, Bearbeiten und Löschen offen |
+| 2 Kleiderschrank-Kernfunktion (bis 16.09.) | teilweise: Anlegen mit Foto, Liste, Detail, Filter und (seit 27.10.) Login fertig; Bearbeiten und Löschen offen |
 | 3 Avatar-Grundgerüst (17.09.–28.10., läuft) | Asset-Teil fertig (größtes Risiko entschärft); Editor, Farben, Frisuren/Gesichter und Speichern offen |
 | 4–7 | noch nicht begonnen (planmäßig) |
 
@@ -457,12 +488,13 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 - ERM-Restpunkt: Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian); Messpunkte und Zugaben je Kleidungsart sind seit 26.10.2026 mit Startwerten umgesetzt, Bestätigung durch Manuel steht aus
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)
 - Grenzen der Avatar-Regler: Körpergröße (Vorschlag −40 bis +45, etwa 144–205 cm) und Mindestalter (Vorschlag ca. 18 Jahre)
+- Test-Nutzer: Seit es die Anmeldung gibt, kann ihn niemand mehr nutzen. Soll er samt seiner Daten gelöscht oder als Platzhalter behalten werden? Betrifft Einrichtungsskript und Prüfregel (Manuel).
 - User Storys 5–10: Anforderungen sind Vorschläge von Claude und müssen vom Team geprüft werden; Issues #15/#16 auf GitHub angleichen
 
 ### 11.2 Nächste Schritte
 
 1. Three.js-Editor mit Reglern (Avatar-Machbarkeitsprototyp abschließen)
-2. Anmeldung (US 6, 7) nach Entscheidung des Verfahrens
+2. Passwort zurücksetzen (US 7), Passwort ändern, Konto löschen (Login und Logout sind seit 27.10.2026 fertig)
 3. Kleidungsstück bearbeiten und löschen, Outfits (US 3, 4)
 4. Frontend-Framework aufsetzen und Prototyp-Seiten übernehmen
 5. 3D-Kleidungsvorlagen und Passform-Bewertung (Phase 4)
