@@ -216,7 +216,7 @@ Wichtige Designentscheidungen (Begründungen in `ERM-SHARELY.md` Abschnitt 5):
 - **Kleidungsart als Pflicht-Einordnung** (feste Liste: Tops, Pullover, Hosen, Röcke, Kleider, Jacken, Schuhe, Unterwäsche, Einteiler, Accessoires). Sie bestimmt die 3D-Vorlage, mehrere Arten können sich eine Vorlage teilen.
 - **Kategorien als freie Etiketten:** vorgegebene (Business, Freizeit, Winterkleidung …) und eigene je Nutzer, mehrere je Kleidungsstück oder Outfit. Der Anlass geht darin auf. Jeder Nutzer kann Kategorien für sich ausblenden.
 - **Feste Wertelisten** für Farbe, Material und Saison: im ERM als Wertetabellen (1. Normalform), in MongoDB als Enum im Code.
-- **Maße an den Messbändern des Avatars:** Ein Kleidungsstück speichert seine Maße in cm an denselben 22 Messpunkten wie die Avatar-GLB. Die Passform („passt / eng / weit“) vergleicht Messpunkt für Messpunkt ohne Umrechnung; Größentabellen entfallen.
+- **Maße an den Messbändern des Avatars:** Ein Kleidungsstück speichert seine Maße in cm an denselben 24 Messpunkten wie die Avatar-GLB. Welche Messpunkte je Kleidungsart abgefragt werden und welche Zugabe als „passt“ gilt, steht an der Kleidungsart (`docs/datenmodell/ZUGABEN.md`). Die Passform („passt / eng / weit“) vergleicht Messpunkt für Messpunkt ohne Umrechnung; Größentabellen entfallen.
 - **Status** `im_schrank`, `geliehen`, `verliehen`, `wunsch`. Wunschartikel und geliehene Teile sind Kleidungsstücke im eigenen Schrank; ein geliehenes Teil verweist auf seinen Leihvorgang.
 - **Leihvorgang als eigene Entität** mit Verlauf (Anfrage, Annahme, Zeitraum, Rückgabe). **Verschenken ist ein Besitzwechsel:** Das Teil gehört danach dem Empfänger, der Verlauf bleibt im Leihvorgang.
 - **Gegenseitige Freundschaft** mit Anfrage, Annehmen, Ablehnen und Blockieren. Freunde sehen alle Teile und Outfits außer privaten.
@@ -277,7 +277,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 ### 5.4 Zentimeter und Passform
 
-- **Die Maße werden am verformten Modell gemessen,** nicht über eine Umrechnungstabelle. 22 Messbänder (die 20 von MakeHuman plus Schrittlänge und Fußlänge) liegen in `docs/avatar/messpunkte.json`. So stimmt der Wert auch, wenn mehrere Regler zusammenwirken.
+- **Die Maße werden am verformten Modell gemessen,** nicht über eine Umrechnungstabelle. 24 Messbänder (die 20 von MakeHuman plus Schrittlänge, Fußlänge, Schulterbreite über den Rücken und Armlänge) liegen in `docs/avatar/messpunkte.json`. So stimmt der Wert auch, wenn mehrere Regler zusammenwirken.
 - **Realitätsprüfung** gegen Größentabellen aus dem Handel: Die Standardfiguren entsprechen Damen 36 bzw. Herren 46; mit den Reglern ist der ganze Bereich der Konfektionsgrößen erreichbar (`ZENTIMETER.md` Abschnitt 3).
 - **Passform-Logik** (geplant, Phase 4): Maße des Kleidungsstücks in cm an den Messpunkten der GLB → Vergleich Messpunkt für Messpunkt mit den cm der Figur → „passt / eng / weit“ (seit dem ERM vom 20.10.2026 ohne Größentabelle, siehe 4.4). Das ist reine Programmlogik ohne KI und damit gut dokumentierbare Eigenleistung. Die 3D-Kleidungsvorlage wächst mit denselben Morph-Werten mit.
 
