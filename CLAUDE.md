@@ -31,6 +31,7 @@ Hinweis: Der frühere Experimentierstand aus der Claude-Pro-Testphase (Flask-Web
 - **GitHub ist die zentrale Quelle.** Lokale Arbeitskopien werden manuell über GitHub abgeglichen. Christians Obsidian-Vault (`OneDrive\AI_Unibrain\Obsidian_Vault\StyleHUB`) ist ein Clone dieses Repos und wird von Claude Code synchron gehalten.
 - Dokumentation auf Deutsch, Commit-Messages auf Englisch oder Deutsch — Hauptsache aussagekräftig.
 - Entscheidungen mit Datum und Begründung in den Docs festhalten (prüfungsrelevant).
+- **Starten:** `Sharely_programm/start.py` startet alle Dienste der App mit einem Befehl. Kommt ein Dienst dazu (weiterer Server o. Ä.), wird er dort in `DIENSTE` eingetragen (Entscheidung Christian, 29.10.2026).
 - Maschinen-spezifische Claude-Permissions gehören in `.claude/settings.local.json` (nicht committen), nicht in die geteilte `.claude/settings.json`.
 
 ## Für Claude wichtig
