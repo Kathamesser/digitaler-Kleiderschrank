@@ -732,3 +732,80 @@ a.menue-zeile { text-decoration: none; }
   .anfrage-karte .typ-marke { grid-column: 2; }
   .titel-zeile { flex-wrap: wrap; }
 }.teile-liste button:disabled { cursor: default; }
+
+/* ---------- Avatar-Konfigurator (avatar-konfigurator.html) ---------- */
+
+.konfigurator { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, 1fr); gap: 32px; align-items: start; }
+.konf-buehne {
+  position: sticky; top: 16px; height: calc(100vh - 32px); min-height: 560px; max-height: 900px;
+  background: linear-gradient(180deg, var(--flaeche), var(--feld)); border-radius: var(--rund-gross); box-shadow: var(--schatten); overflow: hidden;
+}
+.buehne-3d, .buehne-3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.buehne-3d canvas { cursor: grab; touch-action: none; }
+.buehne-3d canvas:active { cursor: grabbing; }
+.konf-laden { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; font-weight: 700; color: var(--text-leise); }
+.konf-ansichten { position: absolute; top: 18px; left: 18px; display: flex; gap: 8px; }
+.konf-ansichten .chip { min-height: 40px; padding: 0 18px; background: var(--flaeche); }
+.konf-tipp { position: absolute; bottom: 14px; left: 22px; margin: 0; }
+.konf-masse {
+  position: absolute; top: 18px; right: 18px; width: 230px; padding: 16px 18px; background: rgba(255, 255, 255, .9);
+  border-radius: var(--rund); box-shadow: var(--schatten);
+}
+.konf-masse h2 { font-size: 1.15rem; margin-bottom: 8px; }
+.konf-masse dl { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0; font-size: .95rem; }
+.konf-masse dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.konf-masse .leise { margin: 10px 0 0; font-size: .8rem; }
+
+.konf-schnellstart { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0; }
+.konf-schnellstart .knopf-rand { padding: 8px 18px; font-size: .95rem; }
+.regler-bereich { background: var(--flaeche); border-radius: var(--rund); box-shadow: var(--schatten); margin-bottom: 14px; }
+.regler-bereich summary { cursor: pointer; padding: 18px 22px; font-family: var(--schrift-titel); font-weight: 700; font-size: 1.3rem; }
+.regler-liste { padding: 0 22px 14px; }
+.regler-liste > .leise { margin: 0 0 8px; }
+.regler-liste .pillen { margin-bottom: 8px; }
+.regler-liste .pillen span { padding: 8px 16px; font-size: .95rem; }
+.regler-zeile { padding: 12px 0; border-top: 1px solid var(--linie); }
+.regler-zeile.verknuepft { background: var(--primaer-hell); margin: 0 -22px; padding: 12px 22px; border-top: none; }
+.regler-kopf { display: flex; align-items: baseline; gap: 10px; }
+.regler-kopf label { font-weight: 700; }
+.regler-wert { margin-left: auto; color: var(--text-leise); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.regler-null { border: none; background: none; color: var(--primaer); cursor: pointer; font-size: 1.1rem; padding: 0 2px; }
+.regler-enden { display: flex; justify-content: space-between; font-size: .8rem; color: var(--text-leise); }
+
+/* Schieberegler: Spur gefüllt von neutral (--null) bis zum Wert (--wert) */
+.regler-zeile input[type="range"] {
+  --null: 50%; --wert: 50%; --links: min(var(--null), var(--wert)); --rechts: max(var(--null), var(--wert));
+  -webkit-appearance: none; appearance: none; width: 100%; height: 28px; margin: 4px 0 0; background: transparent; cursor: pointer;
+}
+.regler-zeile input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--leiste) var(--links), var(--primaer) var(--links), var(--primaer) var(--rechts), var(--leiste) var(--rechts));
+}
+.regler-zeile input[type="range"]::-moz-range-track {
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--leiste) var(--links), var(--primaer) var(--links), var(--primaer) var(--rechts), var(--leiste) var(--rechts));
+}
+.regler-zeile input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%;
+  background: var(--flaeche); border: 3px solid var(--primaer); box-shadow: var(--schatten);
+}
+.regler-zeile input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--flaeche); border: 3px solid var(--primaer); }
+.regler-zeile input[type="range"]:disabled { opacity: .4; cursor: not-allowed; }
+.regler-zeile input[type="range"]:focus-visible { outline: 2px solid var(--primaer); outline-offset: 2px; border-radius: 4px; }
+.regler-cm { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 4px; font-size: .9rem; color: var(--text-leise); }
+.regler-cm input {
+  width: 84px; padding: 4px 8px; border: 1.5px solid var(--feld-rand); border-radius: var(--rund-klein); background: var(--feld);
+  font: inherit; color: var(--text); text-align: right; font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 960px) {
+  .konfigurator { grid-template-columns: 1fr; }
+  .konf-buehne { position: relative; top: 0; height: 62vh; min-height: 420px; }
+  .konf-masse { width: 190px; font-size: .9rem; }
+}
+@media (max-width: 560px) {
+  .konf-masse { position: static; width: auto; margin: 0; border-radius: 0; }
+  .konf-tipp { display: none; }
+  .konf-buehne { height: auto; min-height: 0; display: flex; flex-direction: column; }
+  .buehne-3d { position: relative; height: 60vh; }
+}

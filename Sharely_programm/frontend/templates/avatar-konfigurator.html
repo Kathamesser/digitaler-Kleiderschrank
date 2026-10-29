@@ -1,0 +1,66 @@
+<!doctype html>
+<!-- Avatar-Konfigurator: Figur mit Schiebereglern einstellen (3D mit Three.js).
+     Kein Mockup vorhanden; Aufbau nach docs/avatar/AVATAR-REGLER.md, Logik in ../src/avatar-editor/.
+     Speichern über das Backend fehlt noch (Modul figuren), der Entwurf bleibt bis dahin in diesem Browser. -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharely – Mein Avatar</title>
+  <link rel="stylesheet" href="../static/css/stil.css?v=2">
+  <script src="../static/js/gemeinsam.js?v=2"></script>
+  <!-- Three.js kommt vom CDN (wie die Schriften von Google Fonts); ohne Internet lädt der Avatar nicht. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+<main class="seite">
+  <div class="konfigurator inhalt-wachsen">
+    <section class="konf-buehne" aria-label="Avatar-Vorschau">
+      <div id="buehne" class="buehne-3d"></div>
+      <div id="laden" class="konf-laden"><span id="laden-text">Avatar wird geladen …</span></div>
+      <div class="konf-ansichten" role="group" aria-label="Ansicht">
+        <button type="button" class="chip" data-ansicht="vorne">Vorne</button>
+        <button type="button" class="chip" data-ansicht="seite">Seite</button>
+        <button type="button" class="chip" data-ansicht="hinten">Hinten</button>
+      </div>
+      <p class="konf-tipp leise">Ziehen zum Drehen, Mausrad zum Zoomen</p>
+      <aside class="konf-masse">
+        <h2>Deine Maße</h2>
+        <dl id="masse-liste"></dl>
+        <p class="leise">Gemessen am Avatar wie mit einem Maßband.</p>
+      </aside>
+    </section>
+
+    <section class="konf-regler" aria-label="Regler">
+      <div class="hinweis">Entwurf: Die Figur wird vorerst nur in diesem Browser gemerkt (Backend-Modul figuren fehlt noch).</div>
+      <label class="feldname" for="figur-name">Name der Figur</label>
+      <input type="text" id="figur-name" maxlength="40" autocomplete="off">
+      <div class="konf-schnellstart">
+        <span class="leise">Schnellstart:</span>
+        <button type="button" class="knopf-rand" id="start-frau">Weiblich</button>
+        <button type="button" class="knopf-rand" id="start-mann">Männlich</button>
+        <button type="button" class="knopf-rand" id="zuruecksetzen"><span data-symbol="ruecksetzen"></span> Neutral</button>
+      </div>
+      <div id="konf-meldung" class="meldung fehler" role="status" hidden></div>
+      <div id="regler"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+  seitenkopf("Mein Avatar");
+  fussleiste([
+    { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
+    { text: "Zu den Outfits", symbol: "buegel", href: "outfits.html" },
+  ]);
+</script>
+<script type="module" src="../src/avatar-editor/konfigurator.js"></script>
+</body>
+</html>

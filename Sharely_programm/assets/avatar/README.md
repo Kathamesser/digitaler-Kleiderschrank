@@ -7,6 +7,7 @@ Stand: 12.10.2026 · Hier liegt alles, was man für den 3D-Avatar braucht: die f
 | Datei | Wozu | Anfassen? |
 |---|---|---|
 | `Avatar_Editorgeruest.glb` | **Der Avatar für den Web-Editor** (Three.js). Neutrale Standardfigur plus 114 Morph Targets, alle starten auf 0. 8 MB. | Nur lesen. Wird vom Bauskript erzeugt, nie von Hand bearbeiten. |
+| `messpunkte.json` | Kopie von `docs/avatar/messpunkte.json` für den Avatar-Konfigurator im Browser (der Seiten-Server liefert `docs/` nicht aus). | Nur lesen. Schreibt `docs/avatar/skripte/zentimeter_messen.py` zusammen mit dem Original, ein Backend-Test prüft, dass beide gleich sind. |
 | `werkstatt/avatar_shapekeys.blend` | **Quelle für jeden Neubau.** Blender-Datei mit allen 547 Formen aus MakeHuman, auch Gesicht, Kopf, Hände usw. für später. | Nicht ändern. Neu erzeugt wird sie nur, wenn MakeHuman neu exportiert wird (siehe unten). |
 | `werkstatt/figur_default.obj` (+ `.mtl`) | Die neutrale Standardfigur aus MakeHuman. Das Zentimeter-Skript braucht sie, um die Messpunkte zu finden. | Nicht ändern. |
 | `werkstatt/textures/` | Augentextur, wird von der .blend und der .obj benutzt. | Nicht ändern. |
