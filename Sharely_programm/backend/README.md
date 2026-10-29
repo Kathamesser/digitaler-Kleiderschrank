@@ -42,7 +42,7 @@ Sharely_programm/backend/
 │   │   ├── datenbank.py   MongoDB-Verbindung (get_db)
 │   │   ├── datenbank_struktur.py  Collections, Prüfregeln, Indizes (nach dem ERM)
 │   │   ├── wertelisten.py  feste Listen (Kleidungsart, Farbe, Material, …)
-│   │   └── sicherheit.py  Passwort-Hashing, Anmeldung (Verfahren noch offen)
+│   │   └── sicherheit.py  Passwort-Hashing (Argon2), Sitzungen, aktueller_nutzer
 │   └── module/            ein Ordner je Fachbereich
 │       ├── nutzer/        Registrierung, Login, Passwort, Profil
 │       ├── kleidung/      Kleiderschrank: Kleidungsstücke, Filter, Favoriten

@@ -6,7 +6,7 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 
 | Seite | Mockup | Daten |
 |---|---|---|
-| `index.html` | Desktop 1, 2 | Startseite: Anmeldung und Registrierung, ohne Backend (Anmeldeverfahren offen), führt direkt zum Hauptmenü |
+| `index.html` | Desktop 1, 2 | live: Anmeldung und Registrierung (`/api/nutzer/anmelden`, `/registrieren`), danach ins Hauptmenü; zeigt immer das Formular, auch wenn man noch angemeldet ist |
 | `passwort-vergessen.html` | Desktop 3 | E-Mail für den Reset-Link, ohne Backend; Meldung verrät nicht, ob es das Konto gibt |
 | `passwort-neu.html` | Desktop 4 | Ziel des Reset-Links: neues Passwort mit Prüfliste (8 Zeichen, Sonderzeichen, gleich), ohne Backend |
 | `hauptmenue.html` | Hauptmenü – Variante 2 | Avatar-Kachel führt zum Avatar-Konfigurator; Zahlen im Kleiderschrank live (eigene, Wunsch-, verliehene, geliehene Artikel), „x neu“ bei Nachrichten aus Beispieldaten, Rest Platzhalter |
@@ -21,7 +21,9 @@ HTML-Seiten ohne Framework im Design der Desktop-Mockups (`docs/mockups/desktop/
 | `nachrichten.html` | Nachrichten | Beispieldaten: Leih- und Geschenkanfragen annehmen/ablehnen, Neuigkeiten mit „Neu“, „Mehr lesen“ und „Alle gelesen“ |
 | `verliehen.html` | Freunde-Leih Verleihansicht, Leih-Detailansicht | Beispieldaten (für alle Freunde statt für einen); Klick auf einen Eintrag öffnet die Leihdetails, „überfällig“ wird aus dem Rückgabedatum berechnet |
 | `avatar-konfigurator.html` | kein Mockup | Avatar mit Schiebereglern einstellen (3D, Three.js), cm-Maße live am Avatar; Entwurf nur im Browser, bis das Modul figuren steht. Erreichbar über die Avatar-Kachel im Hauptmenü, „Mein Avatar“ im Profil und das Zahnrad am Avatar in `outfits.html`. Details: `../src/avatar-editor/README.md` |
-| `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ Beispieldaten |
+| `profil.html` | Mein Profil | Profilbild live: hochladen, mit der Kamera aufnehmen, entfernen; Name und „Mitglied seit“ live; „Nutzer wechseln“ meldet ab |
+
+**Anmeldung (seit 27.10.2026):** Alle Seiten mit Kopfzeile laden über `seitenkopf()` den angemeldeten Nutzer (`ich()` in `gemeinsam.js`) und zeigen dessen Namen. Ohne Anmeldung leitet `api()` zu `index.html` weiter. Knöpfe und Links mit `data-abmelden` melden ab (Hauptmenü „Abmelden“, Profil „Nutzer wechseln“). Ohne Anmeldung erreichbar sind nur `index.html` und die beiden Passwort-Seiten.
 
 Seit 27.10.2026 hat jedes Desktop-Mockup eine Seite oder ein Fenster. Fenster (Mockups „Overlay“/„Fenster“) sind `<dialog>`-Elemente in der Seite, aus der sie geöffnet werden. Noch nicht angelegt: Angebote (kein Mockup, laut ERM „kommen später“).
 
@@ -50,15 +52,17 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 ## Starten
 
 1. MongoDB und Backend starten (siehe `Sharely_programm/backend/README.md`).
-2. In einem zweiten Terminal **im Ordner `Sharely_programm`** einen einfachen Webserver auf Port 5173 starten (dort, damit die Seiten das Logo aus `assets/branding/` finden):
+2. In einem zweiten Terminal den Seiten-Server auf Port 5173 starten:
 
    ```bash
    cd Sharely_programm
-   python -m http.server 5173
+   python seiten_server.py
    ```
+
+   Er arbeitet wie `python -m http.server 5173 --bind 127.0.0.1` (nur auf dem eigenen Rechner erreichbar), sagt dem Browser aber, dass er bei jeder Datei nachfragen soll, ob sie sich geändert hat. Mit `http.server` lief nach einem `git pull` sonst oft noch die alte `gemeinsam.js` aus dem Browser-Zwischenspeicher (14.10. und 27.10.2026).
 
    Das Backend erlaubt Zugriffe nur von dieser Adresse (CORS, `FRONTEND_URLS` in `.env`).
 
-3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter) oder direkt http://localhost:5173/frontend/templates/
+3. Im Browser öffnen: http://localhost:5173/ (leitet zur Anmeldung weiter) oder direkt http://localhost:5173/frontend/templates/. `localhost` verwenden, nicht `127.0.0.1`, sonst klappt die Anmeldung nicht. Sieht eine Seite trotzdem nach einem alten Stand aus: **Strg+F5**.
 
 Direktes Öffnen per Doppelklick (`file://…`) funktioniert nicht, weil der Browser die Anfragen ans Backend dann blockiert.

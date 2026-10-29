@@ -1,12 +1,15 @@
 <!doctype html>
-<!-- Startseite der Web-App: Anmeldung. Mockups „Desktop 1 · Anmeldung“ und „Desktop 2 · Registrierung“. Noch ohne Backend: Das Anmeldeverfahren ist offen. -->
+<!-- Startseite der Web-App: Anmeldung. Mockups „Desktop 1 · Anmeldung“ und „Desktop 2 · Registrierung“.
+     POST /api/nutzer/anmelden bzw. /registrieren; das Backend setzt dabei das Sitzungs-Cookie (ERM-Entscheidung 13).
+     method="post": Läuft das Skript nicht (z. B. alte gemeinsam.js aus dem Browser-Speicher), landet das Passwort
+     so wenigstens nicht in der Adresszeile und im Verlauf. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sharely – Anmelden</title>
-  <link rel="stylesheet" href="../static/css/stil.css">
-  <script src="../static/js/gemeinsam.js"></script>
+  <link rel="stylesheet" href="../static/css/stil.css?v=2">
+  <script src="../static/js/gemeinsam.js?v=2"></script>
 </head>
 <body>
 <main class="anmelde-seite">
@@ -31,7 +34,7 @@
         <button type="button" role="tab" id="tab-registrieren" aria-selected="false">Registrieren</button>
       </div>
 
-      <form id="anmelden" novalidate>
+      <form id="anmelden" method="post" novalidate>
         <label><span class="feldname">Nutzername</span><input type="text" name="nutzername" autocomplete="username" placeholder="z. B. kleiderliebe" required></label>
         <label for="passwort-anmelden" class="feldname">Passwort</label>
         <div class="passwortfeld">
@@ -44,7 +47,7 @@
         <p class="link-zeile">Neu bei Sharely? <a class="link" href="#" data-wechsel="registrieren">Konto erstellen</a></p>
       </form>
 
-      <form id="registrieren" novalidate hidden>
+      <form id="registrieren" method="post" novalidate hidden>
         <label><span class="feldname">E-Mail-Adresse</span><input type="email" name="email" autocomplete="email" placeholder="name@beispiel.de" required></label>
         <label><span class="feldname">Nutzername</span><input type="text" name="nutzername" autocomplete="username" placeholder="So sehen dich deine Freunde" required></label>
         <div class="zeile">
@@ -55,8 +58,6 @@
         <div class="meldung" role="status"></div>
         <p class="link-zeile">Schon ein Konto? <a class="link" href="#" data-wechsel="anmelden">Anmelden</a></p>
       </form>
-
-      <p class="leise zentriert">Hinweis: Anmeldung und Registrierung prüfen noch nichts beim Backend und führen direkt zum Hauptmenü.</p>
     </div>
   </section>
 </main>
@@ -90,13 +91,34 @@
     zeigen.setAttribute("aria-label", feld.type === "password" ? "Passwort anzeigen" : "Passwort verbergen");
   };
 
+  /** Formulardaten ans Backend schicken; bei Erfolg ist man angemeldet und kommt ins Hauptmenü. */
+  async function absenden(form, pfad, daten) {
+    const meldung = form.querySelector(".meldung");
+    const knopf = form.querySelector("[type=submit]");
+    knopf.disabled = true;
+    try {
+      const antwort = await api(pfad, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(daten),
+        weiterleiten: false,
+      });
+      if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(await antwort.json()), "fehler");
+      location.href = "hauptmenue.html";
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
+    } finally {
+      knopf.disabled = false;
+    }
+  }
+
   document.getElementById("anmelden").onsubmit = (e) => {
     e.preventDefault();
     const f = e.target;
     if (!f.nutzername.value.trim() || !f.passwort.value) {
       return zeigeMeldung(f.querySelector(".meldung"), "Bitte Nutzername und Passwort eingeben.", "fehler");
     }
-    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+    absenden(f, "/nutzer/anmelden", { nutzername: f.nutzername.value.trim(), passwort: f.passwort.value });
   };
 
   document.getElementById("registrieren").onsubmit = (e) => {
@@ -109,7 +131,7 @@
       return zeigeMeldung(meldung, "Das Passwort braucht mindestens 8 Zeichen und ein Sonderzeichen.", "fehler");
     }
     if (f.passwort.value !== f.passwort2.value) return zeigeMeldung(meldung, "Die Passwörter stimmen nicht überein.", "fehler");
-    location.href = "hauptmenue.html"; // später: POST an das Modul nutzer
+    absenden(f, "/nutzer/registrieren", { email: f.email.value.trim(), nutzername: f.nutzername.value.trim(), passwort: f.passwort.value });
   };
 </script>
 </body>

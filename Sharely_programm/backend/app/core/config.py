@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     max_bild_mb: int = 10
     # Adressen, von denen das Frontend im Browser zugreifen darf (CORS)
     frontend_urls: list[str] = ["http://localhost:5173"]
+    # Höchstdauer einer Anmeldung (danach löscht MongoDB die Sitzung). Das Cookie selbst
+    # endet schon, wenn der Browser geschlossen wird (Entscheidung Katha, 27.10.2026).
+    sitzung_stunden: int = 8
+    # Sitzungs-Cookie nur über HTTPS senden; lokal (http://localhost) muss es False sein
+    cookie_secure: bool = False
 
 
 @lru_cache

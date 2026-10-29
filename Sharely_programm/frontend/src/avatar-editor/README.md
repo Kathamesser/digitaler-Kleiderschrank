@@ -4,7 +4,7 @@ Machbarkeits-Prototyp hat Vorrang (siehe `CLAUDE.md`). Seit 27.10.2026 gibt es d
 
 ## Starten
 
-Wie alle Seiten: im Ordner `Sharely_programm` `python -m http.server 5173` starten, dann http://localhost:5173/frontend/templates/avatar-konfigurator.html öffnen (oder über die Seiten navigieren: Avatar-Kachel im Hauptmenü, „Mein Avatar“ im Profil, Zahnrad am Avatar in `outfits.html`). Das Backend ist nicht nötig. Three.js kommt vom CDN (jsDelivr, Version 0.170.0, eingebunden per Import-Map in der Seite), also braucht der Browser Internet.
+Wie alle Seiten: im Ordner `Sharely_programm` `python seiten_server.py` starten (siehe `templates/README.md` „Starten“), dann http://localhost:5173/frontend/templates/avatar-konfigurator.html öffnen (oder über die Seiten navigieren: Avatar-Kachel im Hauptmenü, „Mein Avatar“ im Profil, Zahnrad am Avatar in `outfits.html`). Ohne Backend läuft der Konfigurator auch, nur ohne Namen in der Kopfzeile; läuft das Backend, ist wie überall eine Anmeldung nötig. Three.js kommt vom CDN (jsDelivr, Version 0.170.0, eingebunden per Import-Map in der Seite), also braucht der Browser Internet.
 
 ## Dateien
 

@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sharely – Kleidungsstück hinzufügen</title>
-  <link rel="stylesheet" href="../static/css/stil.css">
-  <script src="../static/js/gemeinsam.js"></script>
+  <link rel="stylesheet" href="../static/css/stil.css?v=2">
+  <script src="../static/js/gemeinsam.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
@@ -182,13 +182,13 @@
     const knopf = document.getElementById("speichern");
     knopf.disabled = true;
     try {
-      const antwort = await fetch(`${API}/kleidung`, { method: "POST", body: daten });
+      const antwort = await api("/kleidung", { method: "POST", body: daten });
       const inhalt = await antwort.json();
       if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
       // Bestätigung zeigt der Schrank an
       location.href = `schrank.html?neu=${encodeURIComponent(titelVon(inhalt))}`;
-    } catch {
-      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
     } finally {
       knopf.disabled = false;
     }

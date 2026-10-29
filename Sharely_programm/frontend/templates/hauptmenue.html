@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sharely – Hauptmenü</title>
-  <link rel="stylesheet" href="../static/css/stil.css">
-  <script src="../static/js/gemeinsam.js"></script>
-  <script src="../static/js/beispieldaten.js"></script>
+  <link rel="stylesheet" href="../static/css/stil.css?v=2">
+  <script src="../static/js/gemeinsam.js?v=2"></script>
+  <script src="../static/js/beispieldaten.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
@@ -56,11 +56,11 @@
     </nav>
   </div>
 
-  <div class="abmelden-zeile"><a class="knopf-rot" href="index.html"><span data-symbol="abmelden"></span> Abmelden</a></div>
+  <div class="abmelden-zeile"><a class="knopf-rot" href="index.html" data-abmelden><span data-symbol="abmelden"></span> Abmelden</a></div>
 </main>
 
 <script>
-  seitenkopf(`Hallo ${NUTZER.name}!`);
+  seitenkopf((nutzer) => `Hallo ${nutzer.nutzername}!`);
 
   // Beispieldaten, bis Leihvorgänge und Neuigkeiten ein Backend haben: offene Anfragen + ungelesene Neuigkeiten
   const neu = LEIHANFRAGEN_BEISPIEL.length + NEUIGKEITEN_BEISPIEL.filter((n) => !n.gelesen).length;

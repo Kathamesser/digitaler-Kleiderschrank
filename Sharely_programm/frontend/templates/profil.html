@@ -1,13 +1,13 @@
 <!doctype html>
 <!-- Mockup „Desktop · Mein Profil (Overlay)“. Profilbild live: GET/PUT/DELETE /api/nutzer/ich/profilbild,
-     per Datei oder direkt mit der Kamera. Name und „Mitglied seit“ sind noch Beispieldaten (Registrierung fehlt). -->
+     per Datei oder direkt mit der Kamera. Name und „Mitglied seit“ aus GET /api/nutzer/ich. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sharely – Mein Profil</title>
-  <link rel="stylesheet" href="../static/css/stil.css">
-  <script src="../static/js/gemeinsam.js"></script>
+  <link rel="stylesheet" href="../static/css/stil.css?v=2">
+  <script src="../static/js/gemeinsam.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
@@ -23,7 +23,7 @@
       </div>
       <div>
         <h2 id="name"></h2>
-        <p>Mitglied seit Oktober 2026</p>
+        <p id="mitglied-seit"></p>
         <div class="knoepfe">
           <button type="button" class="knopf-rand gruen klein" id="hochladen-knopf">Bild hinzufügen</button>
           <button type="button" class="knopf-gefahr klein" id="entfernen-knopf" hidden>Bild entfernen</button>
@@ -34,8 +34,8 @@
     </div>
     <div id="meldung" class="meldung" role="status"></div>
     <a class="menue-zeile" href="avatar-konfigurator.html"><span data-symbol="person"></span> Mein Avatar <span class="pfeil" data-symbol="weiter"></span></a>
-    <a class="menue-zeile" href="index.html"><span data-symbol="personWechsel"></span> Nutzer wechseln <span class="pfeil" data-symbol="weiter"></span></a>
-    <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch: Registrierung und Login fehlen"><span data-symbol="muell"></span> Account löschen</button>
+    <a class="menue-zeile" href="index.html" data-abmelden><span data-symbol="personWechsel"></span> Nutzer wechseln <span class="pfeil" data-symbol="weiter"></span></a>
+    <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch"><span data-symbol="muell"></span> Account löschen</button>
   </section>
 </main>
 
@@ -59,8 +59,7 @@
 </dialog>
 
 <script>
-  seitenkopf(`Hallo ${NUTZER.name}!`);
-  document.getElementById("name").textContent = NUTZER.name;
+  seitenkopf((nutzer) => `Hallo ${nutzer.nutzername}!`);
 
   const meldung = document.getElementById("meldung");
   const kreis = document.getElementById("profilbild");
@@ -82,13 +81,13 @@
     const daten = new FormData();
     daten.append("bild", bild, dateiname);
     try {
-      const antwort = await fetch(`${API}/nutzer/ich/profilbild`, { method: "PUT", body: daten });
+      const antwort = await api("/nutzer/ich/profilbild", { method: "PUT", body: daten });
       const inhalt = await antwort.json();
       if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
       zeigeProfil(inhalt);
       zeigeMeldung(meldung, "Dein Profilbild wurde gespeichert.", "ok");
-    } catch {
-      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
     }
   }
 
@@ -104,11 +103,11 @@
   entfernen.onclick = async () => {
     if (!confirm("Profilbild wirklich entfernen?")) return;
     try {
-      const antwort = await fetch(`${API}/nutzer/ich/profilbild`, { method: "DELETE" });
+      const antwort = await api("/nutzer/ich/profilbild", { method: "DELETE" });
       zeigeProfil(await antwort.json());
       zeigeMeldung(meldung, "Dein Profilbild wurde entfernt.", "ok");
-    } catch {
-      zeigeMeldung(meldung, "Keine Verbindung zum Backend. Läuft es auf Port 8000?", "fehler");
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
     }
   };
 
@@ -190,9 +189,14 @@
   fenster.onclose = kameraAus; // auch bei Esc
   fenster.onclick = (e) => { if (e.target === fenster) fenster.close(); };
 
-  holeJson("/nutzer/ich")
-    .then(zeigeProfil)
-    .catch((fehler) => { kreis.textContent = NUTZER.name[0]; zeigeMeldung(meldung, fehler.message, "fehler"); });
+  ich()
+    .then((nutzer) => {
+      document.getElementById("name").textContent = nutzer.nutzername;
+      const seit = new Date(nutzer.mitglied_seit).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+      document.getElementById("mitglied-seit").textContent = `Mitglied seit ${seit}`;
+      zeigeProfil(nutzer);
+    })
+    .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
 </script>
 </body>
 </html>

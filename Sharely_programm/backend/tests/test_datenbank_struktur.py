@@ -236,7 +236,7 @@ def _kleidung_nach_erm_20_10() -> bool:
 
 @pytest.mark.skipif(not _kleidung_nach_erm_20_10(),
                     reason="Modul kleidung ist noch nicht auf das ERM vom 20.10.2026 umgestellt")
-def test_modul_kleidung_speichert_passend(monkeypatch, tmp_path):
+def test_modul_kleidung_speichert_passend(monkeypatch, tmp_path, als_test_nutzer):
     """Ein Kleidungsstück, wie das Repository es wirklich an MongoDB schickt,
     muss die Prüfregel erfüllen. Läuft, sobald das Modul umgestellt ist."""
     from fastapi.testclient import TestClient
@@ -262,3 +262,39 @@ def test_modul_kleidung_speichert_passend(monkeypatch, tmp_path):
         antwort = client.post("/api/kleidung", data={"kleidungsart": "jacken"}, files={"bild": ("teil.png", png)})
     assert antwort.status_code == 201, antwort.text
     assert verstoesse(gespeichert[0], schema("kleidungsstuecke")) == []
+
+
+def test_registrierung_speichert_passend(monkeypatch):
+    """Nutzer und Sitzung, wie die Registrierung sie wirklich an MongoDB schickt,
+    müssen die Prüfregeln erfüllen."""
+    from fastapi.testclient import TestClient
+
+    from app.core import sicherheit
+    from app.main import app
+    from app.module.nutzer import repository
+
+    gespeichert: dict[str, list[dict]] = {"nutzer": [], "sitzungen": []}
+
+    class Ergebnis:
+        inserted_id = ObjectId()
+
+    class FakeCollection:
+        def __init__(self, name):
+            self.name = name
+
+        async def find_one(self, filter, **kwargs):
+            # E-Mail und Nutzername sind frei; nach dem Anlegen findet finden() den neuen Nutzer
+            return gespeichert["nutzer"][-1] if "_id" in filter and gespeichert["nutzer"] else None
+
+        async def insert_one(self, dokument):
+            gespeichert[self.name].append(dict(dokument))
+            return Ergebnis()
+
+    monkeypatch.setattr(repository, "_collection", lambda: FakeCollection("nutzer"))
+    monkeypatch.setattr(sicherheit, "get_db", lambda: {"sitzungen": FakeCollection("sitzungen")})
+    with TestClient(app) as client:
+        antwort = client.post("/api/nutzer/registrieren",
+                              json={"email": "a@b.de", "nutzername": "anna", "passwort": "geheim!123"})
+    assert antwort.status_code == 201, antwort.text
+    assert verstoesse(gespeichert["nutzer"][0], schema("nutzer")) == []
+    assert verstoesse(gespeichert["sitzungen"][0], schema("sitzungen")) == []

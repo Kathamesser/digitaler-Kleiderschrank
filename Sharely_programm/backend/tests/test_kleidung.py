@@ -22,7 +22,7 @@ JPEG = b"\xff\xd8\xff\xe0" + b"\x00" * 100
 
 
 @pytest.fixture
-def client(monkeypatch, tmp_path):
+def client(monkeypatch, tmp_path, als_test_nutzer):
     speicher: dict[str, dict] = {}
 
     async def anlegen(daten):
