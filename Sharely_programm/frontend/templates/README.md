@@ -50,6 +50,8 @@ Bleibt das Team ohne Framework, können die Seiten direkt weiterentwickelt werde
 
 ## Starten
 
+**Kurzweg (seit 29.10.2026):** Im Ordner `Sharely_programm` `python start.py` ausführen. Das startet Backend und Seiten-Server zusammen, öffnet http://localhost:5173/ und beendet mit Strg+C beides. Voraussetzung ist die einmalige Einrichtung des Backends (`.venv`, `.env`, siehe `Sharely_programm/backend/README.md`); fehlt etwas, sagt das Skript, was. Die einzelnen Schritte darunter funktionieren weiterhin.
+
 1. MongoDB und Backend starten (siehe `Sharely_programm/backend/README.md`).
 2. In einem zweiten Terminal den Seiten-Server auf Port 5173 starten:
 

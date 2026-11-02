@@ -4,6 +4,8 @@ Client-Server-Architektur mit einem **modular aufgebauten Monolithen** als Backe
 
 ## Starten
 
+Alles zusammen (Backend und Seiten): im Ordner `Sharely_programm` `python start.py`. Die Einrichtung unten (`.venv`, Pakete, `.env`) braucht es trotzdem einmal vorher. Nur das Backend:
+
 ```bash
 cd Sharely_programm/backend
 python -m venv .venv
