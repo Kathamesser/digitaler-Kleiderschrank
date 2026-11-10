@@ -167,6 +167,8 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **10.11.2026 · Katha/Claude(Laptop.Code):** „Keine Verbindung zum Backend“ behoben: Das am 09.11. von Claude im Hintergrund gestartete `start.py` war mit dem Ende der Claude-Sitzung mitbeendet worden, nur ein einzeln (über VS Code) gestarteter `seiten_server.py` lief noch und belegte Port 5173. Diesen beendet und Sharely per `start.py` neu gestartet: `/api/health` ok, Atlas-Ping ok (der TLS-Fehler vom 09.11. ist nach IP-Freigabe weg). Merke: Läuft Sharely über eine Claude-Sitzung, endet es mit ihr. Für längeres Arbeiten lieber selbst im Terminal `python start.py` starten.
+
 - **09.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch Sharely gestartet, erstmals mit Christians Startskript (`python start.py` im Ordner `Sharely_programm`): Backend und Seiten-Server laufen, `/api/health` ok.
 
 - **29.10.2026 · Christian/Claude(Laptop.Code):** Auf Christians Wunsch Startskript `Sharely_programm/start.py` (eigener PR, Branch `claude/startskript`): startet Backend und Seiten-Server zusammen, wartet bis `/api/health` und die Startseite antworten, öffnet den Browser (`--ohne-browser` schaltet das ab), beendet mit Strg+C alle Dienste samt Unterprozessen (unter Windows `taskkill /T`, gegen den hängenden uvicorn auf Port 8000). Prüft vorher `.venv`, `.env` und belegte Ports und sagt, was fehlt. Christians Regel: Neue Dienste kommen in die Liste `DIENSTE` im Skript. Geprüft in der Cloud-Sitzung (Linux): Start, Health 200, Strg+C gibt beide Ports frei, Meldungen bei belegtem Port und fehlender `.env`; unter Windows noch nicht getestet. Doku: `templates/README.md`, `backend/README.md`, `CLAUDE.md`, Projektdokumentation Kapitel 9.
