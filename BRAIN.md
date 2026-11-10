@@ -167,7 +167,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
-- **10.11.2026 · Katha/Claude(Laptop.Code):** „Keine Verbindung zum Backend“ behoben: Das am 09.11. von Claude im Hintergrund gestartete `start.py` war mit dem Ende der Claude-Sitzung mitbeendet worden, nur ein einzeln (über VS Code) gestarteter `seiten_server.py` lief noch und belegte Port 5173. Diesen beendet und Sharely per `start.py` neu gestartet: `/api/health` ok, Atlas-Ping ok (der TLS-Fehler vom 09.11. ist nach IP-Freigabe weg). Merke: Läuft Sharely über eine Claude-Sitzung, endet es mit ihr. Für längeres Arbeiten lieber selbst im Terminal `python start.py` starten.
+- **10.11.2026 · Katha/Claude(Laptop.Code):** „Keine Verbindung zum Backend“ behoben: Das am 09.11. von Claude im Hintergrund gestartete `start.py` war mit dem Ende der Claude-Sitzung mitbeendet worden, nur ein einzeln (über VS Code) gestarteter `seiten_server.py` lief noch und belegte Port 5173. Diesen beendet und Sharely per `start.py` neu gestartet: `/api/health` ok, Atlas-Ping ok (der TLS-Fehler vom 09.11. ist nach IP-Freigabe weg). Merke: Läuft Sharely über eine Claude-Sitzung, endet es mit ihr. Für längeres Arbeiten lieber selbst im Terminal `python start.py` starten. Nachtrag: Beim nächsten Neustart der Claude-Sitzung wurde es prompt wieder beendet, daher jetzt in einem eigenen PowerShell-Fenster gestartet (läuft unabhängig von Claude, Beenden dort mit Strg+C).
 
 - **09.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch Sharely gestartet, erstmals mit Christians Startskript (`python start.py` im Ordner `Sharely_programm`): Backend und Seiten-Server laufen, `/api/health` ok.
 
