@@ -210,7 +210,8 @@ input[type=text], input[type=email], input[type=password], input[type=number], i
 }
 input::placeholder, textarea::placeholder { color: #8b8578; }
 textarea { resize: vertical; min-height: 90px; }
-.zeile { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+/* minmax(0, 1fr): Spalten dürfen schmaler werden als ihr Inhalt, sonst ragt z. B. das Hinzufügen-Fenster auf dem Handy über den Rand */
+.zeile { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
 .passwortfeld { position: relative; }
 .passwortfeld input { padding-right: 56px; }
 .passwortfeld button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text); cursor: pointer; padding: 8px; display: flex; }
@@ -348,7 +349,7 @@ textarea { resize: vertical; min-height: 90px; }
 .grossbild > svg { width: 150px; height: 150px; stroke-width: 1.3; }
 
 /* Zwei Spalten: Bild links, Angaben rechts (Hinzufügen, Detail) */
-.zwei-spalten { display: grid; grid-template-columns: minmax(260px, 2fr) 3.6fr; gap: 50px; }
+.zwei-spalten { display: grid; grid-template-columns: minmax(260px, 2fr) minmax(0, 3.6fr); gap: 50px; }
 
 /* ---------- Hauptmenü ---------- */
 
@@ -505,7 +506,10 @@ textarea { resize: vertical; min-height: 90px; }
 
 /* ---------- Freunde und Leihen ---------- */
 
-.freunde-bereich { display: grid; grid-template-columns: 590px 1fr; gap: 34px; align-items: start; }
+/* Links 590 px, rechts der Rest; ist rechts kein Platz mehr für 560 px (z. B. bei 1024 px), rutscht das Profil unter die Liste */
+.freunde-bereich { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
+.freunde-bereich > :first-child { flex: 1 1 590px; min-width: 0; }
+.freunde-bereich > :last-child { flex: 999 1 560px; min-width: 0; }
 .weisse-karte { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 28px 30px; }
 .weisse-karte + .weisse-karte { margin-top: 26px; }
 .karte-kopf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -527,7 +531,7 @@ textarea { resize: vertical; min-height: 90px; }
 .freund-kopf { display: flex; align-items: center; gap: 30px; margin-bottom: 34px; }
 .freund-kopf h2 { font-size: 2.6rem; }
 .freund-kopf p { margin: 4px 0 0; color: var(--text-leise); font-size: 1.1rem; }
-.freund-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.freund-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; }
 .freund-panels .panel { padding: 28px 26px 26px; margin-top: 0; }
 .freund-panels .panel h2 { font-size: 1.6rem; margin-bottom: 18px; }
 .freund-panels .panel::before, .freund-panels .panel::after { display: none; }
@@ -547,7 +551,7 @@ textarea { resize: vertical; min-height: 90px; }
   border-radius: var(--rund); padding: 20px; font-weight: 500; font-size: 1.15rem; text-decoration: none; color: var(--primaer);
 }
 .panel.blau .panel-link { color: var(--text); }
-.leih-links { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 28px; }
+.leih-links { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; margin-top: 28px; }
 .leih-link {
   display: flex; align-items: center; gap: 22px; padding: 20px 26px; border-radius: var(--rund-gross);
   text-decoration: none; color: var(--text); font-family: var(--schrift-titel); font-weight: 700; font-size: 1.2rem;
@@ -611,8 +615,11 @@ a.menue-zeile { text-decoration: none; }
 /* ---------- Schmalere Bildschirme ---------- */
 
 @media (max-width: 1023px) {
-  .hauptmenue, .outfits-bereich, .freunde-bereich { grid-template-columns: 1fr; }
-  .seiten-kacheln { grid-template-columns: repeat(3, 1fr); }
+  .hauptmenue, .outfits-bereich, .freunde-bereich { grid-template-columns: minmax(0, 1fr); }
+  .seiten-kacheln { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Hinzufügen (Tablet-Mockup): zwei Spalten bleiben, Name/Farbe und die Foto-Knöpfe untereinander */
+  .zwei-spalten { grid-template-columns: minmax(200px, 2fr) minmax(0, 3.6fr); gap: 28px; }
+  .name-farbe, .foto-knoepfe { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .zahl-karten { padding: 0; gap: 20px; }
   .auswahl-spalten { grid-template-columns: 1fr 1fr; gap: 0 18px; }
 }
@@ -624,10 +631,16 @@ a.menue-zeile { text-decoration: none; }
   .wortmarke { font-size: 1.1rem; }
   .nutzer-chip { font-size: 1rem; padding-right: 16px; }
   .initiale { width: 40px; height: 40px; font-size: 1.1rem; }
-  .zwei-spalten, .leih-spalten, .freund-panels, .leih-links { grid-template-columns: 1fr; gap: 26px; }
+  .zwei-spalten, .leih-spalten, .freund-panels, .leih-links { grid-template-columns: minmax(0, 1fr); gap: 26px; }
   .zahl-karten { grid-template-columns: 1fr 1fr; }
-  .seiten-kacheln { grid-template-columns: 1fr; }
+  .seiten-kacheln { grid-template-columns: minmax(0, 1fr); }
   .fenster { padding: 26px 20px; }
+  .foto-knoepfe { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .zeile:has(> .schalter-kasten) { grid-template-columns: minmax(0, 1fr); }
+  /* Freundschaftsanfrage: Knöpfe in eine zweite Zeile unter den Namen */
+  .anfrage { flex-wrap: wrap; }
+  .anfrage .name { flex-basis: calc(100% - 128px); }
+  .anfrage .klein { order: 1; }
   .blatt-kopf { padding: 24px 20px 10px; }
   .blatt-inhalt { padding: 0 20px 20px; }
   .blatt-fuss { padding: 16px 20px 22px; grid-template-columns: 1fr; }
