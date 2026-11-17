@@ -8,10 +8,12 @@
   <title>Sharely – Mein Profil</title>
   <link rel="stylesheet" href="../static/css/stil.css?v=2">
   <script src="../static/js/gemeinsam.js?v=2"></script>
+  <script src="../static/js/beispieldaten.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
-  <section class="fenster" style="max-width: 820px">
+  <!-- tab-seite: auf dem Handy Vollbild wie Hinzufügen, aber mit Tab-Leiste (Profil ist ein Tab) -->
+  <section class="fenster tab-seite" style="max-width: 820px">
     <header class="fenster-kopf">
       <h2>Mein Profil</h2>
       <a class="symbolknopf" href="hauptmenue.html" aria-label="Schließen, zum Hauptmenü" data-symbol="schliessen"></a>
@@ -35,6 +37,8 @@
     <div id="meldung" class="meldung" role="status"></div>
     <a class="menue-zeile" href="avatar-konfigurator.html"><span data-symbol="person"></span> Mein Avatar <span class="pfeil" data-symbol="weiter"></span></a>
     <a class="menue-zeile" href="index.html" data-abmelden><span data-symbol="personWechsel"></span> Nutzer wechseln <span class="pfeil" data-symbol="weiter"></span></a>
+    <!-- Nur Handy/Tablet: Dort hat das Hauptmenü keinen Abmelden-Knopf (Mockup „Handy · Mein Profil (Tab)“) -->
+    <a class="menue-zeile nur-mobil" href="index.html" data-abmelden><span data-symbol="abmelden"></span> Abmelden</a>
     <button type="button" class="menue-zeile gefahr" disabled title="Kommt noch"><span data-symbol="muell"></span> Account löschen</button>
   </section>
 </main>

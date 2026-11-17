@@ -221,6 +221,12 @@ function tableiste() {
       text.classList.add("mit-lang");
       link.append(lang);
     }
+    // Zahl am Tab „Nachrichten“: offene Leihanfragen + ungelesene Neuigkeiten, wie im Hauptmenü.
+    // Bis Nachrichten ein Backend haben, aus beispieldaten.js (nur auf Seiten, die sie laden).
+    if (tab.href === "nachrichten.html" && typeof LEIHANFRAGEN_BEISPIEL !== "undefined") {
+      const neu = LEIHANFRAGEN_BEISPIEL.length + NEUIGKEITEN_BEISPIEL.filter((n) => !n.gelesen).length;
+      if (neu) link.insertAdjacentHTML("beforeend", `<span class="tab-zahl" aria-label="${neu} neu">${neu}</span>`);
+    }
     leiste.append(link);
   }
   document.body.append(leiste);

@@ -8,6 +8,7 @@
   <title>Sharely – Kleidungsstück hinzufügen</title>
   <link rel="stylesheet" href="../static/css/stil.css?v=2">
   <script src="../static/js/gemeinsam.js?v=2"></script>
+  <script src="../static/js/beispieldaten.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
@@ -26,8 +27,8 @@
           <img id="vorschau" alt="Vorschau des Fotos" hidden>
         </div>
         <div class="zeile foto-knoepfe" style="margin-top: 18px">
-          <button type="button" class="knopf-rand gruen" id="kamera-knopf"><span data-symbol="kamera"></span> Foto aufnehmen</button>
-          <button type="button" class="knopf-rand gruen" id="galerie-knopf"><span data-symbol="hochladen"></span> Bild hochladen</button>
+          <button type="button" class="knopf-rand gruen" id="kamera-knopf"><span data-symbol="kamera"></span> <span class="handy-lang">Foto aufnehmen</span><span class="handy-kurz">Kamera</span></button>
+          <button type="button" class="knopf-rand gruen" id="galerie-knopf"><span data-symbol="hochladen"></span> <span class="handy-lang">Bild hochladen</span><span class="handy-kurz">Galerie</span></button>
         </div>
         <!-- capture öffnet auf dem Smartphone direkt die Kamera -->
         <input type="file" id="kamera" accept="image/*" capture="environment" hidden>
@@ -61,7 +62,7 @@
           </div>
         </details>
 
-        <div class="zeile">
+        <div class="zeile saison-material">
           <div><span class="titel">Saison</span><div class="pillen" id="saisons"></div></div>
           <div><span class="titel">Material</span><div class="pillen" id="materialien"></div></div>
         </div>
@@ -83,7 +84,7 @@
         </div>
 
         <div id="meldung" class="meldung" role="status"></div>
-        <div class="zeile" style="margin-top: 26px; grid-template-columns: 1fr 1.6fr">
+        <div class="zeile fenster-fuss" style="margin-top: 26px; grid-template-columns: 1fr 1.6fr">
           <a class="knopf-rand" href="schrank.html">Abbrechen</a>
           <button type="submit" class="knopf" id="speichern"><span data-symbol="ok"></span> Speichern</button>
         </div>

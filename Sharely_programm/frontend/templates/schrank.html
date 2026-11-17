@@ -8,6 +8,7 @@
   <title>Sharely – Kleiderschrank</title>
   <link rel="stylesheet" href="../static/css/stil.css?v=2">
   <script src="../static/js/gemeinsam.js?v=2"></script>
+  <script src="../static/js/beispieldaten.js?v=2"></script>
 </head>
 <body>
 <main class="seite">
@@ -16,7 +17,9 @@
       <span data-symbol="lupe"></span>
       <input type="search" id="suche" placeholder="Im Schrank suchen" aria-label="Im Schrank suchen">
     </label>
-    <a class="knopf" href="kleidung-hochladen.html"><span data-symbol="plus"></span> Kleidungsstück hinzufügen</a>
+    <!-- Tablet: kurzer Text, Handy: runder Plus-Knopf unten rechts (stil.css, .plus-knopf) -->
+    <a class="knopf plus-knopf" href="kleidung-hochladen.html" aria-label="Kleidungsstück hinzufügen"><span data-symbol="plus"></span>
+      <span class="text-lang">Kleidungsstück hinzufügen</span><span class="text-kurz">Hinzufügen</span></a>
   </div>
 
   <div class="chips">

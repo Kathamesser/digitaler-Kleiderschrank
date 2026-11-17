@@ -630,6 +630,11 @@ a.menue-zeile { text-decoration: none; }
     padding: 8px 4px; border-radius: 14px; text-decoration: none; color: var(--text); font-size: .85rem; font-weight: 700;
   }
   .tableiste svg { width: 22px; height: 22px; }
+  .tableiste a { position: relative; }
+  .tab-zahl {
+    position: absolute; top: 2px; left: calc(50% + 6px); min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--rund-pille);
+    background: var(--rot); color: var(--auf-dunkel); font-size: .72rem; display: flex; align-items: center; justify-content: center;
+  }
   .tableiste .kurz.mit-lang { display: none; }
   .tableiste a[aria-current="page"] { background: var(--primaer-hell); color: var(--primaer); }
   .tableiste a:focus-visible { outline: 2px solid var(--primaer); outline-offset: 2px; }
@@ -676,6 +681,222 @@ a.menue-zeile { text-decoration: none; }
   .von-bis { grid-template-columns: auto 1fr; }
   .raster { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
   .fussleiste .knopf, .fussleiste .knopf-rand, .fussleiste .knopf-dunkel { min-width: 0; flex: 1; }
+}
+
+/* ---------- Handy und Tablet nach den Mockups (docs/mockups/tablet/, docs/mockups/handy/) ---------- */
+
+/* nur-mobil: nur auf Handy/Tablet sichtbar, nur-desktop: nur ab 1024 px (gleiche Grenze wie oben) */
+@media (min-width: 1024px) { .nur-mobil { display: none !important; } }
+@media (max-width: 1023px) {
+  .nur-desktop { display: none !important; }
+  /* Kopf: Logo und Nutzer oben, Seitentitel darunter mittig */
+  .seitenkopf { grid-template-columns: 1fr auto; row-gap: 22px; }
+  .seitenkopf h1 { grid-column: 1 / -1; grid-row: 2; font-size: 2.3rem; }
+  .logo-kachel { width: 64px; height: 64px; border-radius: 18px; }
+  .wortmarke { font-size: 1.15rem; }
+  .nutzer-chip { font-size: 1.1rem; }
+
+  /* Hauptmenü: kompakte Karten, Abmelden steht im Profil */
+  .hauptmenue .panel { padding: 22px 22px 24px; }
+  .panel h2 { font-size: 1.55rem; margin-bottom: 20px; gap: 14px; }
+  .panel h2 .symbol-kasten { width: 42px; height: 42px; border-radius: 12px; }
+  .panel h2 .symbol-kasten svg { width: 22px; height: 22px; }
+  .panel + .panel { margin-top: 22px; }
+  .panel.gruen::before { width: 200px; height: 190px; top: -40px; right: -30px; }
+  .panel.blau::after { width: 220px; height: 210px; bottom: -80px; right: -50px; }
+  .zahl-karten { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 14px; }
+  .zahl-karte { min-height: 0; padding: 14px; gap: 6px; }
+  .zahl-karte .rund { width: 42px; height: 42px; }
+  .zahl-karte .rund svg { width: 20px; height: 20px; }
+  .zahl-karte b { font-size: 2rem; margin-top: 4px; }
+  .zahl-karte span:last-child { font-size: 1rem; overflow-wrap: normal; hyphens: auto; }
+  .garderobe-reihe { justify-content: flex-start; gap: 18px; flex-wrap: nowrap; align-items: stretch; }
+  .avatar-kachel { width: 130px; height: auto; min-height: 160px; flex-shrink: 0; }
+  .avatar-kachel svg { width: 36px; height: 36px; }
+  .garderobe-reihe .zahl-karte { width: auto; max-width: 280px; flex: 1; min-height: 0; justify-content: center; }
+  .hauptmenue { margin-bottom: 0; }
+  .seiten-kacheln { gap: 16px; }
+  .seiten-kachel { min-height: 130px; font-size: 1.25rem; gap: 10px; padding: 14px 8px; border-radius: var(--rund); }
+  .seiten-kachel svg { width: auto; height: 50px; }
+  .seiten-kachel .neu-marke { top: 10px !important; right: 10px !important; }
+  .seiten-kachel .bald { top: 8px; right: 8px; }
+  .abmelden-zeile { display: none; }
+
+  /* Suche und Hauptaktion in einer Zeile, Knopf mit kurzem Text */
+  .werkzeugleiste { flex-wrap: nowrap; gap: 12px; margin-bottom: 18px; }
+  .suche { flex: 1 1 auto; min-height: 52px; padding: 0 18px; }
+  .werkzeugleiste .knopf { min-height: 52px; padding: 0 20px; font-size: 1rem; white-space: nowrap; }
+  .chip { min-height: 46px; padding: 0 22px; font-size: 1rem; }
+  .chips { margin-bottom: 20px; gap: 10px; }
+  /* Kacheln: 4 Spalten, Bild fast quadratisch */
+  .raster { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .karte .kachel { aspect-ratio: 1.15; }
+  .karte strong { font-size: 1.05rem; margin-top: 12px; }
+  .karte small { font-size: .9rem; }
+
+  /* Outfits: Anprobieren-Kasten kompakt über der Liste (Avatar links, Slots rechts) */
+  .outfits-bereich .avatar-panel {
+    order: -1; display: grid; grid-template-columns: 110px minmax(0, 1fr); grid-template-areas: "buehne kopf" "buehne slots";
+    column-gap: 16px; padding: 12px; align-items: start;
+  }
+  .avatar-panel header { grid-area: kopf; grid-template-columns: 1fr 44px; margin-bottom: 10px; }
+  .avatar-panel header h2 { order: -1; text-align: left; font-size: 1.3rem; }
+  .avatar-panel header .symbolknopf { width: 40px; height: 40px; }
+  .avatar-panel .avatar-buehne { grid-area: buehne; aspect-ratio: auto; height: 150px; min-height: 0; padding-bottom: 8px; font-size: 0; gap: 0; }
+  .avatar-buehne .figur { width: 50px; height: 110px; }
+  .avatar-buehne .symbolknopf { width: 34px; height: 34px; top: 6px; right: 6px; }
+  .avatar-panel .slots { grid-area: slots; margin-top: 0; gap: 8px; }
+  .slot { aspect-ratio: auto; flex-direction: row; gap: 8px; padding: 8px; font-size: .85rem; }
+  .slot svg { width: 20px !important; height: 20px !important; }
+  .avatar-panel > p { display: none; }
+  .outfit-karte { border-radius: var(--rund); padding: 10px 10px 14px; }
+}
+.text-kurz { display: none; }
+.handy-kurz { display: none; }
+@media (max-width: 767px) {
+  .handy-lang { display: none; }
+  .handy-kurz { display: inline; }
+  .saison-material { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (max-width: 1023px) {
+  .text-lang { display: none; }
+  .text-kurz { display: inline; }
+}
+@media (max-width: 767px) {
+  /* Kopf wie im Handy-Mockup: nur Logo und Kreis mit Anfangsbuchstabe, Titel groß und linksbündig */
+  .seitenkopf { margin-bottom: 18px; row-gap: 14px; }
+  .seitenkopf h1 { text-align: left; font-size: 2rem; }
+  .logo-kachel { width: 52px; height: 52px; border-radius: 14px; }
+  .wortmarke, .nutzer-chip .name { display: none; }
+  .nutzer-chip { padding: 0; background: none; box-shadow: none; }
+  .nutzer-chip .initiale { width: 52px; height: 52px; font-size: 1.3rem; }
+
+  .hauptmenue .panel { padding: 16px 14px 16px; border-radius: 22px; }
+  .panel h2 { font-size: 1.2rem; margin-bottom: 14px; gap: 10px; }
+  .panel h2 .symbol-kasten { width: 34px; height: 34px; border-radius: 10px; }
+  .panel h2 .symbol-kasten svg { width: 18px; height: 18px; }
+  .panel + .panel { margin-top: 16px; }
+  .zahl-karten { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Symbol und Zahl nebeneinander, Beschriftung darunter */
+  .zahl-karte { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 8px; padding: 10px; border-radius: 12px; }
+  .zahl-karte .rund { width: 28px; height: 28px; }
+  .zahl-karte .rund svg { width: 15px; height: 15px; }
+  .zahl-karte b { font-size: 1.35rem; margin: 0; }
+  .zahl-karte span:last-child { grid-column: 1 / -1; font-size: .8rem; line-height: 1.2; }
+  .garderobe-reihe { gap: 10px; }
+  .avatar-kachel { width: 92px; min-height: 112px; padding: 5px; }
+  .avatar-kachel > span { font-size: .8rem; }
+  .avatar-kachel svg { width: 24px; height: 24px; }
+  .garderobe-reihe .zahl-karte { max-width: none; grid-template-columns: auto; justify-content: start; }
+  .garderobe-reihe .zahl-karte .rund { width: 36px; height: 36px; }
+  .hauptmenue { gap: 16px; }
+  .seiten-kacheln { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .seiten-kachel { min-height: 92px; font-size: .95rem; gap: 6px; padding: 10px 4px; }
+  .seiten-kachel svg { height: 32px; }
+  .seiten-kachel .neu-marke, .seiten-kachel .bald { font-size: .7rem; padding: 2px 7px; top: 6px !important; right: 6px !important; }
+
+  /* Hauptaktion als runder Plus-Knopf unten rechts über der Tab-Leiste */
+  .werkzeugleiste .plus-knopf {
+    position: fixed; right: 16px; bottom: calc(96px + env(safe-area-inset-bottom)); z-index: 15;
+    width: 60px; height: 60px; min-height: 0; padding: 0; border-radius: 50%; box-shadow: 0 8px 22px rgba(23, 117, 102, .35);
+  }
+  .plus-knopf svg { width: 26px; height: 26px; }
+  .plus-knopf span:not([data-symbol]) { display: none; }
+  /* Outfits: eine Karte pro Zeile, die vier Teile nebeneinander */
+  .outfits-bereich .raster { grid-template-columns: minmax(0, 1fr) !important; }
+  .outfit-teile { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .outfit-teile > div { aspect-ratio: 1; font-size: .72rem; gap: 4px; text-align: center; padding: 2px; }
+  .outfit-teile > div > svg { width: 22px; height: 22px; }
+  .outfit-teile > div .abzeichen { width: 28px; height: 28px; top: -4px; right: -4px; }
+  .outfits-bereich .avatar-panel { grid-template-columns: 90px minmax(0, 1fr); column-gap: 12px; }
+  .avatar-panel .avatar-buehne { height: 130px; }
+  .avatar-panel header h2 { font-size: 1.1rem; }
+  .slot { font-size: .78rem; white-space: nowrap; padding: 8px 4px; gap: 4px; }
+  /* Ein Knopf über beide Slots wie im Handy-Mockup */
+  .slots .knopf { grid-column: 1 / -1; font-size: .9rem; padding: 10px 4px; }
+  .slots .knopf + .knopf { display: none; }
+  /* Outfit zusammenstellen: Suche und „x Teile ausgewählt“ untereinander */
+  .werkzeugleiste:has(.auswahl-anzeige) { flex-wrap: wrap; }
+  .auswahl-anzeige { width: 100%; justify-content: center; min-height: 44px; font-size: 1rem; }
+  .raster { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .karte { padding: 7px 7px 12px; }
+  .karte .kachel { aspect-ratio: 1.4; }
+  .karte strong { font-size: 1rem; margin: 10px 4px 2px; }
+  .karte small { font-size: .85rem; margin: 0 4px; }
+  .abzeichen { width: 34px; height: 34px; top: 6px; }
+  .abzeichen.rechts { right: 6px; }
+  .abzeichen.links { left: 6px; }
+
+  /* Seiten, die nur aus einem Fenster bestehen (Hinzufügen, Detail): auf dem Handy als Vollbild-Blatt wie im Mockup,
+     ohne Seitenkopf und Tab-Leiste; Titel oben fest, Speichern/Abbrechen unten fest */
+  .seite:has(> .fenster) { padding: 0; }
+  .seite:has(> .fenster) > .seitenkopf { display: none; }
+  body:has(.seite > .fenster:not(.tab-seite)) .tableiste { display: none; }
+  body.mit-tableiste:has(.seite > .fenster:not(.tab-seite)) { padding-bottom: 0; }
+  .seite > .fenster.tab-seite { min-height: 0; }
+  .tab-seite .fenster-kopf .symbolknopf { display: none; }
+  .seite > .tab-seite > .fenster-kopf { position: static; border-bottom: none; background: none; margin-bottom: 8px; }
+  .tab-seite .fenster-kopf h2 { font-size: 2rem; }
+  .seite:has(> .tab-seite) { background: var(--grund); }
+  .seite > .fenster.tab-seite { background: var(--grund); }
+  .profil-kopf { flex-direction: column; text-align: center; gap: 12px; }
+  .profil-kopf .knoepfe { justify-content: center; }
+  .menue-zeile { padding: 16px 18px; font-size: 1.05rem; margin-bottom: 12px; }
+  /* Leihen: kompakte Einträge, Frist unter dem Text */
+  .tab-seite .fenster-kopf h2 { font-size: 1.6rem; }
+  .leih-spalte { min-height: 0; border-radius: var(--rund); }
+  .leih-spalte header { gap: 12px; padding: 14px; }
+  .leih-spalte header h2 { font-size: 1.15rem; }
+  .leih-spalte header p { font-size: .8rem; }
+  .leih-spalte header b { font-size: 1.6rem; }
+  .leih-spalte .weiss-rund { width: 36px; height: 36px; flex-shrink: 0; }
+  .leih-eintrag { flex-wrap: wrap; gap: 6px 12px; padding: 12px; margin: 6px 8px; }
+  .leih-eintrag .vorschau { width: 52px; height: 52px; border-radius: 12px; }
+  .leih-eintrag .vorschau svg { width: 24px; height: 24px; }
+  .leih-eintrag .text { flex-basis: calc(100% - 64px); }
+  .leih-eintrag strong { font-size: 1.05rem; }
+  .leih-eintrag small { font-size: .85rem; }
+  .leih-eintrag .frist { margin-left: 64px; padding: 4px 12px; font-size: .8rem; }
+  .profil-kopf h2 { font-size: 1.8rem; }
+  /* Freundesprofil unter der Liste: kompakt, Kleiderschrank und Garderobe nebeneinander */
+  .freund-kopf { gap: 16px; margin-bottom: 18px; }
+  .freund-kopf .initiale { width: 72px; height: 72px; font-size: 1.8rem; }
+  .freund-kopf h2 { font-size: 1.6rem; }
+  .freund-panels { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .freund-panels .panel { padding: 14px 10px 12px; border-radius: var(--rund); }
+  .freund-panels .panel h2 { font-size: 1.05rem; margin-bottom: 10px; }
+  .panel-weiss { padding: 10px 6px; gap: 4px; }
+  .panel-weiss b { font-size: 2rem; }
+  .panel-weiss span { font-size: .9rem; }
+  .panel-weiss svg { width: 32px; height: 32px; }
+  .panel-link { font-size: .85rem; padding: 10px; }
+  .panel-weiss { min-height: 0; height: 130px; }
+  .garderobe-innen { gap: 8px; }
+  .garderobe-innen .avatar-kachel { height: 130px; padding: 5px; }
+  .panel-link { margin-top: 10px; }
+  .freund-kopf .initiale { width: 72px !important; height: 72px !important; font-size: 1.8rem !important; }
+  .leih-links { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-top: 14px; }
+  .leih-link { gap: 8px; padding: 12px; border-radius: var(--rund); font-size: .85rem; }
+  .leih-link b { font-size: 1.6rem; }
+  .leih-link .weiss-rund { width: 32px; height: 32px; }
+  .leih-link .pfeil { display: none; }
+  .freund-panels .panel + .panel { margin-top: 0; }
+  .seite > .fenster { border-radius: 0; box-shadow: none; margin: 0; padding: 0 16px 20px; min-height: 100vh; }
+  .seite > .fenster > .fenster-kopf {
+    position: sticky; top: 0; z-index: 5; background: var(--flaeche); margin: 0 -16px 18px; padding: 12px 16px;
+    border-bottom: 1.5px solid var(--linie);
+  }
+  .seite > .fenster .fenster-kopf h2 { font-size: 1.45rem; }
+  .seite > .fenster .fenster-kopf .symbolknopf { width: 44px; height: 44px; border-radius: 12px; }
+  .fenster-fuss {
+    position: sticky; bottom: 0; z-index: 5; background: var(--flaeche); margin: 20px -16px -20px !important; padding: 12px 16px;
+    border-top: 1.5px solid var(--linie);
+  }
+  .grossbild { aspect-ratio: 5 / 3; }
+  .grossbild > svg { width: 90px; height: 90px; }
+  .bildrahmen { aspect-ratio: 5 / 3; }
+  /* Eigenschaften: Bezeichnung links, Wert rechts wie im Mockup */
+  .eigenschaften > div { grid-template-columns: 110px minmax(0, 1fr); gap: 10px; padding: 12px 0; min-height: 0; }
 }
 
 /* Gesperrte Auswahl (z. B. Status „Verliehen“ beim Hinzufügen, Kategorien bis zum eigenen Modul) */
