@@ -1,6 +1,6 @@
 # Avatar-Regler: Zuordnung UI ↔ Morph Targets
 
-Stand: 12.10.2026 · Gilt für `Avatar_Editorgeruest.glb` (114 Morph Targets). Wie die Datei entsteht, steht in `AVATAR-PIPELINE.md`, warum genau diese Regler drin sind, in `REGLER-AUSWAHL.md`.
+Stand: 12.10.2026 · Gilt für `Avatar_Editorgeruest.glb` (114 Morph Targets). Wie die Datei entsteht, steht in `AVATAR-PIPELINE.md`, warum genau diese Regler drin sind, in `REGLER-AUSWAHL.md`. Umgesetzt ist die Zuordnung seit 27.10.2026 im Avatar-Konfigurator: `Sharely_programm/frontend/src/avatar-editor/regler.js`.
 
 Dieses Dokument ist die verbindliche Übersetzung zwischen den Namen in der GLB-Datei (z. B. `max_gender`) und dem, was Nutzerinnen und Nutzer im Editor sehen (z. B. Regler „Geschlecht"). Wer am Editor-Code arbeitet oder neue Regler ergänzt, hält sich an diese Tabelle und trägt Änderungen hier nach.
 
@@ -58,6 +58,8 @@ Spalten: **links** = Beschriftung bei −100 (`min_`-Target), **rechts** = Besch
 | Proportionen | weniger idealisiert | idealisierter | `bodyproportions` |
 
 **Alter begrenzen:** In MakeHuman bedeutet `age` 0 = 1 Jahr, 0,1875 = 11 Jahre, 0,5 = 25 Jahre (unser Standard), 1 = 90 Jahre. Ganz links wäre der Avatar also ein Kleinkind. Wo die linke Seite endet, entscheidet das Team noch (offen seit 12.10.2026). Vorschlag: bei etwa `min_age = 0,31`, das entspricht ungefähr 18 Jahren. Technisch ist das nur eine Grenze am Regler. Die rechte Seite reicht bis 90 Jahre.
+
+**Befund aus dem Konfigurator (27.10.2026):** Die Targets wirken linear, `min_age` verkleinert die Figur aber auf dem Weg zum Kleinkind um insgesamt 105,8 cm. Schon bei −31 („≈ 18 Jahre“) ist die Figur deshalb rund 33 cm kleiner als die Standardfigur. Das bei der Entscheidung über die Untergrenze berücksichtigen; im Konfigurator steht vorerst der Vorschlag −31 (`Sharely_programm/frontend/src/avatar-editor/regler.js`, `GRENZEN`).
 
 **Proportionen:** Die genaue Wirkung von `bodyproportions` haben wir noch nicht am Modell geprüft. Die Beschriftung ist vorläufig und muss beim ersten Test im Editor bestätigt werden.
 

@@ -16,7 +16,8 @@ Wir legen **keine feste Formel „Reglerwert → cm"** fest. Der Editor misst di
 |---|---|
 | `messpunkte.json` | 24 Messbänder als Vertex-Indizes der GLB (Körper-Mesh) und als MakeHuman-Vertex-Nummern, dazu die cm-Werte der Standardfigur und die Wirkung jedes Targets in cm |
 | `ZENTIMETER-TABELLE.md` | dieselben Zahlen zum Lesen: Standardfigur und Wirkung jedes Targets auf die wichtigsten Maße |
-| `skripte/zentimeter_messen.py` | erzeugt beide Dateien aus `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` und `Sharely_programm/assets/avatar/werkstatt/figur_default.obj`. Aufruf im Repo-Ordner: `python docs/avatar/skripte/zentimeter_messen.py`. **Wird die GLB neu gebaut, muss das Skript erneut laufen**, weil sich die Vertex-Reihenfolge der GLB ändern kann. |
+| `Sharely_programm/assets/avatar/messpunkte.json` | Kopie von `messpunkte.json` für den Avatar-Konfigurator im Browser (seit 27.10.2026) |
+| `skripte/zentimeter_messen.py` | erzeugt die Dateien aus `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` und `Sharely_programm/assets/avatar/werkstatt/figur_default.obj`. Aufruf im Repo-Ordner: `python docs/avatar/skripte/zentimeter_messen.py`. **Wird die GLB neu gebaut, muss das Skript erneut laufen**, weil sich die Vertex-Reihenfolge der GLB ändern kann. |
 
 ### Wie gemessen wird
 

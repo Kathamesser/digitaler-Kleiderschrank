@@ -3,7 +3,8 @@
 # Aufruf (Python 3 mit numpy, kein Blender nötig), im Repo-Ordner:
 #   python docs/avatar/skripte/zentimeter_messen.py
 # Ohne Angaben nimmt es Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb und
-# Sharely_programm/assets/avatar/werkstatt/figur_default.obj und schreibt nach docs/avatar/.
+# Sharely_programm/assets/avatar/werkstatt/figur_default.obj und schreibt nach docs/avatar/,
+# messpunkte.json zusätzlich als Kopie neben die GLB (für den Avatar-Konfigurator).
 # Andere Dateien: python zentimeter_messen.py <glb> <figur_default.obj> <Ausgabeordner>
 #
 # Ergebnis im Ausgabeordner:
@@ -18,6 +19,7 @@
 # muss dieses Skript noch einmal laufen.
 
 import json
+import os
 import struct
 import sys
 
@@ -204,6 +206,9 @@ def main(glb, obj, outdir):
         "wirkung_je_target_cm": effect,
     }
     json.dump(data, open(f"{outdir}/messpunkte.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    # Kopie neben der GLB für den Avatar-Konfigurator im Browser (der Seiten-Server sieht docs/ nicht)
+    editor_kopie = os.path.join(os.path.dirname(os.path.abspath(glb)), "messpunkte.json")
+    json.dump(data, open(editor_kopie, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
     L = ["# Zentimeter-Tabelle (automatisch erzeugt)", "",
          "Erzeugt von `skripte/zentimeter_messen.py` aus `Avatar_Editorgeruest.glb`. Nicht von Hand ändern, sondern das Skript neu laufen lassen. Erklärung in `ZENTIMETER.md`.", "",
@@ -224,7 +229,6 @@ def main(glb, obj, outdir):
 
 
 if __name__ == "__main__":
-    import os
     if len(sys.argv) == 4:
         main(*sys.argv[1:])
     elif len(sys.argv) == 1:
