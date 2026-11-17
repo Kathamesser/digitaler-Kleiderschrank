@@ -1,0 +1,3 @@
+# Für Railway: Railway baut im Ordner Sharely_programm und erkennt Python an dieser Datei.
+# Die eigentlichen Pakete stehen in backend/requirements.txt.
+-r backend/requirements.txt
