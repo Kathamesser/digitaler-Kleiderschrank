@@ -38,7 +38,7 @@ Schriften (DM Sans, Fraunces) kommen von Google Fonts; ohne Internet fallen die 
 - `../static/css/stil.css`: das gesamte Aussehen. Ganz oben stehen alle Farben, Schrift, Rundungen und Abstände als Variablen (`:root`). **Design ändern = zuerst diese Variablen ändern, dann die Bausteine darunter.** Alle Seiten ziehen automatisch mit.
 - `../static/js/beispieldaten.js`: Beispieldaten für Freunde, Teile und Outfits eines Freundes, Leihanfragen und Neuigkeiten.
 - `../static/js/anfrage.js`: Fenster „Anfrage an …“ (Teil eines Freundes anfragen), genutzt von `freund-schrank.html` und `freund-garderobe.html`.
-- `../static/js/gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`) und Fußleiste (`fussleiste`), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
+- `../static/js/gemeinsam.js`: Backend-Adresse, Beschriftungen der Auswahlwerte (wie im Backend: Kleidungsarten, Farben, Materialien, Saisons, Status, Messpunkte), vorgegebene Kategorien, Symbole als SVG, Kopfzeile (`seitenkopf`), Tab-Leiste unten für Handy und Tablet (`tableiste`, kommt automatisch mit `seitenkopf`; Tabs in `TABS`) und Fußleiste (`fussleiste`; Knöpfe mit gleichem Ziel und Symbol wie ein Tab blendet sie auf Handy/Tablet aus), Hilfsfunktionen (`holeJson`, `kleidungsKarte` …).
 - Je Seite eine HTML-Datei hier in `templates/` mit nur dem, was die Seite selbst braucht. Sie binden `../static/css/stil.css` und `../static/js/gemeinsam.js` ein.
 
 ## Weiterverwenden mit React oder Vue

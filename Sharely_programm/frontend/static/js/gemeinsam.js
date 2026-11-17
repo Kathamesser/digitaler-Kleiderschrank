@@ -164,6 +164,7 @@ function seitenkopf(titel) {
     <a class="nutzer-chip" href="profil.html" aria-label="Mein Profil"><span class="initiale"></span><span class="name"></span></a>`;
   if (typeof titel === "string") kopf.querySelector("h1").textContent = titel;
   document.querySelector("main").prepend(kopf);
+  tableiste();
   ich()
     .then((nutzer) => {
       if (typeof titel === "function") kopf.querySelector("h1").textContent = titel(nutzer);
@@ -186,6 +187,46 @@ async function profilbildEinsetzen(kreis, url) {
   kreis.replaceChildren(img);
 }
 
+/** Tab-Leiste unten auf Handy und Tablet (Mockups docs/mockups/handy/ und /tablet/). Am Desktop
+ *  blendet stil.css sie aus. Kommt mit seitenkopf() auf jede innere Seite. Der Tab der aktuellen
+ *  Seite ist hervorgehoben; Seiten, die zu keinem Tab gehören (z. B. Freunde), heben keinen hervor. */
+const TABS = [
+  { text: "Start", symbol: "haus", href: "hauptmenue.html", seiten: ["hauptmenue.html"] },
+  { text: "Schrank", textLang: "Kleiderschrank", symbol: "schrank", href: "schrank.html",
+    seiten: ["schrank.html", "kleidung-hochladen.html", "kleidungsstueck.html"] },
+  { text: "Garderobe", symbol: "buegel", href: "outfits.html",
+    seiten: ["outfits.html", "outfit-erstellen.html", "avatar-konfigurator.html"] },
+  { text: "Nachrichten", symbol: "brief", href: "nachrichten.html", seiten: ["nachrichten.html"] },
+  { text: "Profil", symbol: "person", href: "profil.html", seiten: ["profil.html"] },
+];
+
+function tableiste() {
+  const seite = location.pathname.split("/").pop() || "hauptmenue.html";
+  const leiste = document.createElement("nav");
+  leiste.className = "tableiste";
+  leiste.setAttribute("aria-label", "Hauptnavigation");
+  for (const tab of TABS) {
+    const link = document.createElement("a");
+    link.href = tab.href;
+    if (tab.seiten.includes(seite)) link.setAttribute("aria-current", "page");
+    link.innerHTML = SYMBOL[tab.symbol];
+    const text = document.createElement("span");
+    text.className = "kurz";
+    text.textContent = tab.text;
+    link.append(text);
+    if (tab.textLang) {
+      const lang = document.createElement("span");
+      lang.className = "lang";
+      lang.textContent = tab.textLang;
+      text.classList.add("mit-lang");
+      link.append(lang);
+    }
+    leiste.append(link);
+  }
+  document.body.append(leiste);
+  document.body.classList.add("mit-tableiste");
+}
+
 /** Leiste am Seitenende mit großen Knöpfen (Mockups: „Hauptmenü“, „Garderobe“ …).
  *  knoepfe: [{ text, symbol, href | onclick, art: "" | "dunkel" | "rand" }] */
 function fussleiste(knoepfe) {
@@ -197,6 +238,9 @@ function fussleiste(knoepfe) {
     else { knopf.type = "button"; knopf.onclick = onclick; }
     if (id) knopf.id = id;
     knopf.className = `knopf ${art}`;
+    // Reine Navigationsknöpfe, die genauso in der Tab-Leiste stehen (gleiches Ziel und Symbol, z. B. „Hauptmenü“),
+    // blendet stil.css auf Handy/Tablet aus. „Abbrechen“ → outfits.html bleibt, weil es ein anderes Symbol hat.
+    if (TABS.some((t) => t.href === href && t.symbol === symbol)) knopf.classList.add("wie-tab");
     knopf.innerHTML = SYMBOL[symbol] || "";
     knopf.append(` ${text}`);
     leiste.append(knopf);

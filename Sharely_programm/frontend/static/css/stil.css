@@ -101,6 +101,10 @@ svg { flex-shrink: 0; }
 .fussleiste .knopf, .fussleiste .knopf-rand, .fussleiste .knopf-dunkel { min-width: min(330px, 100%); font-size: 1.15rem; padding: 16px 24px; }
 .inhalt-wachsen { flex: 1; margin-bottom: 32px; }
 
+/* ---------- Tab-Leiste unten (nur Handy und Tablet, Mockups handy/ und tablet/) ---------- */
+
+.tableiste { display: none; }
+
 /* ---------- Knöpfe ---------- */
 
 .knopf, .knopf-rand, .knopf-dunkel, .knopf-gefahr, .knopf-rot {
@@ -615,6 +619,25 @@ a.menue-zeile { text-decoration: none; }
 /* ---------- Schmalere Bildschirme ---------- */
 
 @media (max-width: 1023px) {
+  /* Tab-Leiste fest am unteren Rand; die Seite bekommt unten so viel Platz, dass nichts darunter verschwindet */
+  .tableiste {
+    display: flex; justify-content: center; gap: 4px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    background: var(--flaeche); border-top: 1.5px solid var(--linie);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+  .tableiste a {
+    flex: 1; max-width: 130px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 4px; border-radius: 14px; text-decoration: none; color: var(--text); font-size: .85rem; font-weight: 700;
+  }
+  .tableiste svg { width: 22px; height: 22px; }
+  .tableiste .kurz.mit-lang { display: none; }
+  .tableiste a[aria-current="page"] { background: var(--primaer-hell); color: var(--primaer); }
+  .tableiste a:focus-visible { outline: 2px solid var(--primaer); outline-offset: 2px; }
+  body.mit-tableiste { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  /* Knöpfe der Fußleiste, die schon in der Tab-Leiste stehen (Hauptmenü, Garderobe …), weglassen;
+     bleibt nichts übrig, verschwindet die Fußleiste ganz */
+  .fussleiste .wie-tab { display: none; }
+  .fussleiste:not(:has(> :not(.wie-tab))) { display: none; }
   .hauptmenue, .outfits-bereich, .freunde-bereich { grid-template-columns: minmax(0, 1fr); }
   .seiten-kacheln { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* Hinzufügen (Tablet-Mockup): zwei Spalten bleiben, Name/Farbe und die Foto-Knöpfe untereinander */
@@ -625,6 +648,10 @@ a.menue-zeile { text-decoration: none; }
 }
 @media (max-width: 767px) {
   :root { --rand: 16px; }
+  .tableiste { gap: 0; padding-left: 4px; padding-right: 4px; }
+  .tableiste a { font-size: .75rem; }
+  .tableiste .kurz.mit-lang { display: inline; }
+  .tableiste .lang { display: none; }
   .seitenkopf { grid-template-columns: 1fr auto; }
   .seitenkopf h1 { grid-column: 1 / -1; grid-row: 2; }
   .logo-kachel { width: 60px; height: 60px; border-radius: 16px; }
