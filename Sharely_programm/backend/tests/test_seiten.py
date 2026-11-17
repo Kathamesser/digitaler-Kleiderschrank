@@ -1,5 +1,7 @@
 """Das Backend liefert die Seiten selbst aus (für Railway), aber nichts aus backend/ oder uploads/."""
 
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -37,3 +39,22 @@ def test_backend_und_uploads_bleiben_privat():
 def test_api_bleibt_vorrang():
     with TestClient(app) as client:
         assert client.get("/api/health").json() == {"status": "ok"}
+
+
+def _pakete(datei: Path) -> set[str]:
+    zeilen = datei.read_text(encoding="utf-8").splitlines()
+    pakete = set()
+    for zeile in zeilen:
+        zeile = zeile.strip()
+        if zeile.startswith("# Tests"):
+            break  # ab hier nur Test-Pakete, die Railway nicht braucht
+        if zeile and not zeile.startswith("#"):
+            pakete.add(zeile)
+    return pakete
+
+
+def test_railway_pakete_wie_im_backend():
+    """Sharely_programm/requirements.txt (für Railway) muss dieselben Pakete nennen wie
+    backend/requirements.txt, sonst fehlt auf dem Server etwas."""
+    backend = Path(__file__).resolve().parents[1]
+    assert _pakete(backend.parent / "requirements.txt") == _pakete(backend / "requirements.txt")

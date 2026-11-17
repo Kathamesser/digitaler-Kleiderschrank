@@ -38,7 +38,7 @@ Entscheidung Team, 27.10.2026: Sharely läuft auf Railway als **ein** Dienst. Da
 
 | Einstellung | Wert |
 |---|---|
-| Root Directory | `Sharely_programm` (dort liegt `requirements.txt`, die auf `backend/requirements.txt` verweist) |
+| Root Directory | `Sharely_programm` (dort liegt eine eigene `requirements.txt` mit denselben Paketen wie `backend/requirements.txt`, ohne Test-Pakete; ein Test prüft, dass beide zusammenpassen. Neue Pakete also in beide Dateien eintragen.) |
 | Custom Start Command | `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 | Healthcheck Path | `/api/health` |
 | Volume | Mount Path `/data` (für die hochgeladenen Bilder) |
