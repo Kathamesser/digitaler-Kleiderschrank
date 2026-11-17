@@ -1,40 +1,54 @@
-# Sharely — Digitaler Kleiderschrank
+# 👗 Sharely — Digitaler Kleiderschrank
 
-Abschlussprüfungsprojekt (3-Personen-Team): Kleidung bildlich erfassen und kategorisieren, zu Outfits kombinieren, Wunschartikel per KI importieren — und als Kernfeature ein frei anpassbarer 3D-Avatar, der die ausgewählten Klamotten trägt.
+<img src="Sharely_programm/assets/branding/sharely-logo.png" alt="Sharely-Logo" width="120" align="right">
 
-Die Umsetzung startet neu nach dem Zielbild (Python/FastAPI, MongoDB, JavaScript/Three.js). Der frühere Flask-Experimentierstand wurde am 06.10.2026 entfernt und ist bei Bedarf in der Git-Historie nachlesbar.
+**Sharely** ist ein digitaler Kleiderschrank als Web-App. Dabei kann man seine Kleidungsstücke fotografieren und bildlich in seinen virtuellen Kleiderschrank einpflegen. Einige Eigenschaften der Klamotten lassen sich mithilfe einer **KI-Bilderkennung** automatisch zuordnen. Diese Teile lassen sich zu **Outfits** zusammenstellen und man kann sie mit **Freunden teilen**. Daneben kann man auch ausgewählte Kleidungsstücke und Outfits an Freunde **verleihen oder verschenken**.
 
-## Projektstruktur
+Das Herzstück des Projekts ist ein **frei anpassbarer 3D-Avatar**, der die ausgewählte Kleidung trägt und anzeigt, wie sie unter Berücksichtigung der Maße passt. Dazu kommt die Möglichkeit, neben dem digitalen Anprobieren der eigenen Klamotten und der der Freunde, das Anprobieren von Artikeln unserer Geschäftspartner. Diese stehen zum Anprobieren kostenlos in unserem Shop zur Verfügung.
+
+> [!IMPORTANT]
+> Über unsere Anwendung ist der Kauf von Klamotten **nicht** möglich!
+
+## ✨ Alleinstellungsmerkmale
+
+- 🤝 **Verleihen, verschenken und teilen** der Klamotten mit Freunden
+- 🤖 **Automatische Zuordnung** von Kleidungseigenschaften mit KI
+- 🧍 **Digitales Anprobieren** durch den 3D-Avatar inkl. Passform-Check und Simulation
+
+## 👥 Team
+
+| Name | Rolle |
+|---|---|
+| Katharina Lutzky (Katha) | Repo-Inhaberin |
+| Manuel Herrmann (Manu) | |
+| Christian Maschke (Chris) | |
+
+## 🚀 Starten
+
+So kann die Anwendung aktuell sauber gestartet werden:
+
+```bash
+cd Sharely_programm
+python start.py
+```
+
+`start.py` ist der einzige Einstiegspunkt: Es startet das Backend (Port 8000) und den Seiten-Server (Port 5173) und öffnet den Browser. **Strg+C** beendet alles.
+
+- Die einmalige Einrichtung (Pakete, `.env`, Datenbank) steht in [`Sharely_programm/backend/README.md`](Sharely_programm/backend/README.md).
+- Die App unter **http://localhost:5173** öffnen, nicht unter `127.0.0.1`.
+
+## 📁 Projektstruktur
 
 ```
-README.md, CLAUDE.md, BRAIN.md   Einstieg, Kontext für Claude, Team-Gedächtnis
-Sharely_programm/         alles, was die Anwendung zum Laufen braucht
-  backend/                Python/FastAPI, modularer Monolith (Start und Aufbau: Sharely_programm/backend/README.md)
-    app/core/             Einstellungen, Datenbank, Sicherheit
-    app/module/           ein Ordner je Fachbereich (router → service → repository)
-    tests/                pytest
-  frontend/               Web-App im Browser (Sharely_programm/frontend/README.md)
-    templates/            die Seiten (HTML), Start: templates/index.html (Anmeldung)
-    static/css/           Aussehen (stil.css)
-    static/js/            gemeinsame Bausteine (gemeinsam.js)
-    src/avatar-editor/    3D-Avatar-Editor mit Three.js
-  assets/                 Avatar-Dateien (GLB, Werkstatt) und Logo
-  uploads/                hochgeladene Bilder, nur lokal, nicht im Repo
-docs/                     Dokumentation (nicht nötig, damit die Anwendung läuft)
-  PROJEKTDOKUMENTATION.md Verlauf, Entscheidungen, Soll-Ist-Vergleich
-  planung/                Roadmap, Avatar-Konzept, User Stories
-  konzeption/             Technische Konzeption (PDF, inkl. Wireframes)
-  mockups/                Desktop-Mockups (PNG)
-  datenmodell/            ERM und Abbildung auf MongoDB-Collections
-  api/                    Absprachen zur REST-API
-  avatar/                 Avatar: Regler, Pipeline, Skripte, Figur-Datenmodell, Zentimeter
+├── README.md              diese Datei
+├── BRAIN.md               gemeinsames Team-Gedächtnis: Stand, offene Entscheidungen, Log
+├── CLAUDE.md              Projektkontext für die Claude-Sitzungen
+├── Sharely_programm/      alles, was die App zum Laufen braucht
+│   ├── start.py           startet alle Dienste mit einem Befehl
+│   ├── seiten_server.py   liefert die Seiten aus (Port 5173)
+│   ├── backend/           Python-Code (FastAPI), Tests, requirements.txt
+│   ├── frontend/          HTML-Seiten, CSS, JavaScript, 3D-Avatar-Editor (Three.js)
+│   ├── assets/            Bild- und Avatardateien
+│   └── uploads/           hochgeladene Bilder, nur lokal, nicht im Repo
+└── docs/                  sämtliche Projektdokumentationen
 ```
-
-## Dokumente
-
-- `docs/PROJEKTDOKUMENTATION.md` — Projektdokumentation (Verlauf, Entscheidungen, Soll-Ist-Vergleich)
-- `BRAIN.md` — gemeinsames Team-Gedächtnis (aktueller Stand, offene Entscheidungen, Log)
-- `docs/planung/ROADMAP.md` / `docs/planung/roadmap.html` — Meilensteinplan und Tech-Stack-Entscheidung
-- `docs/planung/AVATAR-3D-KONZEPT.md` — Umsetzungskonzept 3D-Avatar
-- `docs/planung/Userstory.md` — User Stories
-- `CLAUDE.md` — Projektkontext für Claude-Sitzungen
