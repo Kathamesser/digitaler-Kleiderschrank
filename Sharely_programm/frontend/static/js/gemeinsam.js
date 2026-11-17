@@ -2,7 +2,10 @@
 // Aussehen nach den Desktop-Mockups (docs/mockups/desktop/).
 // Später in React/Vue: Aufrufe → src/api/, Symbole/Kopf/Fußleiste → src/komponenten/.
 
-const BACKEND = "http://localhost:8000";
+// Lokal (python start.py) kommen die Seiten vom Seiten-Server auf Port 5173 und das Backend
+// läuft auf 8000. Auf dem Server (Railway) liefert das Backend die Seiten selbst aus, dann
+// geht alles an dieselbe Adresse (leerer Text = gleiche Adresse wie die Seite).
+const BACKEND = location.port === "5173" ? "http://localhost:8000" : "";
 const API = `${BACKEND}/api`;
 const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzdem selbst
 

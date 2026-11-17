@@ -1,0 +1,11 @@
+# Für Railway: Railway baut im Ordner Sharely_programm und erkennt Python an dieser Datei.
+# Railway kopiert für die Installation nur diese eine Datei, ein Verweis auf
+# backend/requirements.txt („-r …“) findet dort nichts (Build-Fehler 17.11.2026).
+# Deshalb stehen die Pakete hier noch einmal, ohne die Test-Pakete.
+# Muss zu backend/requirements.txt passen – das prüft tests/test_seiten.py.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pymongo>=4.13
+pydantic-settings>=2.4
+python-multipart>=0.0.9
+pwdlib[argon2]>=0.2

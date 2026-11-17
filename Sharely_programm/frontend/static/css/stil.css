@@ -4,6 +4,13 @@
   Farben, Schriften, Rundungen und Abstände stehen als Variablen in :root. Design ändern = zuerst
   diese Variablen anpassen, dann die Bausteine weiter unten. Die Klassennamen sind so gewählt, dass
   sie später in React/Vue weiterverwendet werden können.
+
+  Bildschirmgrößen (Mockups in docs/mockups/desktop, /tablet, /handy):
+    Desktop  ab 1024 px  → Grundregeln ohne @media
+    Tablet   768–1023 px → @media (max-width: 1023px)
+    Handy    bis 767 px  → @media (max-width: 767px)
+  Nur diese zwei Grenzen verwenden. CSS-Variablen gehen in @media nicht, deshalb stehen die Zahlen direkt da.
+  Der Browser wählt die Regeln selbst nach der Fensterbreite, das Programm muss das Gerät nicht kennen.
 */
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
@@ -417,10 +424,55 @@ textarea { resize: vertical; min-height: 90px; }
 .anmelde-formular { display: flex; align-items: center; justify-content: center; padding: 40px; }
 .anmelde-karte { width: min(612px, 100%); background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 56px; }
 .anmelde-karte h2 { font-size: 2.8rem; }
+.anmelde-karte h2.kleiner { font-size: 2.3rem; } /* Passwort-Seiten */
 .anmelde-karte .unterzeile { color: var(--text-leise); font-size: 1.15rem; margin: 10px 0 34px; }
 .anmelde-karte .knopf { margin-top: 34px; font-size: 1.15rem; padding: 18px; }
 .anmelde-karte .link-zeile { text-align: center; margin-top: 30px; font-size: 1.05rem; color: var(--text-leise); }
 .vergessen { display: block; text-align: right; margin-top: 16px; font-size: .95rem; }
+
+/* Tablet (Mockups „Tablet · Anmeldung“ u. a.): Slogan-Bereich oben, Formular-Karte darunter, ragt in ihn hinein.
+   Die Kreise bekommen feste px-Größen, weil vh auf hochkant gehaltenen Geräten viel zu groß wird. */
+@media (max-width: 1023px) {
+  .anmelde-seite { display: flex; flex-direction: column; }
+  .anmelde-bild { position: relative; height: auto; padding: 40px 48px 130px; }
+  .anmelde-bild .marke-klein { gap: 18px; }
+  .anmelde-bild .logo-kachel { width: 72px; height: 72px; border-radius: 18px; }
+  .anmelde-bild .wortmarke { font-size: 1.5rem; }
+  .anmelde-bild small { font-size: 1.05rem; }
+  .anmelde-bild h1 { font-size: 3rem; margin-top: 40px; max-width: 55%; }
+  .deko.punkte { width: 230px; height: 230px; left: auto; right: 68px; top: 90px; bottom: auto; border-width: 0;
+    background: radial-gradient(circle, #a6e2d7 0 3px, transparent 3.5px) 0 0 / 18px 18px, #1f9a8a; }
+  .deko.karo { width: 170px; height: 170px; left: auto; right: -50px; top: 220px; bottom: auto;
+    background-size: 22px 22px, 22px 22px, auto; }
+  .deko.streifen { width: 150px; height: 150px; left: auto; right: 236px; top: 260px; bottom: auto;
+    background: repeating-linear-gradient(135deg, #f0b544 0 9px, #f6d58c 9px 18px); }
+  .anmelde-formular { position: relative; z-index: 3; margin-top: -80px; padding: 0 48px 48px; align-items: flex-start; }
+  .anmelde-karte { width: min(500px, 100%); padding: 40px; }
+  .anmelde-karte h2 { font-size: 2.2rem; }
+  .anmelde-karte h2.kleiner { font-size: 2rem; }
+}
+
+/* Handy (Mockups „Handy · Anmeldung“ u. a.): Formular als weißes Blatt über die ganze Breite, nur oben gerundet. */
+@media (max-width: 767px) {
+  .anmelde-bild { padding: 24px 20px 64px; }
+  .anmelde-bild .marke-klein { gap: 14px; }
+  .anmelde-bild .logo-kachel { width: 52px; height: 52px; border-radius: 14px; }
+  .anmelde-bild .wortmarke { font-size: 1.1rem; }
+  .anmelde-bild small { font-size: .9rem; margin-top: 2px; }
+  .anmelde-bild h1 { font-size: 2rem; margin-top: 28px; max-width: 64%; }
+  .deko.punkte { width: 148px; height: 148px; right: -58px; top: 120px; background-size: 14px 14px, auto; }
+  .deko.karo { width: 70px; height: 70px; right: -30px; top: 60px; background-size: 12px 12px, 12px 12px, auto; }
+  .deko.streifen { width: 80px; height: 80px; right: 40px; top: 210px; }
+  .anmelde-formular { flex: 1; margin-top: -32px; padding: 0; align-items: stretch; }
+  .anmelde-karte { width: 100%; border-radius: var(--rund-gross) var(--rund-gross) 0 0; box-shadow: none; padding: 32px 20px 40px; }
+  .anmelde-karte h2, .anmelde-karte h2.kleiner { font-size: 1.75rem; }
+  .anmelde-karte .unterzeile { font-size: 1rem; margin: 8px 0 24px; }
+  .anmelde-karte .knopf { margin-top: 26px; }
+  .anmelde-spalte { width: 100%; display: flex; flex-direction: column; }
+  .anmelde-spalte .anmelde-karte { flex: 1; }
+  .anmelde-spalte > .zurueck-link { margin-left: 20px; }
+  .anmelde-karte .zeile { grid-template-columns: 1fr; gap: 0; }
+}
 
 /* ---------- Outfits ---------- */
 
@@ -558,13 +610,13 @@ a.menue-zeile { text-decoration: none; }
 
 /* ---------- Schmalere Bildschirme ---------- */
 
-@media (max-width: 1200px) {
+@media (max-width: 1023px) {
   .hauptmenue, .outfits-bereich, .freunde-bereich { grid-template-columns: 1fr; }
   .seiten-kacheln { grid-template-columns: repeat(3, 1fr); }
   .zahl-karten { padding: 0; gap: 20px; }
   .auswahl-spalten { grid-template-columns: 1fr 1fr; gap: 0 18px; }
 }
-@media (max-width: 860px) {
+@media (max-width: 767px) {
   :root { --rand: 16px; }
   .seitenkopf { grid-template-columns: 1fr auto; }
   .seitenkopf h1 { grid-column: 1 / -1; grid-row: 2; }
@@ -572,12 +624,10 @@ a.menue-zeile { text-decoration: none; }
   .wortmarke { font-size: 1.1rem; }
   .nutzer-chip { font-size: 1rem; padding-right: 16px; }
   .initiale { width: 40px; height: 40px; font-size: 1.1rem; }
-  .zwei-spalten, .leih-spalten, .freund-panels, .leih-links, .anmelde-seite { grid-template-columns: 1fr; gap: 26px; }
+  .zwei-spalten, .leih-spalten, .freund-panels, .leih-links { grid-template-columns: 1fr; gap: 26px; }
   .zahl-karten { grid-template-columns: 1fr 1fr; }
   .seiten-kacheln { grid-template-columns: 1fr; }
-  .anmelde-bild { position: relative; height: auto; padding: 40px 24px 260px; }
-  .anmelde-bild h1 { margin-top: 40px; }
-  .fenster, .anmelde-karte { padding: 26px 20px; }
+  .fenster { padding: 26px 20px; }
   .blatt-kopf { padding: 24px 20px 10px; }
   .blatt-inhalt { padding: 0 20px 20px; }
   .blatt-fuss { padding: 16px 20px 22px; grid-template-columns: 1fr; }
@@ -594,13 +644,12 @@ a.menue-zeile { text-decoration: none; }
 /* Maße beim Hinzufügen: Messpunkt links, cm rechts, zwei Spalten */
 .masse-raster { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; }
 .masse-raster label { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 10px; font-size: .92rem; }
-@media (max-width: 700px) { .masse-raster { grid-template-columns: 1fr; } }
+@media (max-width: 767px) { .masse-raster { grid-template-columns: 1fr; } }
 
 /* ---------- Passwort zurücksetzen (Desktop 3, 4) ---------- */
 
 .anmelde-spalte { width: min(612px, 100%); }
 .anmelde-spalte .anmelde-karte { width: 100%; }
-.anmelde-karte h2.kleiner { font-size: 2.3rem; }
 .zurueck-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; margin-bottom: 22px; }
 .pruefliste { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 8px; color: var(--text-leise); font-size: .95rem; }
 .pruefliste li { display: flex; align-items: center; gap: 10px; }
@@ -723,11 +772,11 @@ a.menue-zeile { text-decoration: none; }
 .leih-eintrag.klickbar { cursor: pointer; width: calc(100% - 28px); border: none; background: none; font: inherit; color: inherit; text-align: left; }
 .leih-eintrag.klickbar:hover { background: #faf6ef; }
 
-@media (max-width: 1200px) {
+@media (max-width: 1023px) {
   .zwei-karten { grid-template-columns: 1fr; }
   .freund-leiste { grid-template-columns: 1fr; }
 }
-@media (max-width: 860px) {
+@media (max-width: 767px) {
   .anfrage-karte { grid-template-columns: auto 1fr; }
   .anfrage-karte .typ-marke { grid-column: 2; }
   .titel-zeile { flex-wrap: wrap; }

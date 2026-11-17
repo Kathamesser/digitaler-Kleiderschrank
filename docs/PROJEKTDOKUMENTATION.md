@@ -203,6 +203,7 @@ flowchart LR
 - Die rechenintensive 3D-Darstellung läuft im Browser auf der Grafikkarte des Nutzers, der Server liefert nur Daten.
 - Frontend und Backend können über die REST-API parallel von verschiedenen Teammitgliedern entwickelt werden.
 - Das Backend besteht aus acht Fachmodulen: `nutzer`, `kleidung`, `outfits`, `freunde`, `verleihen`, `figuren`, `produktimport`, `passform`. Jedes Modul hat dieselben Schichten: `router.py` (HTTP) → `service.py` (Geschäftslogik) → `repository.py` (einziger Datenbankzugriff), dazu `schemas.py` (Pydantic-Modelle). Module rufen sich nur über ihre Services auf. Dadurch ließe sich z. B. der KI-Import später als eigener Dienst herauslösen.
+- **Betrieb (Hosting):** Sharely läuft auf Railway als **ein** Dienst (Entscheidung Team, 27.10.2026): Das Backend liefert dort neben der API auch die Seiten aus (`/frontend/…`, `/assets/…`), die Seiten fragen die API unter derselben Adresse an, dadurch entfällt CORS. Railway baut nach jedem Push auf `main` aus GitHub; Bilder liegen auf einem Railway-Volume, Zugangsdaten als Railway-Variablen, die Datenbank bleibt MongoDB Atlas. Lokal starten Backend und Seiten-Server weiter getrennt mit `python start.py`.
 - Details: `Sharely_programm/backend/README.md`.
 
 ### 4.4 Datenmodell
@@ -441,6 +442,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 27.10.2026 | Eigener Seiten-Server `seiten_server.py` statt `python -m http.server` (Browser fragt bei jeder Datei nach Änderungen) | Veraltete `gemeinsam.js` aus dem Browser-Zwischenspeicher hat zweimal Fehler vorgetäuscht (14.10., 27.10.) | Claude bei der Fehlersuche im Auftrag von Katha | `frontend/templates/README.md` |
 | 29.10.2026 | Ein Startskript `Sharely_programm/start.py` startet alle Dienste (Backend, Seiten-Server) mit einem Befehl; künftige Dienste werden dort eingetragen | Ein Befehl statt mehrerer Terminals, ein Ort für alle Startfunktionen; einmalige Einrichtung (Pakete, Datenbank) bleibt bewusst eigener Schritt | Christian | `Sharely_programm/start.py`, `frontend/templates/README.md` |
 | 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
+| 27.10.2026 | Hosting über Railway, Datenbank bleibt Atlas (am 17.11.2026 bestätigt; Code-Anpassung: Backend liefert die Seiten selbst aus) | bisherige Arbeit ohne Neubau übertragbar, Bilder zentral, Deployment aus GitHub | Team | `BRAIN.md` |
 
 ---
 
@@ -487,6 +489,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 ### 11.1 Offene Entscheidungen (aus `BRAIN.md`)
 
 - Frontend-Framework: React oder Vue
+- Railway-Umsetzung: EU-Region prüfen, Atlas-Freigabe für Railway, Dienst einrichten, Team einladen; vor dem öffentlichen Start Passwort zurücksetzen/ändern und Konto löschen
 - KI-Anbieter für den Produktimport
 - ERM-Restpunkt: Zuordnung Kleidungsart → 3D-Vorlage (Startvorschlag von Christian); Messpunkte und Zugaben je Kleidungsart sind seit 26.10.2026 mit Startwerten umgesetzt, Bestätigung durch Manuel steht aus
 - Feature „Freunde“ in die Roadmap aufnehmen (steht in User Storys und Konzeption, fehlt in der Roadmap)

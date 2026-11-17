@@ -32,6 +32,20 @@ cd Sharely_programm/backend
 
 Das legt alle 13 Collections aus dem ERM an (`docs/datenmodell/ERM-SHARELY.md`), jeweils mit Prüfregel (`$jsonSchema`) und Indizes. Ohne `--stammdaten` legt es keine Daten an. Mit `--stammdaten` kommt auch der Test-Nutzer aus `app/core/sicherheit.py` dazu (Platzhalter bis zum echten Login, ohne gültiges Passwort), damit z. B. das Profilbild die Prüfregel für `nutzer` erfüllt; es löscht nie etwas, mehrfaches Ausführen schadet nicht. Was eingerichtet wird, steht in `app/core/datenbank_struktur.py`. Die Prüfregeln prüfen nur Pflichtfelder, Datentypen und feste Wertelisten (Farbe, Material, Saison, Status, Messpunkte …); die Listen stehen an einer Stelle in `app/core/wertelisten.py`, die Module bauen ihre Enums daraus. Ändert sich dort etwas, das Skript erneut ausführen. Tests dazu: `tests/test_datenbank_struktur.py`.
 
+## Auf Railway bereitstellen
+
+Entscheidung Team, 27.10.2026: Sharely läuft auf Railway als **ein** Dienst. Das Backend liefert dort auch die Seiten aus (`/frontend/…`, `/assets/…`, `/` führt zur Anmeldung); `backend/` und `uploads/` sind nicht öffentlich. Die Datenbank bleibt MongoDB Atlas. Einstellungen im Railway-Dienst:
+
+| Einstellung | Wert |
+|---|---|
+| Root Directory | `Sharely_programm` (dort liegt eine eigene `requirements.txt` mit denselben Paketen wie `backend/requirements.txt`, ohne Test-Pakete; ein Test prüft, dass beide zusammenpassen. Neue Pakete also in beide Dateien eintragen.) |
+| Custom Start Command | `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Healthcheck Path | `/api/health` |
+| Volume | Mount Path `/data` (für die hochgeladenen Bilder) |
+| Variablen | `MONGODB_URL` (Atlas-Adresse mit eigenem Datenbank-Benutzer, nie ins Repo), `MONGODB_DATENBANK=sharely`, `UPLOAD_ORDNER=/data/uploads`, `COOKIE_SECURE=true` |
+
+In Atlas muss Railway zugreifen dürfen: Railway hat keine feste IP, daher unter „Network Access“ `0.0.0.0/0` (abgesichert über eigene Datenbank-Benutzer mit starken Passwörtern). Lokal ändert sich nichts: weiter `python start.py`; die Seiten erkennen am Port 5173, dass das Backend auf `localhost:8000` läuft.
+
 ## Aufbau
 
 ```
