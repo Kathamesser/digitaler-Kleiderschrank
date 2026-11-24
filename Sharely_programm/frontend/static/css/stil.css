@@ -622,6 +622,10 @@ a.menue-zeile { text-decoration: none; }
 /* ---------- Schmalere Bildschirme ---------- */
 
 @media (max-width: 1023px) {
+  /* Nie seitlich scrollen (Wunsch Katha, 24.11.2026): Ragt doch einmal etwas über den Rand, wird es
+     abgeschnitten, statt die Seite zu verbreitern. Sonst zoomt das Handy heraus und die Tab-Leiste
+     rutscht aus dem Bild. „clip“ statt „hidden“, damit position: sticky weiter funktioniert. */
+  html, body { overflow-x: clip; }
   /* Tab-Leiste fest am unteren Rand; die Seite bekommt unten so viel Platz, dass nichts darunter verschwindet */
   .tableiste {
     display: flex; justify-content: center; gap: 4px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
@@ -1088,13 +1092,32 @@ a.menue-zeile { text-decoration: none; }
 .leih-eintrag.klickbar:hover { background: #faf6ef; }
 
 @media (max-width: 1023px) {
-  .zwei-karten { grid-template-columns: 1fr; }
+  .zwei-karten { grid-template-columns: minmax(0, 1fr); align-content: start; }
   .freund-leiste { grid-template-columns: 1fr; }
 }
 @media (max-width: 767px) {
-  .anfrage-karte { grid-template-columns: auto 1fr; }
-  .anfrage-karte .typ-marke { grid-column: 2; }
   .titel-zeile { flex-wrap: wrap; }
+  /* Nachrichten auf dem Handy (Wunsch Katha, 24.11.2026): nichts breiter als der Bildschirm,
+     Anfragen kompakt: Leihen/Geschenk oben rechts, Annehmen und Ablehnen nebeneinander */
+  .weisse-karte { padding: 18px 14px; }
+  .karte-titel { gap: 10px; margin-bottom: 12px; }
+  .karte-titel > div { min-width: 0; }
+  .karte-titel h2 { font-size: 1.3rem; hyphens: manual; overflow-wrap: break-word; }
+  .karte-titel p { font-size: .85rem; }
+  .karte-titel .link { margin-top: 2px; }
+  .anfrage-karte { position: relative; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; padding: 12px; }
+  .anfrage-karte + .anfrage-karte { margin-top: 10px; }
+  .anfrage-karte .initiale { grid-row: auto; width: 36px; height: 36px; font-size: 1rem; }
+  .anfrage-karte .text strong { font-size: 1.05rem; padding-right: 86px; }
+  .anfrage-karte .text span { font-size: .95rem; }
+  .anfrage-karte .text small { font-size: .8rem; }
+  .anfrage-karte .typ-marke { position: absolute; top: 12px; right: 12px; padding: 3px 10px; font-size: .8rem; }
+  /* Das Teil steht schon im Satz („möchte deine Lederjacke leihen“), die Kachel spart eine Zeile */
+  .anfrage-karte .teil { display: none; }
+  .anfrage-karte .aktionen { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .anfrage-karte .aktionen button { min-width: 0; padding: 10px 8px; font-size: .95rem; }
+  .neuigkeit { padding: 12px 14px; }
+  .neuigkeit h3 { font-size: 1.1rem; margin: 8px 0 4px; }
 }.teile-liste button:disabled { cursor: default; }
 
 /* ---------- Avatar-Konfigurator (avatar-konfigurator.html) ---------- */
