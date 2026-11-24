@@ -13,6 +13,28 @@
   Der Browser wählt die Regeln selbst nach der Fensterbreite, das Programm muss das Gerät nicht kennen.
 */
 
+/*
+  Für Einsteiger: Was ist CSS?
+  CSS legt fest, wie die Seiten AUSSEHEN (Farben, Schrift, Abstände, Anordnung). Was auf der
+  Seite STEHT, kommt aus dem HTML; wie es sich VERHÄLT, aus dem JavaScript.
+
+  Eine Regel sieht so aus:   .knopf { background: grün; padding: 12px; }
+    - Vor der Klammer steht, WORAUF die Regel wirkt (der „Selektor"):
+        .knopf        = alle Elemente mit class="knopf"
+        #filterblatt  = das eine Element mit id="filterblatt"
+        .karte strong = <strong>-Elemente innerhalb einer .karte
+        :hover        = während die Maus darüber ist
+    - In der Klammer stehen Eigenschaft: Wert; z. B. color (Schriftfarbe), background (Hintergrund),
+      padding (Innenabstand), margin (Außenabstand), border (Rahmen), font-size (Schriftgröße).
+  Einheiten: px = Bildpunkte, rem = Vielfaches der normalen Schriftgröße, % = Anteil, fr = Anteil
+  am freien Platz in einem Raster.
+  display: flex / grid ordnet Kinder-Elemente nebeneinander bzw. in einem Raster an.
+  var(--name) setzt den Wert einer Variable aus :root ein (z. B. die Hauptfarbe).
+  @media (max-width: 767px) { … }: Diese Regeln gelten nur, wenn das Fenster höchstens 767 px
+  breit ist, also auf dem Handy. So passt sich dieselbe Seite jedem Bildschirm an.
+  Gelten zwei Regeln für dasselbe, gewinnt die genauere (id vor Klasse) bzw. bei Gleichstand die spätere.
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
 
 :root {

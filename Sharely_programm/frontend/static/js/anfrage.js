@@ -1,7 +1,11 @@
 // Fenster „Anfrage an …“ (Mockup „Anfrage an Freund – Leihen / Geschenkt bekommen (Fenster)“):
 // Ich frage ein Teil eines Freundes an. Wird ein Leihvorgang mit Typ, von, bis (leer = unbefristet) und Notiz
 // (ERM Entscheidung 8). Genutzt von freund-schrank.html und freund-garderobe.html. Noch ohne Backend.
+//
+// Ablauf: Beim ersten Öffnen wird das Fenster einmal gebaut (anfrageFensterBauen) und danach
+// immer wiederverwendet; anfrageOeffnen füllt es jeweils mit dem Teil und dem Namen des Freundes.
 
+// Das gebaute Fenster (leer, bis es zum ersten Mal gebraucht wird)
 let anfrageFenster;
 
 /** Fenster einmal bauen und an den <body> hängen. */
@@ -42,6 +46,7 @@ function anfrageFensterBauen() {
   document.body.append(fenster);
   fensterVerdrahten(fenster);
 
+  // Datumsfelder: frühestens heute wählbar (heute als Text JJJJ-MM-TT)
   const f = fenster.querySelector("form");
   const heute = new Date().toISOString().slice(0, 10);
   f.von.min = heute;
@@ -49,7 +54,9 @@ function anfrageFensterBauen() {
   for (const knopf of fenster.querySelectorAll("[data-typ]")) knopf.onclick = () => typSetzen(knopf.dataset.typ);
   f.unbefristet.onchange = () => { f.bis.disabled = f.unbefristet.checked; if (f.unbefristet.checked) f.bis.value = ""; };
 
+  // Beim Absenden: Eingaben prüfen und eine passende Meldung zeigen (gesendet wird noch nichts)
   f.onsubmit = (e) => {
+    // preventDefault: die normale Formular-Aktion des Browsers (Seite neu laden) verhindern
     e.preventDefault();
     const meldung = fenster.querySelector(".meldung");
     const leihen = fenster.dataset.typ === "leihen";
@@ -61,6 +68,7 @@ function anfrageFensterBauen() {
   return fenster;
 }
 
+// Umschalter „Leihen“ / „Geschenkt bekommen“: gewählten Knopf hervorheben, Zeitraum nur beim Leihen zeigen
 function typSetzen(typ) {
   anfrageFenster.dataset.typ = typ;
   for (const knopf of anfrageFenster.querySelectorAll("[data-typ]")) {
@@ -73,6 +81,7 @@ function typSetzen(typ) {
 
 /** Fenster für ein Teil (aus FREUND_TEILE_BEISPIEL) eines Freundes öffnen. */
 function anfrageOeffnen(freund, teil) {
+  // „||=“: nur bauen, wenn es das Fenster noch nicht gibt
   anfrageFenster ||= anfrageFensterBauen();
   const vorname = freund.name.split(" ")[0];
   anfrageFenster.dataset.vorname = vorname;
