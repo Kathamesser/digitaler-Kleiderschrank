@@ -18,7 +18,7 @@ def als_test_nutzer():
 @pytest.fixture(autouse=True)
 def bilder_im_ordner(monkeypatch):
     """Tests legen Bilder nie im gemeinsamen Bucket ab, auch wenn die eigene .env
-    BILDSPEICHER=bucket enthält. Den Bucket prüft test_bildspeicher.py mit einer Attrappe."""
+    BILDSPEICHER=bucket enthält (das ist auch die Vorgabe). Den Bucket prüft test_bildspeicher.py mit einer Attrappe."""
     from app.core.config import get_settings
 
     monkeypatch.setattr(get_settings(), "bildspeicher", "ordner")

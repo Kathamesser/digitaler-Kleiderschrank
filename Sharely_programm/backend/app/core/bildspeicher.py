@@ -3,11 +3,12 @@
 Warum: Die Datenbank (MongoDB Atlas) teilen sich alle, die Bilder lagen bisher aber
 im Ordner des jeweiligen Rechners bzw. auf dem Railway-Volume. Ein Kleidungsstück,
 das jemand lokal angelegt hat, hatte bei den anderen und auf Railway kein Foto.
-Deshalb gibt es jetzt zwei Speicherarten (Einstellung `bildspeicher`):
+Deshalb gibt es zwei Speicherarten (Einstellung `bildspeicher`):
 
-- ``ordner``: Dateien im `upload_ordner` (Vorgabe; für Tests und Arbeiten ohne Netz).
-- ``bucket``: Railway Storage Bucket (S3-kompatibel). Lokal und auf Railway dieselben
-  Zugangsdaten, also sehen alle dieselben Bilder.
+- ``bucket`` (Vorgabe): Railway Storage Bucket (S3-kompatibel). Lokal und auf Railway
+  dieselben Zugangsdaten, also sehen alle dieselben Bilder. Vorhandene Bilder aus den
+  alten Ordnern wurden bewusst nicht übernommen (Entscheidung Christian, 24.11.2026).
+- ``ordner``: Dateien im `upload_ordner`, nur für die Tests oder Arbeiten ohne Netz.
 
 Ein Bild wird über seinen Schlüssel angesprochen, z. B. ``<nutzer_id>/<zufall>.jpg``.
 Das ist derselbe Wert, der im Dokument als `bild_pfad`/`profilbild_pfad` steht, darum
@@ -85,16 +86,26 @@ def _s3_client(endpoint: str, region: str, zugang: str, geheimnis: str, pfad_sti
     )
 
 
-def _bucket():
+def fehlende_einstellungen() -> str | None:
+    """Meldung, wenn der Bucket genutzt werden soll, aber Zugangsdaten fehlen; sonst None.
+    main.py zeigt sie beim Start an, damit man es nicht erst beim ersten Hochladen merkt."""
     s = get_settings()
+    if s.bildspeicher != "bucket":
+        return None
     fehlt = [n for n in ("bucket_name", "bucket_endpoint", "bucket_access_key_id", "bucket_secret_access_key")
              if not getattr(s, n)]
-    if fehlt:
-        raise RuntimeError(
-            "BILDSPEICHER=bucket, aber es fehlen Einstellungen: "
+    if not fehlt:
+        return None
+    return ("Bilder gehen in den Railway Storage Bucket, aber in der .env fehlen: "
             + ", ".join(n.upper() for n in fehlt)
-            + " (siehe backend/README.md, Abschnitt „Bilder“)."
-        )
+            + ". Werte aus Railway (Bucket → Credentials) eintragen, siehe backend/README.md, Abschnitt „Bilder“.")
+
+
+def _bucket():
+    s = get_settings()
+    meldung = fehlende_einstellungen()
+    if meldung:
+        raise RuntimeError(meldung)
     client = _s3_client(s.bucket_endpoint, s.bucket_region, s.bucket_access_key_id,
                         s.bucket_secret_access_key, s.bucket_pfad_stil)
     return client, s.bucket_name

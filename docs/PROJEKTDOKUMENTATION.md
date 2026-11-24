@@ -293,7 +293,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 - `Sharely_programm/backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Anmeldung, bis 27.10.2026 als Platzhalter) und den acht Modulen; `/api/health` als Lebenszeichen.
 - `Sharely_programm/frontend/`: Ordnerstruktur und README; das Framework-Gerüst wird erst nach der Entscheidung React/Vue erzeugt. Der Avatar-Editor (`src/avatar-editor/`) ist bewusst framework-unabhängig.
-- `Sharely_programm/uploads/`: Bildablage, nur lokal, nicht im Repo; seit 24.11.2026 nur noch mit `BILDSPEICHER=ordner`, sonst liegen die Bilder im Railway Storage Bucket.
+- Hochgeladene Bilder: seit 24.11.2026 im Railway Storage Bucket; der frühere lokale Ordner `Sharely_programm/uploads/` entfällt (nur noch mit `BILDSPEICHER=ordner`, nie im Repo).
 - VS-Code-Einstellungen und `pytest.ini` fürs ganze Team.
 
 ### 6.2 User Story 8: Kleidungsstück digitalisieren (13.10.2026, an das ERM angepasst am 20.10.2026)
@@ -451,7 +451,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 29.10.2026 | Ein Startskript `Sharely_programm/start.py` startet alle Dienste (Backend, Seiten-Server) mit einem Befehl; künftige Dienste werden dort eingetragen | Ein Befehl statt mehrerer Terminals, ein Ort für alle Startfunktionen; einmalige Einrichtung (Pakete, Datenbank) bleibt bewusst eigener Schritt | Christian | `Sharely_programm/start.py`, `frontend/templates/README.md` |
 | 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
 | 27.10.2026 | Hosting über Railway, Datenbank bleibt Atlas (am 17.11.2026 bestätigt; Code-Anpassung: Backend liefert die Seiten selbst aus) | bisherige Arbeit ohne Neubau übertragbar, Bilder zentral, Deployment aus GitHub | Team | `BRAIN.md` |
-| 24.11.2026 | Bilder in einen Railway Storage Bucket statt in lokale Ordner bzw. das Volume (`app/core/bildspeicher.py`, Umzugsskript `app/bilder_umziehen.py`) | alle teilen eine Datenbank, also brauchen alle dieselben Bilder; Bilder weiter nicht in der Datenbank | Christian | `backend/README.md` Abschnitt „Bilder“ |
+| 24.11.2026 | Bilder in einen Railway Storage Bucket statt in lokale Ordner bzw. das Volume (`app/core/bildspeicher.py`; alte Bilder bewusst nicht übernommen, Bucket ist die Vorgabe) | alle teilen eine Datenbank, also brauchen alle dieselben Bilder; Bilder weiter nicht in der Datenbank | Christian | `backend/README.md` Abschnitt „Bilder“ |
 
 ---
 

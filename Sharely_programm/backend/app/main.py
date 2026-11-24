@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.core import datenbank
+from app.core import bildspeicher, datenbank
 from app.core.config import get_settings
 from app.module.nutzer.router import router as nutzer_router
 from app.module.kleidung.router import router as kleidung_router
@@ -28,6 +28,8 @@ from app.module.passform.router import router as passform_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     datenbank.verbinden()
+    if meldung := bildspeicher.fehlende_einstellungen():
+        print(f"WARNUNG: {meldung}", flush=True)  # App läuft trotzdem, nur Hochladen/Bilder gehen nicht
     yield
     await datenbank.trennen()
 
@@ -63,8 +65,8 @@ async def health() -> dict:
 
 PROGRAMM = Path(__file__).resolve().parents[2]  # Ordner Sharely_programm
 
-# Nur diese Ordner sind öffentlich. backend/ (mit .env) und uploads/ bleiben es nicht:
-# Bilder gibt es nur über die geschützten Bild-Endpunkte der API.
+# Nur diese Ordner sind öffentlich. backend/ (mit .env) und ein evtl. vorhandener uploads/-Ordner
+# bleiben es nicht: Bilder gibt es nur über die geschützten Bild-Endpunkte der API.
 OEFFENTLICHE_ORDNER = {"/frontend": PROGRAMM / "frontend", "/assets": PROGRAMM / "assets"}
 
 
