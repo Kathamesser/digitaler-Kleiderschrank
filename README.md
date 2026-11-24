@@ -48,7 +48,6 @@ python start.py
 │   ├── seiten_server.py   liefert die Seiten aus (Port 5173)
 │   ├── backend/           Python-Code (FastAPI), Tests, requirements.txt
 │   ├── frontend/          HTML-Seiten, CSS, JavaScript, 3D-Avatar-Editor (Three.js)
-│   ├── assets/            Bild- und Avatardateien
-│   └── uploads/           hochgeladene Bilder, nur lokal, nicht im Repo
+│   └── assets/            Bild- und Avatardateien (hochgeladene Fotos liegen im Railway Storage Bucket)
 └── docs/                  sämtliche Projektdokumentationen
 ```

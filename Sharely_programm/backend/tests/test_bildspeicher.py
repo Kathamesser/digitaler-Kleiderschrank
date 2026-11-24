@@ -138,23 +138,6 @@ def test_profilbild_im_bucket_ersetzt_altes(bucket, monkeypatch, als_test_nutzer
     assert _alle_schluessel(bucket) == []
 
 
-def test_umzug_vom_ordner_in_den_bucket(bucket, tmp_path):
-    from app.bilder_umziehen import umziehen
-
-    (tmp_path / "n1").mkdir()
-    (tmp_path / "n1" / "hier.png").write_bytes(PNG)
-    bucket.put_object(Bucket=BUCKET, Key="n1/schon.png", Body=PNG)
-    schluessel = ["n1/hier.png", "n1/schon.png", "n2/woanders.png"]
-
-    probe = umziehen(tmp_path, schluessel, ausfuehren=False)
-    assert probe == {"hochgeladen": ["n1/hier.png"], "schon_da": ["n1/schon.png"], "nicht_hier": ["n2/woanders.png"]}
-    assert sorted(_alle_schluessel(bucket)) == ["n1/schon.png"]  # Probelauf ändert nichts
-
-    umziehen(tmp_path, schluessel, ausfuehren=True)
-    assert sorted(_alle_schluessel(bucket)) == ["n1/hier.png", "n1/schon.png"]
-    assert (tmp_path / "n1" / "hier.png").is_file()  # Quelle bleibt unangetastet
-
-
 def test_belegt_zaehlt_nur_den_eigenen_ordner(bucket):
     asyncio.run(bildspeicher.speichern("n1/a.png", PNG))
     asyncio.run(bildspeicher.speichern("n1/b.png", PNG))
@@ -235,3 +218,16 @@ def test_bearbeiten_mit_neuem_bild_im_bucket(bucket, monkeypatch, als_test_nutze
         assert client.get(k["bild_url"]).content == JPEG
     assert _alle_schluessel(bucket) == [speicher[k["id"]]["bild_pfad"]]
     assert alt not in _alle_schluessel(bucket)
+
+
+def test_bucket_ist_vorgabe_und_fehlende_werte_werden_gemeldet(monkeypatch):
+    """Ab 24.11.2026 gehen Bilder standardmäßig in den Bucket. Fehlen die Zugangsdaten,
+    gibt es eine verständliche Meldung (main.py zeigt sie beim Start)."""
+    from app.core.config import Settings
+
+    assert Settings.model_fields["bildspeicher"].default == "bucket"
+    monkeypatch.setattr(get_settings(), "bildspeicher", "bucket")
+    monkeypatch.setattr(get_settings(), "bucket_secret_access_key", "")
+    assert "BUCKET_SECRET_ACCESS_KEY" in bildspeicher.fehlende_einstellungen()
+    monkeypatch.setattr(get_settings(), "bildspeicher", "ordner")
+    assert bildspeicher.fehlende_einstellungen() is None

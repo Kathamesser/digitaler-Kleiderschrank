@@ -11,10 +11,10 @@ class Settings(BaseSettings):
     app_name: str = "Sharely"
     mongodb_url: str = "mongodb://localhost:27017"
     mongodb_datenbank: str = "sharely"
-    # Wo die Bilder liegen (app/core/bildspeicher.py): "ordner" = upload_ordner auf diesem
-    # Rechner, "bucket" = Railway Storage Bucket, den alle gemeinsam nutzen (24.11.2026)
-    bildspeicher: str = "ordner"
-    # Ordner für hochgeladene Bilder, je Nutzer ein Unterordner (siehe Technische Konzeption 2.2)
+    # Wo die Bilder liegen (app/core/bildspeicher.py): "bucket" = Railway Storage Bucket, den
+    # alle gemeinsam nutzen (Vorgabe seit 24.11.2026, Christian); "ordner" = upload_ordner auf
+    # diesem Rechner, nur für Tests oder Arbeiten ohne Netz
+    bildspeicher: str = "bucket"
     upload_ordner: str = "../uploads"
     # Zugang zum Bucket (nur bei bildspeicher="bucket"; Werte aus Railway, nie ins Repo)
     bucket_name: str = ""
