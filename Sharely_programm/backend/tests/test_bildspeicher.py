@@ -106,6 +106,7 @@ def test_kleidungsstueck_mit_bild_im_bucket(bucket, monkeypatch, als_test_nutzer
     assert antwort.status_code == 200
     assert antwort.content == PNG
     assert antwort.headers["content-type"] == "image/png"
+    assert antwort.headers["cache-control"] == "no-store"  # Browser speichert Bilder nicht zwischen
 
 
 def test_kein_verwaistes_bild_im_bucket(bucket, monkeypatch, als_test_nutzer):
@@ -133,7 +134,9 @@ def test_profilbild_im_bucket_ersetzt_altes(bucket, monkeypatch, als_test_nutzer
         client.put("/api/nutzer/ich/profilbild", files={"bild": ("a.jpg", JPEG)})
         url = client.put("/api/nutzer/ich/profilbild", files={"bild": ("b.png", PNG)}).json()["profilbild_url"]
         assert len(_alle_schluessel(bucket)) == 1  # Datenschutz: das alte Bild ist weg
-        assert client.get(url).content == PNG
+        profil = client.get(url)
+        assert profil.content == PNG
+        assert profil.headers["cache-control"] == "no-store"
         client.delete("/api/nutzer/ich/profilbild")
     assert _alle_schluessel(bucket) == []
 
@@ -215,7 +218,10 @@ def test_bearbeiten_mit_neuem_bild_im_bucket(bucket, monkeypatch, als_test_nutze
         alt = speicher[k["id"]]["bild_pfad"]
         antwort = client.put(f"/api/kleidung/{k['id']}", data={"kleidungsart": "tops"}, files={"bild": ("b.jpg", JPEG)})
         assert antwort.status_code == 200, antwort.text
-        assert client.get(k["bild_url"]).content == JPEG
+        neu = antwort.json()
+        # Neues Foto → neue Adresse, damit kein Browser das alte aus dem Zwischenspeicher zeigt
+        assert neu["bild_url"] != k["bild_url"]
+        assert client.get(neu["bild_url"]).content == JPEG
     assert _alle_schluessel(bucket) == [speicher[k["id"]]["bild_pfad"]]
     assert alt not in _alle_schluessel(bucket)
 

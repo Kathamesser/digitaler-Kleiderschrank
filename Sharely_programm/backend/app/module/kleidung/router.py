@@ -193,7 +193,8 @@ async def kleidungsstueck_bild(kleidungsstueck_id: str, nutzer_id: Nutzer):
     """Bild nur für den Besitzer (kein öffentlicher Bildspeicher, Datenschutz)."""
     try:
         daten, medientyp = await service.bild(kleidungsstueck_id, nutzer_id)
-        # Das Foto eines Kleidungsstücks ändert sich nicht: der Browser darf es eine Weile behalten
-        return Response(daten, media_type=medientyp, headers={"Cache-Control": "private, max-age=3600"})
+        # Kein Zwischenspeichern im Browser: Bilder kommen immer frisch vom Server (Entscheidung
+        # Christian, 24.11.2026), damit nie ein gelöschtes oder ersetztes Foto angezeigt wird
+        return Response(daten, media_type=medientyp, headers={"Cache-Control": "no-store"})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Bild nicht gefunden.")

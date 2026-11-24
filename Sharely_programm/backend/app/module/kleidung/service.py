@@ -11,6 +11,8 @@ Dazu die Prüfungen fürs Foto: Ist es wirklich ein Bild? Ist es zu groß? Ist n
 
 import uuid
 from datetime import datetime, time, timezone
+from pathlib import PurePosixPath
+
 from app.core import bildspeicher
 from app.core.config import get_settings
 from app.module.kleidung import repository
@@ -74,7 +76,9 @@ def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
     kaufdatum = kleidungsstueck.get("kaufdatum")
     return KleidungsstueckAntwort(
         **{**kleidungsstueck, "kaufdatum": kaufdatum.date() if kaufdatum else None},
-        bild_url=f"/api/kleidung/{kleidungsstueck['id']}/bild",
+        # ?v=… ändert sich mit jedem neuen Foto (z. B. nach dem Bearbeiten), damit der Browser
+        # nie ein altes Bild aus seinem Zwischenspeicher zeigt (wie beim Profilbild)
+        bild_url=f"/api/kleidung/{kleidungsstueck['id']}/bild?v={PurePosixPath(kleidungsstueck['bild_pfad']).stem}",
     )
 
 
