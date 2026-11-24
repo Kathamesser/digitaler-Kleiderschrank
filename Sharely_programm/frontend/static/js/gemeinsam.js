@@ -351,7 +351,16 @@ function tonVon(id) {
 }
 
 /** Kachel eines Kleidungsstücks (Schrank, Outfit erstellen): Bild, Herz, Name, Kleidungsart. */
-function kleidungsKarte(k, { link = true } = {}) {
+/** Herz-Knopf auf einer Karte auf „Favorit“ bzw. „kein Favorit“ stellen. */
+function herzZeigen(herz, favorit) {
+  herz.innerHTML = favorit ? SYMBOL.herzVoll : SYMBOL.herz;
+  herz.setAttribute("aria-pressed", String(favorit));
+  herz.setAttribute("aria-label", favorit ? "Favorit, antippen zum Entfernen" : "Als Favorit markieren");
+}
+
+/** favoritUmschalten: wenn angegeben, ist das Herz ein eigener Knopf (Schrank-Übersicht, 24.11.2026).
+ *  Ein Klick darauf öffnet nicht das Teil, sondern ruft favoritUmschalten(k, herz) auf. */
+function kleidungsKarte(k, { link = true, favoritUmschalten = null } = {}) {
   const karte = document.createElement(link ? "a" : "button");
   karte.className = "karte";
   if (link) karte.href = `kleidungsstueck.html?id=${encodeURIComponent(k.id)}`;
@@ -368,7 +377,22 @@ function kleidungsKarte(k, { link = true } = {}) {
     img.replaceWith(ersatz.content);
   };
   kachel.append(img);
-  if (link) {
+  if (link && favoritUmschalten) {
+    // Kein <button> im Link (ungültiges HTML), deshalb span mit role="button", per Tastatur bedienbar
+    const herz = document.createElement("span");
+    herz.className = "abzeichen rechts herz-knopf";
+    herz.setAttribute("role", "button");
+    herz.tabIndex = 0;
+    herzZeigen(herz, k.favorit);
+    const umschalten = (e) => {
+      e.preventDefault(); // nicht zur Detailansicht
+      e.stopPropagation();
+      favoritUmschalten(k, herz);
+    };
+    herz.onclick = umschalten;
+    herz.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") umschalten(e); };
+    kachel.append(herz);
+  } else if (link) {
     kachel.insertAdjacentHTML("beforeend",
       `<span class="abzeichen rechts" ${k.favorit ? 'aria-label="Favorit"' : 'aria-hidden="true"'}>${k.favorit ? SYMBOL.herzVoll : SYMBOL.herz}</span>`);
   }

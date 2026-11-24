@@ -14,7 +14,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from app.core.config import get_settings
 from app.core.sicherheit import aktueller_nutzer
@@ -138,6 +138,21 @@ async def kleidungsstueck_aendern(
             status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             "Die Datei ist kein unterstütztes Bild. Erlaubt sind JPEG, PNG und WebP.",
         )
+
+
+class FavoritAnfrage(BaseModel):
+    favorit: bool
+
+
+@router.patch("/{kleidungsstueck_id}/favorit")
+async def favorit_setzen(
+    kleidungsstueck_id: str, anfrage: FavoritAnfrage, nutzer_id: Nutzer
+) -> KleidungsstueckAntwort:
+    """Herz in der Schrank-Übersicht: nur `favorit` setzen (JSON `{"favorit": true}`), alles andere bleibt."""
+    try:
+        return await service.favorit_setzen(kleidungsstueck_id, nutzer_id, anfrage.favorit)
+    except service.NichtGefunden:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Kleidungsstück nicht gefunden.")
 
 
 @router.get("")

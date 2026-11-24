@@ -189,6 +189,10 @@ a.chip { text-decoration: none; }
 }
 .abzeichen.rechts { right: 8px; }
 .abzeichen.links { left: 8px; }
+/* Herz in der Schrank-Übersicht ist ein Knopf: antippen = Favorit an/aus */
+.herz-knopf { cursor: pointer; transition: transform .15s; }
+.herz-knopf:hover { transform: scale(1.1); }
+.herz-knopf:focus-visible { outline: 2px solid var(--primaer); outline-offset: 2px; }
 .abzeichen.kreis { background: rgba(255, 255, 255, .85); border: 1.5px solid var(--feld-rand); width: 40px; height: 40px; }
 .karte.gewaehlt .abzeichen.kreis { background: var(--primaer); border-color: var(--primaer); color: var(--auf-dunkel); }
 

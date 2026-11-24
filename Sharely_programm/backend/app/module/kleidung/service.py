@@ -161,6 +161,14 @@ async def aendern(
     return _antwort(neu)
 
 
+async def favorit_setzen(kleidungsstueck_id: str, nutzer_id: str, favorit: bool) -> KleidungsstueckAntwort:
+    """Nur das Herz umschalten, alles andere bleibt (Wunsch Katha, 24.11.2026)."""
+    neu = await repository.aendern(kleidungsstueck_id, nutzer_id, {"favorit": favorit})
+    if neu is None:
+        raise NichtGefunden()
+    return _antwort(neu)
+
+
 async def alle(nutzer_id: str) -> list[KleidungsstueckAntwort]:
     return [_antwort(k) for k in await repository.alle_des_nutzers(nutzer_id)]
 

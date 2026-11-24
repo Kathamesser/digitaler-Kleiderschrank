@@ -276,3 +276,23 @@ def test_bearbeiten_laesst_status_verliehen_unveraendert(client):
     asyncio.run(repository.aendern(alt["id"], TEST_NUTZER_ID, {"status": "verliehen"}))
     k = aendern(client, alt["id"], name="Neu", status="im_schrank").json()
     assert (k["name"], k["status"]) == ("Neu", "verliehen")
+
+
+# ---------- Favorit-Herz: PATCH /api/kleidung/{id}/favorit (Wunsch Katha, 24.11.2026) ----------
+
+
+def test_favorit_setzen_aendert_nur_das_herz(client):
+    kategorie = str(ObjectId())
+    alt = hochladen(client, name="Shirt", farbe="rot", kategorie_ids=[kategorie]).json()
+    antwort = client.patch(f"/api/kleidung/{alt['id']}/favorit", json={"favorit": True})
+    assert antwort.status_code == 200
+    k = antwort.json()
+    assert k["favorit"] is True
+    assert (k["name"], k["farbe"], k["kategorie_ids"]) == ("Shirt", "rot", [kategorie])
+    assert client.patch(f"/api/kleidung/{alt['id']}/favorit", json={"favorit": False}).json()["favorit"] is False
+
+
+def test_favorit_setzen_prueft_eingaben(client):
+    alt = hochladen(client).json()
+    assert client.patch(f"/api/kleidung/{alt['id']}/favorit", json={}).status_code == 422
+    assert client.patch(f"/api/kleidung/{ObjectId()}/favorit", json={"favorit": True}).status_code == 404

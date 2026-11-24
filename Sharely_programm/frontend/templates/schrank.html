@@ -49,15 +49,17 @@
       <button type="button" class="symbolknopf" id="filter-schliessen" aria-label="Filter schließen" data-symbol="schliessen"></button>
     </header>
     <div class="blatt-inhalt">
-      <label class="schalter-kasten">
+      <!-- for=… ist nötig: Ohne verweist das Label auf das erste klickbare Element darin, also den „i“-Knopf,
+           und ein Klick auf den Balken klappte nur die Erklärung auf, statt den Schalter umzulegen (Fehler 24.11.2026) -->
+      <label class="schalter-kasten" for="filter-favorit">
         <span data-symbol="herz"></span>
         <span class="text"><strong>Favorit</strong><button type="button" class="info-knopf" aria-expanded="false" aria-label="Was bedeutet Favorit?" data-symbol="info"></button><span class="erklaerung"><span class="strich"> – </span>nur Lieblingsstücke anzeigen</span></span>
-        <span class="schalter"><input type="checkbox" name="favorit" value="true"><span class="bahn"></span></span>
+        <span class="schalter"><input type="checkbox" id="filter-favorit" name="favorit" value="true"><span class="bahn"></span></span>
       </label>
-      <label class="schalter-kasten">
+      <label class="schalter-kasten" for="filter-privat">
         <span data-symbol="schloss"></span>
         <span class="text"><strong>Privat</strong><button type="button" class="info-knopf" aria-expanded="false" aria-label="Was bedeutet Privat?" data-symbol="info"></button><span class="erklaerung"><span class="strich"> – </span>nur Teile anzeigen, die Freunde nicht sehen</span></span>
-        <span class="schalter"><input type="checkbox" name="privat" value="true"><span class="bahn"></span></span>
+        <span class="schalter"><input type="checkbox" id="filter-privat" name="privat" value="true"><span class="bahn"></span></span>
       </label>
 
       <div class="farb-zeile">
@@ -253,9 +255,34 @@
     const treffer = alle.filter((k) => passtZuFilter(k, f) && passtZurSuche(k));
     document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
     document.getElementById("filter-zeigen-kurz").textContent = anzahl ? `Anwenden (${anzahl})` : "Anwenden"; // Handy
-    raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k)));
+    raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k, { favoritUmschalten })));
     leer.hidden = !geladen || alle.length > 0;
     if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';
+  }
+
+  /** Herz auf einer Karte (Wunsch Katha, 24.11.2026): sofort umschalten, dann speichern; geht das schief, zurück. */
+  async function favoritUmschalten(k, herz) {
+    if (herz.dataset.speichert) return; // Doppelklick, solange noch gespeichert wird
+    const neu = !k.favorit;
+    herz.dataset.speichert = "1";
+    k.favorit = neu;
+    herzZeigen(herz, neu);
+    try {
+      const antwort = await api(`/kleidung/${encodeURIComponent(k.id)}/favorit`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ favorit: neu }),
+      });
+      if (!antwort.ok) throw new Error(fehlerText(await antwort.json()));
+      // Ist der Filter „Favorit“ an, verschwindet ein entfernter Favorit gleich aus der Liste
+      if (kriterien().favorit) zeichne();
+    } catch (fehler) {
+      k.favorit = !neu;
+      herzZeigen(herz, !neu);
+      zeigeMeldung(meldung, fehler.message, "fehler");
+    } finally {
+      delete herz.dataset.speichert;
+    }
   }
 
   zeichne();

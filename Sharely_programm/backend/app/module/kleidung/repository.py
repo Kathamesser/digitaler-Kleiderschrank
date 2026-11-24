@@ -52,13 +52,15 @@ async def finden(kleidungsstueck_id: str, nutzer_id: str) -> dict | None:
 
 
 async def aendern(kleidungsstueck_id: str, nutzer_id: str, daten: dict) -> dict | None:
-    """Felder eines Kleidungsstücks des Nutzers überschreiben; das geänderte
-    Kleidungsstück zurück, oder None, wenn es keins des Nutzers gibt."""
+    """Die übergebenen Felder eines Kleidungsstücks des Nutzers überschreiben (andere
+    bleiben, wie sie sind); das geänderte Kleidungsstück zurück, oder None, wenn es
+    keins des Nutzers gibt."""
     try:
         oid = ObjectId(kleidungsstueck_id)
     except InvalidId:
         return None
-    daten = {**daten, "kategorie_ids": [ObjectId(k) for k in daten.get("kategorie_ids", [])]}
+    if "kategorie_ids" in daten:  # nur umwandeln, wenn mitgeschickt (z. B. nicht beim Favorit-Herz)
+        daten = {**daten, "kategorie_ids": [ObjectId(k) for k in daten["kategorie_ids"]]}
     dokument = await _collection().find_one_and_update(
         {"_id": oid, "nutzer_id": ObjectId(nutzer_id)},
         {"$set": daten},
