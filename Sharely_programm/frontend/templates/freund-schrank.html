@@ -29,7 +29,9 @@
   <div class="chips">
     <button type="button" class="chip" id="alles">Alles</button>
     <button type="button" class="chip" id="nur-verfuegbare" aria-pressed="false">Nur verfügbare</button>
-    <button type="button" class="chip" disabled title="Kommt noch"><span data-symbol="filter"></span> Filter</button>
+    <button type="button" class="chip" id="filterknopf" aria-haspopup="dialog" aria-controls="filterblatt">
+      <span data-symbol="filter"></span> Filter <span class="zahl" id="filterzahl" hidden></span>
+    </button>
     <!-- Weg zur Garderobe des Freundes: auf dem Handy führt die Freundesliste direkt hierher (24.11.2026) -->
     <a class="chip chip-weiter" id="zur-garderobe"><span data-symbol="buegel"></span> Garderobe</a>
   </div>
@@ -39,6 +41,52 @@
     <div class="raster" id="raster"></div>
   </div>
 </main>
+
+<!-- Filter wie in schrank.html (24.11.2026), mit den Eigenschaften, die geteilte Teile eines Freundes haben.
+     Favorit, Privat, Preis und Kaufdatum gehören dem Besitzer und fehlen hier. Gleiche ids, damit die Handy-Regeln
+     aus stil.css (#filterblatt …) auch hier greifen. -->
+<dialog class="blatt" id="filterblatt" aria-labelledby="filtertitel">
+  <form id="filterformular" method="dialog">
+    <header class="blatt-kopf">
+      <h2 id="filtertitel"><span data-symbol="filter"></span>Kleidung filtern</h2>
+      <button type="button" class="symbolknopf" id="filter-schliessen" aria-label="Filter schließen" data-symbol="schliessen"></button>
+    </header>
+    <div class="blatt-inhalt">
+      <div class="farb-zeile">
+        <span class="titel">Farbe<small data-zaehler="farbe" data-leer="mehrere"></small></span>
+        <div class="farben" id="f-farbe"></div>
+      </div>
+
+      <div class="auswahl-spalten">
+        <div class="ganze-breite">
+          <div class="filter-titel"><span class="titel">Kleidungsart</span><small data-zaehler="kleidungsart" data-leer="eine Auswahl"></small></div>
+          <div class="auswahlliste" id="f-kleidungsart"></div>
+        </div>
+        <div class="ganze-breite">
+          <div class="filter-titel"><span class="titel">Kategorie</span><small data-zaehler="kategorie" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-kategorie"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Material</span><small data-zaehler="material" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-material"></div>
+        </div>
+        <div>
+          <div class="filter-titel"><span class="titel">Saison</span><small data-zaehler="saison" data-leer="mehrere"></small></div>
+          <div class="auswahlliste" id="f-saison"></div>
+        </div>
+      </div>
+
+      <div class="status-zeile">
+        <span class="titel">Verfügbarkeit</span>
+        <div class="pillen" id="f-verfuegbarkeit"></div>
+      </div>
+    </div>
+    <footer class="blatt-fuss">
+      <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
+      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Filter anwenden</span><span id="filter-zeigen-kurz">Anwenden</span></button>
+    </footer>
+  </form>
+</dialog>
 
 <dialog class="blatt" id="detail" aria-labelledby="d-titel">
   <header class="blatt-kopf">
@@ -109,19 +157,89 @@
     return k;
   }
 
-  function zeichne() {
+  // ---------- Filter-Fenster (wie in schrank.html) ----------
+
+  const blatt = document.getElementById("filterblatt");
+  const formular = document.getElementById("filterformular");
+  const filterknopf = document.getElementById("filterknopf");
+  const filterzahl = document.getElementById("filterzahl");
+  const LISTEN = ["farbe", "kategorie", "material", "saison", "verfuegbarkeit"];
+
+  farbkreise("f-farbe", "farbe", "checkbox");
+  pillen("f-kleidungsart", "kleidungsart", { alle: "Alle", ...KLEIDUNGSARTEN }, "radio");
+  formular.querySelector('[name="kleidungsart"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
+  // Geteilte Teile eines Freundes tragen in den Beispieldaten die Kategorie-Namen, deshalb hier schon filterbar
+  pillen("f-kategorie", "kategorie", Object.fromEntries(KATEGORIEN_VORGABE.map((k) => [k, k])), "checkbox");
+  pillen("f-material", "material", MATERIALIEN, "checkbox");
+  pillen("f-saison", "saison", SAISONS, "checkbox");
+  pillen("f-verfuegbarkeit", "verfuegbarkeit", VERFUEGBARKEIT, "checkbox");
+
+  function kriterien() {
+    const daten = new FormData(formular);
+    const f = { kleidungsart: daten.get("kleidungsart") || "alle" };
+    for (const name of LISTEN) f[name] = daten.getAll(name);
+    return f;
+  }
+
+  /** Innerhalb einer Eigenschaft reicht ein Treffer (oder), zwischen Eigenschaften müssen alle passen (und). */
+  function passtZuFilter(t, f) {
+    const eins = (auswahl, vorhanden) => !auswahl.length || auswahl.some((wert) => vorhanden.has(wert));
+    if (f.kleidungsart !== "alle" && t.kleidungsart !== f.kleidungsart) return false;
+    if (!eins(f.farbe, new Set([t.farbe]))) return false;
+    if (!eins(f.kategorie, new Set(t.kategorien))) return false;
+    if (!eins(f.material, new Set([t.material]))) return false;
+    // Ganzjährige Teile passen zu jeder Saison, Filter „Ganzjährig“ findet nur ganzjährige Teile
+    const saisons = new Set(t.saison.includes("ganzjaehrig") ? Object.keys(SAISONS) : t.saison);
+    if (!eins(f.saison, saisons)) return false;
+    if (!eins(f.verfuegbarkeit, new Set([t.verfuegbarkeit]))) return false;
+    return true;
+  }
+
+  const anzahlAktiv = (f) => LISTEN.filter((name) => f[name].length).length + (f.kleidungsart !== "alle");
+
+  function zaehlerSetzen(f) {
+    for (const el of formular.querySelectorAll("[data-zaehler]")) {
+      const name = el.dataset.zaehler;
+      const n = name === "kleidungsart" ? Number(f.kleidungsart !== "alle") : f[name].length;
+      el.textContent = n ? `${n} gewählt` : el.dataset.leer;
+    }
+  }
+
+  filterknopf.onclick = () => blatt.showModal();
+  document.getElementById("filter-schliessen").onclick = () => blatt.close();
+  blatt.onclick = (e) => { if (e.target === blatt) blatt.close(); }; // Klick neben das Fenster
+  formular.oninput = zeichne;
+  document.getElementById("filter-zuruecksetzen").onclick = () => { formular.reset(); zeichne(); };
+
+  function passtZurSuche(t) {
     const wort = suche.value.trim().toLowerCase();
+    if (!wort) return true;
+    const farbe = FARBEN.find((x) => x.wert === t.farbe);
+    return [t.name, KLEIDUNGSARTEN[t.kleidungsart], farbe && farbe.text, MATERIALIEN[t.material], ...t.kategorien]
+      .some((feld) => feld && feld.toLowerCase().includes(wort));
+  }
+
+  function zeichne() {
+    const f = kriterien();
+    const anzahl = anzahlAktiv(f);
+    filterzahl.textContent = anzahl;
+    filterzahl.hidden = !anzahl;
+    filterknopf.setAttribute("aria-label", anzahl ? `Filter, ${anzahl} aktiv` : "Filter");
+    zaehlerSetzen(f);
+    document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
+    document.getElementById("filter-zeigen-kurz").textContent = anzahl ? `Anwenden (${anzahl})` : "Anwenden"; // Handy
+
     const treffer = FREUND_TEILE_BEISPIEL.filter((t) =>
-      (!nurFrei || t.verfuegbarkeit === "verfuegbar")
-      && (!wort || [t.name, KLEIDUNGSARTEN[t.kleidungsart]].some((x) => x.toLowerCase().includes(wort))));
+      (!nurFrei || t.verfuegbarkeit === "verfuegbar") && passtZuFilter(t, f) && passtZurSuche(t));
     document.getElementById("raster").replaceChildren(...treffer.map(karte));
     if (!treffer.length) document.getElementById("raster").innerHTML = '<p class="leise">Nichts gefunden.</p>';
-    alles.classList.toggle("aktiv", !nurFrei);
+    alles.classList.toggle("aktiv", !nurFrei && anzahl === 0);
     nurVerfuegbare.classList.toggle("aktiv", nurFrei);
     nurVerfuegbare.setAttribute("aria-pressed", nurFrei);
   }
   suche.oninput = zeichne;
-  alles.onclick = () => { nurFrei = false; suche.value = ""; zeichne(); };
+  // „Alles“ = kein Filter, keine Suche
+  alles.onclick = () => { nurFrei = false; suche.value = ""; formular.reset(); zeichne(); };
   nurVerfuegbare.onclick = () => { nurFrei = !nurFrei; zeichne(); };
 
   // ---------- Detail-Fenster ----------
