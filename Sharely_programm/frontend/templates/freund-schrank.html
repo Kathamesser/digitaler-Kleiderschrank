@@ -30,6 +30,8 @@
     <button type="button" class="chip" id="alles">Alles</button>
     <button type="button" class="chip" id="nur-verfuegbare" aria-pressed="false">Nur verfügbare</button>
     <button type="button" class="chip" disabled title="Kommt noch"><span data-symbol="filter"></span> Filter</button>
+    <!-- Weg zur Garderobe des Freundes: auf dem Handy führt die Freundesliste direkt hierher (24.11.2026) -->
+    <a class="chip chip-weiter" id="zur-garderobe"><span data-symbol="buegel"></span> Garderobe</a>
   </div>
 
   <div class="inhalt-wachsen">
@@ -77,7 +79,11 @@
   fussleiste([
     { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
     { text: "Freunde", symbol: "freunde", href: "freunde.html", art: "knopf-gelb" },
+    { text: `${wessen} Garderobe`, symbol: "buegel", href: `freund-garderobe.html?freund=${freund.id}` },
   ]);
+  const zurGarderobe = document.getElementById("zur-garderobe");
+  zurGarderobe.href = `freund-garderobe.html?freund=${freund.id}`;
+  zurGarderobe.setAttribute("aria-label", `${wessen} Garderobe ansehen`);
 
   document.getElementById("f-initiale").className = `initiale ${freund.ton}`;
   document.getElementById("f-initiale").textContent = freund.name[0];
