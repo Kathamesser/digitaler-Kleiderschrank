@@ -64,6 +64,8 @@ Einstellungen (in `backend/.env` bzw. als Railway-Variablen):
 
 Zugangsdaten nie ins Repo oder in Chats. Auf Railway setzt man sie als Verweise auf den Bucket (z. B. `BUCKET_NAME=${{Bucket.BUCKET}}`, „Bucket“ = Name des Buckets im Projekt); lokal kopiert jeder die Werte aus Railway in seine `.env`.
 
+**Speicherlimit:** Jeder Nutzer darf für seine Bilder zusammen höchstens `MAX_SPEICHER_MB_PRO_NUTZER` belegen (Vorgabe 1024 = 1 GB, Vorschlag Christian 24.11.2026). Gezählt wird alles in seinem Ordner `<nutzer_id>/`; ein ersetztes Profilbild zählt dabei nicht doppelt. Wird es überschritten, antwortet die API mit 507 und „Dein Speicher für Bilder ist voll (höchstens 1 GB).“
+
 **Einmalig umziehen:** Vorhandene Bilder bringt `python -m app.bilder_umziehen` in den Bucket (ohne `--ausfuehren` nur Anzeige). Jeder einmal auf seinem Rechner, dazu einmal auf Railway mit `--quelle /data/uploads` (Railway-Konsole des Dienstes bzw. `railway ssh`). Das Skript löscht nichts; den Ordner `uploads/` und danach das Volume räumt ihr selbst auf.
 
 ## Aufbau

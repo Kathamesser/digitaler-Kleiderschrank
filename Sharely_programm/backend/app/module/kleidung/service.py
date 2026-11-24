@@ -20,6 +20,24 @@ class BildZuGross(Exception):
     """Datei ist größer als max_bild_mb."""
 
 
+class SpeicherVoll(Exception):
+    """Mit dem neuen Bild wäre der Speicher des Nutzers (max_speicher_mb_pro_nutzer) überschritten."""
+
+
+def speichergrenze_text() -> str:
+    """Für Meldungen: „1 GB“ statt „1024 MB“."""
+    mb = get_settings().max_speicher_mb_pro_nutzer
+    return f"{mb // 1024} GB" if mb % 1024 == 0 else f"{mb} MB"
+
+
+async def platz_pruefen(nutzer_id: str, neu: int, frei_wird: int = 0) -> None:
+    """Speicherlimit je Nutzer (1 GB, Vorschlag Christian 24.11.2026). `frei_wird`: Größe
+    eines Bildes, das durch das neue ersetzt wird (z. B. altes Profilbild)."""
+    grenze = get_settings().max_speicher_mb_pro_nutzer * 1024 * 1024
+    if await bildspeicher.belegt(nutzer_id) - frei_wird + neu > grenze:
+        raise SpeicherVoll()
+
+
 class NichtGefunden(Exception):
     """Kleidungsstück gibt es nicht oder es gehört einem anderen Nutzer."""
 
@@ -60,6 +78,7 @@ async def digitalisieren(
     if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
         raise BildZuGross()
     endung = bild_format(bild)
+    await platz_pruefen(nutzer_id, len(bild))
 
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"

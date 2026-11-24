@@ -63,6 +63,11 @@ def _ordner_loeschen(schluessel: str) -> None:
     _datei(schluessel).unlink(missing_ok=True)
 
 
+def _ordner_belegt(praefix: str) -> int:
+    ordner = _datei(praefix)
+    return sum(d.stat().st_size for d in ordner.rglob("*") if d.is_file()) if ordner.is_dir() else 0
+
+
 # ------------------------------------------------------------------ Bucket
 
 @lru_cache
@@ -113,6 +118,12 @@ def _bucket_loeschen(schluessel: str) -> None:
     client.delete_object(Bucket=name, Key=_pruefen(schluessel))  # fehlt es schon, ist das kein Fehler
 
 
+def _bucket_belegt(praefix: str) -> int:
+    client, name = _bucket()
+    seiten = client.get_paginator("list_objects_v2").paginate(Bucket=name, Prefix=_pruefen(praefix) + "/")
+    return sum(o["Size"] for seite in seiten for o in seite.get("Contents", []))
+
+
 # ------------------------------------------------------------------ öffentliche Funktionen
 
 def _art() -> str:
@@ -131,6 +142,12 @@ async def laden(schluessel: str) -> bytes:
     """Bildinhalt; wirft BildFehlt, wenn es kein Bild unter dem Schlüssel gibt."""
     funktion = _bucket_laden if _art() == "bucket" else _ordner_laden
     return await asyncio.to_thread(funktion, schluessel)
+
+
+async def belegt(nutzer_id: str) -> int:
+    """Wie viele Bytes die Bilder eines Nutzers zusammen belegen (sein Ordner <nutzer_id>/)."""
+    funktion = _bucket_belegt if _art() == "bucket" else _ordner_belegt
+    return await asyncio.to_thread(funktion, nutzer_id)
 
 
 async def loeschen(schluessel: str) -> None:

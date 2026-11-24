@@ -153,3 +153,51 @@ def test_umzug_vom_ordner_in_den_bucket(bucket, tmp_path):
     umziehen(tmp_path, schluessel, ausfuehren=True)
     assert sorted(_alle_schluessel(bucket)) == ["n1/hier.png", "n1/schon.png"]
     assert (tmp_path / "n1" / "hier.png").is_file()  # Quelle bleibt unangetastet
+
+
+def test_belegt_zaehlt_nur_den_eigenen_ordner(bucket):
+    asyncio.run(bildspeicher.speichern("n1/a.png", PNG))
+    asyncio.run(bildspeicher.speichern("n1/b.png", PNG))
+    asyncio.run(bildspeicher.speichern("n10/c.png", PNG))  # anderer Nutzer mit ähnlicher ID
+    assert asyncio.run(bildspeicher.belegt("n1")) == 2 * len(PNG)
+    assert asyncio.run(bildspeicher.belegt("leer")) == 0
+
+
+def test_speicherlimit_je_nutzer(bucket, monkeypatch, als_test_nutzer):
+    """1 GB je Nutzer; hier auf 1 MB verkleinert. Ein Bild, das das Limit sprengen
+    würde, wird abgelehnt und nicht gespeichert."""
+    from app.core.sicherheit import TEST_NUTZER_ID
+
+    monkeypatch.setattr(get_settings(), "max_speicher_mb_pro_nutzer", 1)
+    bucket.put_object(Bucket=BUCKET, Key=f"{TEST_NUTZER_ID}/alt.png", Body=b"\x00" * (1024 * 1024 - 50))
+
+    async def anlegen(daten):
+        return {**daten, "id": str(ObjectId())}
+
+    monkeypatch.setattr(kleidung_repository, "anlegen", anlegen)
+    with TestClient(app) as client:
+        antwort = client.post("/api/kleidung", data={"kleidungsart": "tops"}, files={"bild": ("s.png", PNG)})
+    assert antwort.status_code == 507
+    assert antwort.json()["detail"] == "Dein Speicher für Bilder ist voll (höchstens 1 MB)."
+    assert _alle_schluessel(bucket) == [f"{TEST_NUTZER_ID}/alt.png"]
+
+
+def test_profilbild_ersetzen_zaehlt_altes_nicht_doppelt(bucket, monkeypatch, als_test_nutzer):
+    from app.core.sicherheit import TEST_NUTZER_ID
+
+    speicher: dict[str, dict] = {}
+
+    async def finden(nutzer_id):
+        return speicher.get(nutzer_id)
+
+    async def profilbild_setzen(nutzer_id, bild_pfad, geaendert_am):
+        speicher.setdefault(nutzer_id, {}).update(profilbild_pfad=bild_pfad)
+
+    monkeypatch.setattr(nutzer_repository, "finden", finden)
+    monkeypatch.setattr(nutzer_repository, "profilbild_setzen", profilbild_setzen)
+    groß = JPEG + b"\x00" * (600 * 1024)  # zwei davon passen nicht in 1 MB
+    monkeypatch.setattr(get_settings(), "max_speicher_mb_pro_nutzer", 1)
+    with TestClient(app) as client:
+        assert client.put("/api/nutzer/ich/profilbild", files={"bild": ("a.jpg", groß)}).status_code == 200
+        assert client.put("/api/nutzer/ich/profilbild", files={"bild": ("b.jpg", groß)}).status_code == 200
+    assert len(_alle_schluessel(bucket)) == 1

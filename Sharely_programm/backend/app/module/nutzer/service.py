@@ -15,7 +15,7 @@ from app.core import bildspeicher
 from app.core.config import get_settings
 from app.core.sicherheit import passwort_hashen, passwort_pruefen
 # Bildprüfung wie beim Kleidungsstück, über dessen service.py (Regel in backend/README.md)
-from app.module.kleidung.service import BildUngueltig, BildZuGross, bild_format
+from app.module.kleidung.service import BildUngueltig, BildZuGross, SpeicherVoll, bild_format, platz_pruefen, speichergrenze_text
 from app.module.nutzer import repository
 from app.module.nutzer.schemas import ProfilAntwort, RegistrierenAnfrage
 
@@ -110,6 +110,13 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
     endung = bild_format(bild)
 
     alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
+    frei_wird = 0
+    if alt:
+        try:
+            frei_wird = len(await bildspeicher.laden(alt))
+        except bildspeicher.BildFehlt:
+            pass
+    await platz_pruefen(nutzer_id, len(bild), frei_wird)
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/profilbild_{uuid.uuid4().hex}.{endung}"
     await bildspeicher.speichern(bild_pfad, bild)

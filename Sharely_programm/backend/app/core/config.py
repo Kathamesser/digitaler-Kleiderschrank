@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     bucket_pfad_stil: bool = False
     # Größte erlaubte Bilddatei beim Hochladen (User Story 8)
     max_bild_mb: int = 10
+    # Speicher für Bilder je Nutzer (Kleidungsfotos + Profilbild), Vorschlag Christian 24.11.2026
+    max_speicher_mb_pro_nutzer: int = 1024
     # Adressen, von denen das Frontend im Browser zugreifen darf (CORS)
     frontend_urls: list[str] = ["http://localhost:5173"]
     # Höchstdauer einer Anmeldung (danach löscht MongoDB die Sitzung). Das Cookie selbst
