@@ -6,6 +6,10 @@ Module (z. B. kleidung/schemas.py) sollen ihre Enums daraus bauen, damit Code
 und Datenbank nie auseinanderlaufen.
 
 Schlüssel: klein, ohne Umlaute, mit `_` getrennt. Anzeigenamen stehen daneben.
+
+Einfach erklärt: Die Listen sind „Wörterbücher“ in der Form {"schluessel": "Anzeigename"}.
+Gespeichert wird immer der Schlüssel (z. B. "roecke"), angezeigt der Name (z. B. "Röcke").
+So bleibt die Datenbank stabil, auch wenn sich mal ein Anzeigename ändert.
 """
 
 # Kleidungsart: Pflicht-Einordnung eines Kleidungsstücks („eine Auswahl“), in

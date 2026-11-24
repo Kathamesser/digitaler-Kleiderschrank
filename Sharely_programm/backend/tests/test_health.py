@@ -1,3 +1,5 @@
+"""Einfachster Test: Antwortet das Backend auf /api/health mit „ok“? (Begriffe: siehe conftest.py)"""
+
 from fastapi.testclient import TestClient
 
 from app.main import app
