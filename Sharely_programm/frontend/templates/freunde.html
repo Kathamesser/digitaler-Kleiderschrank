@@ -143,7 +143,12 @@
       knopf.setAttribute("aria-current", p === auswahl);
       knopf.append(initiale(p), p.name);
       knopf.insertAdjacentHTML("beforeend", `<span class="mehr">${SYMBOL.mehr}</span>`);
-      knopf.onclick = () => { auswahl = p; zeigeFreunde(); zeigeFreund(); };
+      knopf.onclick = () => {
+        // Stehen Liste und Freund-Ansicht untereinander (Handy, Tablet, schmales Fenster), direkt in den
+        // Kleiderschrank des Freundes statt die Ansicht unten anzuzeigen (Wunsch Katha, 24.11.2026)
+        if (untereinander()) { location.href = schrankAdresse(p); return; }
+        auswahl = p; zeigeFreunde(); zeigeFreund();
+      };
       li.append(knopf);
       return li;
     }));
@@ -161,11 +166,19 @@
     document.getElementById("f-outfits").textContent = p.outfits;
     document.getElementById("f-geliehen").textContent = p.geliehen;
     document.getElementById("f-verliehen").textContent = p.verliehen;
-    // Neu angenommene Freunde haben in den Beispieldaten keine eigene Seite, dann die Beispiele von Lena
-    const id = p.id || FREUNDE_BEISPIEL[0].id;
-    document.getElementById("f-schrank").href = `freund-schrank.html?freund=${id}`;
-    document.getElementById("f-garderobe").href = `freund-garderobe.html?freund=${id}`;
+    document.getElementById("f-schrank").href = schrankAdresse(p);
+    document.getElementById("f-garderobe").href = `freund-garderobe.html?freund=${freundId(p)}`;
   }
+
+  // Neu angenommene Freunde haben in den Beispieldaten keine eigene Seite, dann die Beispiele von Lena
+  const freundId = (p) => p.id || FREUNDE_BEISPIEL[0].id;
+  const schrankAdresse = (p) => `freund-schrank.html?freund=${freundId(p)}`;
+
+  // Untereinander = der Bereich ist schmaler als beide Spalten (flex-basis 590 + 560 px und 34 px Abstand
+  // in stil.css bei .freunde-bereich). Dann wird die Freund-Ansicht unten ausgeblendet.
+  const bereich = document.querySelector(".freunde-bereich");
+  const untereinander = () => bereich.clientWidth < 590 + 560 + 34;
+  new ResizeObserver(() => bereich.classList.toggle("untereinander", untereinander())).observe(bereich);
 
   // ---------- Freund hinzufügen: Suche über den genauen Nutzernamen (ERM, Abgleich mit den Mockups) ----------
 
