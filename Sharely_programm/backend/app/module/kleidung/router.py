@@ -128,6 +128,11 @@ async def kleidungsstueck_aendern(
             status.HTTP_413_CONTENT_TOO_LARGE,
             f"Das Bild ist zu groß. Erlaubt sind höchstens {get_settings().max_bild_mb} MB.",
         )
+    except service.SpeicherVoll:
+        raise HTTPException(
+            status.HTTP_507_INSUFFICIENT_STORAGE,
+            f"Dein Speicher für Bilder ist voll (höchstens {service.speichergrenze_text()}).",
+        )
     except service.BildUngueltig:
         raise HTTPException(
             status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,

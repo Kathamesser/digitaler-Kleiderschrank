@@ -66,35 +66,25 @@ def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
     )
 
 
-async def digitalisieren(
-    nutzer_id: str,
-    angaben: KleidungsstueckNeu,
-    bild: bytes,
-) -> KleidungsstueckAntwort:
-    """User Story 8: Foto prüfen, im Bildspeicher (app/core/bildspeicher.py) ablegen und das
-    Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
-    Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
-    verleihen."""
+async def _bild_speichern(nutzer_id: str, bild: bytes, frei_wird: int = 0) -> str:
+    """Bild prüfen (Größe, Format, Speicherlimit) und im Bildspeicher
+    (app/core/bildspeicher.py) ablegen; liefert den Schlüssel `<nutzer_id>/<zufall>.<endung>`.
+    `frei_wird`: Größe eines Bildes, das durch das neue ersetzt wird."""
     if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
         raise BildZuGross()
     endung = bild_format(bild)
-    await platz_pruefen(nutzer_id, len(bild))
-
+    await platz_pruefen(nutzer_id, len(bild), frei_wird)
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
     await bildspeicher.speichern(bild_pfad, bild)
-def _bild_speichern(nutzer_id: str, bild: bytes) -> str:
-    """Bild prüfen und im Upload-Ordner des Nutzers ablegen; liefert den Pfad
-    relativ zum Upload-Ordner."""
-    if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
-        raise BildZuGross()
-    endung = bild_format(bild)
-    # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
-    bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
-    datei = _upload_ordner() / bild_pfad
-    datei.parent.mkdir(parents=True, exist_ok=True)
-    datei.write_bytes(bild)
     return bild_pfad
+
+
+async def _groesse(schluessel: str) -> int:
+    try:
+        return len(await bildspeicher.laden(schluessel))
+    except bildspeicher.BildFehlt:
+        return 0
 
 
 def _fuer_datenbank(angaben: KleidungsstueckNeu) -> dict:
@@ -110,12 +100,11 @@ async def digitalisieren(
     angaben: KleidungsstueckNeu,
     bild: bytes,
 ) -> KleidungsstueckAntwort:
-    """User Story 8: Foto prüfen, im Upload-Ordner des Nutzers ablegen und das
+    """User Story 8: Foto prüfen, im Bildspeicher (app/core/bildspeicher.py) ablegen und das
     Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
     Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
     verleihen."""
-    bild_pfad = _bild_speichern(nutzer_id, bild)
-    datei = _upload_ordner() / bild_pfad
+    bild_pfad = await _bild_speichern(nutzer_id, bild)
     daten = _fuer_datenbank(angaben)
     try:
         kleidungsstueck = await repository.anlegen({
@@ -151,22 +140,24 @@ async def aendern(
     daten = _fuer_datenbank(angaben)
     if alt["status"] == "verliehen" or alt.get("leihvorgang_id"):
         daten["status"] = alt["status"]
-    neuer_pfad = _bild_speichern(nutzer_id, bild) if bild is not None else None
-    if neuer_pfad:
+    neuer_pfad = None
+    if bild is not None:
+        # Das alte Foto wird ersetzt und zählt beim Speicherlimit nicht doppelt
+        neuer_pfad = await _bild_speichern(nutzer_id, bild, frei_wird=await _groesse(alter_pfad))
         daten["bild_pfad"] = neuer_pfad
 
     try:
         neu = await repository.aendern(kleidungsstueck_id, nutzer_id, daten)
     except Exception:
         if neuer_pfad:
-            (_upload_ordner() / neuer_pfad).unlink(missing_ok=True)
+            await bildspeicher.loeschen(neuer_pfad)
         raise
     if neu is None:  # in der Zwischenzeit gelöscht
         if neuer_pfad:
-            (_upload_ordner() / neuer_pfad).unlink(missing_ok=True)
+            await bildspeicher.loeschen(neuer_pfad)
         raise NichtGefunden()
     if neuer_pfad:
-        (_upload_ordner() / alter_pfad).unlink(missing_ok=True)
+        await bildspeicher.loeschen(alter_pfad)
     return _antwort(neu)
 
 
