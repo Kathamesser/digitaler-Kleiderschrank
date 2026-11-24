@@ -324,6 +324,8 @@ Neun HTML-Seiten ohne Framework nach den Wireframes in `Sharely_programm/fronten
 - **Regel bei Widersprüchen:** Wo ein Mockup vom ERM abweicht, gilt das ERM (Entscheidung Katha, 27.10.2026). Beispiele: Die Farbe „Mint“ gibt es nicht, Outfits zeigen Kategorien statt Anlass, das Outfit-Detail zeigt zusätzlich „Privat“.
 - **Beispieldaten an einer Stelle:** Was noch kein Backend hat (Freunde, Outfits, Verleihen, Neuigkeiten), läuft mit Beispieldaten aus `static/js/beispieldaten.js`, die beim Anbinden der Module in einem Schritt entfallen. Die Seiten speichern davon nichts.
 
+**Filter „Mein Kleiderschrank“ auf dem Handy (24.11.2026, Katha):** Abweichend vom Handy-Mockup stehen Kleidungsart und Kategorie untereinander über die ganze Breite, ohne eigene Scrollleiste und ohne seitliches Scrollen, damit alles auf einen Blick lesbar ist. Die vier Status-Optionen brauchen nur zwei Zeilen: „Eigenes | Wunschartikel“, darunter „Geliehen | Verliehen“. Kaufdatum und Preis stehen untereinander, weil sich die Felder nebeneinander überlappten. Desktop und Tablet bleiben unverändert (nur `@media (max-width: 767px)` in `stil.css`), geprüft per Screenshot bei 360 und 412 px Breite.
+
 Übersicht aller Seiten: `Sharely_programm/frontend/templates/README.md`.
 
 ### 6.4 Avatar

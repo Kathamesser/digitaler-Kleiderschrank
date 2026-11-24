@@ -681,6 +681,23 @@ a.menue-zeile { text-decoration: none; }
   .von-bis { grid-template-columns: auto 1fr; }
   .raster { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
   .fussleiste .knopf, .fussleiste .knopf-rand, .fussleiste .knopf-dunkel { min-width: 0; flex: 1; }
+  /* Filter „Mein Kleiderschrank“ (Wunsch Katha, 24.11.2026): Kleidungsart und Kategorie untereinander
+     über die ganze Breite und ohne eigene Scrollleiste, damit alles auf einen Blick lesbar ist;
+     in keiner Liste mehr seitlich scrollen */
+  .auswahl-spalten { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; }
+  .auswahl-spalten > .ganze-breite { grid-column: 1 / -1; }
+  .auswahlliste { max-height: none; overflow-x: hidden; }
+  .auswahlliste label { padding: 10px 8px; gap: 8px; font-size: .95rem; overflow-wrap: break-word; }
+  /* Kaufdatum und Preis untereinander, nebeneinander überlappten die Felder */
+  #filterblatt .zeile { grid-template-columns: minmax(0, 1fr); }
+  /* Status in zwei Zeilen: Eigenes | Wunschartikel, darunter Geliehen | Verliehen */
+  #filterblatt .status-zeile { display: block; }
+  #filterblatt .status-zeile .titel { display: block; margin-bottom: 12px; }
+  #f-status { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  #f-status label:has([value="wunsch"]) { order: 1; }
+  #f-status label:has([value="geliehen"]) { order: 2; }
+  #f-status label:has([value="verliehen"]) { order: 3; }
+  #f-status span { width: 100%; justify-content: center; padding: 9px 10px; white-space: nowrap; }
 }
 
 /* ---------- Handy und Tablet nach den Mockups (docs/mockups/tablet/, docs/mockups/handy/) ---------- */
