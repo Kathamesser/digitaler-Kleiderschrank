@@ -113,7 +113,8 @@ async def profilbild(nutzer_id: Nutzer):
     sehen dürfen, regelt später das Modul freunde."""
     try:
         daten, medientyp = await service.profilbild(nutzer_id)
-        # Die Adresse enthält ?v=<Bildname>, ein neues Bild bekommt also eine neue Adresse
-        return Response(daten, media_type=medientyp, headers={"Cache-Control": "private, max-age=3600"})
+        # Kein Zwischenspeichern im Browser: Bilder kommen immer frisch vom Server (Entscheidung
+        # Christian, 24.11.2026), damit nie ein gelöschtes oder ersetztes Foto angezeigt wird
+        return Response(daten, media_type=medientyp, headers={"Cache-Control": "no-store"})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Kein Profilbild vorhanden.")
