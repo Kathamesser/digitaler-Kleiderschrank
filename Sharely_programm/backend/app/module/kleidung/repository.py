@@ -76,6 +76,18 @@ async def aendern(kleidungsstueck_id: str, nutzer_id: str, daten: dict) -> dict 
     return _als_dict(dokument) if dokument else None
 
 
+async def loeschen(kleidungsstueck_id: str, nutzer_id: str) -> bool:
+    """Ein Kleidungsstück des Nutzers aus der Datenbank löschen.
+    Liefert True, wenn wirklich etwas gelöscht wurde, sonst False (gibt es nicht oder gehört
+    jemand anderem). Auch hier steht die nutzer_id in der Suche, damit niemand fremde Teile löscht."""
+    try:
+        oid = ObjectId(kleidungsstueck_id)
+    except InvalidId:
+        return False
+    ergebnis = await _collection().delete_one({"_id": oid, "nutzer_id": ObjectId(nutzer_id)})
+    return ergebnis.deleted_count == 1
+
+
 async def alle_des_nutzers(nutzer_id: str) -> list[dict]:
     """Alle Kleidungsstücke des Nutzers, neueste zuerst."""
     zeiger = _collection().find({"nutzer_id": ObjectId(nutzer_id)}).sort("erstellt_am", -1)

@@ -11,10 +11,11 @@ Adressen in dieser Datei (alle mit /api/kleidung davor):
 - POST   ""                 neues Kleidungsstück mit Foto anlegen
 - PUT    "/{id}"            Kleidungsstück bearbeiten
 - PATCH  "/{id}/favorit"    nur das Herz (Favorit) umschalten
+- DELETE "/{id}"            Kleidungsstück samt Foto löschen
 - GET    ""                 alle eigenen Kleidungsstücke
 - GET    "/{id}"            ein Kleidungsstück
 - GET    "/{id}/bild"       das Foto dazu
-POST = anlegen, PUT = komplett ersetzen, PATCH = einen Teil ändern, GET = abrufen.
+POST = anlegen, PUT = komplett ersetzen, PATCH = einen Teil ändern, GET = abrufen, DELETE = löschen.
 „{id}“ ist ein Platzhalter für die Kennung des Kleidungsstücks.
 """
 
@@ -171,6 +172,21 @@ async def favorit_setzen(
         return await service.favorit_setzen(kleidungsstueck_id, nutzer_id, anfrage.favorit)
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Kleidungsstück nicht gefunden.")
+
+
+@router.delete("/{kleidungsstueck_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def kleidungsstueck_loeschen(kleidungsstueck_id: str, nutzer_id: Nutzer) -> None:
+    """Kleidungsstück samt Foto löschen. Antwort 204 = gelöscht (ohne Inhalt),
+    404 = gibt es nicht bzw. gehört jemand anderem, 409 = gerade verliehen, erst zurückgeben."""
+    try:
+        await service.loeschen(kleidungsstueck_id, nutzer_id)
+    except service.NichtGefunden:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Kleidungsstück nicht gefunden.")
+    except service.GeradeVerliehen:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "Das Teil ist gerade verliehen. Du kannst es löschen, sobald es zurück ist.",
+        )
 
 
 @router.get("")

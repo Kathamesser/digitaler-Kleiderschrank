@@ -51,6 +51,10 @@ class NichtGefunden(Exception):
     """Kleidungsstück gibt es nicht oder es gehört einem anderen Nutzer."""
 
 
+class GeradeVerliehen(Exception):
+    """Das Teil hängt an einem laufenden Leihvorgang und darf deshalb nicht gelöscht werden."""
+
+
 def bild_format(daten: bytes) -> str:
     """Erkennt das Bildformat am Dateianfang und liefert die Dateiendung.
 
@@ -189,6 +193,24 @@ async def favorit_setzen(kleidungsstueck_id: str, nutzer_id: str, favorit: bool)
     if neu is None:
         raise NichtGefunden()
     return _antwort(neu)
+
+
+async def loeschen(kleidungsstueck_id: str, nutzer_id: str) -> None:
+    """Kleidungsstück löschen (Wunsch Katha, 24.11.2026): erst den Eintrag in der Datenbank,
+    dann das Foto im Bildspeicher (Datenschutz: keine verwaisten Bilder).
+
+    Nicht erlaubt bei Teilen, die gerade verliehen oder über einen Leihvorgang geliehen sind:
+    Sonst zeigte der Leihvorgang auf ein Teil, das es nicht mehr gibt. Erst zurückgeben, dann löschen."""
+    # Gibt es das Teil, und gehört es diesem Nutzer?
+    teil = await repository.finden(kleidungsstueck_id, nutzer_id)
+    if teil is None:
+        raise NichtGefunden()
+    if teil["status"] == "verliehen" or teil.get("leihvorgang_id"):
+        raise GeradeVerliehen()
+    # Zuerst der Eintrag: Klappt das nicht, bleibt das Foto erhalten und nichts ist halb gelöscht
+    if not await repository.loeschen(kleidungsstueck_id, nutzer_id):
+        raise NichtGefunden()  # in der Zwischenzeit schon gelöscht
+    await bildspeicher.loeschen(teil["bild_pfad"])
 
 
 async def alle(nutzer_id: str) -> list[KleidungsstueckAntwort]:

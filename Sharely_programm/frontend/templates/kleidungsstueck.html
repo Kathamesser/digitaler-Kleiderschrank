@@ -2,7 +2,8 @@
 <!-- Mockup „Desktop · Kleidungsstück – Detailansicht (Overlay)“. Daten live aus GET /api/kleidung/{id}.
      Verleihen/Verschenken öffnet das Fenster aus dem Mockup „Anfrage stellen – Leihen / Verschenken (Overlay)“ mit Beispiel-Freunden.
      „Bearbeiten“ führt zu kleidung-hochladen.html?id=… (PUT /api/kleidung/{id}, 24.11.2026).
-     Löschen, Favorit umschalten, Verleihen und Anprobieren haben noch kein Backend. -->
+     „Löschen“ nutzt DELETE /api/kleidung/{id} (24.11.2026).
+     Favorit umschalten, Verleihen und Anprobieren haben hier noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -47,7 +48,7 @@
           <button type="button" class="knopf-rand gruen" id="verleihen"><span data-symbol="senden"></span> Verleihen / Verschenken</button>
           <a class="knopf" id="bearbeiten"><span data-symbol="stift"></span> Bearbeiten</a>
         </div>
-        <button class="knopf-gefahr breit" style="margin-top: 18px" disabled title="Kommt noch: Löschen-Endpunkt fehlt"><span data-symbol="muell"></span> Löschen</button>
+        <button type="button" class="knopf-gefahr breit" id="loeschen" style="margin-top: 18px"><span data-symbol="muell"></span> Löschen</button>
       </div>
     </div>
   </article>
@@ -197,7 +198,32 @@
     verleihen.onclick = () => anfrageOeffnen(k);
     document.getElementById("bearbeiten").href = `kleidung-hochladen.html?id=${encodeURIComponent(k.id)}`;
 
+    // Löschen (Wunsch Katha, 24.11.2026): verliehene Teile nicht (das Backend lehnt es ebenfalls ab)
+    const loeschen = document.getElementById("loeschen");
+    loeschen.disabled = k.status === "verliehen" || Boolean(k.leihvorgang_id);
+    if (loeschen.disabled) loeschen.title = "Geht erst, wenn das Teil zurück ist";
+    loeschen.onclick = () => teilLoeschen(k);
+
     document.getElementById("inhalt").hidden = false;
+  }
+
+  // Teil löschen: erst nachfragen (confirm zeigt ein Fenster mit OK/Abbrechen), dann im Backend
+  // löschen lassen und zurück in die Schrank-Übersicht, wo die Bestätigung erscheint.
+  async function teilLoeschen(k) {
+    if (!confirm(`„${titelVon(k)}“ wirklich löschen? Das Foto wird ebenfalls gelöscht. Das lässt sich nicht rückgängig machen.`)) return;
+    const knopf = document.getElementById("loeschen");
+    // Knopf sperren, damit nicht doppelt gelöscht wird, solange die Antwort aussteht
+    knopf.disabled = true;
+    try {
+      const antwort = await api(`/kleidung/${encodeURIComponent(k.id)}`, { method: "DELETE" });
+      // 204 = gelöscht (ohne Inhalt); sonst steht im Inhalt eine Fehlermeldung (z. B. „gerade verliehen“)
+      if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(await antwort.json()), "fehler");
+      location.href = `schrank.html?geloescht=${encodeURIComponent(titelVon(k))}`;
+    } catch (fehler) {
+      zeigeMeldung(meldung, fehler.message, "fehler");
+    } finally {
+      knopf.disabled = false;
+    }
   }
 
   // ---------- Fenster „Anfrage senden“ (noch ohne Backend: Modul verleihen fehlt) ----------

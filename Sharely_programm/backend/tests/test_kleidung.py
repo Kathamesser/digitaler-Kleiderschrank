@@ -46,6 +46,14 @@ def client(monkeypatch, tmp_path, als_test_nutzer):
         eintrag.update(daten)
         return eintrag
 
+    async def loeschen(kleidungsstueck_id, nutzer_id):
+        # wie die echte Datenbank: nur eigene Teile, True wenn etwas gelöscht wurde
+        if await finden(kleidungsstueck_id, nutzer_id) is None:
+            return False
+        del speicher[kleidungsstueck_id]
+        return True
+
+    monkeypatch.setattr(repository, "loeschen", loeschen)
     monkeypatch.setattr(repository, "aendern", aendern)
     monkeypatch.setattr(repository, "anlegen", anlegen)
     monkeypatch.setattr(repository, "finden", finden)
@@ -296,3 +304,34 @@ def test_favorit_setzen_prueft_eingaben(client):
     alt = hochladen(client).json()
     assert client.patch(f"/api/kleidung/{alt['id']}/favorit", json={}).status_code == 422
     assert client.patch(f"/api/kleidung/{ObjectId()}/favorit", json={"favorit": True}).status_code == 404
+
+
+# ---------- Löschen: DELETE /api/kleidung/{id} (Wunsch Katha, 24.11.2026) ----------
+
+
+def test_loeschen_entfernt_teil_und_foto(client, tmp_path):
+    k = hochladen(client).json()
+    assert len(list(tmp_path.rglob("*.png"))) == 1
+    antwort = client.delete(f"/api/kleidung/{k['id']}")
+    assert antwort.status_code == 204
+    # danach ist das Teil weg: nicht mehr abrufbar, nicht mehr in der Liste, Foto gelöscht
+    assert client.get(f"/api/kleidung/{k['id']}").status_code == 404
+    assert client.get("/api/kleidung").json() == []
+    assert not list(tmp_path.rglob("*.png"))
+
+
+def test_loeschen_unbekannt_oder_fremd_gibt_404(client):
+    assert client.delete(f"/api/kleidung/{ObjectId()}").status_code == 404
+    assert client.delete("/api/kleidung/keine-id").status_code == 404
+
+
+def test_loeschen_verliehener_teile_geht_nicht(client, tmp_path):
+    k = hochladen(client).json()
+    # Den Status „verliehen“ setzt sonst nur das Modul verleihen; hier direkt im Ersatz-Speicher
+    asyncio.run(repository.aendern(k["id"], TEST_NUTZER_ID, {"status": "verliehen"}))
+    antwort = client.delete(f"/api/kleidung/{k['id']}")
+    assert antwort.status_code == 409
+    assert "verliehen" in antwort.json()["detail"]
+    # Teil und Foto sind noch da
+    assert client.get(f"/api/kleidung/{k['id']}").status_code == 200
+    assert len(list(tmp_path.rglob("*.png"))) == 1

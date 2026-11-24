@@ -147,8 +147,12 @@
   // den Zusatz danach wieder aus der Adresse, damit sie beim Neuladen nicht erneut erscheint.
   const neu = new URLSearchParams(location.search).get("neu");
   const geaendert = new URLSearchParams(location.search).get("geaendert"); // nach dem Bearbeiten
-  if (neu || geaendert) {
-    zeigeMeldung(meldung, neu ? `${neu} wurde deinem Kleiderschrank hinzugefügt.` : `Deine Änderungen an ${geaendert} sind gespeichert.`, "ok");
+  const geloescht = new URLSearchParams(location.search).get("geloescht"); // nach dem Löschen (Detailansicht)
+  if (neu || geaendert || geloescht) {
+    const text = neu ? `${neu} wurde deinem Kleiderschrank hinzugefügt.`
+      : geaendert ? `Deine Änderungen an ${geaendert} sind gespeichert.`
+      : `${geloescht} wurde aus deinem Kleiderschrank gelöscht.`;
+    zeigeMeldung(meldung, text, "ok");
     history.replaceState(null, "", "schrank.html");
   }
 
