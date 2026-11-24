@@ -49,6 +49,10 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Outfit zusammenstellen):
+  // Alle eigenen Kleidungsstücke werden geladen und als Kacheln gezeigt. Ein Klick wählt ein Teil
+  // aus oder ab (Häkchen). „Bestätigen“ öffnet ein Fenster mit Vorschau, Name und Kategorien.
+  // Gespeichert wird noch nicht, das Backend-Modul outfits fehlt.
   seitenkopf("Outfit zusammenstellen");
   fussleiste([
     { text: "Abbrechen", symbol: "schliessen", href: "outfits.html", art: "knopf-rand" },
@@ -60,9 +64,12 @@
   const meldung = document.getElementById("meldung");
   const suche = document.getElementById("suche");
   const fenster = document.getElementById("speichern-fenster");
+  // gewaehlt = die ids der angeklickten Teile (Set = Menge ohne Doppelte); alle = alle eigenen Teile
   const gewaehlt = new Set();
   let alle = [];
 
+  // Kacheln zeichnen; gewählte bekommen ein Häkchen. Ein Klick nimmt das Teil in die Auswahl
+  // auf oder wieder heraus und zeichnet neu.
   function zeichne() {
     const wort = suche.value.trim().toLowerCase();
     const treffer = alle.filter((k) => !wort || titelVon(k).toLowerCase().includes(wort));
@@ -80,6 +87,7 @@
   }
   suche.oninput = zeichne;
 
+  // „Bestätigen“: mindestens zwei Teile nötig; dann Speichern-Fenster mit Vorschau der Teile öffnen
   function oeffneSpeichern() {
     if (gewaehlt.size < 2) return zeigeMeldung(meldung, "Bitte mindestens zwei Kleidungsstücke auswählen.", "fehler");
     meldung.textContent = "";
@@ -96,6 +104,7 @@
   }
   for (const el of fenster.querySelectorAll("[data-schliessen]")) el.onclick = (e) => { e.preventDefault(); fenster.close(); };
 
+  // Speichern im Fenster: Name ist Pflicht; gespeichert wird noch nicht (nur Meldung)
   document.getElementById("formular").onsubmit = (e) => {
     e.preventDefault();
     const name = e.target.name.value.trim();
@@ -104,6 +113,7 @@
     zeigeMeldung(ausgabe, `„${name}“ mit ${gewaehlt.size} Teilen wäre jetzt gespeichert. Das Backend-Modul outfits fehlt noch.`, "ok");
   };
 
+  // Start: eigene Kleidungsstücke vom Backend laden und anzeigen
   holeJson("/kleidung")
     .then((liste) => { alle = liste; zeichne(); })
     .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));

@@ -119,6 +119,11 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Garderobe, Meine Outfits):
+  // Links der eigene Avatar, rechts die Outfits als Karten mit Suche und Filter (Name, Kategorie,
+  // enthaltenes Teil). Ein Klick öffnet die Outfit-Details mit Herz (Favorit) und Löschen.
+  // Die Outfits sind noch Beispieldaten, das Backend-Modul outfits fehlt; ?leer in der Adresse
+  // zeigt zum Ausprobieren den Zustand ohne Outfits.
   seitenkopf("Meine Outfits");
   fussleiste([
     { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
@@ -139,6 +144,7 @@
   const outfits = new URLSearchParams(location.search).has("leer") ? [] : BEISPIELE;
   const meldung = document.getElementById("meldung");
 
+  // Karte für ein Outfit: oben die Teile als kleine Kacheln, unten Name und Kategorien
   function outfitKarte(o) {
     const karte = document.createElement("button");
     karte.type = "button";
@@ -188,6 +194,7 @@
   const teileImOutfit = new Map(outfits.flatMap((o) => o.teile).map(([name, ton, art]) => [name, [name, name, ton, art]]));
   auswahlliste("f-teil", "teil", [...teileImOutfit.values()]);
 
+  // Was ist im Filter gerade eingegeben bzw. angekreuzt?
   function kriterien() {
     const daten = new FormData(formular);
     return { name: (daten.get("name") || "").trim().toLowerCase(), kategorie: daten.getAll("kategorie"), teil: daten.getAll("teil") };
@@ -207,6 +214,7 @@
   // ---------- Liste ----------
 
   const raster = document.getElementById("raster");
+  // Outfit-Karten neu aufbauen: Filter und Suche anwenden, Zahl am Filter-Knopf aktualisieren
   function zeichne() {
     const f = kriterien();
     const anzahl = anzahlAktiv(f);
@@ -231,8 +239,13 @@
 
   const detail = document.getElementById("detail");
   fensterVerdrahten(detail);
+  // das Outfit, dessen Detailfenster gerade offen ist
   let offen = null;
 
+  // Herz im Detailfenster passend zum offenen Outfit zeigen.
+  // Achtung: gemeinsam.js hat eine gleichnamige Funktion herzZeigen(herz, favorit) für die Kacheln
+  // im Schrank; diese hier überdeckt sie auf dieser Seite. Das geht nur gut, solange die Outfits-Seite
+  // keine Kacheln mit anklickbarem Herz (favoritUmschalten) benutzt. Bei Gelegenheit umbenennen.
   function herzZeigen() {
     const herz = document.getElementById("d-herz");
     herz.innerHTML = offen.favorit ? SYMBOL.herzVoll : SYMBOL.herz;
@@ -240,6 +253,7 @@
   }
   document.getElementById("d-herz").onclick = () => { offen.favorit = !offen.favorit; herzZeigen(); zeichne(); };
 
+  // Eine Zeile „Name: Wert“ in die Tabelle des Detailfensters hängen (optional mit Symbol)
   function zeile(dl, name, inhalt, symbol) {
     const div = document.createElement("div");
     div.innerHTML = "<dt></dt><dd></dd>";
@@ -249,6 +263,7 @@
     dl.append(div);
   }
 
+  // Detailfenster eines Outfits füllen und öffnen: große Kacheln, Eigenschaften, Liste der Teile
   function zeigeDetail(o) {
     offen = o;
     document.getElementById("d-titel").textContent = o.name;
@@ -287,6 +302,7 @@
     detail.showModal();
   }
 
+  // Löschen: erst nachfragen (confirm zeigt ein Ja/Nein-Fenster), dann aus der Liste entfernen
   document.getElementById("d-loeschen").onclick = () => {
     if (!confirm(`Outfit „${offen.name}“ löschen? Die Kleidungsstücke bleiben im Schrank.`)) return;
     outfits.splice(outfits.indexOf(offen), 1);

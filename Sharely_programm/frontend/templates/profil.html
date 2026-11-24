@@ -63,6 +63,10 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Mein Profil):
+  // Zeigt Name, „Mitglied seit“ und das Profilbild. Das Bild kann man aus einer Datei hochladen,
+  // direkt mit der Kamera aufnehmen oder entfernen; gespeichert wird es im Backend
+  // (PUT bzw. DELETE /api/nutzer/ich/profilbild).
   seitenkopf((nutzer) => `Hallo ${nutzer.nutzername}!`);
 
   const meldung = document.getElementById("meldung");
@@ -78,6 +82,7 @@
     document.getElementById("hochladen-knopf").textContent = profil.profilbild_url ? "Bild ändern" : "Bild hinzufügen";
   }
 
+  // Bild ans Backend schicken (als Formular mit Datei); danach das neue Bild anzeigen
   async function hochladen(bild, dateiname) {
     if (bild.size > MAX_BILD_MB * 1024 * 1024) {
       return zeigeMeldung(meldung, `Das Bild ist zu groß. Erlaubt sind höchstens ${MAX_BILD_MB} MB.`, "fehler");
@@ -97,6 +102,7 @@
 
   // ---------- Bild aus einer Datei ----------
 
+  // Der sichtbare Knopf klickt ein unsichtbares Datei-Feld an; ist eine Datei gewählt, hochladen
   document.getElementById("hochladen-knopf").onclick = () => datei.click();
   datei.onchange = () => {
     const gewaehlt = datei.files[0];
@@ -104,6 +110,7 @@
     if (gewaehlt) hochladen(gewaehlt, gewaehlt.name);
   };
 
+  // Bild entfernen: nach Rückfrage im Backend löschen lassen
   entfernen.onclick = async () => {
     if (!confirm("Profilbild wirklich entfernen?")) return;
     try {
@@ -128,6 +135,11 @@
   let strom = null;   // laufende Kamera
   let foto = null;    // aufgenommenes Bild (Blob)
 
+  // Das Kamera-Fenster hat drei Zustände:
+  //   "live"    = Kamerabild läuft, Knopf „Auslösen“
+  //   "foto"    = Foto aufgenommen, Knöpfe „Übernehmen“ und „Nochmal“
+  //   "hinweis" = keine Kamera möglich, Erklärung und „Bild aus Datei wählen“
+  // zustand() schaltet das Fenster in einen dieser Zustände (zeigt/versteckt Teile, beschriftet Knöpfe).
   function zustand(art, text) {
     video.hidden = art !== "live";
     aufnahme.hidden = art !== "foto";
@@ -141,11 +153,14 @@
     zweit.toggleAttribute("data-schliessen", art !== "foto");
   }
 
+  // Kamera ausschalten (alle „Spuren“ des Videostroms beenden)
   function kameraAus() {
     if (strom) strom.getTracks().forEach((spur) => spur.stop()); // Kamera-Licht geht aus
     strom = null;
   }
 
+  // Kamera einschalten (Frontkamera, facingMode "user") und das Bild im Fenster zeigen;
+  // klappt es nicht, eine verständliche Erklärung anzeigen
   async function kameraAn() {
     foto = null;
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -165,6 +180,8 @@
   }
 
   /** Quadratischen Ausschnitt aus der Mitte nehmen, gespiegelt wie die Vorschau, 600 × 600 px als JPEG. */
+  // „canvas“ ist eine unsichtbare Zeichenfläche: Wir malen das aktuelle Kamerabild hinein
+  // (gespiegelt, damit es wie im Spiegel aussieht) und machen daraus eine JPEG-Datei.
   function ausloesen() {
     if (!video.videoWidth) return; // Kamera liefert noch kein Bild
     const seite = Math.min(video.videoWidth, video.videoHeight);
@@ -181,6 +198,8 @@
     }, "image/jpeg", 0.9);
   }
 
+  // Knöpfe des Kamera-Fensters: Der Hauptknopf macht je nach Zustand Auslösen, Übernehmen
+  // oder Datei wählen; der zweite Knopf heißt „Nochmal“ (neues Foto) oder „Abbrechen“.
   document.getElementById("kamera-knopf").onclick = () => { fenster.showModal(); kameraAn(); };
   haupt.onclick = () => {
     if (!video.hidden) return ausloesen();
@@ -193,6 +212,7 @@
   fenster.onclose = kameraAus; // auch bei Esc
   fenster.onclick = (e) => { if (e.target === fenster) fenster.close(); };
 
+  // Start: Profil laden und Name, „Mitglied seit“ und Bild eintragen
   ich()
     .then((nutzer) => {
       document.getElementById("name").textContent = nutzer.nutzername;

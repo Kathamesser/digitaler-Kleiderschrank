@@ -76,6 +76,10 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Garderobe eines Freundes):
+  // Welcher Freund, steht in der Adresse (?freund=lena). Gezeigt werden seine geteilten Outfits
+  // als Karten (mit Suche) und sein Avatar. Ein Klick auf ein Outfit öffnet die Details mit
+  // allen Teilen; ein verfügbares Teil lässt sich von dort aus anfragen. Noch Beispieldaten.
   const freund = freundAusAdresse();
   const wessen = genitiv(freund.name);
   const vorname = freund.name.split(" ")[0];
@@ -98,8 +102,10 @@
   suche.placeholder = `${wessen} Outfits suchen`;
   suche.setAttribute("aria-label", suche.placeholder);
 
+  // Ein Teil des Freundes über seinen Namen finden (Outfits nennen ihre Teile beim Namen)
   const teilVon = (name) => FREUND_TEILE_BEISPIEL.find((t) => t.name === name);
 
+  // Karte für ein Outfit: oben die Teile als kleine Kacheln, unten Name, Kategorie und Anzahl
   function outfitKarte(o) {
     const karte = document.createElement("button");
     karte.type = "button";
@@ -123,6 +129,7 @@
     return karte;
   }
 
+  // Outfit-Karten anzeigen, gefiltert nach dem Suchwort im Namen
   function zeichne() {
     const wort = suche.value.trim().toLowerCase();
     const treffer = FREUND_OUTFITS_BEISPIEL.filter((o) => o.name.toLowerCase().includes(wort));
@@ -137,6 +144,7 @@
   const detail = document.getElementById("detail");
   fensterVerdrahten(detail);
 
+  // Detailfenster eines Outfits: Kategorien, große Kacheln der Teile und eine Liste zum Anfragen
   function zeigeDetail(o) {
     document.getElementById("d-titel").textContent = o.name;
     document.getElementById("d-initiale").className = `initiale mini ${freund.ton}`;

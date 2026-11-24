@@ -116,12 +116,19 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Mein Kleiderschrank):
+  // 1. Beim Öffnen werden alle eigenen Kleidungsstücke vom Backend geladen (ganz unten: holeJson).
+  // 2. zeichne() baut daraus die Kacheln. Vorher wird gefiltert: nach Suchwort und nach allem,
+  //    was im Filterfenster angekreuzt ist. Gefiltert wird hier im Browser, nicht im Backend.
+  // 3. Jede Änderung im Filter oder in der Suche ruft zeichne() erneut auf, die Liste passt sich sofort an.
+  // 4. Das Herz auf einer Kachel schaltet „Favorit“ direkt um (favoritUmschalten, unten).
   seitenkopf("Mein Kleiderschrank");
   fussleiste([
     { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
     { text: "Garderobe", symbol: "buegel", href: "outfits.html", art: "knopf-dunkel" },
   ]);
 
+  // Teile der Seite, die das Skript immer wieder braucht (über ihre id im HTML gefunden)
   const raster = document.getElementById("raster");
   const leer = document.getElementById("leer");
   const meldung = document.getElementById("meldung");
@@ -131,10 +138,13 @@
   const filterzahl = document.getElementById("filterzahl");
   const filterknopf = document.getElementById("filterknopf");
   const alles = document.getElementById("alles");
+  // alle = die vom Backend geladenen Kleidungsstücke; geladen = ob die Antwort schon da ist
   let alle = [];
   let geladen = false;
 
   // Bestätigung nach dem Hinzufügen (User Story 8), kommt von kleidung-hochladen.html
+  // Die Hinzufügen-Seite hängt ?neu=Name an die Adresse; wir zeigen die Meldung und nehmen
+  // den Zusatz danach wieder aus der Adresse, damit sie beim Neuladen nicht erneut erscheint.
   const neu = new URLSearchParams(location.search).get("neu");
   const geaendert = new URLSearchParams(location.search).get("geaendert"); // nach dem Bearbeiten
   if (neu || geaendert) {
@@ -144,8 +154,10 @@
 
   // ---------- Filter-Fenster ----------
 
+  // Eigenschaften, bei denen man im Filter mehrere Werte ankreuzen kann
   const LISTEN = ["farbe", "material", "saison", "status"];
 
+  // Die Auswahlmöglichkeiten ins Filterfenster einsetzen (Funktionen aus gemeinsam.js)
   farbkreise("f-farbe", "farbe", "checkbox");
   pillen("f-kleidungsart", "kleidungsart", { alle: "Alle", ...KLEIDUNGSARTEN }, "radio");
   formular.querySelector('[name="kleidungsart"][value="alle"]').defaultChecked = true; // Zurücksetzen springt hierhin
@@ -166,10 +178,13 @@
       knopf.setAttribute("aria-expanded", String(knopf.getAttribute("aria-expanded") !== "true"));
     };
   }
+  // Kaufdatum im Filter: höchstens heute wählbar
   const heute = new Date().toISOString().slice(0, 10);
   for (const name of ["kauf_von", "kauf_bis"]) formular.elements[name].max = heute;
 
   /** Aktuelle Auswahl im Filter. Leere Liste, "alle" bzw. null = kein Filter. */
+  // FormData liest alle Felder des Filterformulars auf einmal aus; daraus wird ein Objekt f
+  // mit einem Eintrag je Eigenschaft (z. B. f.farbe = ["rot", "blau"], f.favorit = true).
   function kriterien() {
     const daten = new FormData(formular);
     const f = { kleidungsart: daten.get("kleidungsart") || "alle" };
@@ -226,6 +241,8 @@
     }
   }
 
+  // Knöpfe verdrahten: Filter öffnen/schließen, bei jeder Änderung neu zeichnen, Zurücksetzen
+  // („onclick = …“ legt fest, was beim Klick passiert; „oninput“ bei jeder Eingabe)
   filterknopf.onclick = () => blatt.showModal();
   document.getElementById("filter-schliessen").onclick = () => blatt.close();
   blatt.onclick = (e) => { if (e.target === blatt) blatt.close(); }; // Klick neben das Fenster
@@ -235,6 +252,8 @@
   alles.onclick = zuruecksetzen; // „Alles“ = kein Filter
   suche.oninput = zeichne;
 
+  // Passt das Teil zum Suchwort? Gesucht wird in Name, Kleidungsart, Farbe und Material,
+  // ohne Rücksicht auf Groß-/Kleinschreibung. Leere Suche = alles passt.
   function passtZurSuche(k) {
     const wort = suche.value.trim().toLowerCase();
     if (!wort) return true;
@@ -243,6 +262,8 @@
       .some((feld) => feld && feld.toLowerCase().includes(wort));
   }
 
+  // Die Kachel-Liste neu aufbauen: Filter auslesen, Zahl am Filter-Knopf setzen,
+  // passende Teile heraussuchen und als Kacheln anzeigen
   function zeichne() {
     const f = kriterien();
     const anzahl = anzahlAktiv(f);
@@ -252,6 +273,7 @@
     filterknopf.setAttribute("aria-label", anzahl ? `Filter, ${anzahl} aktiv` : "Filter");
     zaehlerSetzen(f);
 
+    // .filter behält nur die Teile, für die beide Prüfungen „ja“ sagen
     const treffer = alle.filter((k) => passtZuFilter(k, f) && passtZurSuche(k));
     document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
     document.getElementById("filter-zeigen-kurz").textContent = anzahl ? `Anwenden (${anzahl})` : "Anwenden"; // Handy
@@ -285,6 +307,7 @@
     }
   }
 
+  // Start: einmal leer zeichnen, dann die Kleidungsstücke vom Backend laden und neu zeichnen
   zeichne();
   holeJson("/kleidung")
     .then((liste) => { alle = liste; geladen = true; zeichne(); })

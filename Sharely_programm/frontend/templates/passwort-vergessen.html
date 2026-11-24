@@ -39,7 +39,10 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite: Man gibt seine E-Mail-Adresse ein und bekommt (später) einen Link
+  // zum Zurücksetzen des Passworts. Das Backend dafür fehlt noch, die Seite zeigt nur die Meldung.
   document.getElementById("formular").onsubmit = (e) => {
+    // Normales Absenden (Seite neu laden) verhindern, wir kümmern uns selbst darum
     e.preventDefault();
     const meldung = document.getElementById("meldung");
     if (!e.target.email.value.includes("@")) return zeigeMeldung(meldung, "Bitte eine gültige E-Mail-Adresse eingeben.", "fehler");

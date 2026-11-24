@@ -97,11 +97,18 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Detailansicht eines Kleidungsstücks):
+  // Die Adresse enthält ?id=…; damit wird das Teil vom Backend geladen (ganz unten), und zeige()
+  // füllt Foto, Status und die Tabelle der Eigenschaften. Nur ausgefüllte Angaben erscheinen.
+  // „Bearbeiten“ führt zur Hinzufügen-Seite im Bearbeiten-Modus; „Verleihen / Verschenken“
+  // öffnet das Anfrage-Fenster (noch ohne Backend, mit Beispiel-Freunden).
   seitenkopf("Mein Kleiderschrank");
 
   const meldung = document.getElementById("meldung");
+  // Die id des Teils aus der Adresse lesen (kleidungsstueck.html?id=…)
   const id = new URLSearchParams(location.search).get("id");
 
+  // Hilfen für die Anzeige auf Deutsch: Preis als „89,90 €“, Datum als „02.11.2025“
   const euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
   const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -113,6 +120,8 @@
     return el;
   };
 
+  // Eine Zeile in die Eigenschaften-Tabelle hängen: links der Name (z. B. „Farbe“), rechts der Wert
+  // (<dl>/<dt>/<dd> sind die HTML-Bausteine für solche Name-Wert-Listen)
   function zeile(dl, name, inhalt, symbol) {
     const div = document.createElement("div");
     const dt = document.createElement("dt");
@@ -124,6 +133,7 @@
     dl.append(div);
   }
 
+  // Das geladene Kleidungsstück k auf der Seite anzeigen (Titel, Herz, Foto, Status, Eigenschaften, Maße)
   function zeige(k) {
     document.title = `Sharely – ${titelVon(k)}`;
     document.getElementById("titel").textContent = titelVon(k);
@@ -200,6 +210,7 @@
   let typ = "leihen";
   aFormular.bis.min = new Date().toISOString().slice(0, 10);
 
+  // Liste der Freunde zum Auswählen (gefiltert nach dem Suchwort); eine schon getroffene Wahl bleibt erhalten
   function zeigeFreundeZurWahl() {
     const wort = document.getElementById("a-suche").value.trim().toLowerCase();
     const gewaehlt = aFormular.querySelector("[name=empfaenger]:checked")?.value;
@@ -229,6 +240,7 @@
     box.append(`${typ === "leihen" ? "Leihanfrage" : "Geschenk"} an ${empfaenger.name.split(" ")[0]}: ${titelVon(teil)}`);
   }
 
+  // Umschalter „Leihen“ / „Verschenken“: Knopf hervorheben, Rückgabedatum nur beim Leihen zeigen
   function typSetzen(neu) {
     typ = neu;
     for (const knopf of anfrage.querySelectorAll("[data-typ]")) {
@@ -243,6 +255,7 @@
   aFormular.unbefristet.onchange = () => { aFormular.bis.disabled = aFormular.unbefristet.checked; if (aFormular.unbefristet.checked) aFormular.bis.value = ""; };
   aFormular.onchange = zusammenfassen;
 
+  // Anfrage-Fenster für das Teil k öffnen: alles zurücksetzen und mit dem Teil füllen
   function anfrageOeffnen(k) {
     teil = k;
     aFormular.reset();
@@ -257,6 +270,7 @@
     anfrage.showModal();
   }
 
+  // „Anfrage senden“: Empfänger und ggf. Rückgabedatum prüfen; gesendet wird noch nichts
   aFormular.onsubmit = (e) => {
     e.preventDefault();
     if (!aFormular.querySelector("[name=empfaenger]:checked")) return zeigeMeldung(aMeldung, "Bitte auswählen, an wen die Anfrage geht.", "fehler");
@@ -266,6 +280,7 @@
     zeigeMeldung(aMeldung, "Die Anfrage wäre jetzt gesendet. Das Backend-Modul verleihen fehlt noch.", "ok");
   };
 
+  // Start: Teil laden und anzeigen (oder Fehlermeldung, wenn die Adresse keine id enthält)
   if (!id) zeigeMeldung(meldung, "Kein Kleidungsstück ausgewählt.", "fehler");
   else holeJson(`/kleidung/${encodeURIComponent(id)}`)
     .then(zeige)

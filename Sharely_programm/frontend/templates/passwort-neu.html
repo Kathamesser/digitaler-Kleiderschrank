@@ -45,8 +45,12 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite: Neues Passwort zweimal eingeben. Eine Prüfliste zeigt bei jedem
+  // Tastendruck, welche Regeln schon erfüllt sind (Häkchen). Das Backend dafür fehlt noch.
   const formular = document.getElementById("formular");
 
+  // Die drei Regeln prüfen, erfüllte in der Liste abhaken; liefert true, wenn alle erfüllt sind.
+  // /[^A-Za-z0-9]/ heißt: „enthält ein Zeichen, das kein Buchstabe und keine Ziffer ist“ (Sonderzeichen).
   function pruefe() {
     const p = formular.passwort.value;
     const regeln = {
@@ -57,6 +61,7 @@
     for (const [id, ok] of Object.entries(regeln)) document.getElementById(id).classList.toggle("erfuellt", ok);
     return Object.values(regeln).every(Boolean);
   }
+  // bei jeder Eingabe neu prüfen
   formular.oninput = pruefe;
 
   formular.onsubmit = (e) => {

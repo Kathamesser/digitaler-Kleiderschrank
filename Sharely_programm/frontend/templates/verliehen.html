@@ -53,6 +53,10 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Leihen): zwei Listen, „Von dir geliehen“ (Teile von Freunden bei dir)
+  // und „Von dir verliehen“ (deine Teile bei Freunden). Jede Zeile zeigt die Frist; überfällige sind
+  // markiert. Ein Klick öffnet die Leihdetails, bei verliehenen Teilen mit „Zurückbekommen“.
+  // Noch Beispieldaten, das Backend-Modul verleihen fehlt.
   seitenkopf("Leihen");
   fussleiste([
     { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
@@ -70,6 +74,7 @@
       { titel: "Handtasche", art: "accessoires", person: "Jonas Weber", personTon: "", seit: "2026-10-05", bis: null, notiz: "", ton: "ton-beige" },
     ],
   };
+  // Datum als „02.11.2025“ anzeigen; heute als „2025-11-02“, so lassen sich Daten als Text vergleichen
   const datum = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
   const heute = new Date().toISOString().slice(0, 10);
 
@@ -80,6 +85,7 @@
     return ["ok", `bis ${datum(e.bis)}`];
   }
 
+  // Beide Listen (geliehen, verliehen) aufbauen: je Eintrag eine Zeile mit Bild, Text und Frist
   function zeichne() {
     for (const [art, liste] of Object.entries(BEISPIELE)) {
       document.getElementById(`anzahl-${art}`).textContent = liste.length;
@@ -105,6 +111,7 @@
   const details = document.getElementById("details");
   fensterVerdrahten(details);
 
+  // Eine Zeile „Name: Wert“ in die Tabelle des Detailfensters hängen
   function zeile(dl, name, inhalt) {
     const div = document.createElement("div");
     div.innerHTML = "<dt></dt><dd></dd>";
@@ -113,6 +120,7 @@
     dl.append(div);
   }
 
+  // Leihdetails eines Eintrags füllen und öffnen (an/von wem, seit wann, bis wann, Status, Notiz)
   function zeigeDetails(e, art) {
     const verliehen = art === "verliehen";
     document.getElementById("d-vorschau").className = `vorschau ${e.ton}`;

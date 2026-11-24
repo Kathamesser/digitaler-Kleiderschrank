@@ -35,15 +35,22 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite (Nachrichten): zwei Karten.
+  // Links die Leih- und Geschenkanfragen von Freunden mit „Annehmen“/„Ablehnen“,
+  // rechts Neuigkeiten des Sharely-Teams zum Aufklappen. Beides kommt noch aus Beispieldaten
+  // (beispieldaten.js); die Knöpfe ändern nur die Anzeige, gespeichert wird nichts.
   seitenkopf("Nachrichten");
   fussleiste([
     { text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" },
     { text: "Freunde", symbol: "freunde", href: "freunde.html", art: "knopf-gelb" },
   ]);
 
+  // Kopie der Beispiel-Anfragen ([...liste] = neue Liste mit denselben Einträgen), damit wir
+  // beantwortete Anfragen entfernen können, ohne die Beispieldaten selbst zu verändern
   const anfragen = [...LEIHANFRAGEN_BEISPIEL];
   const meldung = document.getElementById("meldung");
 
+  // Alle offenen Anfragen als Karten anzeigen; nach jedem Annehmen/Ablehnen neu aufgerufen
   function zeigeAnfragen() {
     const box = document.getElementById("anfragen");
     if (!anfragen.length) {
@@ -82,7 +89,9 @@
     }));
   }
 
+  // Art einer Neuigkeit → [Beschriftung, Symbol]
   const TYPEN = { update: ["Update", "update"], hinweis: ["Hinweis", "warnung"], info: ["Info", "info"] };
+  // Neuigkeiten als Karten anzeigen; ungelesene sind markiert, „Mehr lesen“ klappt den langen Text auf
   function zeigeNeuigkeiten() {
     document.getElementById("neuigkeiten").replaceChildren(...NEUIGKEITEN_BEISPIEL.map((n) => {
       const karte = document.createElement("article");
@@ -103,6 +112,7 @@
       return karte;
     }));
   }
+  // „Alle gelesen“: alle Neuigkeiten als gelesen markieren und neu anzeigen
   document.getElementById("alle-gelesen").onclick = () => {
     for (const n of NEUIGKEITEN_BEISPIEL) n.gelesen = true;
     zeigeNeuigkeiten();

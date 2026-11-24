@@ -63,12 +63,19 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Meine Freunde):
+  // Oben die offenen Freundschaftsanfragen (Annehmen, Ablehnen, Blockieren), darunter die
+  // Freundesliste mit Suche. Ein Klick auf einen Freund öffnet seinen Kleiderschrank.
+  // „Freund hinzufügen“ öffnet ein Fenster, in dem man nach dem genauen Nutzernamen sucht.
+  // Alles läuft noch mit Beispieldaten (beispieldaten.js), gespeichert wird nichts.
   seitenkopf("Meine Freunde");
   fussleiste([{ text: "Hauptmenü", symbol: "haus", href: "hauptmenue.html" }]);
 
+  // Kopien der Beispiel-Listen, die sich beim Annehmen/Ablehnen ändern dürfen
   const ANFRAGEN = [...FREUNDSCHAFTSANFRAGEN_BEISPIEL];
   const FREUNDE = [...FREUNDE_BEISPIEL];
 
+  // Runder Kreis mit dem Anfangsbuchstaben einer Person (z. B. „L“ für Lena)
   function initiale(person) {
     const el = document.createElement("span");
     el.className = `initiale ${person.ton}`;
@@ -76,6 +83,8 @@
     return el;
   }
 
+  // Freundschaftsanfragen als Zeilen mit drei Knöpfen anzeigen. Jeder Knopf entfernt die Anfrage
+  // aus der Liste (fertig), „Annehmen“ setzt die Person außerdem in die Freundesliste.
   function zeigeAnfragen() {
     const box = document.getElementById("anfragen");
     box.replaceChildren(...ANFRAGEN.map((p) => {
@@ -99,6 +108,7 @@
     document.getElementById("anfragen-karte").hidden = !ANFRAGEN.length;
   }
 
+  // Erfolgsmeldung unter dem Hinweis-Kasten zeigen (den Meldungskasten beim ersten Mal anlegen)
   function zeigeMeldungKurz(text) {
     let el = document.getElementById("meldung");
     if (!el) {
@@ -113,6 +123,7 @@
   // Neu angenommene Freunde haben in den Beispieldaten keine eigene Seite, dann die Beispiele von Lena.
   const schrankAdresse = (p) => `freund-schrank.html?freund=${p.id || FREUNDE_BEISPIEL[0].id}`;
 
+  // Freundesliste zeigen, gefiltert nach dem Suchwort; jeder Eintrag ist ein Link in den Kleiderschrank
   function zeigeFreunde() {
     const wort = document.getElementById("suche").value.trim().toLowerCase();
     const liste = document.getElementById("freunde");
@@ -135,8 +146,10 @@
   const hFormular = document.getElementById("hinzufuegen-formular");
   const hMeldung = document.getElementById("hinzufuegen-meldung");
   fensterVerdrahten(hinzufuegen);
+  // der Nutzer, der zum eingegebenen Namen passt (null = noch keiner)
   let gefunden = null;
 
+  // Fenster öffnen: vorher leeren
   document.getElementById("hinzufuegen").onclick = () => {
     hFormular.reset();
     gefunden = null;
@@ -144,6 +157,7 @@
     hMeldung.textContent = "";
     hinzufuegen.showModal();
   };
+  // Bei jeder Eingabe nachsehen, ob es genau diesen Nutzernamen gibt; wenn ja, den Treffer anzeigen
   hFormular.nutzername.oninput = () => {
     const name = hFormular.nutzername.value.trim();
     gefunden = NUTZER_BEISPIEL.find((n) => n.nutzername.toLowerCase() === name.toLowerCase()) || null;
@@ -156,6 +170,7 @@
     document.getElementById("t-name").textContent = gefunden.nutzername;
     document.getElementById("t-teile").textContent = `${gefunden.teile} geteilte Teile`;
   };
+  // „Anfrage senden“: nur möglich, wenn ein Nutzer gefunden wurde
   hFormular.onsubmit = (e) => {
     e.preventDefault();
     if (!hFormular.nutzername.value.trim()) return zeigeMeldung(hMeldung, "Bitte einen Nutzernamen eingeben.", "fehler");
@@ -164,6 +179,7 @@
     zeigeMeldungKurz(`Anfrage an ${gefunden.nutzername} gesendet. Sobald sie angenommen ist, steht ${gefunden.nutzername} in deiner Freundesliste.`);
   };
 
+  // Start: Suche verdrahten, Anfragen und Freundesliste anzeigen
   document.getElementById("suche").oninput = zeigeFreunde;
   zeigeAnfragen();
   zeigeFreunde();

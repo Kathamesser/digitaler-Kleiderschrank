@@ -60,6 +60,9 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite (Hauptmenü): Kopfzeile mit „Hallo …!“, Kacheln zu allen Bereichen
+  // und oben vier Zahlen (eigene Teile, Wunschartikel, verliehen, geliehen), die aus der
+  // Kleidungsliste des Backends gezählt werden.
   seitenkopf((nutzer) => `Hallo ${nutzer.nutzername}!`);
 
   // Beispieldaten, bis Leihvorgänge und Neuigkeiten ein Backend haben: offene Anfragen + ungelesene Neuigkeiten
@@ -67,6 +70,8 @@
   document.getElementById("nachrichten-neu").textContent = `${neu} neu`;
   document.getElementById("nachrichten-neu").hidden = !neu;
 
+  // Alle eigenen Kleidungsstücke laden und je Status zählen
+  // („.then“ = wenn die Antwort da ist, „.catch“ = falls es schiefgeht)
   holeJson("/kleidung")
     .then((liste) => {
       const zaehle = (bedingung) => liste.filter(bedingung).length;

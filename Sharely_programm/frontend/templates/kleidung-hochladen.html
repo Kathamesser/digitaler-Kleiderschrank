@@ -96,8 +96,16 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite (Kleidungsstück hinzufügen oder bearbeiten):
+  // 1. Das Formular wird mit allen Auswahlmöglichkeiten gefüllt (Farben, Kleidungsarten, Status, Maße).
+  // 2. Ohne ?id=… in der Adresse ist es ein neues Teil; mit ?id=… wird das Teil geladen und das
+  //    Formular damit vorausgefüllt (Bearbeiten).
+  // 3. Ein Foto kommt über Kamera, Galerie oder Hineinziehen; es erscheint sofort als Vorschau.
+  // 4. Speichern schickt alles als Formular ans Backend (neu: POST, bearbeiten: PUT) und
+  //    springt zurück in die Schrank-Übersicht.
   seitenkopf("Mein Kleiderschrank");
 
+  // Auswahlmöglichkeiten einsetzen (Funktionen aus gemeinsam.js)
   farbkreise("farben", "farbe", "checkbox");
   pillen("kleidungsarten", "kleidungsart", KLEIDUNGSARTEN, "radio");
   pillen("kategorien", "kategorie", Object.fromEntries(KATEGORIEN_VORGABE.map((k) => [k, k])), "checkbox");
@@ -105,6 +113,7 @@
   pillen("saisons", "saison", SAISONS, "checkbox");
   pillen("materialien", "material", MATERIALIEN, "checkbox");
 
+  // Status-Auswahl: „Eigenes“ ist vorausgewählt, „Verliehen“ gesperrt (setzt nur das Verleihen)
   for (const { wert, text, symbol } of STATUS) {
     const label = document.createElement("label");
     label.innerHTML = `<input type="radio" name="status" value="${wert}"><span>${SYMBOL[symbol]} ${text}</span>`;
@@ -113,6 +122,7 @@
   document.querySelector('[name="status"][value="im_schrank"]').checked = true;
   document.querySelector('[name="status"][value="verliehen"]').disabled = true;
 
+  // Für jeden der 24 Messpunkte ein Zahlenfeld in cm (Bereich „Maße“ zum Aufklappen)
   for (const [schluessel, text] of Object.entries(MESSPUNKTE)) {
     const label = document.createElement("label");
     label.innerHTML = '<span></span><input type="number" min="0.1" max="300" step="0.1" inputmode="decimal" placeholder="cm">';
@@ -142,6 +152,7 @@
   const rahmen = document.getElementById("bildrahmen");
   const vorschau = document.getElementById("vorschau");
   const meldung = document.getElementById("meldung");
+  // das gewählte Foto (null = noch keins gewählt)
   let bild = null;
 
   // ---------- Bearbeiten: ?id=… lädt das Teil und füllt das Formular ----------
@@ -199,6 +210,8 @@
       .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
   }
 
+  // Ein Foto wurde gewählt: Größe prüfen, merken und als Vorschau zeigen.
+  // URL.createObjectURL macht aus der Datei eine vorläufige Adresse, die nur dieser Browser kennt.
   function bildWaehlen(datei) {
     if (!datei) return;
     if (datei.size > MAX_BILD_MB * 1024 * 1024) {
@@ -209,6 +222,8 @@
     fotoZeigen(URL.createObjectURL(bild));
   }
 
+  // Die sichtbaren Knöpfe „Foto aufnehmen“/„Bild hochladen“ klicken unsichtbare Datei-Felder an;
+  // die öffnen auf dem Handy die Kamera bzw. die Galerie
   for (const id of ["kamera", "galerie"]) {
     const eingabe = document.getElementById(id);
     document.getElementById(id + "-knopf").onclick = () => eingabe.click();
@@ -219,6 +234,8 @@
   rahmen.ondragleave = () => rahmen.classList.remove("ziehen");
   rahmen.ondrop = (e) => { e.preventDefault(); rahmen.classList.remove("ziehen"); bildWaehlen(e.dataTransfer.files[0]); };
 
+  // Speichern: erst Pflichtangaben prüfen, dann alle Felder (plus Maße und Foto) als
+  // Formular zusammenpacken und ans Backend schicken
   formular.onsubmit = async (e) => {
     e.preventDefault();
     if (bearbeitenId && !vorhanden) return zeigeMeldung(meldung, "Das Kleidungsstück ist noch nicht geladen.", "fehler");
@@ -230,6 +247,7 @@
     for (const [feld, wert] of new FormData(formular)) {
       if (wert.trim() !== "") daten.append(feld, wert);
     }
+    // Ausgefüllte Maße einsammeln, z. B. [{ messpunkt: "waist-circ", wert_cm: 80 }]
     const masse = [...document.querySelectorAll("[data-messpunkt]")]
       .filter((f) => f.value !== "")
       .map((f) => ({ messpunkt: f.dataset.messpunkt, wert_cm: Number(f.value) }));
@@ -238,9 +256,11 @@
     // Kategorien sind hier noch nicht wählbar: beim Bearbeiten die vorhandenen mitschicken, sonst gingen sie verloren
     if (vorhanden) for (const k of vorhanden.kategorie_ids) daten.append("kategorie_ids", k);
 
+    // Speichern-Knopf sperren, bis die Antwort da ist (kein doppeltes Speichern)
     const knopf = document.getElementById("speichern");
     knopf.disabled = true;
     try {
+      // vorhanden ? … : … — beim Bearbeiten PUT an das Teil, sonst POST für ein neues Teil
       const antwort = vorhanden
         ? await api(`/kleidung/${encodeURIComponent(vorhanden.id)}`, { method: "PUT", body: daten })
         : await api("/kleidung", { method: "POST", body: daten });

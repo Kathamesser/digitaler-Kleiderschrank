@@ -120,7 +120,13 @@
 </dialog>
 
 <script>
+  // So funktioniert diese Seite (Kleiderschrank eines Freundes):
+  // Welcher Freund, steht in der Adresse (?freund=lena). Angezeigt werden seine geteilten Teile
+  // als Kacheln, mit Suche, Schnellfilter „Nur verfügbare“ und demselben Filterfenster wie im
+  // eigenen Schrank. Ein Klick auf ein Teil öffnet die Detailansicht; dort kann man es anfragen.
+  // Alles kommt noch aus Beispieldaten (beispieldaten.js).
   const freund = freundAusAdresse();
+  // „Lenas“ für Überschriften wie „Lenas Kleiderschrank“
   const wessen = genitiv(freund.name);
   seitenkopf(`${wessen} Kleiderschrank`);
   document.title = `Sharely – ${wessen} Kleiderschrank`;
@@ -133,6 +139,7 @@
   zurGarderobe.href = `freund-garderobe.html?freund=${freund.id}`;
   zurGarderobe.setAttribute("aria-label", `${wessen} Garderobe ansehen`);
 
+  // Kärtchen oben mit Anfangsbuchstabe, Name und Anzahl geteilter Teile
   document.getElementById("f-initiale").className = `initiale ${freund.ton}`;
   document.getElementById("f-initiale").textContent = freund.name[0];
   document.getElementById("f-name").textContent = freund.name;
@@ -143,8 +150,10 @@
 
   const nurVerfuegbare = document.getElementById("nur-verfuegbare");
   const alles = document.getElementById("alles");
+  // ob der Schnellfilter „Nur verfügbare“ an ist
   let nurFrei = false;
 
+  // Kachel für ein Teil des Freundes; verliehene Teile werden blass dargestellt
   function karte(t) {
     const k = document.createElement("button");
     k.type = "button";
@@ -174,6 +183,7 @@
   pillen("f-saison", "saison", SAISONS, "checkbox");
   pillen("f-verfuegbarkeit", "verfuegbarkeit", VERFUEGBARKEIT, "checkbox");
 
+  // Was ist im Filter gerade angekreuzt? (wie in schrank.html)
   function kriterien() {
     const daten = new FormData(formular);
     const f = { kleidungsart: daten.get("kleidungsart") || "alle" };
@@ -182,6 +192,8 @@
   }
 
   /** Innerhalb einer Eigenschaft reicht ein Treffer (oder), zwischen Eigenschaften müssen alle passen (und). */
+  // Beispiel: „Rot“ und „Blau“ angekreuzt → rote ODER blaue Teile; dazu „Winter“ → nur die davon, die auch zum Winter passen.
+  // Ein „Set“ ist eine Menge ohne Doppelte, in der man schnell nachsehen kann, ob ein Wert enthalten ist.
   function passtZuFilter(t, f) {
     const eins = (auswahl, vorhanden) => !auswahl.length || auswahl.some((wert) => vorhanden.has(wert));
     if (f.kleidungsart !== "alle" && t.kleidungsart !== f.kleidungsart) return false;
@@ -195,8 +207,10 @@
     return true;
   }
 
+  // Wie viele Eigenschaften gerade filtern (die Zahl am Filter-Knopf)
   const anzahlAktiv = (f) => LISTEN.filter((name) => f[name].length).length + (f.kleidungsart !== "alle");
 
+  // „2 gewählt“ bzw. „mehrere“ neben den Überschriften im Filter
   function zaehlerSetzen(f) {
     for (const el of formular.querySelectorAll("[data-zaehler]")) {
       const name = el.dataset.zaehler;
@@ -211,6 +225,7 @@
   formular.oninput = zeichne;
   document.getElementById("filter-zuruecksetzen").onclick = () => { formular.reset(); zeichne(); };
 
+  // Passt das Teil zum Suchwort (Name, Kleidungsart, Farbe, Material oder Kategorie)?
   function passtZurSuche(t) {
     const wort = suche.value.trim().toLowerCase();
     if (!wort) return true;
@@ -219,6 +234,7 @@
       .some((feld) => feld && feld.toLowerCase().includes(wort));
   }
 
+  // Kacheln neu aufbauen: Filter, Schnellfilter und Suche anwenden, Zahlen und Knöpfe aktualisieren
   function zeichne() {
     const f = kriterien();
     const anzahl = anzahlAktiv(f);
@@ -247,6 +263,7 @@
   const detail = document.getElementById("detail");
   fensterVerdrahten(detail);
 
+  // Eine Zeile „Name: Wert“ in die Eigenschaften-Tabelle des Detailfensters hängen
   function zeile(dl, name, inhalt) {
     const div = document.createElement("div");
     div.innerHTML = "<dt></dt><dd></dd>";
@@ -256,6 +273,7 @@
   }
   const pille = (text) => Object.assign(document.createElement("span"), { className: "marke-pille", textContent: text });
 
+  // Detailfenster für ein Teil des Freundes füllen und öffnen
   function zeigeDetail(t) {
     document.getElementById("d-titel").textContent = t.name;
     document.getElementById("d-initiale").className = `initiale mini ${freund.ton}`;

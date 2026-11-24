@@ -63,11 +63,18 @@
 </main>
 
 <script>
+  // So funktioniert diese Seite (Anmeldung und Registrierung):
+  // Oben schalten zwei Reiter zwischen „Anmelden“ und „Registrieren“ um; es ist dieselbe Seite,
+  // nur das jeweils andere Formular wird versteckt. Beim Absenden prüft die Seite die Eingaben
+  // kurz selbst, schickt sie dann ans Backend und geht bei Erfolg ins Hauptmenü.
+
+  // Überschrift und Unterzeile je Reiter
   const TEXTE = {
     anmelden: ["Willkommen zurück", "Melde dich an, um deinen Schrank zu öffnen."],
     registrieren: ["Konto erstellen", "Leg los und füll deinen digitalen Schrank."],
   };
   const tabs = { anmelden: document.getElementById("tab-anmelden"), registrieren: document.getElementById("tab-registrieren") };
+  // Zum Reiter „ziel“ wechseln: ihn hervorheben, sein Formular zeigen, das andere verstecken
   function wechsle(ziel) {
     for (const [name, tab] of Object.entries(tabs)) {
       const aktiv = name === ziel;
@@ -84,6 +91,7 @@
     link.onclick = (e) => { e.preventDefault(); wechsle(link.dataset.wechsel); };
   }
 
+  // Auge-Knopf im Passwortfeld: zwischen verdeckten Punkten und lesbarem Text umschalten
   const zeigen = document.querySelector(".zeigen");
   zeigen.onclick = () => {
     const feld = document.getElementById("passwort-anmelden");
@@ -95,8 +103,10 @@
   async function absenden(form, pfad, daten) {
     const meldung = form.querySelector(".meldung");
     const knopf = form.querySelector("[type=submit]");
+    // Knopf sperren, damit niemand doppelt absendet, solange die Antwort noch aussteht
     knopf.disabled = true;
     try {
+      // Daten als JSON schicken; weiterleiten: false, weil 401 hier „Passwort falsch“ heißt
       const antwort = await api(pfad, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,6 +122,7 @@
     }
   }
 
+  // Formular „Anmelden“ abgeschickt: Felder dürfen nicht leer sein, dann ans Backend
   document.getElementById("anmelden").onsubmit = (e) => {
     e.preventDefault();
     const f = e.target;
@@ -121,6 +132,9 @@
     absenden(f, "/nutzer/anmelden", { nutzername: f.nutzername.value.trim(), passwort: f.passwort.value });
   };
 
+  // Formular „Registrieren“ abgeschickt: dieselben Regeln wie im Backend vorab prüfen
+  // (E-Mail mit @, Nutzername, Passwort mind. 8 Zeichen mit Sonderzeichen, beide Passwörter gleich).
+  // Das Backend prüft trotzdem noch einmal selbst, denn Prüfungen im Browser lassen sich umgehen.
   document.getElementById("registrieren").onsubmit = (e) => {
     e.preventDefault();
     const f = e.target;
