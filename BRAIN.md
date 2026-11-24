@@ -181,6 +181,7 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **24.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch beim Bearbeiten eines Kleidungsstücks: „Abbrechen“ (und das ✕) führen wie „Speichern“ zurück in die Schrank-Übersicht statt in die Detailansicht (`kleidung-hochladen.html`). Projektdokumentation 6.3 ergänzt.
 - **24.11.2026 · Christian/Claude(Laptop.Code):** Auf Christians Wunsch alte Bilder nicht umziehen, sondern ab sofort nur noch den Bucket nutzen: `BILDSPEICHER=bucket` ist jetzt Vorgabe (`config.py`, `.env.example`), fehlende Bucket-Werte meldet das Backend beim Start als WARNUNG, Umzugsskript `app/bilder_umziehen.py` samt Test entfernt, `Sharely_programm/uploads/` (README, `.gitkeep`) aus dem Repo genommen und ganz in `.gitignore`. Doku nachgezogen (`backend/README.md`, `README.md`, `PROJEKTDOKUMENTATION.md`). Anlass: Umzug auf Railway scheiterte an `ModuleNotFoundError: app` in der Konsole, alte Bilder werden nicht gebraucht. `pytest` 119 grün.
 - **24.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch Knöpfe in der Detailansicht (`kleidungsstueck.html`) umgestellt: „Bearbeiten“ steht jetzt neben „Verleihen / Verschenken“ (wo vorher „Löschen“ war), „Löschen“ darunter über die ganze Breite (`.breit`). Geprüft per Screenshot bei 360 und 1300 px. Projektdokumentation 6.3 ergänzt.
 

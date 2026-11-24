@@ -164,11 +164,8 @@
     const titel = `${titelVon(k)} bearbeiten`;
     document.getElementById("fenster-titel").textContent = titel;
     document.title = `Sharely – ${titel}`;
-    const zurueck = `kleidungsstueck.html?id=${encodeURIComponent(k.id)}`;
-    document.getElementById("abbrechen").href = zurueck;
-    const schliessen = document.getElementById("schliessen");
-    schliessen.href = zurueck;
-    schliessen.setAttribute("aria-label", "Schließen, zurück zum Kleidungsstück");
+    // Abbrechen und ✕ führen wie Speichern zurück in die Schrank-Übersicht (Wunsch Katha, 24.11.2026);
+    // die Links zeigen schon von Haus aus auf schrank.html
 
     formular.querySelector('[name="name"]').value = k.name || ""; // formular.name wäre mehrdeutig
     ankreuzen("farbe", [k.farbe]);
