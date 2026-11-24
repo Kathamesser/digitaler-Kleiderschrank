@@ -72,7 +72,7 @@ def test_nur_bild_und_kleidungsart_genuegen(client, tmp_path):
     assert k["farbe"] is None and k["material"] is None and k["preis"] is None and k["kaufdatum"] is None
     assert k["status"] == "im_schrank"
     assert k["leihvorgang_id"] is None
-    assert k["bild_url"] == f"/api/kleidung/{k['id']}/bild"
+    assert k["bild_url"].startswith(f"/api/kleidung/{k['id']}/bild?v=")
     assert len(list(tmp_path.rglob("*.png"))) == 1
 
 

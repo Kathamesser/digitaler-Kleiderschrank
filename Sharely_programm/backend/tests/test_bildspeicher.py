@@ -215,7 +215,10 @@ def test_bearbeiten_mit_neuem_bild_im_bucket(bucket, monkeypatch, als_test_nutze
         alt = speicher[k["id"]]["bild_pfad"]
         antwort = client.put(f"/api/kleidung/{k['id']}", data={"kleidungsart": "tops"}, files={"bild": ("b.jpg", JPEG)})
         assert antwort.status_code == 200, antwort.text
-        assert client.get(k["bild_url"]).content == JPEG
+        neu = antwort.json()
+        # Neues Foto → neue Adresse, damit kein Browser das alte aus dem Zwischenspeicher zeigt
+        assert neu["bild_url"] != k["bild_url"]
+        assert client.get(neu["bild_url"]).content == JPEG
     assert _alle_schluessel(bucket) == [speicher[k["id"]]["bild_pfad"]]
     assert alt not in _alle_schluessel(bucket)
 

@@ -32,7 +32,7 @@ Alle Endpunkte liegen unter `/api/<modul>`, z. B. `/api/kleidung`, `/api/outfits
 | POST | `/api/kleidung` | Kleidungsstück mit Foto anlegen (multipart). Pflicht: `bild`, `kleidungsart`. Optional: `name`, `favorit`, `privat` (true/false, Standard false), `farbe`, `material`, `saison`, `preis` (Euro), `kaufdatum` (JJJJ-MM-TT), `status`, `kategorie_ids`, `masse`. Werte siehe unten | 8 |
 | GET | `/api/kleidung` | Alle Kleidungsstücke des Nutzers, neueste zuerst | 1 (Grundform) |
 | GET | `/api/kleidung/{id}` | Ein Kleidungsstück | 1 |
-| GET | `/api/kleidung/{id}/bild` | Bild eines Kleidungsstücks | 8 |
+| GET | `/api/kleidung/{id}/bild` | Bild eines Kleidungsstücks; die Adresse aus `bild_url` enthält `?v=…`, das sich mit jedem neuen Foto ändert | 8 |
 | PATCH | `/api/kleidung/{id}/favorit` | Nur das Herz setzen (JSON `{"favorit": true}` bzw. `false`), alle anderen Angaben bleiben. 404 bei fremden/unbekannten Teilen | Wunsch Katha, 24.11.2026 |
 | PUT | `/api/kleidung/{id}` | Kleidungsstück bearbeiten (multipart, dieselben Felder wie beim Anlegen). Alle Angaben werden ersetzt: Nicht mitgeschickte Felder sind danach leer bzw. false. `bild` ist freiwillig und ersetzt das alte Foto (das alte wird gelöscht). Ist das Teil verliehen oder über einen Leihvorgang geliehen, bleibt der Status unverändert. 404, wenn es das Teil nicht gibt oder es einem anderen Nutzer gehört | Wunsch Katha, 24.11.2026 |
 | POST | `/api/nutzer/registrieren` | Konto anlegen (JSON: `email`, `nutzername`, `passwort`) und gleich angemeldet sein; 201, 422 bei falschem Format, 409 wenn E-Mail oder Nutzername vergeben ist | US 6, Desktop 2 |
