@@ -77,12 +77,16 @@ DIENSTE = [
 
 
 def port_belegt(port: int) -> bool:
+    """Ist dieser Port schon belegt (läuft dort schon ein Programm)?
+    Ein „Port“ ist wie eine Türnummer am Rechner: Jedes Server-Programm lauscht an einer eigenen
+    (Backend an 8000, Seiten an 5173). Zwei Programme können nicht dieselbe Tür benutzen."""
     with socket.socket() as s:
         s.settimeout(0.5)
         return s.connect_ex(("127.0.0.1", port)) == 0
 
 
 def antwortet(url: str) -> bool:
+    """Ruft die Adresse einmal auf: True, wenn der Dienst schon antwortet, sonst False."""
     try:
         with urllib.request.urlopen(url, timeout=1):
             return True
@@ -91,6 +95,7 @@ def antwortet(url: str) -> bool:
 
 
 def starten(dienst: Dienst) -> subprocess.Popen:
+    """Den Dienst als eigenes Programm im Hintergrund starten („Prozess“)."""
     # Eigene Prozessgruppe: Strg+C landet nur bei diesem Skript, das dann alle Dienste
     # samt Unterprozessen beendet (uvicorn --reload startet einen eigenen Arbeitsprozess).
     if WINDOWS:
@@ -99,6 +104,8 @@ def starten(dienst: Dienst) -> subprocess.Popen:
 
 
 def beenden(prozess: subprocess.Popen) -> None:
+    """Einen gestarteten Dienst wieder beenden (erst freundlich, nach 5 Sekunden hart)."""
+    # poll() ist nicht None = das Programm ist schon von selbst beendet, nichts zu tun
     if prozess.poll() is not None:
         return
     if WINDOWS:
@@ -114,7 +121,10 @@ def beenden(prozess: subprocess.Popen) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Alle Sharely-Dienste starten (beenden mit Strg+C).")
+    """Der Ablauf: prüfen → starten → warten, bis alles antwortet → Browser öffnen → laufen lassen.
+    Liefert 0 (alles gut) oder 1 (Fehler) an die Kommandozeile zurück."""
+    # Optionen von der Kommandozeile lesen (z. B. python start.py --ohne-browser)
+    parser =argparse.ArgumentParser(description="Alle Sharely-Dienste starten (beenden mit Strg+C).")
     parser.add_argument("--ohne-browser", action="store_true", help="Browser nicht automatisch öffnen")
     args = parser.parse_args()
 
@@ -161,13 +171,16 @@ def main() -> int:
                     print(f"\n{d.name} wurde beendet (Code {p.returncode}), stoppe alle Dienste.")
                     return 1
             time.sleep(1)
+    # Strg+C im Terminal löst „KeyboardInterrupt“ aus: das ist das normale Beenden
     except KeyboardInterrupt:
         print("\nBeende Sharely …")
         return 0
+    # „finally“ läuft immer zum Schluss, egal wie wir hier rauskommen: alle Dienste beenden
     finally:
         for _, p in reversed(laufend):
             beenden(p)
 
 
+# Nur wenn diese Datei direkt gestartet wird (python start.py), main() ausführen
 if __name__ == "__main__":
     sys.exit(main())

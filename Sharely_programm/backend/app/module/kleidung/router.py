@@ -5,6 +5,17 @@ Grundlage: User Story 1, 4, 5 und 8, Konzeption 1.3, Wireframes 5–8.
 
 Hier nur Anfragen entgegennehmen, prüfen lassen (schemas.py) und an service.py
 weitergeben. Keine Geschäftslogik und keine Datenbankzugriffe in dieser Datei.
+(Aufbau wie im Restaurant und Bedeutung der Statuscodes: siehe oben in nutzer/router.py.)
+
+Adressen in dieser Datei (alle mit /api/kleidung davor):
+- POST   ""                 neues Kleidungsstück mit Foto anlegen
+- PUT    "/{id}"            Kleidungsstück bearbeiten
+- PATCH  "/{id}/favorit"    nur das Herz (Favorit) umschalten
+- GET    ""                 alle eigenen Kleidungsstücke
+- GET    "/{id}"            ein Kleidungsstück
+- GET    "/{id}/bild"       das Foto dazu
+POST = anlegen, PUT = komplett ersetzen, PATCH = einen Teil ändern, GET = abrufen.
+„{id}“ ist ein Platzhalter für die Kennung des Kleidungsstücks.
 """
 
 import json
@@ -31,6 +42,7 @@ from app.module.kleidung.schemas import (
 
 router = APIRouter(prefix="/kleidung", tags=["kleidung"])
 
+# „Nutzer“ = nur für Angemeldete; liefert die ID des angemeldeten Nutzers (siehe core/sicherheit.py)
 Nutzer = Annotated[str, Depends(aktueller_nutzer)]
 
 
@@ -54,7 +66,12 @@ def angaben_aus_formular(
 ) -> KleidungsstueckNeu:
     """Formularfelder → KleidungsstueckNeu. Nötig, weil FastAPI ein
     Formular-Modell nicht zusammen mit einer Datei annimmt. Regelverstöße aus
-    dem Modell (z. B. Kaufdatum in der Zukunft) werden zu einer 422-Antwort."""
+    dem Modell (z. B. Kaufdatum in der Zukunft) werden zu einer 422-Antwort.
+
+    Hintergrund: Weil ein Foto dabei ist, schickt der Browser die Angaben als Formular
+    (wie beim Absenden eines Formulars auf einer Website), nicht als JSON. Diese Funktion
+    sammelt die einzelnen Formularfelder ein und baut daraus ein geprüftes Kleidungsstück-Modell."""
+    # Die Maße kommen als Text im JSON-Format; json.loads macht daraus eine Python-Liste
     try:
         masse_liste = json.loads(masse) if masse else []
     except json.JSONDecodeError:
@@ -141,6 +158,7 @@ async def kleidungsstueck_aendern(
 
 
 class FavoritAnfrage(BaseModel):
+    """Was der Browser beim Herz schickt: nur {"favorit": true} oder {"favorit": false}."""
     favorit: bool
 
 
@@ -157,11 +175,13 @@ async def favorit_setzen(
 
 @router.get("")
 async def kleidungsstuecke_auflisten(nutzer_id: Nutzer) -> list[KleidungsstueckAntwort]:
+    """Alle eigenen Kleidungsstücke, neueste zuerst (für die Schrank-Übersicht)."""
     return await service.alle(nutzer_id)
 
 
 @router.get("/{kleidungsstueck_id}")
 async def kleidungsstueck_anzeigen(kleidungsstueck_id: str, nutzer_id: Nutzer) -> KleidungsstueckAntwort:
+    """Ein Kleidungsstück (für die Detailansicht). 404, wenn es nicht existiert oder jemand anderem gehört."""
     try:
         return await service.eins(kleidungsstueck_id, nutzer_id)
     except service.NichtGefunden:

@@ -2,6 +2,9 @@
 
 Nur hier wird die Collection gelesen und geschrieben. Die Verbindung kommt aus
 app/core/datenbank.py.
+
+Wichtig für die Sicherheit: Jede Suche enthält auch die nutzer_id. So findet ein Nutzer
+nur seine eigenen Kleidungsstücke, selbst wenn er die ID eines fremden Teils kennt.
 """
 
 from bson import ObjectId
@@ -14,11 +17,15 @@ COLLECTION = "kleidungsstuecke"
 
 
 def _collection():
+    """Den „Karteikasten“ kleidungsstuecke in der Datenbank holen."""
     return get_db()[COLLECTION]
 
 
 def _als_dict(dokument: dict) -> dict:
-    """MongoDB-Dokument → einfaches dict, alle Verweise (`…_id`) als Text."""
+    """MongoDB-Dokument → einfaches dict, alle Verweise (`…_id`) als Text.
+
+    MongoDB speichert IDs in einem eigenen Format (ObjectId). Der Rest der App und der
+    Browser arbeiten mit normalem Text, deshalb wird hier umgewandelt."""
     dokument = dict(dokument)
     dokument["id"] = str(dokument.pop("_id"))
     dokument["nutzer_id"] = str(dokument["nutzer_id"])
