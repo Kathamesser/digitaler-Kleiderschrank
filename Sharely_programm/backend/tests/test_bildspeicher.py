@@ -201,3 +201,37 @@ def test_profilbild_ersetzen_zaehlt_altes_nicht_doppelt(bucket, monkeypatch, als
         assert client.put("/api/nutzer/ich/profilbild", files={"bild": ("a.jpg", groß)}).status_code == 200
         assert client.put("/api/nutzer/ich/profilbild", files={"bild": ("b.jpg", groß)}).status_code == 200
     assert len(_alle_schluessel(bucket)) == 1
+
+
+def test_bearbeiten_mit_neuem_bild_im_bucket(bucket, monkeypatch, als_test_nutzer):
+    """Kathas Bearbeiten (PUT) nach dem Zusammenführen mit dem Bildspeicher: neues Foto
+    landet im Bucket, das alte wird dort gelöscht."""
+    speicher: dict[str, dict] = {}
+
+    async def anlegen(daten):
+        eintrag = {**daten, "id": str(ObjectId())}
+        speicher[eintrag["id"]] = eintrag
+        return eintrag
+
+    async def finden(kleidungsstueck_id, nutzer_id):
+        eintrag = speicher.get(kleidungsstueck_id)
+        return eintrag if eintrag and eintrag["nutzer_id"] == nutzer_id else None
+
+    async def aendern(kleidungsstueck_id, nutzer_id, daten):
+        eintrag = await finden(kleidungsstueck_id, nutzer_id)
+        if eintrag is None:
+            return None
+        eintrag.update(daten)
+        return eintrag
+
+    monkeypatch.setattr(kleidung_repository, "anlegen", anlegen)
+    monkeypatch.setattr(kleidung_repository, "finden", finden)
+    monkeypatch.setattr(kleidung_repository, "aendern", aendern)
+    with TestClient(app) as client:
+        k = client.post("/api/kleidung", data={"kleidungsart": "tops"}, files={"bild": ("a.png", PNG)}).json()
+        alt = speicher[k["id"]]["bild_pfad"]
+        antwort = client.put(f"/api/kleidung/{k['id']}", data={"kleidungsart": "tops"}, files={"bild": ("b.jpg", JPEG)})
+        assert antwort.status_code == 200, antwort.text
+        assert client.get(k["bild_url"]).content == JPEG
+    assert _alle_schluessel(bucket) == [speicher[k["id"]]["bild_pfad"]]
+    assert alt not in _alle_schluessel(bucket)
