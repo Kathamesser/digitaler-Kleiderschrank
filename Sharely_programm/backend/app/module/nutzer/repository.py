@@ -18,18 +18,27 @@ OHNE_GROSS_KLEIN = {"locale": "de", "strength": 2}
 
 
 def _collection():
+    """Den „Karteikasten“ nutzer in der Datenbank holen."""
     return get_db()[COLLECTION]
 
 
+# „async“/„await“: Datenbankanfragen dauern einen Moment. Mit await wartet die Funktion auf
+# die Antwort, während das Backend in der Zwischenzeit andere Anfragen bearbeiten kann.
+
+
 async def finden(nutzer_id: str) -> dict | None:
+    """Einen Nutzer über seine ID finden; None, wenn es ihn nicht gibt.
+    ObjectId(...) wandelt den Text in das ID-Format um, das MongoDB verwendet."""
     return await _collection().find_one({"_id": ObjectId(nutzer_id)})
 
 
 async def finden_per_nutzername(nutzername: str) -> dict | None:
+    """Einen Nutzer über seinen Nutzernamen finden (Groß-/Kleinschreibung egal)."""
     return await _collection().find_one({"nutzername": nutzername}, collation=OHNE_GROSS_KLEIN)
 
 
 async def finden_per_email(email: str) -> dict | None:
+    """Einen Nutzer über seine E-Mail-Adresse finden."""
     return await _collection().find_one({"email": email})
 
 
@@ -41,6 +50,7 @@ async def anlegen(daten: dict) -> str:
 
 
 async def profilbild_setzen(nutzer_id: str, bild_pfad: str | None, geaendert_am: datetime) -> None:
+    """Den Verweis auf das Profilbild ändern (None = kein Bild). „$set“ ändert nur diese Felder."""
     await _collection().update_one(
         {"_id": ObjectId(nutzer_id)}, {"$set": {"profilbild_pfad": bild_pfad, "geaendert_am": geaendert_am}}
     )

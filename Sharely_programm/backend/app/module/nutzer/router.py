@@ -5,6 +5,17 @@ Grundlage: User Story 6 und 7, Konzeption 1.2, Wireframes 1–4 und 18–21, Moc
 
 Hier nur Anfragen entgegennehmen, prüfen lassen (schemas.py) und an service.py
 weitergeben. Keine Geschäftslogik und keine Datenbankzugriffe in dieser Datei.
+
+So sind alle Module aufgebaut (wie in einem Restaurant):
+- router.py     = der Kellner: nimmt die Bestellung (Anfrage aus dem Browser) an und bringt die Antwort.
+- schemas.py    = die Speisekarte: legt fest, wie eine Bestellung aussehen muss und was zurückkommt.
+- service.py    = die Küche: hier passiert die eigentliche Arbeit, mit allen Regeln.
+- repository.py = das Lager: nur hier wird in der Datenbank gelesen und geschrieben.
+
+Ein „Endpunkt“ ist eine Adresse wie /api/nutzer/anmelden, die der Browser aufrufen kann.
+HTTP-Statuscodes in den Antworten: 200/201/204 = hat geklappt, 401 = nicht angemeldet,
+404 = nicht gefunden, 409 = schon vergeben, 413 = Datei zu groß, 415 = falsches Dateiformat,
+422 = Eingabe ungültig, 507 = Speicher voll.
 """
 
 from typing import Annotated
@@ -16,8 +27,11 @@ from app.core.sicherheit import COOKIE_NAME, aktueller_nutzer, sitzung_beenden, 
 from app.module.nutzer import service
 from app.module.nutzer.schemas import AnmeldenAnfrage, ProfilAntwort, RegistrierenAnfrage
 
+# Alle Adressen in dieser Datei beginnen mit /nutzer (in main.py kommt noch /api davor)
 router = APIRouter(prefix="/nutzer", tags=["nutzer"])
 
+# Abkürzung: Ein Parameter vom Typ „Nutzer“ heißt „nur für Angemeldete“. FastAPI prüft vorher
+# das Anmelde-Cookie (sicherheit.py) und gibt der Funktion die ID des angemeldeten Nutzers.
 Nutzer = Annotated[str, Depends(aktueller_nutzer)]
 
 
@@ -37,6 +51,8 @@ async def _sitzung_setzen(antwort: Response, nutzer_id: str) -> None:
 @router.post("/registrieren", status_code=status.HTTP_201_CREATED)
 async def registrieren(anfrage: RegistrierenAnfrage, antwort: Response) -> ProfilAntwort:
     """Konto anlegen und gleich angemeldet sein (Mockup „Desktop 2 · Registrierung“)."""
+    # try/except: „versuche das; geht es schief, mach stattdessen das“. Hier wird aus einem
+    # Fehler der Küche (service.py) die passende Fehlermeldung für den Browser.
     try:
         nutzer_id = await service.registrieren(anfrage)
     except service.EingabeUngueltig as fehler:
@@ -71,6 +87,7 @@ async def abmelden(
 
 @router.get("/ich")
 async def mein_profil(nutzer_id: Nutzer) -> ProfilAntwort:
+    """Das eigene Profil (Name, E-Mail, Profilbild). Die Seiten fragen das ab, um oben den Namen zu zeigen."""
     return await service.profil(nutzer_id)
 
 

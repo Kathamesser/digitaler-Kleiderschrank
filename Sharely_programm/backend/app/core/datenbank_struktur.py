@@ -22,6 +22,18 @@ from app.core.sicherheit import TEST_NUTZER_ID
 
 # ---------------------------------------------------------------- Bausteine
 
+# Einfach erklärt: Diese Datei ist ein Bauplan der Datenbank, kein Ablauf. Für jede Collection
+# („Karteikasten“, z. B. nutzer oder kleidungsstuecke) steht hier:
+#   - die Prüfregel: welche Felder ein Eintrag haben MUSS und welchen Typ jedes Feld hat;
+#     passt ein neuer Eintrag nicht dazu, weist MongoDB ihn ab (zusätzlicher Schutz neben dem Backend);
+#   - die Indizes: wie ein Stichwortverzeichnis im Buch. Sie machen das Suchen schnell.
+#     „unique“ = dieser Wert darf nur einmal vorkommen (z. B. jede E-Mail-Adresse nur einmal).
+#     „ttl“ = Einträge löschen sich nach Ablauf von selbst (z. B. alte Anmeldungen).
+#
+# Die folgenden Kürzel sind Bausteine für die Prüfregeln. „bsonType“ ist der Datentyp in MongoDB:
+# objectId = Kennung eines Eintrags, string = Text, date = Zeitpunkt, bool = ja/nein,
+# int/long = ganze Zahl, double/decimal = Kommazahl, array = Liste, null = leer.
+
 ID = {"bsonType": "objectId"}
 ID_ODER_NULL = {"bsonType": ["objectId", "null"]}
 TEXT = {"bsonType": "string"}
@@ -360,12 +372,15 @@ def platzhalter_nutzer_ergaenzen() -> list[dict]:
     Felder. Vorhandene Werte (z. B. ein schon gespeichertes Profilbild aus der
     Zeit vor den Prüfregeln) bleiben unverändert."""
     felder = {k: v for k, v in platzhalter_nutzer().items() if k != "_id"}
+    # „$ifNull“: den vorhandenen Wert behalten; nur wenn das Feld fehlt, den Standardwert nehmen
     return [{"$set": {k: {"$ifNull": [f"${k}", {"$literal": v}]} for k, v in felder.items()}}]
 
 
 def stammdaten() -> dict[str, list[dict]]:
     """Feste Einträge, die die App braucht: Kleidungsarten, vorgegebene
     Kategorien und der Test-Nutzer. Werden nur mit `--stammdaten` eingespielt."""
+    # Die Listen werden aus wertelisten.py gebaut: für jede Kleidungsart ein Eintrag mit
+    # Reihenfolge (1, 2, 3 …) und den Messpunkten, die für diese Art zählen
     return {
         "nutzer": [platzhalter_nutzer()],
         "kleidungsarten": [

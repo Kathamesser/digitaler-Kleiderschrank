@@ -2,6 +2,9 @@
 
 Hier stehen Regeln und Abläufe, z. B. Berechtigungen ("gehört das dem Nutzer?"),
 Obergrenzen und Berechnungen. Datenbankzugriffe laufen über repository.py.
+
+In diesem Modul: Registrieren (mit Prüfung von E-Mail, Nutzername und Passwort), Anmelden
+und das Profilbild (hochladen, ersetzen, löschen, anzeigen).
 """
 
 import re
@@ -20,6 +23,8 @@ from app.module.nutzer import repository
 from app.module.nutzer.schemas import ProfilAntwort, RegistrierenAnfrage
 
 
+# Eigene Fehlerarten („Exceptions“). Die Küche meldet damit, WAS schiefging; der Kellner
+# (router.py) macht daraus die passende Antwort an den Browser.
 class NichtGefunden(Exception):
     """Der Nutzer hat kein Profilbild."""
 
@@ -36,14 +41,17 @@ class AnmeldungFalsch(Exception):
     """Nutzername oder Passwort stimmt nicht."""
 
 
-# Buchstaben, Ziffern, Punkt, Unterstrich, Bindestrich (z. B. „kleiderliebe“, „paul.m“)
+# Muster („reguläre Ausdrücke“) beschreiben, wie ein gültiger Wert aussehen muss.
+# Buchstaben, Ziffern, Punkt, Unterstrich, Bindestrich (z. B. „kleiderliebe“, „paul.m“), 3 bis 30 Zeichen
 NUTZERNAME_MUSTER = re.compile(r"[A-Za-z0-9._-]{3,30}")
+# E-Mail: etwas, dann @, dann etwas mit Punkt (z. B. name@beispiel.de)
 EMAIL_MUSTER = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 # Wie im Formular: mindestens 8 Zeichen und ein Sonderzeichen
 PASSWORT_MIN = 8
 
 
 def _antwort(nutzer_id: str, nutzer: dict | None) -> ProfilAntwort:
+    """Aus dem Datenbank-Eintrag die Antwort für den Browser bauen (ohne Passwort-Hash!)."""
     nutzer = nutzer or {}
     pfad = nutzer.get("profilbild_pfad")
     # ?v=… ändert sich mit jedem neuen Bild, damit der Browser nicht das alte aus dem Speicher zeigt
@@ -67,6 +75,7 @@ async def registrieren(anfrage: RegistrierenAnfrage) -> str:
         raise EingabeUngueltig(
             "Der Nutzername braucht 3 bis 30 Zeichen: Buchstaben, Ziffern, Punkt, Unterstrich oder Bindestrich."
         )
+    # isalnum() = „besteht nur aus Buchstaben und Ziffern“, also ohne Sonderzeichen
     if len(anfrage.passwort) < PASSWORT_MIN or anfrage.passwort.isalnum():
         raise EingabeUngueltig("Das Passwort braucht mindestens 8 Zeichen und ein Sonderzeichen.")
     if await repository.finden_per_email(email):
@@ -74,6 +83,7 @@ async def registrieren(anfrage: RegistrierenAnfrage) -> str:
     if await repository.finden_per_nutzername(nutzername):
         raise SchonVergeben("Dieser Nutzername ist schon vergeben.")
     jetzt = datetime.now(timezone.utc)
+    # Neuen Nutzer speichern. Statt des Passworts nur sein Hash (siehe core/sicherheit.py).
     try:
         return await repository.anlegen({
             "nutzername": nutzername,
@@ -100,6 +110,7 @@ async def anmelden(nutzername: str, passwort: str) -> str:
 
 
 async def profil(nutzer_id: str) -> ProfilAntwort:
+    """Das Profil eines Nutzers aus der Datenbank holen und als Antwort aufbereiten."""
     return _antwort(nutzer_id, await repository.finden(nutzer_id))
 
 
@@ -107,8 +118,9 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
     """Neues Profilbild prüfen und ablegen, das alte löschen (Datenschutz: keine Altbilder)."""
     if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
         raise BildZuGross()
-    endung = bild_format(bild)
+    endung = bild_format(bild)  # prüft, ob es wirklich ein Bild ist, und liefert z. B. "jpg"
 
+    # Gibt es schon ein Profilbild? Dann wird dessen Platz gleich frei und zählt nicht zum Speicherlimit.
     alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     frei_wird = 0
     if alt:
@@ -131,7 +143,8 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
 
 
 async def profilbild_entfernen(nutzer_id: str) -> ProfilAntwort:
-    alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
+    """Profilbild löschen: erst den Verweis im Nutzer-Eintrag entfernen, dann die Bilddatei."""
+    alt =(await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     if alt:
         await repository.profilbild_setzen(nutzer_id, None, datetime.now(timezone.utc))
         await bildspeicher.loeschen(alt)

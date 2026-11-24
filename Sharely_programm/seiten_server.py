@@ -18,11 +18,15 @@ PORT = 5173
 
 
 class OhneVeralteteDateien(SimpleHTTPRequestHandler):
+    """Ein einfacher Datei-Server von Python, der Dateien aus dem Ordner an den Browser schickt.
+    Wir ergänzen nur den Hinweis „no-cache“ (Browser soll jedes Mal nachfragen)."""
+
     def end_headers(self):
         self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
 
+# Nur wenn die Datei direkt gestartet wird (python seiten_server.py): Server bauen und laufen lassen
 if __name__ == "__main__":
     ordner = Path(__file__).resolve().parent  # immer Sharely_programm, egal von wo gestartet
     # Nur auf diesem Rechner erreichbar, nicht für andere im (Schul-)Netz

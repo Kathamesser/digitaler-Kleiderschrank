@@ -1,4 +1,19 @@
-"""Gemeinsame Fixtures für die Tests."""
+"""Gemeinsame Fixtures für die Tests.
+
+Was sind diese Tests? Kleine Programme, die das Backend automatisch ausprobieren, z. B.
+„lade ein Bild hoch und prüfe, ob das Kleidungsstück danach in der Liste steht“. Man startet
+alle mit `python -m pytest` im Ordner backend/. Grün heißt: alles verhält sich wie erwartet.
+So merkt man sofort, wenn eine Änderung etwas anderes kaputt macht.
+
+Begriffe:
+- Jede Funktion, deren Name mit test_ beginnt, ist ein Test.
+- „assert“ heißt „stelle sicher, dass …“: Stimmt die Aussage nicht, schlägt der Test fehl.
+- Eine „Fixture“ (@pytest.fixture) bereitet etwas für Tests vor und räumt danach auf.
+  Code vor „yield“ läuft vor dem Test, Code danach hinterher.
+- TestClient spielt den Browser: Er schickt Anfragen ans Backend, ohne dass ein Server läuft.
+- monkeypatch ersetzt für die Dauer eines Tests etwas durch eine Attrappe (z. B. die echte
+  Datenbank durch einen Speicher im Arbeitsspeicher), damit Tests ohne Internet laufen.
+"""
 
 import pytest
 

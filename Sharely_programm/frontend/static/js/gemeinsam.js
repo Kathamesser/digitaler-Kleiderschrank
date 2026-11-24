@@ -1,10 +1,23 @@
 // Gemeinsame Bausteine aller Seiten (Templates): Backend-Adresse, Beschriftungen, Symbole, Kopf- und Fußleiste.
 // Aussehen nach den Desktop-Mockups (docs/mockups/desktop/).
 // Später in React/Vue: Aufrufe → src/api/, Symbole/Kopf/Fußleiste → src/komponenten/.
+//
+// Für Einsteiger:
+// - JavaScript (JS) ist die Programmiersprache, die im Browser läuft. Sie macht die Seiten lebendig:
+//   Daten vom Backend holen, Listen anzeigen, auf Klicks reagieren.
+// - Jede Seite (z. B. schrank.html) lädt zuerst diese Datei. Alles, was hier steht, können dann
+//   alle Seiten benutzen, ohne es selbst noch einmal zu schreiben.
+// - „const“ legt einen festen Wert an, „let“ einen veränderlichen, „function“ eine Funktion
+//   (ein benanntes Stück Ablauf, das man immer wieder aufrufen kann).
+// - „document“ ist die geladene Seite. Mit document.createElement(…) baut man neue Teile der
+//   Seite, mit .append(…) hängt man sie ein. Das nennt man das „DOM“ (der Seitenaufbau als Baum).
+// - „async“/„await“: Anfragen ans Backend dauern einen Moment. await wartet auf die Antwort,
+//   ohne dass die Seite dabei einfriert.
 
 // Lokal (python start.py) kommen die Seiten vom Seiten-Server auf Port 5173 und das Backend
 // läuft auf 8000. Auf dem Server (Railway) liefert das Backend die Seiten selbst aus, dann
 // geht alles an dieselbe Adresse (leerer Text = gleiche Adresse wie die Seite).
+// (Schreibweise „bedingung ? a : b“ heißt: wenn die Bedingung stimmt, dann a, sonst b.)
 const BACKEND = location.port === "5173" ? "http://localhost:8000" : "";
 const API = `${BACKEND}/api`;
 const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzdem selbst
@@ -12,6 +25,7 @@ const MAX_BILD_MB = 10; // wie max_bild_mb im Backend; das Backend prüft trotzd
 // Der angemeldete Nutzer (GET /nutzer/ich), einmal je Seite geladen. Ohne Anmeldung
 // leitet api() zur Anmeldeseite weiter.
 let ichLaden;
+// „??=“ heißt: nur beim ersten Aufruf laden, danach dieselbe (schon laufende) Anfrage wiederverwenden
 function ich() {
   return (ichLaden ??= holeJson("/nutzer/ich"));
 }
@@ -25,11 +39,14 @@ async function abmelden() {
     location.href = "index.html";
   }
 }
+// Auf jeden Klick auf der Seite lauschen; war es ein Abmelden-Knopf, abmelden statt dem Link zu folgen
 document.addEventListener("click", (e) => {
   if (!e.target.closest("[data-abmelden]")) return;
   e.preventDefault();
   abmelden();
 });
+
+// ---------- Wertelisten: was gespeichert wird (links) und was angezeigt wird (rechts) ----------
 
 // Werte wie in Sharely_programm/backend/app/module/kleidung/schemas.py (ERM vom 20.10.2026)
 const KLEIDUNGSARTEN = {
@@ -42,6 +59,7 @@ const KLEIDUNGSART_EINZAHL = {
   jacken: "Jacke", schuhe: "Schuhe", unterwaesche: "Unterwäsche", einteiler: "Einteiler", accessoires: "Accessoire",
 };
 const SAISONS = { fruehling: "Frühling", sommer: "Sommer", herbst: "Herbst", winter: "Winter", ganzjaehrig: "Ganzjährig" };
+// Status eines Kleidungsstücks mit Beschriftung und Symbol (Reihenfolge = Reihenfolge der Anzeige)
 const STATUS = [
   { wert: "im_schrank", text: "Eigenes", symbol: "haus" },
   { wert: "geliehen", text: "Geliehen", symbol: "links" },
@@ -55,6 +73,7 @@ const KATEGORIEN_VORGABE = [
   "Winterkleidung", "Sommerkleidung", "Lieblingsteile", "Second Hand", "Geschenk",
 ];
 
+// Farben mit Anzeigename und dem Farbton für den Farbkreis (#rrggbb = Farbcode aus Rot-, Grün-, Blau-Anteil)
 const FARBEN = [
   { wert: "schwarz", text: "Schwarz", farbe: "#2b2b2b" },
   { wert: "weiss", text: "Weiß", farbe: "#ffffff" },
@@ -88,8 +107,14 @@ const MESSPUNKTE = {
   "fusslaenge": "Fußlänge",
 };
 
+// ---------- Symbole ----------
+
+// Alle Symbole (Herz, Schloss, Pfeile …) sind kleine Vektorgrafiken (SVG): eine Zeichenanweisung
+// aus Linien und Kreisen statt eines Bildes. Sie bleiben in jeder Größe scharf und nehmen die
+// Textfarbe an (currentColor). svg(...) baut den gemeinsamen Rahmen, darin steht nur die Zeichnung.
 const svg = (inhalt, groesse = 18) =>
   `<svg width="${groesse}" height="${groesse}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inhalt}</svg>`;
+// Benutzung auf den Seiten: SYMBOL.herz oder in HTML <span data-symbol="herz"></span>
 const SYMBOL = {
   zurueck: svg('<path d="m15 5-7 7 7 7"/>'),
   weiter: svg('<path d="m9 5 7 7-7 7"/>', 16),
@@ -137,13 +162,17 @@ const SYMBOL = {
   freunde: svg('<circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M15 14.5a5 5 0 0 1 6.5 4.8"/>'),
 };
 
+// ---------- Bausteine für die Seiten ----------
+
 /** <dialog> verdrahten: Knöpfe mit data-schliessen und ein Klick neben das Fenster schließen es. */
+// (<dialog> ist ein Fenster, das sich über die Seite legt, z. B. „Kleidung filtern“.)
 function fensterVerdrahten(fenster) {
   for (const el of fenster.querySelectorAll("[data-schliessen]")) el.onclick = (e) => { e.preventDefault(); fenster.close(); };
   fenster.addEventListener("click", (e) => { if (e.target === fenster) fenster.close(); });
 }
 
 /** „Lenas“, „Jonas’“: Vorname im Genitiv für Titel wie „Lenas Kleiderschrank“. */
+// Endet der Vorname auf s, ß, x oder z, kommt nur ein Apostroph dran, sonst ein „s“.
 function genitiv(name) {
   const vorname = name.split(" ")[0];
   return /[sßxz]$/i.test(vorname) ? `${vorname}’` : `${vorname}s`;
@@ -153,6 +182,7 @@ function genitiv(name) {
  *  titel: Text oder Funktion (nutzer) => Text, z. B. für „Hallo …!“.
  *  Lädt den Nutzer; ohne Anmeldung geht es damit auf jeder inneren Seite zur Anmeldung. */
 function seitenkopf(titel) {
+  // Die Kopfzeile als HTML-Text bauen und ganz oben in <main> einsetzen
   const kopf = document.createElement("header");
   kopf.className = "seitenkopf";
   kopf.innerHTML = `
@@ -165,6 +195,7 @@ function seitenkopf(titel) {
   if (typeof titel === "string") kopf.querySelector("h1").textContent = titel;
   document.querySelector("main").prepend(kopf);
   tableiste();
+  // Sobald das Profil vom Backend da ist: Name und Profilbild rechts oben eintragen
   ich()
     .then((nutzer) => {
       if (typeof titel === "function") kopf.querySelector("h1").textContent = titel(nutzer);
@@ -190,6 +221,7 @@ async function profilbildEinsetzen(kreis, url) {
 /** Tab-Leiste unten auf Handy und Tablet (Mockups docs/mockups/handy/ und /tablet/). Am Desktop
  *  blendet stil.css sie aus. Kommt mit seitenkopf() auf jede innere Seite. Der Tab der aktuellen
  *  Seite ist hervorgehoben; Seiten, die zu keinem Tab gehören (z. B. Freunde), heben keinen hervor. */
+// Die fünf Tabs: Beschriftung, Symbol, Ziel und auf welchen Seiten der Tab als „aktiv“ gilt
 const TABS = [
   { text: "Start", symbol: "haus", href: "hauptmenue.html", seiten: ["hauptmenue.html"] },
   { text: "Schrank", textLang: "Kleiderschrank", symbol: "schrank", href: "schrank.html",
@@ -201,10 +233,12 @@ const TABS = [
 ];
 
 function tableiste() {
+  // Name der aktuellen Seite aus der Adresse (z. B. "schrank.html")
   const seite = location.pathname.split("/").pop() || "hauptmenue.html";
   const leiste = document.createElement("nav");
   leiste.className = "tableiste";
   leiste.setAttribute("aria-label", "Hauptnavigation");
+  // Für jeden Tab einen Link mit Symbol und Text bauen
   for (const tab of TABS) {
     const link = document.createElement("a");
     link.href = tab.href;
@@ -239,6 +273,7 @@ function fussleiste(knoepfe) {
   const leiste = document.createElement("nav");
   leiste.className = "fussleiste";
   for (const { text, symbol, href, onclick, art = "", id } of knoepfe) {
+    // Mit Ziel (href) wird es ein Link, sonst ein Knopf, der beim Klick onclick ausführt
     const knopf = document.createElement(href ? "a" : "button");
     if (href) knopf.href = href;
     else { knopf.type = "button"; knopf.onclick = onclick; }
@@ -258,10 +293,12 @@ function fussleiste(knoepfe) {
 function symboleEinsetzen(wurzel = document) {
   for (const el of wurzel.querySelectorAll("[data-symbol]")) el.innerHTML = SYMBOL[el.dataset.symbol];
 }
+// Sobald die Seite fertig geladen ist („DOMContentLoaded“), alle Symbol-Platzhalter füllen
 document.addEventListener("DOMContentLoaded", () => symboleEinsetzen());
 
 /** Auswahl-Pillen in den Container mit der id `ziel` setzen (Hinzufügen, Filter im Schrank).
  *  werte: { wert: Beschriftung }, typ: "radio" oder "checkbox". */
+// radio = genau eine Auswahl möglich, checkbox = mehrere Kästchen ankreuzbar
 function pillen(ziel, name, werte, typ) {
   const box = document.getElementById(ziel);
   for (const [wert, text] of Object.entries(werte)) {
@@ -290,10 +327,14 @@ function farbkreise(ziel, name, typ) {
   }
 }
 
+// ---------- Mit dem Backend sprechen ----------
+
 /** GET ans Backend; wirft bei Fehlern eine Meldung, die man direkt anzeigen kann. */
 /** Aufruf ans Backend mit dem Sitzungs-Cookie (credentials). Antwortet das Backend mit 401
  *  (nicht angemeldet), geht es zur Anmeldeseite; weiterleiten: false schaltet das ab
  *  (Anmeldeseite selbst, dort heißt 401 „Passwort falsch“). */
+// fetch(...) ist der eingebaute Befehl des Browsers, um eine Adresse abzufragen.
+// „throw new Error(...)“ meldet einen Fehler, den die aufrufende Seite abfangen und anzeigen kann.
 async function api(pfad, { weiterleiten = true, ...optionen } = {}) {
   let antwort;
   try {
@@ -312,6 +353,8 @@ async function api(pfad, { weiterleiten = true, ...optionen } = {}) {
   return antwort;
 }
 
+// Daten vom Backend holen und gleich als JavaScript-Objekt zurückgeben.
+// JSON ist das Textformat, in dem Backend und Browser Daten austauschen, z. B. {"name": "Shirt"}.
 async function holeJson(pfad) {
   const antwort = await api(pfad);
   const inhalt = await antwort.json();
@@ -328,21 +371,27 @@ function fehlerText(inhalt) {
   return "Unbekannter Fehler.";
 }
 
+// Meldung in einem Kasten anzeigen; art "ok" = grün (hat geklappt), "fehler" = rot
 function zeigeMeldung(el, text, art) {
   el.textContent = text;
   el.className = `meldung ${art}`;
 }
+
+// ---------- Kleidungsstücke anzeigen ----------
 
 /** Anzeigename eines Kleidungsstücks: der Name, ohne Namen die Kleidungsart („Jacke“). */
 function titelVon(k) {
   return k.name || KLEIDUNGSART_EINZAHL[k.kleidungsart] || k.kleidungsart;
 }
 
+// Vollständige Adresse des Fotos eines Kleidungsstücks
 function bildUrl(k) {
   return BACKEND + k.bild_url;
 }
 
 /** Pastellton der Kachel wie in den Mockups, fest je Teil (aus der id berechnet). */
+// Die Buchstaben der id werden zu einer Zahl zusammengezählt; der Rest beim Teilen durch 5
+// wählt einen der fünf Töne. So hat dasselbe Teil immer dieselbe Farbe.
 function tonVon(id) {
   const TOENE = ["ton-beige", "ton-tuerkis", "ton-gelb", "ton-rosa", "ton-minze"];
   let summe = 0;
@@ -350,17 +399,19 @@ function tonVon(id) {
   return TOENE[summe % TOENE.length];
 }
 
-/** Kachel eines Kleidungsstücks (Schrank, Outfit erstellen): Bild, Herz, Name, Kleidungsart. */
 /** Herz-Knopf auf einer Karte auf „Favorit“ bzw. „kein Favorit“ stellen. */
 function herzZeigen(herz, favorit) {
   herz.innerHTML = favorit ? SYMBOL.herzVoll : SYMBOL.herz;
+  // aria-…: Angaben für Bildschirmleser (Hilfsprogramme für blinde Menschen)
   herz.setAttribute("aria-pressed", String(favorit));
   herz.setAttribute("aria-label", favorit ? "Favorit, antippen zum Entfernen" : "Als Favorit markieren");
 }
 
+/** Kachel eines Kleidungsstücks (Schrank, Outfit erstellen): Bild, Herz, Name, Kleidungsart. */
 /** favoritUmschalten: wenn angegeben, ist das Herz ein eigener Knopf (Schrank-Übersicht, 24.11.2026).
  *  Ein Klick darauf öffnet nicht das Teil, sondern ruft favoritUmschalten(k, herz) auf. */
 function kleidungsKarte(k, { link = true, favoritUmschalten = null } = {}) {
+  // Mit link=true ist die ganze Karte ein Link zur Detailansicht, sonst ein Knopf
   const karte = document.createElement(link ? "a" : "button");
   karte.className = "karte";
   if (link) karte.href = `kleidungsstueck.html?id=${encodeURIComponent(k.id)}`;
@@ -370,6 +421,7 @@ function kleidungsKarte(k, { link = true, favoritUmschalten = null } = {}) {
   const img = document.createElement("img");
   img.src = bildUrl(k);
   img.alt = titelVon(k);
+  // lazy = Bild erst laden, wenn es beim Scrollen in Sicht kommt (spart Daten)
   img.loading = "lazy";
   img.onerror = () => { // Bild fehlt: Bügel wie im Mockup, Herz und Schloss bleiben
     const ersatz = document.createElement("template");
@@ -393,9 +445,11 @@ function kleidungsKarte(k, { link = true, favoritUmschalten = null } = {}) {
     herz.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") umschalten(e); };
     kachel.append(herz);
   } else if (link) {
+    // Herz nur als Anzeige (nicht anklickbar)
     kachel.insertAdjacentHTML("beforeend",
       `<span class="abzeichen rechts" ${k.favorit ? 'aria-label="Favorit"' : 'aria-hidden="true"'}>${k.favorit ? SYMBOL.herzVoll : SYMBOL.herz}</span>`);
   }
+  // Schloss oben links, wenn das Teil privat ist (Freunde sehen es nicht)
   if (k.privat) kachel.insertAdjacentHTML("beforeend", `<span class="abzeichen links" aria-label="Privat">${SYMBOL.schloss}</span>`);
   const name = document.createElement("strong");
   name.textContent = titelVon(k);

@@ -40,6 +40,7 @@ def _adresse_ohne_zugangsdaten(url: str) -> str:
 
 
 def _index_optionen(index: dict) -> dict:
+    """Unsere Index-Beschreibung (aus datenbank_struktur.py) in die Begriffe übersetzen, die MongoDB erwartet."""
     optionen = {"name": index_name(index)}
     if index.get("unique"):
         optionen["unique"] = True
@@ -51,6 +52,7 @@ def _index_optionen(index: dict) -> dict:
 
 
 def _aktuelle_pruefregel(db: Database, name: str) -> dict | None:
+    """Die Prüfregel, die gerade in der Datenbank für diese Collection gilt (zum Vergleichen)."""
     antwort = db.command("listCollections", filter={"name": name})
     return antwort["cursor"]["firstBatch"][0].get("options", {}).get("validator")
 
@@ -61,6 +63,8 @@ def einrichten(db: Database, nur_pruefen: bool = False) -> tuple[list[str], list
     fehler: list[str] = []
     vorhanden = set(db.list_collection_names())
 
+    # Für jede Collection aus dem Bauplan: fehlt sie → anlegen; weicht die Prüfregel ab → aktualisieren;
+    # fehlt ein Index → anlegen. Mit nur_pruefen=True wird nichts geändert, nur gemeldet.
     for name, teil in COLLECTIONS.items():
         regel = teil["pruefregel"]
 
@@ -93,6 +97,7 @@ def einrichten(db: Database, nur_pruefen: bool = False) -> tuple[list[str], list
                 # gleicher Index unter anderem Namen
                 fehler.append(f"{name}: Index {iname} nicht angelegt: {(e.details or {}).get('errmsg', e)}")
 
+    # Collections, die es in der Datenbank gibt, aber nicht im Bauplan: nur melden, nie löschen
     for name in sorted(vorhanden - COLLECTIONS.keys()):
         if not name.startswith("system."):
             meldungen.append(f"{name}: steht nicht im ERM (bleibt unverändert)")
@@ -107,6 +112,8 @@ def stammdaten_einspielen(db: Database) -> list[str]:
     nur fehlende Felder ergänzt (z. B. ein Profilbild bleibt erhalten)."""
     daten = stammdaten()
     neu_arten = 0
+    # „upsert“ = update + insert: Gibt es den Eintrag schon, wird er aktualisiert, sonst neu angelegt.
+    # „$setOnInsert“ setzt einen Wert nur beim Neuanlegen, nicht bei schon vorhandenen Einträgen.
     for art in daten["kleidungsarten"]:
         ergebnis = db["kleidungsarten"].update_one(
             {"_id": art["_id"]},
@@ -137,6 +144,7 @@ def stammdaten_einspielen(db: Database) -> list[str]:
 
 
 def main() -> int:
+    """Ablauf: Optionen lesen → mit der Datenbank verbinden → einrichten (und ggf. Stammdaten) → Ergebnis ausgeben."""
     parser = argparse.ArgumentParser(description="MongoDB-Datenbank nach dem ERM einrichten.")
     parser.add_argument("--pruefen", action="store_true", help="nichts ändern, nur Abweichungen anzeigen")
     parser.add_argument("--stammdaten", action="store_true", help="Kleidungsarten, vorgegebene Kategorien und den Test-Nutzer einspielen")
@@ -148,7 +156,7 @@ def main() -> int:
 
     client = MongoClient(settings.mongodb_url, serverSelectionTimeoutMS=5000, tz_aware=True)
     try:
-        client.admin.command("ping")
+        client.admin.command("ping")  # kurz anklopfen: Ist die Datenbank erreichbar?
         db = client[settings.mongodb_datenbank]
         meldungen, fehler = einrichten(db, nur_pruefen=args.pruefen)
         if args.stammdaten and not args.pruefen and not fehler:
@@ -170,5 +178,6 @@ def main() -> int:
     return 1 if fehler else 0
 
 
+# Nur beim direkten Aufruf (python -m app.datenbank_einrichten) ausführen
 if __name__ == "__main__":
     sys.exit(main())

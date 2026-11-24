@@ -9,4 +9,6 @@ weitergeben. Keine Geschäftslogik und keine Datenbankzugriffe in dieser Datei.
 
 from fastapi import APIRouter
 
+# Noch leer: Das Modul ist schon angelegt (Ordner, Dateien, Adresse /api/freunde), hat aber noch keine
+# Endpunkte. Die kommen in einer späteren Projektphase (siehe docs/planung/ROADMAP.md).
 router = APIRouter(prefix="/freunde", tags=["freunde"])
