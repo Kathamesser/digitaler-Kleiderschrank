@@ -6,8 +6,7 @@ Obergrenzen und Berechnungen. Datenbankzugriffe laufen über repository.py.
 
 import uuid
 from datetime import datetime, time, timezone
-from pathlib import Path
-
+from app.core import bildspeicher
 from app.core.config import get_settings
 from app.module.kleidung import repository
 from app.module.kleidung.schemas import KleidungsstueckAntwort, KleidungsstueckNeu
@@ -41,10 +40,6 @@ def bild_format(daten: bytes) -> str:
     raise BildUngueltig()
 
 
-def _upload_ordner() -> Path:
-    return Path(get_settings().upload_ordner)
-
-
 def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
     kaufdatum = kleidungsstueck.get("kaufdatum")
     return KleidungsstueckAntwort(
@@ -58,7 +53,7 @@ async def digitalisieren(
     angaben: KleidungsstueckNeu,
     bild: bytes,
 ) -> KleidungsstueckAntwort:
-    """User Story 8: Foto prüfen, im Upload-Ordner des Nutzers ablegen und das
+    """User Story 8: Foto prüfen, im Bildspeicher (app/core/bildspeicher.py) ablegen und das
     Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
     Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
     verleihen."""
@@ -68,9 +63,7 @@ async def digitalisieren(
 
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
-    datei = _upload_ordner() / bild_pfad
-    datei.parent.mkdir(parents=True, exist_ok=True)
-    datei.write_bytes(bild)
+    await bildspeicher.speichern(bild_pfad, bild)
 
     daten = angaben.model_dump(mode="json")
     # MongoDB kennt nur Zeitpunkte, kein reines Datum: Kaufdatum als 00:00 UTC
@@ -85,7 +78,7 @@ async def digitalisieren(
             "erstellt_am": datetime.now(timezone.utc),
         })
     except Exception:
-        datei.unlink(missing_ok=True)  # kein verwaistes Bild ohne Eintrag
+        await bildspeicher.loeschen(bild_pfad)  # kein verwaistes Bild ohne Eintrag
         raise
     return _antwort(kleidungsstueck)
 
@@ -101,12 +94,13 @@ async def eins(kleidungsstueck_id: str, nutzer_id: str) -> KleidungsstueckAntwor
     return _antwort(kleidungsstueck)
 
 
-async def bild_datei(kleidungsstueck_id: str, nutzer_id: str) -> Path:
-    """Pfad zur Bilddatei, nur für den Besitzer des Kleidungsstücks."""
+async def bild(kleidungsstueck_id: str, nutzer_id: str) -> tuple[bytes, str]:
+    """Bildinhalt und Medientyp, nur für den Besitzer des Kleidungsstücks."""
     kleidungsstueck = await repository.finden(kleidungsstueck_id, nutzer_id)
     if kleidungsstueck is None:
         raise NichtGefunden()
-    datei = _upload_ordner() / kleidungsstueck["bild_pfad"]
-    if not datei.is_file():
+    schluessel = kleidungsstueck["bild_pfad"]
+    try:
+        return await bildspeicher.laden(schluessel), bildspeicher.medientyp(schluessel)
+    except bildspeicher.BildFehlt:
         raise NichtGefunden()
-    return datei

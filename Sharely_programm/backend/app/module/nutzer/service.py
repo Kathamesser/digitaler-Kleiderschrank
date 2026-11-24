@@ -11,6 +11,7 @@ from pathlib import Path
 
 from pymongo.errors import DuplicateKeyError
 
+from app.core import bildspeicher
 from app.core.config import get_settings
 from app.core.sicherheit import passwort_hashen, passwort_pruefen
 # Bildprüfung wie beim Kleidungsstück, über dessen service.py (Regel in backend/README.md)
@@ -40,10 +41,6 @@ NUTZERNAME_MUSTER = re.compile(r"[A-Za-z0-9._-]{3,30}")
 EMAIL_MUSTER = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 # Wie im Formular: mindestens 8 Zeichen und ein Sonderzeichen
 PASSWORT_MIN = 8
-
-
-def _upload_ordner() -> Path:
-    return Path(get_settings().upload_ordner)
 
 
 def _antwort(nutzer_id: str, nutzer: dict | None) -> ProfilAntwort:
@@ -115,16 +112,14 @@ async def profilbild_speichern(nutzer_id: str, bild: bytes) -> ProfilAntwort:
     alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/profilbild_{uuid.uuid4().hex}.{endung}"
-    datei = _upload_ordner() / bild_pfad
-    datei.parent.mkdir(parents=True, exist_ok=True)
-    datei.write_bytes(bild)
+    await bildspeicher.speichern(bild_pfad, bild)
     try:
         await repository.profilbild_setzen(nutzer_id, bild_pfad, datetime.now(timezone.utc))
     except Exception:
-        datei.unlink(missing_ok=True)  # kein verwaistes Bild ohne Eintrag
+        await bildspeicher.loeschen(bild_pfad)  # kein verwaistes Bild ohne Eintrag
         raise
     if alt:
-        (_upload_ordner() / alt).unlink(missing_ok=True)
+        await bildspeicher.loeschen(alt)
     return await profil(nutzer_id)
 
 
@@ -132,12 +127,16 @@ async def profilbild_entfernen(nutzer_id: str) -> ProfilAntwort:
     alt = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     if alt:
         await repository.profilbild_setzen(nutzer_id, None, datetime.now(timezone.utc))
-        (_upload_ordner() / alt).unlink(missing_ok=True)
+        await bildspeicher.loeschen(alt)
     return await profil(nutzer_id)
 
 
-async def profilbild_datei(nutzer_id: str) -> Path:
+async def profilbild(nutzer_id: str) -> tuple[bytes, str]:
+    """Bildinhalt und Medientyp des eigenen Profilbilds."""
     pfad = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
-    if not pfad or not (_upload_ordner() / pfad).is_file():
+    if not pfad:
         raise NichtGefunden()
-    return _upload_ordner() / pfad
+    try:
+        return await bildspeicher.laden(pfad), bildspeicher.medientyp(pfad)
+    except bildspeicher.BildFehlt:
+        raise NichtGefunden()

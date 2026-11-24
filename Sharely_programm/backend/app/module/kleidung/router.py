@@ -13,7 +13,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from pydantic import ValidationError
 
 from app.core.config import get_settings
@@ -115,10 +115,12 @@ async def kleidungsstueck_anzeigen(kleidungsstueck_id: str, nutzer_id: Nutzer) -
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Kleidungsstück nicht gefunden.")
 
 
-@router.get("/{kleidungsstueck_id}/bild", response_class=FileResponse)
+@router.get("/{kleidungsstueck_id}/bild", response_class=Response)
 async def kleidungsstueck_bild(kleidungsstueck_id: str, nutzer_id: Nutzer):
-    """Bild nur für den Besitzer (kein öffentlicher Upload-Ordner, Datenschutz)."""
+    """Bild nur für den Besitzer (kein öffentlicher Bildspeicher, Datenschutz)."""
     try:
-        return FileResponse(await service.bild_datei(kleidungsstueck_id, nutzer_id))
+        daten, medientyp = await service.bild(kleidungsstueck_id, nutzer_id)
+        # Das Foto eines Kleidungsstücks ändert sich nicht: der Browser darf es eine Weile behalten
+        return Response(daten, media_type=medientyp, headers={"Cache-Control": "private, max-age=3600"})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Bild nicht gefunden.")

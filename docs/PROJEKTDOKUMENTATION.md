@@ -167,7 +167,7 @@ Vorgabe aus dem Team (`docs/planung/ROADMAP.md`): 3D-Modell von allen Seiten bet
 |---|---|---|---|
 | Backend | Python mit FastAPI | größte Teamerfahrung, gutes Ökosystem für KI-APIs und Scraping, automatische API-Doku | 12.07.2026 |
 | Datenbank | MongoDB (lokal oder Atlas) | Kleidungsstücke mit variablen Attributen und Avatar-Konfiguration passen zum Dokumentenmodell, im Team bekannt | 12.07.2026 |
-| Bildspeicher | Dateien auf dem Server, je Nutzer ein Ordner; in der DB nur der Pfad | Bilder gehören nicht in die Datenbank | 04.10.2026 |
+| Bildspeicher | Railway Storage Bucket (S3-kompatibel, privat), je Nutzer ein Präfix; in der DB nur der Schlüssel. Vorher (seit 04.10.2026) Dateien im Ordner des jeweiligen Rechners bzw. auf dem Railway-Volume | Bilder gehören nicht in die Datenbank; ein Speicher für alle, weil sich alle dieselbe Atlas-Datenbank teilen | 24.11.2026 |
 | Frontend | JavaScript, HTML/CSS | Browserstandard | 12.07.2026 |
 | 3D | Three.js | läuft im Browser ohne Plugin, unterstützt glTF-Morph-Targets, große Community | 12.07.2026 |
 | Frontend-Framework | React oder Vue | **noch offen** | – |
@@ -190,7 +190,7 @@ flowchart LR
         M["8 Module<br/>router → service → repository"]
     end
     DB[("MongoDB")]
-    FS[["Sharely_programm/uploads/&lt;nutzer_id&gt;/<br/>Bilddateien"]]
+    FS[["Railway Storage Bucket<br/>&lt;nutzer_id&gt;/Bilddateien"]]
     KI(["KI-Anbieter<br/>(Produktimport, offen)"])
     UI -- "JSON über HTTP" --> API
     ED -- "Reglerwerte laden/speichern" --> API
@@ -203,7 +203,7 @@ flowchart LR
 - Die rechenintensive 3D-Darstellung läuft im Browser auf der Grafikkarte des Nutzers, der Server liefert nur Daten.
 - Frontend und Backend können über die REST-API parallel von verschiedenen Teammitgliedern entwickelt werden.
 - Das Backend besteht aus acht Fachmodulen: `nutzer`, `kleidung`, `outfits`, `freunde`, `verleihen`, `figuren`, `produktimport`, `passform`. Jedes Modul hat dieselben Schichten: `router.py` (HTTP) → `service.py` (Geschäftslogik) → `repository.py` (einziger Datenbankzugriff), dazu `schemas.py` (Pydantic-Modelle). Module rufen sich nur über ihre Services auf. Dadurch ließe sich z. B. der KI-Import später als eigener Dienst herauslösen.
-- **Betrieb (Hosting):** Sharely läuft auf Railway als **ein** Dienst (Entscheidung Team, 27.10.2026): Das Backend liefert dort neben der API auch die Seiten aus (`/frontend/…`, `/assets/…`), die Seiten fragen die API unter derselben Adresse an, dadurch entfällt CORS. Railway baut nach jedem Push auf `main` aus GitHub; Bilder liegen auf einem Railway-Volume, Zugangsdaten als Railway-Variablen, die Datenbank bleibt MongoDB Atlas. Lokal starten Backend und Seiten-Server weiter getrennt mit `python start.py`.
+- **Betrieb (Hosting):** Sharely läuft auf Railway als **ein** Dienst (Entscheidung Team, 27.10.2026): Das Backend liefert dort neben der API auch die Seiten aus (`/frontend/…`, `/assets/…`), die Seiten fragen die API unter derselben Adresse an, dadurch entfällt CORS. Railway baut nach jedem Push auf `main` aus GitHub; Bilder liegen seit 24.11.2026 in einem privaten Railway Storage Bucket, den auch die lokalen Rechner nutzen (vorher Railway-Volume), Zugangsdaten als Railway-Variablen, die Datenbank bleibt MongoDB Atlas. Lokal starten Backend und Seiten-Server weiter getrennt mit `python start.py`.
 - Details: `Sharely_programm/backend/README.md`.
 
 ### 4.4 Datenmodell
@@ -293,7 +293,7 @@ Ergebnis: `Sharely_programm/assets/avatar/Avatar_Editorgeruest.glb` mit 114 Morp
 
 - `Sharely_programm/backend/`: FastAPI-Anwendung mit `core/` (Konfiguration aus `.env`, MongoDB-Verbindung über PyMongo async, Anmeldung, bis 27.10.2026 als Platzhalter) und den acht Modulen; `/api/health` als Lebenszeichen.
 - `Sharely_programm/frontend/`: Ordnerstruktur und README; das Framework-Gerüst wird erst nach der Entscheidung React/Vue erzeugt. Der Avatar-Editor (`src/avatar-editor/`) ist bewusst framework-unabhängig.
-- `Sharely_programm/uploads/`: Bildablage, nur lokal, nicht im Repo.
+- `Sharely_programm/uploads/`: Bildablage, nur lokal, nicht im Repo; seit 24.11.2026 nur noch mit `BILDSPEICHER=ordner`, sonst liegen die Bilder im Railway Storage Bucket.
 - VS-Code-Einstellungen und `pytest.ini` fürs ganze Team.
 
 ### 6.2 User Story 8: Kleidungsstück digitalisieren (13.10.2026, an das ERM angepasst am 20.10.2026)
@@ -445,6 +445,7 @@ Chronologisch, mit Begründung. Quelle ist jeweils das genannte Dokument bzw. da
 | 29.10.2026 | Ein Startskript `Sharely_programm/start.py` startet alle Dienste (Backend, Seiten-Server) mit einem Befehl; künftige Dienste werden dort eingetragen | Ein Befehl statt mehrerer Terminals, ein Ort für alle Startfunktionen; einmalige Einrichtung (Pakete, Datenbank) bleibt bewusst eigener Schritt | Christian | `Sharely_programm/start.py`, `frontend/templates/README.md` |
 | 27.10.2026 | Test-Nutzer per Einrichtungsskript statt Ausnahme in der Prüfregel `nutzer` | Prüfregel bleibt streng, Kathas Modul unverändert, fällt mit der Registrierung weg | Manuel, Katha | `BRAIN.md`, `Sharely_programm/backend/README.md` |
 | 27.10.2026 | Hosting über Railway, Datenbank bleibt Atlas (am 17.11.2026 bestätigt; Code-Anpassung: Backend liefert die Seiten selbst aus) | bisherige Arbeit ohne Neubau übertragbar, Bilder zentral, Deployment aus GitHub | Team | `BRAIN.md` |
+| 24.11.2026 | Bilder in einen Railway Storage Bucket statt in lokale Ordner bzw. das Volume (`app/core/bildspeicher.py`, Umzugsskript `app/bilder_umziehen.py`) | alle teilen eine Datenbank, also brauchen alle dieselben Bilder; Bilder weiter nicht in der Datenbank | Christian | `backend/README.md` Abschnitt „Bilder“ |
 
 ---
 

@@ -41,10 +41,30 @@ Entscheidung Team, 27.10.2026: Sharely läuft auf Railway als **ein** Dienst. Da
 | Root Directory | `Sharely_programm` (dort liegt eine eigene `requirements.txt` mit denselben Paketen wie `backend/requirements.txt`, ohne Test-Pakete; ein Test prüft, dass beide zusammenpassen. Neue Pakete also in beide Dateien eintragen.) |
 | Custom Start Command | `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 | Healthcheck Path | `/api/health` |
-| Volume | Mount Path `/data` (für die hochgeladenen Bilder) |
-| Variablen | `MONGODB_URL` (Atlas-Adresse mit eigenem Datenbank-Benutzer, nie ins Repo), `MONGODB_DATENBANK=sharely`, `UPLOAD_ORDNER=/data/uploads`, `COOKIE_SECURE=true` |
+| Bilder | Railway Storage Bucket, siehe Abschnitt „Bilder“ unten (bis 24.11.2026: Volume mit Mount Path `/data`, `UPLOAD_ORDNER=/data/uploads`; das Volume bleibt, bis die alten Bilder umgezogen sind) |
+| Variablen | `MONGODB_URL` (Atlas-Adresse mit eigenem Datenbank-Benutzer, nie ins Repo), `MONGODB_DATENBANK=sharely`, `COOKIE_SECURE=true`, dazu die `BUCKET_…`-Variablen aus dem Abschnitt „Bilder“ |
 
 In Atlas muss Railway zugreifen dürfen: Railway hat keine feste IP, daher unter „Network Access“ `0.0.0.0/0` (abgesichert über eigene Datenbank-Benutzer mit starken Passwörtern). Lokal ändert sich nichts: weiter `python start.py`; die Seiten erkennen am Port 5173, dass das Backend auf `localhost:8000` läuft.
+
+## Bilder
+
+Kleidungsfotos und Profilbilder liegen an **einer** Stelle für alle: im privaten **Railway Storage Bucket** (S3-kompatibel) im Railway-Projekt (24.11.2026, Christian). Vorher lagen sie im Ordner des jeweiligen Rechners bzw. auf dem Railway-Volume; weil sich alle dieselbe Atlas-Datenbank teilen, fehlten dann bei den anderen die Fotos. Code: `app/core/bildspeicher.py`. In der Datenbank steht weiter nur der Schlüssel (`bild_pfad`, `profilbild_pfad`, z. B. `<nutzer_id>/<zufall>.jpg`); Bilder gibt es nur über die geschützten Bild-Endpunkte der API, der Bucket ist nicht öffentlich.
+
+Einstellungen (in `backend/.env` bzw. als Railway-Variablen):
+
+| Variable | Wert |
+|---|---|
+| `BILDSPEICHER` | `bucket` (gemeinsamer Bucket) oder `ordner` (Vorgabe: nur `UPLOAD_ORDNER` auf diesem Rechner, z. B. ohne Netz; die Tests nutzen immer `ordner`) |
+| `BUCKET_NAME` | Wert `BUCKET` aus dem Reiter „Credentials“ des Buckets in Railway (nicht der Anzeigename) |
+| `BUCKET_ENDPOINT` | Wert `ENDPOINT` |
+| `BUCKET_REGION` | Wert `REGION` (meist `auto`) |
+| `BUCKET_ACCESS_KEY_ID` | Wert `ACCESS_KEY_ID` |
+| `BUCKET_SECRET_ACCESS_KEY` | Wert `SECRET_ACCESS_KEY` |
+| `BUCKET_PFAD_STIL` | nur `true`, wenn der Reiter „Credentials“ Path-Style verlangt |
+
+Zugangsdaten nie ins Repo oder in Chats. Auf Railway setzt man sie als Verweise auf den Bucket (z. B. `BUCKET_NAME=${{Bucket.BUCKET}}`, „Bucket“ = Name des Buckets im Projekt); lokal kopiert jeder die Werte aus Railway in seine `.env`.
+
+**Einmalig umziehen:** Vorhandene Bilder bringt `python -m app.bilder_umziehen` in den Bucket (ohne `--ausfuehren` nur Anzeige). Jeder einmal auf seinem Rechner, dazu einmal auf Railway mit `--quelle /data/uploads` (Railway-Konsole des Dienstes bzw. `railway ssh`). Das Skript löscht nichts; den Ordner `uploads/` und danach das Volume räumt ihr selbst auf.
 
 ## Aufbau
 
