@@ -3,6 +3,12 @@
 Typisch je Objekt: ein Modell zum Anlegen, eins zum Ändern, eins für die Antwort.
 Die Felder richten sich nach Manuels ERM vom 20.10.2026
 (docs/datenmodell/ERM-SHARELY.md, Abschnitt 3, 6 und 10).
+
+Einfach erklärt: Ein Modell ist ein Formular-Vordruck mit festen Feldern und Typen. Pydantic
+prüft jede Anfrage dagegen und lehnt falsche Werte ab (Fehler 422).
+Ein „Enum“ (z. B. Kleidungsart, Farbe) ist eine feste Auswahlliste: Nur genau diese Werte
+sind erlaubt, alles andere wird abgelehnt. „@field_validator“ markiert eine Zusatzprüfung
+für ein Feld (z. B. „Kaufdatum darf nicht in der Zukunft liegen“).
 """
 
 from datetime import date, datetime

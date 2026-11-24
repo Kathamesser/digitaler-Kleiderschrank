@@ -2,6 +2,11 @@
 
 Typisch je Objekt: ein Modell zum Anlegen, eins zum Ändern, eins für die Antwort.
 Die Felder richten sich nach dem Datenmodell in docs/datenmodell/.
+
+Ein „Modell“ ist wie ein Formular-Vordruck: Es legt fest, welche Felder es gibt und welchen
+Typ sie haben (str = Text, datetime = Zeitpunkt, „| None“ = darf leer sein). Pydantic prüft
+jede Anfrage automatisch dagegen und lehnt falsche Eingaben mit Fehler 422 ab.
+Field(max_length=…) begrenzt die Länge, damit niemand riesige Texte schicken kann.
 """
 
 from datetime import datetime
