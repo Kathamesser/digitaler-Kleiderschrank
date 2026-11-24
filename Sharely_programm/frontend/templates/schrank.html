@@ -51,12 +51,12 @@
     <div class="blatt-inhalt">
       <label class="schalter-kasten">
         <span data-symbol="herz"></span>
-        <span class="text"><strong>Favorit</strong> – nur Lieblingsstücke anzeigen</span>
+        <span class="text"><strong>Favorit</strong><button type="button" class="info-knopf" aria-expanded="false" aria-label="Was bedeutet Favorit?" data-symbol="info"></button><span class="erklaerung"><span class="strich"> – </span>nur Lieblingsstücke anzeigen</span></span>
         <span class="schalter"><input type="checkbox" name="favorit" value="true"><span class="bahn"></span></span>
       </label>
       <label class="schalter-kasten">
         <span data-symbol="schloss"></span>
-        <span class="text"><strong>Privat</strong> – nur Teile anzeigen, die Freunde nicht sehen</span>
+        <span class="text"><strong>Privat</strong><button type="button" class="info-knopf" aria-expanded="false" aria-label="Was bedeutet Privat?" data-symbol="info"></button><span class="erklaerung"><span class="strich"> – </span>nur Teile anzeigen, die Freunde nicht sehen</span></span>
         <span class="schalter"><input type="checkbox" name="privat" value="true"><span class="bahn"></span></span>
       </label>
 
@@ -108,7 +108,7 @@
     </div>
     <footer class="blatt-fuss">
       <button type="button" class="knopf-rand" id="filter-zuruecksetzen"><span data-symbol="ruecksetzen"></span> Zurücksetzen</button>
-      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Filter anwenden</span></button>
+      <button type="submit" class="knopf"><span data-symbol="ok"></span> <span id="filter-zeigen">Filter anwenden</span><span id="filter-zeigen-kurz">Anwenden</span></button>
     </footer>
   </form>
 </dialog>
@@ -155,6 +155,13 @@
     const label = document.createElement("label");
     label.innerHTML = `<input type="checkbox" name="status" value="${wert}"><span>${SYMBOL[symbol]} ${text}</span>`;
     document.getElementById("f-status").append(label);
+  }
+  // Handy: Erklärung zu Favorit/Privat erst nach Tippen auf das „i“ (der Knopf schaltet den Schalter nicht mit um)
+  for (const knopf of formular.querySelectorAll(".info-knopf")) {
+    knopf.onclick = (e) => {
+      e.preventDefault();
+      knopf.setAttribute("aria-expanded", String(knopf.getAttribute("aria-expanded") !== "true"));
+    };
   }
   const heute = new Date().toISOString().slice(0, 10);
   for (const name of ["kauf_von", "kauf_bis"]) formular.elements[name].max = heute;
@@ -244,6 +251,7 @@
 
     const treffer = alle.filter((k) => passtZuFilter(k, f) && passtZurSuche(k));
     document.getElementById("filter-zeigen").textContent = anzahl ? `Filter anwenden (${anzahl})` : "Filter anwenden";
+    document.getElementById("filter-zeigen-kurz").textContent = anzahl ? `Anwenden (${anzahl})` : "Anwenden"; // Handy
     raster.replaceChildren(...treffer.map((k) => kleidungsKarte(k)));
     leer.hidden = !geladen || alle.length > 0;
     if (alle.length && !treffer.length) raster.innerHTML = '<p class="leise">Nichts gefunden.</p>';

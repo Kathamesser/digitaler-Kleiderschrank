@@ -1,7 +1,8 @@
 <!doctype html>
 <!-- Mockup „Desktop · Kleidungsstück – Detailansicht (Overlay)“. Daten live aus GET /api/kleidung/{id}.
      Verleihen/Verschenken öffnet das Fenster aus dem Mockup „Anfrage stellen – Leihen / Verschenken (Overlay)“ mit Beispiel-Freunden.
-     Bearbeiten, Löschen, Favorit umschalten, Verleihen und Anprobieren haben noch kein Backend. -->
+     „Bearbeiten“ führt zu kleidung-hochladen.html?id=… (PUT /api/kleidung/{id}, 24.11.2026).
+     Löschen, Favorit umschalten, Verleihen und Anprobieren haben noch kein Backend. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -46,7 +47,7 @@
           <button class="knopf-gefahr" disabled title="Kommt noch: Löschen-Endpunkt fehlt"><span data-symbol="muell"></span> Löschen</button>
         </div>
         <div style="display: flex; justify-content: flex-end; margin-top: 18px">
-          <button class="knopf" disabled title="Kommt noch: Bearbeiten-Endpunkt fehlt"><span data-symbol="stift"></span> Bearbeiten</button>
+          <a class="knopf" id="bearbeiten"><span data-symbol="stift"></span> Bearbeiten</a>
         </div>
       </div>
     </div>
@@ -185,6 +186,7 @@
     verleihen.disabled = k.status !== "im_schrank";
     if (verleihen.disabled) verleihen.title = "Geht nur bei eigenen Teilen, die gerade im Schrank sind";
     verleihen.onclick = () => anfrageOeffnen(k);
+    document.getElementById("bearbeiten").href = `kleidung-hochladen.html?id=${encodeURIComponent(k.id)}`;
 
     document.getElementById("inhalt").hidden = false;
   }
@@ -265,6 +267,11 @@
     zeigeMeldung(aMeldung, "Die Anfrage wäre jetzt gesendet. Das Backend-Modul verleihen fehlt noch.", "ok");
   };
 
+  // Bestätigung nach dem Bearbeiten (kommt von kleidung-hochladen.html?id=…)
+  if (new URLSearchParams(location.search).has("geaendert")) {
+    zeigeMeldung(meldung, "Deine Änderungen sind gespeichert.", "ok");
+    history.replaceState(null, "", `kleidungsstueck.html?id=${encodeURIComponent(id)}`);
+  }
   if (!id) zeigeMeldung(meldung, "Kein Kleidungsstück ausgewählt.", "fehler");
   else holeJson(`/kleidung/${encodeURIComponent(id)}`)
     .then(zeige)

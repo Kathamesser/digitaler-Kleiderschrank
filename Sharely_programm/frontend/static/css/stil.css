@@ -157,6 +157,8 @@ svg { flex-shrink: 0; }
   padding: 0 30px; min-height: 58px; border-radius: var(--rund-pille); cursor: pointer;
   border: 1.5px solid var(--feld-rand); background: transparent; color: var(--text);
 }
+a.chip { text-decoration: none; }
+.chip-weiter { margin-left: auto; border-color: var(--primaer); color: var(--primaer); } /* Link statt Filter, rechts abgesetzt */
 .chip.aktiv { background: var(--dunkel); border-color: var(--dunkel); color: var(--auf-dunkel); }
 .chip .zahl {
   min-width: 24px; height: 24px; padding: 0 6px; border-radius: var(--rund-pille); background: var(--primaer); color: var(--auf-dunkel);
@@ -251,6 +253,9 @@ textarea { resize: vertical; min-height: 90px; }
 .schalter-kasten .text { flex: 1; }
 .schalter-kasten strong { font-family: var(--schrift-titel); font-size: 1.15rem; }
 .schalter-kasten .rot { color: var(--rot); }
+/* „i“-Knopf mit Erklärung (Filter im Schrank): nur auf dem Handy, sonst steht der Text direkt da */
+.info-knopf { display: none; }
+#filter-zeigen-kurz { display: none; } /* Handy: „Anwenden (n)“ statt „Filter anwenden (n)“ */
 
 /* Farbkreise */
 .farben { display: flex; flex-wrap: wrap; gap: 14px; }
@@ -514,6 +519,11 @@ textarea { resize: vertical; min-height: 90px; }
 .freunde-bereich { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
 .freunde-bereich > :first-child { flex: 1 1 590px; min-width: 0; }
 .freunde-bereich > :last-child { flex: 999 1 560px; min-width: 0; }
+/* Liste und Freund-Ansicht untereinander (freunde.html setzt die Klasse): Ansicht weglassen,
+   ein Klick auf einen Freund öffnet direkt dessen Kleiderschrank */
+.freunde-bereich.untereinander > #freund { display: none; }
+.freunde-bereich.untereinander .freundesliste [aria-current="true"] { background: none; border-color: transparent; }
+.freunde-bereich.untereinander .freundesliste { max-height: none; } /* keine Scrollleiste in der Liste */
 .weisse-karte { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 28px 30px; }
 .weisse-karte + .weisse-karte { margin-top: 26px; }
 .karte-kopf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -619,6 +629,10 @@ a.menue-zeile { text-decoration: none; }
 /* ---------- Schmalere Bildschirme ---------- */
 
 @media (max-width: 1023px) {
+  /* Nie seitlich scrollen (Wunsch Katha, 24.11.2026): Ragt doch einmal etwas über den Rand, wird es
+     abgeschnitten, statt die Seite zu verbreitern. Sonst zoomt das Handy heraus und die Tab-Leiste
+     rutscht aus dem Bild. „clip“ statt „hidden“, damit position: sticky weiter funktioniert. */
+  html, body { overflow-x: clip; }
   /* Tab-Leiste fest am unteren Rand; die Seite bekommt unten so viel Platz, dass nichts darunter verschwindet */
   .tableiste {
     display: flex; justify-content: center; gap: 4px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
@@ -698,6 +712,40 @@ a.menue-zeile { text-decoration: none; }
   #f-status label:has([value="geliehen"]) { order: 2; }
   #f-status label:has([value="verliehen"]) { order: 3; }
   #f-status span { width: 100%; justify-content: center; padding: 9px 10px; white-space: nowrap; }
+  /* Kompakter, damit weniger gescrollt werden muss (Wunsch Katha, 24.11.2026):
+     Favorit/Privat einzeilig, Erklärung erst nach Tippen auf das „i“ */
+  #filterblatt .schalter-kasten { padding: 8px 14px; margin-top: 10px; gap: 12px; }
+  #filterblatt .schalter-kasten .text { display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; }
+  #filterblatt .schalter-kasten strong { font-size: 1.05rem; }
+  #filterblatt .info-knopf {
+    display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0;
+    border: none; background: none; color: var(--primaer); cursor: pointer; border-radius: 50%;
+  }
+  #filterblatt .info-knopf svg { width: 20px; height: 20px; }
+  #filterblatt .info-knopf:focus-visible { outline: 2px solid var(--primaer); }
+  #filterblatt .erklaerung { display: none; flex-basis: 100%; font-size: .9rem; color: var(--text-leise); }
+  #filterblatt .info-knopf[aria-expanded="true"] + .erklaerung { display: block; }
+  #filterblatt .erklaerung .strich { display: none; }
+  #filterblatt .blatt-kopf { padding: 16px 20px 8px; }
+  #filterblatt .blatt-kopf h2 { font-size: 1.5rem; gap: 10px; }
+  #filterblatt .blatt-kopf .symbolknopf { width: 42px; height: 42px; }
+  #filterblatt .titel { font-size: 1.05rem; margin: 16px 0 8px; }
+  #filterblatt .farb-zeile { margin-top: 16px; gap: 8px; }
+  #filterblatt .farben { gap: 10px; }
+  #filterblatt .farben span { width: 36px; height: 36px; }
+  #filterblatt .auswahlliste { padding: 4px; }
+  #filterblatt .auswahlliste label { padding: 7px 8px; }
+  #filterblatt .auswahlliste input { width: 20px; height: 20px; }
+  #filterblatt .status-zeile { margin-top: 18px; }
+  #filterblatt .status-zeile .titel { margin: 0 0 8px; }
+  #f-status span { padding: 7px 10px; }
+  #filterblatt .von-bis { gap: 8px 10px; }
+  #filterblatt .von-bis input { min-height: 0; padding-top: 8px; padding-bottom: 8px; }
+  #filterblatt .blatt-fuss { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: 10px 20px 14px; }
+  #filterblatt .blatt-fuss button { font-size: 1rem; padding: 12px 6px; gap: 6px; white-space: nowrap; }
+  #filterblatt .blatt-fuss button svg { width: 18px; height: 18px; }
+  #filter-zeigen { display: none; }
+  #filter-zeigen-kurz { display: inline; }
 }
 
 /* ---------- Handy und Tablet nach den Mockups (docs/mockups/tablet/, docs/mockups/handy/) ---------- */
@@ -1051,13 +1099,32 @@ a.menue-zeile { text-decoration: none; }
 .leih-eintrag.klickbar:hover { background: #faf6ef; }
 
 @media (max-width: 1023px) {
-  .zwei-karten { grid-template-columns: 1fr; }
+  .zwei-karten { grid-template-columns: minmax(0, 1fr); align-content: start; }
   .freund-leiste { grid-template-columns: 1fr; }
 }
 @media (max-width: 767px) {
-  .anfrage-karte { grid-template-columns: auto 1fr; }
-  .anfrage-karte .typ-marke { grid-column: 2; }
   .titel-zeile { flex-wrap: wrap; }
+  /* Nachrichten auf dem Handy (Wunsch Katha, 24.11.2026): nichts breiter als der Bildschirm,
+     Anfragen kompakt: Leihen/Geschenk oben rechts, Annehmen und Ablehnen nebeneinander */
+  .weisse-karte { padding: 18px 14px; }
+  .karte-titel { gap: 10px; margin-bottom: 12px; }
+  .karte-titel > div { min-width: 0; }
+  .karte-titel h2 { font-size: 1.3rem; hyphens: manual; overflow-wrap: break-word; }
+  .karte-titel p { font-size: .85rem; }
+  .karte-titel .link { margin-top: 2px; }
+  .anfrage-karte { position: relative; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; padding: 12px; }
+  .anfrage-karte + .anfrage-karte { margin-top: 10px; }
+  .anfrage-karte .initiale { grid-row: auto; width: 36px; height: 36px; font-size: 1rem; }
+  .anfrage-karte .text strong { font-size: 1.05rem; padding-right: 86px; }
+  .anfrage-karte .text span { font-size: .95rem; }
+  .anfrage-karte .text small { font-size: .8rem; }
+  .anfrage-karte .typ-marke { position: absolute; top: 12px; right: 12px; padding: 3px 10px; font-size: .8rem; }
+  /* Das Teil steht schon im Satz („möchte deine Lederjacke leihen“), die Kachel spart eine Zeile */
+  .anfrage-karte .teil { display: none; }
+  .anfrage-karte .aktionen { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .anfrage-karte .aktionen button { min-width: 0; padding: 10px 8px; font-size: .95rem; }
+  .neuigkeit { padding: 12px 14px; }
+  .neuigkeit h3 { font-size: 1.1rem; margin: 8px 0 4px; }
 }.teile-liste button:disabled { cursor: default; }
 
 /* ---------- Avatar-Konfigurator (avatar-konfigurator.html) ---------- */

@@ -4,6 +4,7 @@ Die Datenbank wird durch einen Speicher im Arbeitsspeicher ersetzt, die Bilder
 landen in einem temporären Ordner. So laufen die Tests ohne MongoDB.
 """
 
+import asyncio
 import json
 from datetime import date, timedelta
 from pathlib import Path
@@ -13,6 +14,7 @@ from bson import ObjectId
 from fastapi.testclient import TestClient
 
 from app.core.config import get_settings
+from app.core.sicherheit import TEST_NUTZER_ID
 from app.main import app
 from app.module.kleidung import repository
 from app.module.kleidung.schemas import Messpunkt
@@ -37,6 +39,14 @@ def client(monkeypatch, tmp_path, als_test_nutzer):
     async def alle_des_nutzers(nutzer_id):
         return [e for e in speicher.values() if e["nutzer_id"] == nutzer_id]
 
+    async def aendern(kleidungsstueck_id, nutzer_id, daten):
+        eintrag = await finden(kleidungsstueck_id, nutzer_id)
+        if eintrag is None:
+            return None
+        eintrag.update(daten)
+        return eintrag
+
+    monkeypatch.setattr(repository, "aendern", aendern)
     monkeypatch.setattr(repository, "anlegen", anlegen)
     monkeypatch.setattr(repository, "finden", finden)
     monkeypatch.setattr(repository, "alle_des_nutzers", alle_des_nutzers)
@@ -201,3 +211,68 @@ def test_fehlendes_bild_wird_abgelehnt(client):
 def test_unbekanntes_kleidungsstueck(client):
     assert client.get("/api/kleidung/gibtsnicht").status_code == 404
     assert client.get("/api/kleidung/gibtsnicht/bild").status_code == 404
+
+
+# ---------- Bearbeiten: PUT /api/kleidung/{id} (Wunsch Katha, 24.11.2026) ----------
+
+
+def aendern(client, kleidungsstueck_id, bild=None, **felder):
+    daten = {"kleidungsart": "tops", **felder}
+    dateien = {"bild": ("neu.jpg", bild)} if bild is not None else None
+    return client.put(f"/api/kleidung/{kleidungsstueck_id}", data=daten, files=dateien)
+
+
+def test_bearbeiten_ersetzt_alle_angaben(client):
+    alt = hochladen(client, name="Shirt", favorit="true", farbe="rot", saison=["sommer"], preis="10").json()
+    antwort = aendern(client, alt["id"], kleidungsart="pullover", name="Strickpulli", material="wolle",
+                      saison=["winter"], status="wunsch")
+    assert antwort.status_code == 200
+    k = antwort.json()
+    assert (k["kleidungsart"], k["name"], k["material"], k["saison"], k["status"]) == (
+        "pullover", "Strickpulli", "wolle", ["winter"], "wunsch")
+    # nicht mitgeschickt = leer bzw. false, wie beim Anlegen
+    assert k["favorit"] is False and k["farbe"] is None and k["preis"] is None
+    assert k["id"] == alt["id"] and k["erstellt_am"] == alt["erstellt_am"]
+    assert client.get(f"/api/kleidung/{alt['id']}").json()["name"] == "Strickpulli"
+
+
+def test_bearbeiten_ohne_neues_bild_behaelt_das_foto(client, tmp_path):
+    alt = hochladen(client).json()
+    assert aendern(client, alt["id"], name="Neu").status_code == 200
+    assert client.get(f"/api/kleidung/{alt['id']}/bild").content == PNG
+    assert len(list(tmp_path.rglob("*.*"))) == 1
+
+
+def test_bearbeiten_mit_neuem_bild_ersetzt_und_loescht_das_alte(client, tmp_path):
+    alt = hochladen(client).json()
+    assert aendern(client, alt["id"], bild=JPEG).status_code == 200
+    assert client.get(f"/api/kleidung/{alt['id']}/bild").content == JPEG
+    assert not list(tmp_path.rglob("*.png")) and len(list(tmp_path.rglob("*.jpg"))) == 1
+
+
+def test_bearbeiten_mit_ungueltigem_bild_aendert_nichts(client, tmp_path):
+    alt = hochladen(client, name="Shirt").json()
+    assert aendern(client, alt["id"], bild=b"kein bild", name="Neu").status_code == 415
+    assert client.get(f"/api/kleidung/{alt['id']}").json()["name"] == "Shirt"
+    assert len(list(tmp_path.rglob("*.*"))) == 1
+
+
+def test_bearbeiten_prueft_wie_beim_anlegen(client):
+    alt = hochladen(client).json()
+    morgen = (date.today() + timedelta(days=1)).isoformat()
+    assert aendern(client, alt["id"], kaufdatum=morgen).status_code == 422
+    assert aendern(client, alt["id"], status="verliehen").status_code == 422
+    assert client.put(f"/api/kleidung/{alt['id']}", data={}).status_code == 422  # Kleidungsart fehlt
+
+
+def test_bearbeiten_unbekannt_oder_fremd_gibt_404(client):
+    assert aendern(client, str(ObjectId())).status_code == 404
+    assert aendern(client, "keine-id").status_code == 404
+
+
+def test_bearbeiten_laesst_status_verliehen_unveraendert(client):
+    alt = hochladen(client).json()
+    # Den Status „verliehen“ setzt sonst nur das Modul verleihen; hier direkt im Ersatz-Speicher
+    asyncio.run(repository.aendern(alt["id"], TEST_NUTZER_ID, {"status": "verliehen"}))
+    k = aendern(client, alt["id"], name="Neu", status="im_schrank").json()
+    assert (k["name"], k["status"]) == ("Neu", "verliehen")

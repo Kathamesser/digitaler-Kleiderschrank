@@ -6,6 +6,7 @@ app/core/datenbank.py.
 
 from bson import ObjectId
 from bson.errors import InvalidId
+from pymongo import ReturnDocument
 
 from app.core.datenbank import get_db
 
@@ -47,6 +48,22 @@ async def finden(kleidungsstueck_id: str, nutzer_id: str) -> dict | None:
     except InvalidId:
         return None
     dokument = await _collection().find_one({"_id": oid, "nutzer_id": ObjectId(nutzer_id)})
+    return _als_dict(dokument) if dokument else None
+
+
+async def aendern(kleidungsstueck_id: str, nutzer_id: str, daten: dict) -> dict | None:
+    """Felder eines Kleidungsstücks des Nutzers überschreiben; das geänderte
+    Kleidungsstück zurück, oder None, wenn es keins des Nutzers gibt."""
+    try:
+        oid = ObjectId(kleidungsstueck_id)
+    except InvalidId:
+        return None
+    daten = {**daten, "kategorie_ids": [ObjectId(k) for k in daten.get("kategorie_ids", [])]}
+    dokument = await _collection().find_one_and_update(
+        {"_id": oid, "nutzer_id": ObjectId(nutzer_id)},
+        {"$set": daten},
+        return_document=ReturnDocument.AFTER,
+    )
     return _als_dict(dokument) if dokument else None
 
 

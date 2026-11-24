@@ -107,6 +107,34 @@ async def kleidungsstueck_digitalisieren(
         )
 
 
+@router.put("/{kleidungsstueck_id}")
+async def kleidungsstueck_aendern(
+    kleidungsstueck_id: str,
+    nutzer_id: Nutzer,
+    angaben: Annotated[KleidungsstueckNeu, Depends(angaben_aus_formular)],
+    bild: Annotated[UploadFile | None, File(description="Neues Foto (freiwillig), JPEG/PNG/WebP")] = None,
+) -> KleidungsstueckAntwort:
+    """Kleidungsstück bearbeiten. Dieselben Felder wie beim Anlegen; alle
+    Angaben werden ersetzt (fehlende Felder sind danach leer bzw. false).
+    `bild` ist freiwillig und ersetzt das alte Foto. Bei verliehenen Teilen
+    bleibt der Status unverändert."""
+    daten = await bild.read(get_settings().max_bild_mb * 1024 * 1024 + 1) if bild else None
+    try:
+        return await service.aendern(kleidungsstueck_id, nutzer_id, angaben, daten)
+    except service.NichtGefunden:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Kleidungsstück nicht gefunden.")
+    except service.BildZuGross:
+        raise HTTPException(
+            status.HTTP_413_CONTENT_TOO_LARGE,
+            f"Das Bild ist zu groß. Erlaubt sind höchstens {get_settings().max_bild_mb} MB.",
+        )
+    except service.BildUngueltig:
+        raise HTTPException(
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            "Die Datei ist kein unterstütztes Bild. Erlaubt sind JPEG, PNG und WebP.",
+        )
+
+
 @router.get("")
 async def kleidungsstuecke_auflisten(nutzer_id: Nutzer) -> list[KleidungsstueckAntwort]:
     return await service.alle(nutzer_id)

@@ -83,11 +83,40 @@ async def digitalisieren(
     # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
     bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
     await bildspeicher.speichern(bild_pfad, bild)
+def _bild_speichern(nutzer_id: str, bild: bytes) -> str:
+    """Bild prüfen und im Upload-Ordner des Nutzers ablegen; liefert den Pfad
+    relativ zum Upload-Ordner."""
+    if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
+        raise BildZuGross()
+    endung = bild_format(bild)
+    # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
+    bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
+    datei = _upload_ordner() / bild_pfad
+    datei.parent.mkdir(parents=True, exist_ok=True)
+    datei.write_bytes(bild)
+    return bild_pfad
 
+
+def _fuer_datenbank(angaben: KleidungsstueckNeu) -> dict:
     daten = angaben.model_dump(mode="json")
     # MongoDB kennt nur Zeitpunkte, kein reines Datum: Kaufdatum als 00:00 UTC
     if angaben.kaufdatum:
         daten["kaufdatum"] = datetime.combine(angaben.kaufdatum, time(), timezone.utc)
+    return daten
+
+
+async def digitalisieren(
+    nutzer_id: str,
+    angaben: KleidungsstueckNeu,
+    bild: bytes,
+) -> KleidungsstueckAntwort:
+    """User Story 8: Foto prüfen, im Upload-Ordner des Nutzers ablegen und das
+    Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
+    Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
+    verleihen."""
+    bild_pfad = _bild_speichern(nutzer_id, bild)
+    datei = _upload_ordner() / bild_pfad
+    daten = _fuer_datenbank(angaben)
     try:
         kleidungsstueck = await repository.anlegen({
             **daten,
@@ -100,6 +129,45 @@ async def digitalisieren(
         await bildspeicher.loeschen(bild_pfad)  # kein verwaistes Bild ohne Eintrag
         raise
     return _antwort(kleidungsstueck)
+
+
+async def aendern(
+    kleidungsstueck_id: str,
+    nutzer_id: str,
+    angaben: KleidungsstueckNeu,
+    bild: bytes | None = None,
+) -> KleidungsstueckAntwort:
+    """Kleidungsstück bearbeiten (Wunsch Katha, 24.11.2026). Alle Angaben werden
+    ersetzt, wie beim Anlegen: Was fehlt, ist danach leer. Ein neues Foto ist
+    freiwillig und ersetzt das alte, das dann gelöscht wird.
+
+    Ist das Teil gerade verliehen oder über einen Leihvorgang geliehen, bleibt
+    der Status, wie er ist: Den ändert nur das Modul verleihen."""
+    alt = await repository.finden(kleidungsstueck_id, nutzer_id)
+    if alt is None:
+        raise NichtGefunden()
+    alter_pfad = alt["bild_pfad"]  # vorher merken, das Speichern überschreibt ihn
+
+    daten = _fuer_datenbank(angaben)
+    if alt["status"] == "verliehen" or alt.get("leihvorgang_id"):
+        daten["status"] = alt["status"]
+    neuer_pfad = _bild_speichern(nutzer_id, bild) if bild is not None else None
+    if neuer_pfad:
+        daten["bild_pfad"] = neuer_pfad
+
+    try:
+        neu = await repository.aendern(kleidungsstueck_id, nutzer_id, daten)
+    except Exception:
+        if neuer_pfad:
+            (_upload_ordner() / neuer_pfad).unlink(missing_ok=True)
+        raise
+    if neu is None:  # in der Zwischenzeit gelöscht
+        if neuer_pfad:
+            (_upload_ordner() / neuer_pfad).unlink(missing_ok=True)
+        raise NichtGefunden()
+    if neuer_pfad:
+        (_upload_ordner() / alter_pfad).unlink(missing_ok=True)
+    return _antwort(neu)
 
 
 async def alle(nutzer_id: str) -> list[KleidungsstueckAntwort]:

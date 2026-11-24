@@ -1,6 +1,8 @@
 <!doctype html>
 <!-- Mockup „Desktop · Kleidungsstück hinzufügen (Overlay)“, User Story 8. Speichert über POST /api/kleidung.
-     Felder nach Manuels ERM vom 20.10.2026 (docs/datenmodell/ERM-SHARELY.md). -->
+     Felder nach Manuels ERM vom 20.10.2026 (docs/datenmodell/ERM-SHARELY.md).
+     Mit ?id=… dieselbe Seite zum Bearbeiten (Wunsch Katha, 24.11.2026): Felder vorausgefüllt, Foto freiwillig,
+     speichert über PUT /api/kleidung/{id}. -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -14,8 +16,8 @@
 <main class="seite">
   <form class="fenster" id="formular" novalidate>
     <header class="fenster-kopf">
-      <h2>Kleidungsstück hinzufügen</h2>
-      <a class="symbolknopf" href="schrank.html" aria-label="Schließen, zurück zum Schrank" data-symbol="schliessen"></a>
+      <h2 id="fenster-titel">Kleidungsstück hinzufügen</h2>
+      <a class="symbolknopf" id="schliessen" href="schrank.html" aria-label="Schließen, zurück zum Schrank" data-symbol="schliessen"></a>
     </header>
 
     <div class="zwei-spalten">
@@ -37,7 +39,7 @@
         <div class="status-zeile" style="border-top: 1.5px solid var(--linie); padding-top: 22px; display: block">
           <span class="titel">Status</span>
           <div class="pillen" id="status" style="margin-top: 12px"></div>
-          <p class="leise" style="margin: 10px 0 0">„Verliehen“ setzt die App, sobald du ein Teil verleihst.</p>
+          <p class="leise" id="status-hinweis" style="margin: 10px 0 0">„Verliehen“ setzt die App, sobald du ein Teil verleihst.</p>
         </div>
       </div>
 
@@ -85,7 +87,7 @@
 
         <div id="meldung" class="meldung" role="status"></div>
         <div class="zeile fenster-fuss" style="margin-top: 26px; grid-template-columns: 1fr 1.6fr">
-          <a class="knopf-rand" href="schrank.html">Abbrechen</a>
+          <a class="knopf-rand" id="abbrechen" href="schrank.html">Abbrechen</a>
           <button type="submit" class="knopf" id="speichern"><span data-symbol="ok"></span> Speichern</button>
         </div>
       </div>
@@ -142,6 +144,64 @@
   const meldung = document.getElementById("meldung");
   let bild = null;
 
+  // ---------- Bearbeiten: ?id=… lädt das Teil und füllt das Formular ----------
+
+  const bearbeitenId = new URLSearchParams(location.search).get("id");
+  let vorhanden = null; // das Teil, das bearbeitet wird (null = neues Teil)
+
+  function fotoZeigen(src) {
+    vorschau.src = src;
+    vorschau.hidden = false;
+    for (const id of ["platzhalter-symbol", "platzhalter-titel", "platzhalter-text"]) document.getElementById(id).hidden = true;
+  }
+
+  function ankreuzen(name, werte) {
+    for (const f of formular.querySelectorAll(`[name="${name}"]`)) f.checked = werte.includes(f.value);
+  }
+
+  function ausfuellen(k) {
+    vorhanden = k;
+    const titel = `${titelVon(k)} bearbeiten`;
+    document.getElementById("fenster-titel").textContent = titel;
+    document.title = `Sharely – ${titel}`;
+    const zurueck = `kleidungsstueck.html?id=${encodeURIComponent(k.id)}`;
+    document.getElementById("abbrechen").href = zurueck;
+    const schliessen = document.getElementById("schliessen");
+    schliessen.href = zurueck;
+    schliessen.setAttribute("aria-label", "Schließen, zurück zum Kleidungsstück");
+
+    formular.querySelector('[name="name"]').value = k.name || ""; // formular.name wäre mehrdeutig
+    ankreuzen("farbe", [k.farbe]);
+    ankreuzen("kleidungsart", [k.kleidungsart]);
+    ankreuzen("material", [k.material]);
+    ankreuzen("saison", k.saison);
+    ankreuzen("status", [k.status]);
+    formular.kaufdatum.value = k.kaufdatum || "";
+    formular.preis.value = k.preis ?? "";
+    formular.favorit.checked = k.favorit;
+    formular.privat.checked = k.privat;
+    for (const m of k.masse) {
+      const feld = document.querySelector(`[data-messpunkt="${m.messpunkt}"]`);
+      if (feld) feld.value = m.wert_cm;
+    }
+    if (k.masse.length) document.querySelector(".aufklapper").open = true;
+    fotoZeigen(bildUrl(k));
+    document.getElementById("platzhalter-text").textContent = "Neues Foto unten auswählen";
+
+    // Verliehen (oder über einen Leihvorgang geliehen): Status ändert nur das Verleihen, das Backend behält ihn
+    if (k.status === "verliehen" || k.leihvorgang_id) {
+      for (const f of formular.querySelectorAll('[name="status"]')) f.disabled = true;
+      document.getElementById("status-hinweis").textContent = "Der Status ändert sich erst, wenn das Teil zurückgegeben ist.";
+    }
+  }
+
+  if (bearbeitenId) {
+    document.getElementById("fenster-titel").textContent = "Kleidungsstück bearbeiten";
+    holeJson(`/kleidung/${encodeURIComponent(bearbeitenId)}`)
+      .then(ausfuellen)
+      .catch((fehler) => zeigeMeldung(meldung, fehler.message, "fehler"));
+  }
+
   function bildWaehlen(datei) {
     if (!datei) return;
     if (datei.size > MAX_BILD_MB * 1024 * 1024) {
@@ -149,9 +209,7 @@
     }
     bild = datei;
     meldung.textContent = "";
-    vorschau.src = URL.createObjectURL(bild);
-    vorschau.hidden = false;
-    for (const id of ["platzhalter-symbol", "platzhalter-titel", "platzhalter-text"]) document.getElementById(id).hidden = true;
+    fotoZeigen(URL.createObjectURL(bild));
   }
 
   for (const id of ["kamera", "galerie"]) {
@@ -166,7 +224,8 @@
 
   formular.onsubmit = async (e) => {
     e.preventDefault();
-    if (!bild) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder hochladen.", "fehler");
+    if (bearbeitenId && !vorhanden) return zeigeMeldung(meldung, "Das Kleidungsstück ist noch nicht geladen.", "fehler");
+    if (!bild && !vorhanden) return zeigeMeldung(meldung, "Bitte zuerst ein Foto aufnehmen oder hochladen.", "fehler");
     if (!formular.kleidungsart.value) return zeigeMeldung(meldung, "Bitte eine Kleidungsart auswählen.", "fehler");
 
     const daten = new FormData();
@@ -178,16 +237,22 @@
       .filter((f) => f.value !== "")
       .map((f) => ({ messpunkt: f.dataset.messpunkt, wert_cm: Number(f.value) }));
     if (masse.length) daten.append("masse", JSON.stringify(masse));
-    daten.append("bild", bild);
+    if (bild) daten.append("bild", bild); // beim Bearbeiten freiwillig
+    // Kategorien sind hier noch nicht wählbar: beim Bearbeiten die vorhandenen mitschicken, sonst gingen sie verloren
+    if (vorhanden) for (const k of vorhanden.kategorie_ids) daten.append("kategorie_ids", k);
 
     const knopf = document.getElementById("speichern");
     knopf.disabled = true;
     try {
-      const antwort = await api("/kleidung", { method: "POST", body: daten });
+      const antwort = vorhanden
+        ? await api(`/kleidung/${encodeURIComponent(vorhanden.id)}`, { method: "PUT", body: daten })
+        : await api("/kleidung", { method: "POST", body: daten });
       const inhalt = await antwort.json();
       if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
-      // Bestätigung zeigt der Schrank an
-      location.href = `schrank.html?neu=${encodeURIComponent(titelVon(inhalt))}`;
+      // Bestätigung zeigt die Detailansicht bzw. der Schrank an
+      location.href = vorhanden
+        ? `kleidungsstueck.html?id=${encodeURIComponent(inhalt.id)}&geaendert=1`
+        : `schrank.html?neu=${encodeURIComponent(titelVon(inhalt))}`;
     } catch (fehler) {
       zeigeMeldung(meldung, fehler.message, "fehler");
     } finally {
