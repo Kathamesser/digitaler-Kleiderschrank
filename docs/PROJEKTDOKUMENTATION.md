@@ -394,6 +394,8 @@ Fertig: GLB-Rohling, Regler-Zuordnung, Figur-Datenmodell, Zentimeter-Messung. N�
   Die Konsole zeigte keine Fehler. Die Wegwerf-Datenbank wurde danach gelöscht.
 - Avatar: Neubau der GLB bit-identisch reproduziert; Zentimeter-Werte gegen Größentabellen des Handels geprüft; Regler auf gleichmäßige Wirkung getestet (Taille in Viertelschritten).
 
+**Verständlicher Code (24.11.2026, Wunsch Katha):** Der gesamte Code ist so kommentiert, dass auch Leser ohne Programmierkenntnisse ihn nachvollziehen können. Grundbegriffe werden dort erklärt, wo sie zum ersten Mal vorkommen: Aufbau der Module in `backend/app/module/nutzer/router.py`, Datenbank in `core/datenbank.py`, Anmeldung in `core/sicherheit.py`, JavaScript und DOM in `frontend/static/js/gemeinsam.js`, CSS in `stil.css`, 3D in `src/avatar-editor/avatar.js`, Tests in `backend/tests/conftest.py`. Jede Seite beginnt im Skript mit „So funktioniert diese Seite“. Umgesetzt in fünf Etappen mit je eigenem Commit. Ein Prüfskript stellte sicher, dass sich nur Kommentare geändert haben (Python: Programmaufbau vor/nach gleich; JS, HTML, CSS: Code ohne Kommentarzeilen gleich), dazu liefen alle Tests. Neuer Code wird künftig ebenso kommentiert.
+
 ### 7.3 Geplant
 
 Testkonzept mit fachlichen und technischen Tests, End-to-End-Tests entlang der Kern-Nutzerpfade (Phase 6/7). **[vom Team zu ergänzen, sobald erstellt]**

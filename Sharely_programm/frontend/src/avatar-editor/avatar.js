@@ -1,6 +1,17 @@
 // 3D-Anzeige des Avatars mit Three.js: GLB laden, Morph-Werte setzen, Drehen/Zoomen, Zentimeter messen.
 // Bewusst ohne Framework und ohne Oberfläche, damit React/Vue das Modul später übernehmen können.
 // Grundlage: docs/avatar/AVATAR-REGLER.md (Morph-Werte) und docs/avatar/ZENTIMETER.md (Messen).
+//
+// Für Einsteiger, die 3D-Begriffe:
+// - Three.js ist eine Bibliothek, die 3D-Grafik im Browser zeichnet.
+// - Szene = die „Bühne“, auf der alles steht (Figur, Lichter, Boden).
+// - Kamera = der Blickpunkt, von dem aus die Szene gezeichnet wird.
+// - Renderer = der „Zeichner“, der die Szene immer wieder (ca. 60-mal pro Sekunde) aufs Bild malt.
+// - Mesh = ein 3D-Körper aus vielen kleinen Dreiecken; die Eckpunkte heißen Vertices.
+// - GLB = Dateiformat für 3D-Modelle; unsere Datei enthält die Avatar-Figur (erstellt mit MakeHuman/Blender).
+// - Morph Targets = gespeicherte Verformungen der Figur (z. B. „Taille breiter“). Ein Wert zwischen
+//   0 und 1 sagt, wie stark eine Verformung angewendet wird. So entstehen aus einer Figur viele Körperformen.
+// - Ein „Modul“ (import/export) ist eine Datei, die anderen Dateien Funktionen zur Verfügung stellt.
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -10,9 +21,13 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 export const GLB_URL = new URL("../../../assets/avatar/Avatar_Editorgeruest.glb", import.meta.url);
 export const MESSPUNKTE_URL = new URL("../../../assets/avatar/messpunkte.json", import.meta.url);
 
+// Punkt, auf den die Kamera schaut (etwa Hüfthöhe; x, y, z in Metern, y = Höhe)
 const KAMERA_ZIEL = new THREE.Vector3(0, 0.88, 0);
+// Blickwinkel der drei festen Ansichten (Math.PI = halbe Drehung, also von hinten)
 const ANSICHTEN = { vorne: 0, seite: Math.PI / 2, hinten: Math.PI };
 
+// Eine „Klasse“ ist ein Bauplan: new AvatarAnsicht(element) baut eine fertige 3D-Anzeige in dieses
+// Element. Die Funktionen darin (laden, setzeMorphWerte, ansicht, messen …) gehören zu dieser Anzeige.
 export class AvatarAnsicht {
   /** @param {HTMLElement} buehne Element, in das die Zeichenfläche gesetzt wird */
   constructor(buehne) {
@@ -20,11 +35,15 @@ export class AvatarAnsicht {
     this.meshes = [];          // Körper (erstes Primitive) und Augen
     this.koerper = null;
 
+    // Den Zeichner anlegen (WebGL = Grafikschnittstelle des Browsers, nutzt die Grafikkarte);
+    // antialias = glatte Kanten, alpha = durchsichtiger Hintergrund
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     buehne.append(this.renderer.domElement);
 
+    // Bühne mit drei Lichtern: weiches Rundumlicht, Hauptlicht von vorne oben, schwaches Gegenlicht
+    // (0xffffff usw. sind Farbcodes, die Zahl dahinter die Helligkeit)
     this.szene = new THREE.Scene();
     this.szene.add(new THREE.HemisphereLight(0xffffff, 0xd8cbb8, 2.2));
     const licht = new THREE.DirectionalLight(0xffffff, 1.6);
@@ -42,6 +61,8 @@ export class AvatarAnsicht {
     boden.rotation.x = -Math.PI / 2;
     this.szene.add(boden);
 
+    // Kamera mit 30° Blickwinkel. OrbitControls lässt den Nutzer mit Maus/Finger um die Figur
+    // herumdrehen und zoomen; die Grenzen unten verhindern zu nah, zu weit und Blick von unten.
     this.kamera = new THREE.PerspectiveCamera(30, 1, 0.05, 50);
     this.steuerung = new OrbitControls(this.kamera, this.renderer.domElement);
     this.steuerung.enablePan = false;
@@ -52,8 +73,10 @@ export class AvatarAnsicht {
     this.steuerung.maxPolarAngle = Math.PI / 2 + 0.15;
     this.ansicht("vorne");
 
+    // Bei jeder Größenänderung des Bereichs die Zeichenfläche anpassen
     new ResizeObserver(() => this.groesseAnpassen()).observe(buehne);
     this.groesseAnpassen();
+    // Die Zeichenschleife: vor jedem Bild die Steuerung aktualisieren und die Szene neu zeichnen
     this.renderer.setAnimationLoop(() => {
       this.steuerung.update();
       this.renderer.render(this.szene, this.kamera);
@@ -92,6 +115,7 @@ export class AvatarAnsicht {
     this.steuerung.update();
   }
 
+  // Zeichenfläche und Kamera an die aktuelle Breite und Höhe des Bereichs anpassen (sonst wäre die Figur verzerrt)
   groesseAnpassen() {
     const { clientWidth: b, clientHeight: h } = this.buehne;
     if (!b || !h) return;
@@ -101,6 +125,9 @@ export class AvatarAnsicht {
   }
 
   // ---------- Messen (ZENTIMETER.md Abschnitt 5) ----------
+  // Idee: In messpunkte.json steht für jedes Maß (z. B. Taillenumfang), welche Eckpunkte der Figur
+  // zu diesem „Messband“ gehören. Wir rechnen aus, wo diese Punkte nach allen Verformungen liegen,
+  // und messen dann Länge oder Umfang. Die Figur ist in Metern gebaut, deshalb am Ende × 100 für cm.
 
   /** Position eines Körper-Vertex mit allen aktiven Morph-Werten (glTF-Targets sind Verschiebungen). */
   punkt(i, ziel = new THREE.Vector3()) {
@@ -157,6 +184,9 @@ export class AvatarAnsicht {
  * Umfang wie ein straff angelegtes Maßband: Punkte in ihre Hauptebene projizieren, konvexe Hülle
  * bilden, Umfang addieren. Entspricht hull_perimeter in docs/avatar/skripte/zentimeter_messen.py.
  */
+// Einfach erklärt: Die Punkte eines Umfangs (z. B. rund um die Taille) liegen nicht ganz genau
+// in einer Fläche. Wir suchen die Fläche, in der sie am besten liegen, legen sie flach darauf und
+// spannen dann gedanklich ein Gummiband außen herum (die „konvexe Hülle“). Dessen Länge ist der Umfang.
 export function huellenUmfang(punkte) {
   const mitte = new THREE.Vector3();
   punkte.forEach((p) => mitte.add(p));

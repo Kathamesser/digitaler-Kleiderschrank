@@ -14,6 +14,11 @@ Ein Bild wird über seinen Schlüssel angesprochen, z. B. ``<nutzer_id>/<zufall>
 Das ist derselbe Wert, der im Dokument als `bild_pfad`/`profilbild_pfad` steht, darum
 ändert sich an der Datenbank nichts. Der Bucket ist privat: Bilder gibt es nur über die
 geschützten Bild-Endpunkte der API (Datenschutz, wie vorher beim Ordner).
+
+Einfach erklärt: Ein „Bucket“ ist ein Online-Speicher für Dateien (wie ein Cloud-Ordner).
+„S3“ ist die übliche Sprache, mit der Programme mit solchen Speichern reden; boto3 ist die
+Python-Bibliothek dafür. Der Rest der App ruft nur die vier Funktionen ganz unten auf
+(speichern, laden, belegt, loeschen) und muss nicht wissen, ob die Bilder im Bucket oder im Ordner liegen.
 """
 
 import asyncio
@@ -22,6 +27,7 @@ from pathlib import Path, PurePosixPath
 
 from app.core.config import get_settings
 
+# Dateiendung → „Medientyp“, damit der Browser weiß, welche Art Bild er bekommt
 MEDIENTYPEN = {"jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}
 
 
@@ -30,11 +36,13 @@ class BildFehlt(Exception):
 
 
 def medientyp(schluessel: str) -> str:
+    """Medientyp aus der Dateiendung des Schlüssels (z. B. "abc.jpg" → "image/jpeg")."""
     return MEDIENTYPEN.get(PurePosixPath(schluessel).suffix.lstrip("."), "application/octet-stream")
 
 
 def _pruefen(schluessel: str) -> str:
-    """Schlüssel kommen nur aus unserem eigenen Code, trotzdem kein Ausbruch aus dem Ordner."""
+    """Schlüssel kommen nur aus unserem eigenen Code, trotzdem kein Ausbruch aus dem Ordner.
+    („..“ hieße „eine Ebene höher“; damit könnte man sonst Dateien außerhalb des Bildordners erreichen.)"""
     teile = PurePosixPath(schluessel).parts
     if not teile or schluessel.startswith("/") or ".." in teile or "\\" in schluessel:
         raise ValueError(f"Ungültiger Bildschlüssel: {schluessel!r}")
@@ -42,6 +50,7 @@ def _pruefen(schluessel: str) -> str:
 
 
 # ------------------------------------------------------------------ Ordner
+# Speicherart „ordner“: Bilder als Dateien auf diesem Rechner (für Tests und Arbeiten ohne Netz)
 
 def _datei(schluessel: str) -> Path:
     return Path(get_settings().upload_ordner) / _pruefen(schluessel)
@@ -70,6 +79,8 @@ def _ordner_belegt(praefix: str) -> int:
 
 
 # ------------------------------------------------------------------ Bucket
+# Speicherart „bucket“: Bilder im Railway Storage Bucket (Vorgabe). @lru_cache sorgt dafür,
+# dass die Verbindung zum Bucket nur einmal aufgebaut und danach wiederverwendet wird.
 
 @lru_cache
 def _s3_client(endpoint: str, region: str, zugang: str, geheimnis: str, pfad_stil: bool):
@@ -136,6 +147,9 @@ def _bucket_belegt(praefix: str) -> int:
 
 
 # ------------------------------------------------------------------ öffentliche Funktionen
+# Diese vier Funktionen benutzt der Rest der App. Jede schaut nach, welche Speicherart eingestellt
+# ist, und ruft die passende Variante von oben auf. asyncio.to_thread lässt die eigentliche Arbeit
+# nebenher laufen, damit das Backend währenddessen andere Anfragen beantworten kann.
 
 def _art() -> str:
     art = get_settings().bildspeicher
@@ -145,6 +159,7 @@ def _art() -> str:
 
 
 async def speichern(schluessel: str, daten: bytes) -> None:
+    """Bild unter dem Schlüssel ablegen (ein vorhandenes mit gleichem Schlüssel wird überschrieben)."""
     funktion = _bucket_speichern if _art() == "bucket" else _ordner_speichern
     await asyncio.to_thread(funktion, schluessel, daten)
 
@@ -162,5 +177,6 @@ async def belegt(nutzer_id: str) -> int:
 
 
 async def loeschen(schluessel: str) -> None:
+    """Bild löschen; gibt es es schon nicht mehr, ist das kein Fehler."""
     funktion = _bucket_loeschen if _art() == "bucket" else _ordner_loeschen
     await asyncio.to_thread(funktion, schluessel)

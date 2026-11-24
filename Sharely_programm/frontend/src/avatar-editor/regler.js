@@ -1,6 +1,11 @@
 // Alle Regler des Avatar-Konfigurators: Schlüssel, Beschriftung und Morph Target.
 // Verbindliche Quelle ist docs/avatar/AVATAR-REGLER.md, die Schlüssel kommen aus
 // docs/avatar/FIGUR-DATENMODELL.md. Wer hier etwas ändert, zieht beide Dokumente nach.
+//
+// Einfach erklärt: Jeder Schieberegler geht von −100 bis +100, 0 ist die Mitte (Standardfigur).
+// Nach links verformt er die Figur in die eine Richtung (z. B. schlanker), nach rechts in die andere
+// (z. B. fülliger). Dazu gehören je zwei Verformungen im 3D-Modell: min_… (links) und max_… (rechts).
+// Diese Datei ist nur eine Liste mit Rechenregeln, sie zeichnet nichts selbst.
 
 /** Version der Regler-Zuordnung, wird mit jeder Figur gespeichert (FIGUR-DATENMODELL.md). */
 export const REGLER_VERSION = 1;
@@ -77,6 +82,8 @@ const ARME_BEINE = [
   ["unterschenkel_laenge", "Unterschenkel-Länge", "armslegs_lowerlegs-height-decr-incr", "kürzer", "länger"],
 ];
 
+// Macht aus einer Listenzeile (siehe oben) einen Regler mit benannten Feldern und seinen Grenzen
+// (Standard −100 bis +100, für Alter und Körpergröße die engeren Grenzen aus GRENZEN)
 const alsRegler = (gruppe) => ([schluessel, name, target, links, rechts, band]) =>
   ({ schluessel, name, target, links, rechts, band, gruppe, ...(GRENZEN[schluessel] || { min: -100, max: 100 }) });
 
@@ -132,6 +139,7 @@ export const FUER_BEIDE = ["mann_hueftbetont"];
  * v < 0 → min_ = −v/100, v > 0 → max_ = v/100, nie beide. Figurtyp: max_figur_<typ> = staerke/100.
  * Fehlende Regler zählen als 0. Ergebnis enthält alle Targets, auch die auf 0.
  */
+// Beispiel: Regler „Gewicht“ auf −40 → min_weight = 0,4 und max_weight = 0 (40 % in Richtung „schlanker“).
 export function morphWerte(regler, figurtyp) {
   const werte = {};
   for (const r of REGLER) {
@@ -148,6 +156,7 @@ export function morphWerte(regler, figurtyp) {
  * Alter in Jahren zur Anzeige. MakeHuman: age 0 = 1 Jahr, 0,1875 = 11, 0,5 = 25 (Standard), 1 = 90.
  * Der Regler verschiebt age von 0,5 aus nach links bis 0 bzw. nach rechts bis 1.
  */
+// Gerechnet wird stückweise geradlinig zwischen diesen festen Punkten (1, 11, 25 und 90 Jahre).
 export function alterInJahren(v) {
   const age = 0.5 + v / 200;
   if (age < 0.1875) return 1 + (age / 0.1875) * 10;

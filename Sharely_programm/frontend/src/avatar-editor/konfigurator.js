@@ -1,5 +1,11 @@
 // Oberfläche des Avatar-Konfigurators (Seite templates/avatar-konfigurator.html):
 // Schieberegler bauen, Werte auf den Avatar übertragen, Maße in cm anzeigen und eingeben, Entwurf merken.
+//
+// So hängt alles zusammen:
+//   regler.js       = welche Regler es gibt und wie aus Reglerwerten Verformungen werden
+//   avatar.js       = die 3D-Figur selbst (zeichnen, verformen, in cm messen)
+//   konfigurator.js = diese Datei: baut die Regler auf der Seite und verbindet sie mit der Figur.
+// Ablauf: Regler bewegen → zustand ändern → aktualisieren() → Figur verformen → Maße neu messen → anzeigen.
 
 import { AvatarAnsicht, MESSPUNKTE_URL } from "./avatar.js";
 import {
@@ -22,6 +28,7 @@ const UEBERSICHT = [
   ["fusslaenge", "Fußlänge"],
 ];
 
+// Der aktuelle Stand der Figur: Name, alle Reglerwerte (anfangs 0 = neutral) und ein gewählter Figurtyp
 const zustand = {
   name: "Meine Figur",
   regler: Object.fromEntries(REGLER.map((r) => [r.schluessel, 0])),
@@ -32,11 +39,16 @@ let messpunkte = null;
 let cm = {};
 const zeilen = {}; // schluessel → { eingabe, wert, ruecksetzen, cmFeld }
 
+// Abkürzung: $("x") holt das Element mit id="x" aus der Seite
 const $ = (id) => document.getElementById(id);
+// Die 3D-Anzeige in den Bereich „buehne“ setzen (siehe avatar.js)
 const ansicht = new AvatarAnsicht($("buehne"));
 
 // ---------- Oberfläche aufbauen ----------
 
+// Eine Zeile mit Schieberegler bauen: Name, aktueller Wert, Zurücksetzen-Knopf, Beschriftung links/rechts
+// und (falls der Regler ein Maß hat) ein Feld, in das man direkt Zentimeter eingeben kann.
+// beiAenderung ist die Funktion, die beim Bewegen des Reglers mit dem neuen Wert aufgerufen wird.
 function reglerZeile({ schluessel, name, links, rechts, min, max, band }, beiAenderung) {
   const zeile = document.createElement("div");
   zeile.className = "regler-zeile";
@@ -74,6 +86,7 @@ function reglerZeile({ schluessel, name, links, rechts, min, max, band }, beiAen
   return zeile;
 }
 
+// Einen aufklappbaren Bereich (z. B. „Maße“) anlegen; liefert die Liste, in die die Regler kommen
 function bereich(titel, offen, hinweis) {
   const d = document.createElement("details");
   d.className = "regler-bereich";
@@ -90,6 +103,7 @@ function bereich(titel, offen, hinweis) {
   return d.querySelector(".regler-liste");
 }
 
+// Alle Bereiche mit allen Reglern einmal beim Start aufbauen
 function oberflaecheBauen() {
   const hinweise = {
     grundform: "Fang hier an: Diese Regler bestimmen die Figur im Großen. Doppelklick auf einen Regler setzt ihn auf neutral.",
@@ -159,11 +173,13 @@ function figurtypenZeigen() {
 
 // ---------- Werte ändern ----------
 
+// Wert auf eine ganze Zahl runden und in die Grenzen des Reglers zwingen
 function begrenzt(schluessel, v) {
   const { min, max } = zeilen[schluessel];
   return Math.max(min, Math.min(max, Math.round(v)));
 }
 
+// Einen Regler setzen. Wechselt dabei das Geschlecht die Seite, passt die Auswahl der Figurtypen an.
 function reglerSetzen(schluessel, v) {
   const vorher = zustand.regler.geschlecht;
   zustand.regler[schluessel] = begrenzt(schluessel, v);
@@ -171,6 +187,8 @@ function reglerSetzen(schluessel, v) {
   aktualisieren();
 }
 
+// Regler „Gesamtumfang“: um wie viel er sich seit dem letzten Mal bewegt hat, um so viel
+// werden alle Umfang-Regler gleichzeitig verschoben
 function gesamtumfangSetzen(v) {
   const schritt = v - gesamtumfangVorher;
   gesamtumfangVorher = v;
@@ -180,6 +198,7 @@ function gesamtumfangSetzen(v) {
   aktualisieren();
 }
 
+// Figurtyp (z. B. „Sanduhr“) wählen oder abwählen; die Stärke bleibt erhalten, anfangs 60 %
 function figurtypWaehlen(typ) {
   zustand.figurtyp = typ ? { typ, staerke: zustand.figurtyp?.staerke || 60 } : null;
   aktualisieren();
@@ -189,6 +208,8 @@ function figurtypWaehlen(typ) {
  * Wunschwert in cm → Reglerstellung (ZENTIMETER.md 5, „Eingabe in cm“): Steigung aus messpunkte.json,
  * Regler verschieben, neu messen, bis die Abweichung unter 0,3 cm liegt.
  */
+// Einfach erklärt: Man tippt z. B. „80 cm Taille“ ein. Die Funktion schätzt, wie weit der Regler
+// dafür wandern muss, verschiebt ihn, misst nach und korrigiert, höchstens sechs Runden lang.
 function zentimeterEingeben(schluessel, band, ziel) {
   if (!Number.isFinite(ziel) || !messpunkte) return;
   const r = REGLER.find((x) => x.schluessel === schluessel);
@@ -217,6 +238,9 @@ function zentimeterEingeben(schluessel, band, ziel) {
 
 // ---------- Anzeige ----------
 
+// Nach jeder Änderung: Figur verformen, alle Regler und Werte anzeigen, Entwurf speichern und die
+// Maße neu messen. Gemessen wird höchstens einmal pro gezeichnetem Bild (requestAnimationFrame),
+// damit schnelles Ziehen am Regler den Browser nicht ausbremst.
 let messungGeplant = false;
 function aktualisieren() {
   ansicht.setzeMorphWerte(morphWerte(zustand.regler, zustand.figurtyp));
@@ -237,6 +261,7 @@ function aktualisieren() {
   }
 }
 
+// Text neben dem Regler: „neutral“, „fülliger 40“, beim Alter „≈ 32 Jahre“, bei der Stärke „60 %“
 function wertText(schluessel, v, z) {
   if (schluessel === "alter") return `≈ ${Math.round(alterInJahren(v))} Jahre`;
   if (schluessel === "figurtyp_staerke") return `${v} %`;
@@ -246,6 +271,8 @@ function wertText(schluessel, v, z) {
 
 const zahl = (x) => x.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
+// Figur messen und die cm-Werte in die Felder an den Reglern und in die Übersicht schreiben
+// (ein Feld, in das man gerade tippt, wird dabei nicht überschrieben)
 function masseZeigen() {
   cm = ansicht.messen(messpunkte);
   for (const r of REGLER) {
@@ -263,6 +290,7 @@ function masseZeigen() {
   }
 }
 
+// Hinweis über den Reglern zeigen, der nach 6 Sekunden von selbst verschwindet
 let meldungsZeit;
 function meldung(text) {
   const el = $("konf-meldung");
@@ -284,10 +312,12 @@ export function alsFigur() {
   };
 }
 
+// Entwurf im Browser merken (localStorage = kleiner Speicher im Browser, bleibt nach dem Schließen erhalten)
 function speichern() {
   try { localStorage.setItem(SPEICHER_SCHLUESSEL, JSON.stringify(alsFigur())); } catch { /* privates Fenster o. Ä. */ }
 }
 
+// Gemerkten Entwurf beim Öffnen wieder laden; passt er nicht zur aktuellen Regler-Version, wird er ignoriert
 function entwurfLaden() {
   try {
     const figur = JSON.parse(localStorage.getItem(SPEICHER_SCHLUESSEL));
@@ -300,6 +330,7 @@ function entwurfLaden() {
   } catch { /* kein oder kaputter Entwurf: Standardfigur */ }
 }
 
+// Alle Regler auf neutral, Figurtyp weg
 function allesZuruecksetzen() {
   for (const r of REGLER) zustand.regler[r.schluessel] = 0;
   zustand.figurtyp = null;
@@ -328,6 +359,7 @@ for (const knopf of document.querySelectorAll("[data-ansicht]")) knopf.onclick =
 figurtypenZeigen();
 aktualisieren();
 
+// Figur (GLB) und Messpunkte gleichzeitig laden (Promise.all wartet auf beides), dabei Fortschritt in % zeigen
 try {
   const [, antwort] = await Promise.all([
     ansicht.laden((anteil) => ($("laden-text").textContent = `Avatar wird geladen … ${Math.round(anteil * 100)} %`)),
