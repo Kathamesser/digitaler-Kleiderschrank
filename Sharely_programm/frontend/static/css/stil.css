@@ -519,11 +519,6 @@ textarea { resize: vertical; min-height: 90px; }
 .freunde-bereich { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
 .freunde-bereich > :first-child { flex: 1 1 590px; min-width: 0; }
 .freunde-bereich > :last-child { flex: 999 1 560px; min-width: 0; }
-/* Liste und Freund-Ansicht untereinander (freunde.html setzt die Klasse): Ansicht weglassen,
-   ein Klick auf einen Freund öffnet direkt dessen Kleiderschrank */
-.freunde-bereich.untereinander > #freund { display: none; }
-.freunde-bereich.untereinander .freundesliste [aria-current="true"] { background: none; border-color: transparent; }
-.freunde-bereich.untereinander .freundesliste { max-height: none; } /* keine Scrollleiste in der Liste */
 .weisse-karte { background: var(--flaeche); border-radius: var(--rund-gross); box-shadow: var(--schatten); padding: 28px 30px; }
 .weisse-karte + .weisse-karte { margin-top: 26px; }
 .karte-kopf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -535,8 +530,11 @@ textarea { resize: vertical; min-height: 90px; }
 .anfrage + .anfrage { margin-top: 12px; }
 .anfrage .name { flex: 1; font-size: 1.1rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .anfrage .symbolknopf { width: 50px; height: 50px; border: 1.5px solid var(--rot); color: var(--rot); background: var(--flaeche); }
-.freundesliste { list-style: none; margin: 0; padding: 0; max-height: 470px; overflow-y: auto; }
-.freundesliste button {
+/* Freundesliste: jeder Eintrag ist ein Link in den Kleiderschrank des Freundes (24.11.2026), ohne eigene Scrollleiste */
+.freundesliste { list-style: none; margin: 0; padding: 0; }
+.freundesliste a { text-decoration: none; }
+.freundesliste a:hover { background: #faf6ef; border-color: var(--linie); }
+.freundesliste button, .freundesliste a {
   width: 100%; display: flex; align-items: center; gap: 22px; padding: 12px 16px; border-radius: var(--rund);
   border: 1.5px solid transparent; background: none; font: inherit; font-size: 1.2rem; font-weight: 500; color: var(--text); cursor: pointer; text-align: left;
 }

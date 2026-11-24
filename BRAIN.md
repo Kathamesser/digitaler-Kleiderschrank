@@ -181,6 +181,8 @@ Gute Zusammenarbeit! 🤝
 
 ## Log (neueste Einträge oben)
 
+- **24.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch Freunde-Seite auch auf dem Desktop wie auf dem Handy: Freund-Ansicht neben der Liste (Kleiderschrank-/Garderobe-Panels, Geliehen/Verliehen) aus `freunde.html` entfernt, jeder Freund in der Liste ist ein Link nach `freund-schrank.html?freund=…` (Pfeil statt „…“). ResizeObserver und `.untereinander`-Regeln wieder entfernt, Liste ohne eigene Scrollleiste. Bewusste Abweichung vom Desktop-Mockup. Geprüft per Screenshot bei 360 und 1300 px. Projektdokumentation 6.3 ergänzt.
+
 - **24.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch auf ihrem Laptop Windows-Long-Paths eingeschaltet (Registry `LongPathsEnabled = 1`, mit Admin-Bestätigung), weil `moto` für Christians `test_bildspeicher.py` sonst nicht installierbar war. `moto` neu installiert, `pytest` 119 grün. Tipp im Wissensspeicher ergänzt.
 
 - **24.11.2026 · Katha/Claude(Laptop.Code):** Auf Kathas Wunsch: Nach dem Speichern beim Bearbeiten geht es in die Schrank-Übersicht (`schrank.html?geaendert=…` mit Bestätigung) statt in die Detailansicht; die Bestätigung in `kleidungsstueck.html` entfällt. Projektdokumentation 6.3 angepasst.
