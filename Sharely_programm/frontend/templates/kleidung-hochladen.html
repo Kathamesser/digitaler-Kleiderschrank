@@ -249,9 +249,9 @@
         : await api("/kleidung", { method: "POST", body: daten });
       const inhalt = await antwort.json();
       if (!antwort.ok) return zeigeMeldung(meldung, fehlerText(inhalt), "fehler");
-      // Bestätigung zeigt die Detailansicht bzw. der Schrank an
+      // Zurück in die Schrank-Übersicht, dort steht die Bestätigung (nach dem Bearbeiten: Wunsch Katha, 24.11.2026)
       location.href = vorhanden
-        ? `kleidungsstueck.html?id=${encodeURIComponent(inhalt.id)}&geaendert=1`
+        ? `schrank.html?geaendert=${encodeURIComponent(titelVon(inhalt))}`
         : `schrank.html?neu=${encodeURIComponent(titelVon(inhalt))}`;
     } catch (fehler) {
       zeigeMeldung(meldung, fehler.message, "fehler");

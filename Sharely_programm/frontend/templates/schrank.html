@@ -134,8 +134,9 @@
 
   // Bestätigung nach dem Hinzufügen (User Story 8), kommt von kleidung-hochladen.html
   const neu = new URLSearchParams(location.search).get("neu");
-  if (neu) {
-    zeigeMeldung(meldung, `${neu} wurde deinem Kleiderschrank hinzugefügt.`, "ok");
+  const geaendert = new URLSearchParams(location.search).get("geaendert"); // nach dem Bearbeiten
+  if (neu || geaendert) {
+    zeigeMeldung(meldung, neu ? `${neu} wurde deinem Kleiderschrank hinzugefügt.` : `Deine Änderungen an ${geaendert} sind gespeichert.`, "ok");
     history.replaceState(null, "", "schrank.html");
   }
 

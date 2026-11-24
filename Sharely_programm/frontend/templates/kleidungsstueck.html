@@ -267,11 +267,6 @@
     zeigeMeldung(aMeldung, "Die Anfrage wäre jetzt gesendet. Das Backend-Modul verleihen fehlt noch.", "ok");
   };
 
-  // Bestätigung nach dem Bearbeiten (kommt von kleidung-hochladen.html?id=…)
-  if (new URLSearchParams(location.search).has("geaendert")) {
-    zeigeMeldung(meldung, "Deine Änderungen sind gespeichert.", "ok");
-    history.replaceState(null, "", `kleidungsstueck.html?id=${encodeURIComponent(id)}`);
-  }
   if (!id) zeigeMeldung(meldung, "Kein Kleidungsstück ausgewählt.", "fehler");
   else holeJson(`/kleidung/${encodeURIComponent(id)}`)
     .then(zeige)
