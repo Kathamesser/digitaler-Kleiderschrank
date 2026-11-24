@@ -13,3 +13,12 @@ def als_test_nutzer():
     app.dependency_overrides[aktueller_nutzer] = lambda: TEST_NUTZER_ID
     yield
     app.dependency_overrides.pop(aktueller_nutzer, None)
+
+
+@pytest.fixture(autouse=True)
+def bilder_im_ordner(monkeypatch):
+    """Tests legen Bilder nie im gemeinsamen Bucket ab, auch wenn die eigene .env
+    BILDSPEICHER=bucket enthält. Den Bucket prüft test_bildspeicher.py mit einer Attrappe."""
+    from app.core.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "bildspeicher", "ordner")

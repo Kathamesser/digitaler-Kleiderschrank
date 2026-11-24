@@ -6,8 +6,7 @@ Obergrenzen und Berechnungen. Datenbankzugriffe laufen über repository.py.
 
 import uuid
 from datetime import datetime, time, timezone
-from pathlib import Path
-
+from app.core import bildspeicher
 from app.core.config import get_settings
 from app.module.kleidung import repository
 from app.module.kleidung.schemas import KleidungsstueckAntwort, KleidungsstueckNeu
@@ -19,6 +18,24 @@ class BildUngueltig(Exception):
 
 class BildZuGross(Exception):
     """Datei ist größer als max_bild_mb."""
+
+
+class SpeicherVoll(Exception):
+    """Mit dem neuen Bild wäre der Speicher des Nutzers (max_speicher_mb_pro_nutzer) überschritten."""
+
+
+def speichergrenze_text() -> str:
+    """Für Meldungen: „1 GB“ statt „1024 MB“."""
+    mb = get_settings().max_speicher_mb_pro_nutzer
+    return f"{mb // 1024} GB" if mb % 1024 == 0 else f"{mb} MB"
+
+
+async def platz_pruefen(nutzer_id: str, neu: int, frei_wird: int = 0) -> None:
+    """Speicherlimit je Nutzer (1 GB, Vorschlag Christian 24.11.2026). `frei_wird`: Größe
+    eines Bildes, das durch das neue ersetzt wird (z. B. altes Profilbild)."""
+    grenze = get_settings().max_speicher_mb_pro_nutzer * 1024 * 1024
+    if await bildspeicher.belegt(nutzer_id) - frei_wird + neu > grenze:
+        raise SpeicherVoll()
 
 
 class NichtGefunden(Exception):
@@ -41,10 +58,6 @@ def bild_format(daten: bytes) -> str:
     raise BildUngueltig()
 
 
-def _upload_ordner() -> Path:
-    return Path(get_settings().upload_ordner)
-
-
 def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
     kaufdatum = kleidungsstueck.get("kaufdatum")
     return KleidungsstueckAntwort(
@@ -53,6 +66,23 @@ def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
     )
 
 
+async def digitalisieren(
+    nutzer_id: str,
+    angaben: KleidungsstueckNeu,
+    bild: bytes,
+) -> KleidungsstueckAntwort:
+    """User Story 8: Foto prüfen, im Bildspeicher (app/core/bildspeicher.py) ablegen und das
+    Kleidungsstück anlegen. Den Status wählt der Nutzer (Eigenes, Geliehen,
+    Wunschartikel); `leihvorgang_id` bleibt leer, das setzt nur das Modul
+    verleihen."""
+    if len(bild) > get_settings().max_bild_mb * 1024 * 1024:
+        raise BildZuGross()
+    endung = bild_format(bild)
+    await platz_pruefen(nutzer_id, len(bild))
+
+    # Dateiname wird nie vom Nutzer übernommen, sondern zufällig erzeugt.
+    bild_pfad = f"{nutzer_id}/{uuid.uuid4().hex}.{endung}"
+    await bildspeicher.speichern(bild_pfad, bild)
 def _bild_speichern(nutzer_id: str, bild: bytes) -> str:
     """Bild prüfen und im Upload-Ordner des Nutzers ablegen; liefert den Pfad
     relativ zum Upload-Ordner."""
@@ -96,7 +126,7 @@ async def digitalisieren(
             "erstellt_am": datetime.now(timezone.utc),
         })
     except Exception:
-        datei.unlink(missing_ok=True)  # kein verwaistes Bild ohne Eintrag
+        await bildspeicher.loeschen(bild_pfad)  # kein verwaistes Bild ohne Eintrag
         raise
     return _antwort(kleidungsstueck)
 
@@ -151,12 +181,13 @@ async def eins(kleidungsstueck_id: str, nutzer_id: str) -> KleidungsstueckAntwor
     return _antwort(kleidungsstueck)
 
 
-async def bild_datei(kleidungsstueck_id: str, nutzer_id: str) -> Path:
-    """Pfad zur Bilddatei, nur für den Besitzer des Kleidungsstücks."""
+async def bild(kleidungsstueck_id: str, nutzer_id: str) -> tuple[bytes, str]:
+    """Bildinhalt und Medientyp, nur für den Besitzer des Kleidungsstücks."""
     kleidungsstueck = await repository.finden(kleidungsstueck_id, nutzer_id)
     if kleidungsstueck is None:
         raise NichtGefunden()
-    datei = _upload_ordner() / kleidungsstueck["bild_pfad"]
-    if not datei.is_file():
+    schluessel = kleidungsstueck["bild_pfad"]
+    try:
+        return await bildspeicher.laden(schluessel), bildspeicher.medientyp(schluessel)
+    except bildspeicher.BildFehlt:
         raise NichtGefunden()
-    return datei

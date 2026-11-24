@@ -10,7 +10,6 @@ weitergeben. Keine Geschäftslogik und keine Datenbankzugriffe in dieser Datei.
 from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, File, HTTPException, Response, UploadFile, status
-from fastapi.responses import FileResponse
 
 from app.core.config import get_settings
 from app.core.sicherheit import COOKIE_NAME, aktueller_nutzer, sitzung_beenden, sitzung_starten
@@ -90,6 +89,11 @@ async def profilbild_hochladen(
             status.HTTP_413_CONTENT_TOO_LARGE,
             f"Das Bild ist zu groß. Erlaubt sind höchstens {get_settings().max_bild_mb} MB.",
         )
+    except service.SpeicherVoll:
+        raise HTTPException(
+            status.HTTP_507_INSUFFICIENT_STORAGE,
+            f"Dein Speicher für Bilder ist voll (höchstens {service.speichergrenze_text()})."
+        )
     except service.BildUngueltig:
         raise HTTPException(
             status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -103,11 +107,13 @@ async def profilbild_entfernen(nutzer_id: Nutzer) -> ProfilAntwort:
     return await service.profilbild_entfernen(nutzer_id)
 
 
-@router.get("/ich/profilbild", response_class=FileResponse)
+@router.get("/ich/profilbild", response_class=Response)
 async def profilbild(nutzer_id: Nutzer):
     """Bild nur für den Nutzer selbst (kein öffentlicher Upload-Ordner). Ob Freunde es
     sehen dürfen, regelt später das Modul freunde."""
     try:
-        return FileResponse(await service.profilbild_datei(nutzer_id))
+        daten, medientyp = await service.profilbild(nutzer_id)
+        # Die Adresse enthält ?v=<Bildname>, ein neues Bild bekommt also eine neue Adresse
+        return Response(daten, media_type=medientyp, headers={"Cache-Control": "private, max-age=3600"})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Kein Profilbild vorhanden.")
