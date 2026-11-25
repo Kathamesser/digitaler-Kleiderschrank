@@ -11,7 +11,6 @@ Dazu die Prüfungen fürs Foto: Ist es wirklich ein Bild? Ist es zu groß? Ist n
 
 import uuid
 from datetime import datetime, time, timezone
-from pathlib import PurePosixPath
 
 from app.core import bildspeicher
 from app.core.config import get_settings
@@ -82,7 +81,7 @@ def _antwort(kleidungsstueck: dict) -> KleidungsstueckAntwort:
         **{**kleidungsstueck, "kaufdatum": kaufdatum.date() if kaufdatum else None},
         # ?v=… ändert sich mit jedem neuen Foto (z. B. nach dem Bearbeiten), damit der Browser
         # nie ein altes Bild aus seinem Zwischenspeicher zeigt (wie beim Profilbild)
-        bild_url=f"/api/kleidung/{kleidungsstueck['id']}/bild?v={PurePosixPath(kleidungsstueck['bild_pfad']).stem}",
+        bild_url=f"/api/kleidung/{kleidungsstueck['id']}/bild?v={bildspeicher.version(kleidungsstueck['bild_pfad'])}",
     )
 
 
@@ -227,13 +226,13 @@ async def eins(kleidungsstueck_id: str, nutzer_id: str) -> KleidungsstueckAntwor
     return _antwort(kleidungsstueck)
 
 
-async def bild(kleidungsstueck_id: str, nutzer_id: str) -> tuple[bytes, str]:
-    """Bildinhalt und Medientyp, nur für den Besitzer des Kleidungsstücks."""
+async def bild(kleidungsstueck_id: str, nutzer_id: str) -> tuple[bytes, str, str]:
+    """Bildinhalt, Medientyp und Bildschlüssel, nur für den Besitzer des Kleidungsstücks."""
     kleidungsstueck = await repository.finden(kleidungsstueck_id, nutzer_id)
     if kleidungsstueck is None:
         raise NichtGefunden()
     schluessel = kleidungsstueck["bild_pfad"]
     try:
-        return await bildspeicher.laden(schluessel), bildspeicher.medientyp(schluessel)
+        return await bildspeicher.laden(schluessel), bildspeicher.medientyp(schluessel), schluessel
     except bildspeicher.BildFehlt:
         raise NichtGefunden()

@@ -28,6 +28,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
 from pydantic import BaseModel, ValidationError
 
+from app.core import bildspeicher
 from app.core.config import get_settings
 from app.core.sicherheit import aktueller_nutzer
 from app.module.kleidung import service
@@ -205,12 +206,13 @@ async def kleidungsstueck_anzeigen(kleidungsstueck_id: str, nutzer_id: Nutzer) -
 
 
 @router.get("/{kleidungsstueck_id}/bild", response_class=Response)
-async def kleidungsstueck_bild(kleidungsstueck_id: str, nutzer_id: Nutzer):
+async def kleidungsstueck_bild(kleidungsstueck_id: str, nutzer_id: Nutzer, v: str | None = None):
     """Bild nur für den Besitzer (kein öffentlicher Bildspeicher, Datenschutz)."""
     try:
-        daten, medientyp = await service.bild(kleidungsstueck_id, nutzer_id)
-        # Kein Zwischenspeichern im Browser: Bilder kommen immer frisch vom Server (Entscheidung
-        # Christian, 24.11.2026), damit nie ein gelöschtes oder ersetztes Foto angezeigt wird
-        return Response(daten, media_type=medientyp, headers={"Cache-Control": "no-store"})
+        daten, medientyp, schluessel = await service.bild(kleidungsstueck_id, nutzer_id)
+        # Mit passendem ?v= darf der Browser das Bild lange behalten, sonst gar nicht
+        # (Regeln in bildspeicher.cache_anweisung)
+        return Response(daten, media_type=medientyp,
+                        headers={"Cache-Control": bildspeicher.cache_anweisung(schluessel, v)})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Bild nicht gefunden.")
