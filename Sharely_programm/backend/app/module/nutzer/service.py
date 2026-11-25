@@ -10,7 +10,6 @@ und das Profilbild (hochladen, ersetzen, löschen, anzeigen).
 import re
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
 from pymongo.errors import DuplicateKeyError
 
@@ -55,7 +54,7 @@ def _antwort(nutzer_id: str, nutzer: dict | None) -> ProfilAntwort:
     nutzer = nutzer or {}
     pfad = nutzer.get("profilbild_pfad")
     # ?v=… ändert sich mit jedem neuen Bild, damit der Browser nicht das alte aus dem Speicher zeigt
-    url = f"/api/nutzer/ich/profilbild?v={Path(pfad).stem}" if pfad else None
+    url = f"/api/nutzer/ich/profilbild?v={bildspeicher.version(pfad)}" if pfad else None
     return ProfilAntwort(
         id=nutzer_id,
         nutzername=nutzer.get("nutzername"),
@@ -151,12 +150,12 @@ async def profilbild_entfernen(nutzer_id: str) -> ProfilAntwort:
     return await profil(nutzer_id)
 
 
-async def profilbild(nutzer_id: str) -> tuple[bytes, str]:
-    """Bildinhalt und Medientyp des eigenen Profilbilds."""
+async def profilbild(nutzer_id: str) -> tuple[bytes, str, str]:
+    """Bildinhalt, Medientyp und Bildschlüssel des eigenen Profilbilds."""
     pfad = (await repository.finden(nutzer_id) or {}).get("profilbild_pfad")
     if not pfad:
         raise NichtGefunden()
     try:
-        return await bildspeicher.laden(pfad), bildspeicher.medientyp(pfad)
+        return await bildspeicher.laden(pfad), bildspeicher.medientyp(pfad), pfad
     except bildspeicher.BildFehlt:
         raise NichtGefunden()

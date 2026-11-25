@@ -22,6 +22,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, File, HTTPException, Response, UploadFile, status
 
+from app.core import bildspeicher
 from app.core.config import get_settings
 from app.core.sicherheit import COOKIE_NAME, aktueller_nutzer, sitzung_beenden, sitzung_starten
 from app.module.nutzer import service
@@ -125,13 +126,14 @@ async def profilbild_entfernen(nutzer_id: Nutzer) -> ProfilAntwort:
 
 
 @router.get("/ich/profilbild", response_class=Response)
-async def profilbild(nutzer_id: Nutzer):
+async def profilbild(nutzer_id: Nutzer, v: str | None = None):
     """Bild nur für den Nutzer selbst (kein öffentlicher Upload-Ordner). Ob Freunde es
     sehen dürfen, regelt später das Modul freunde."""
     try:
-        daten, medientyp = await service.profilbild(nutzer_id)
-        # Kein Zwischenspeichern im Browser: Bilder kommen immer frisch vom Server (Entscheidung
-        # Christian, 24.11.2026), damit nie ein gelöschtes oder ersetztes Foto angezeigt wird
-        return Response(daten, media_type=medientyp, headers={"Cache-Control": "no-store"})
+        daten, medientyp, schluessel = await service.profilbild(nutzer_id)
+        # Mit passendem ?v= darf der Browser das Bild lange behalten, sonst gar nicht
+        # (Regeln in bildspeicher.cache_anweisung)
+        return Response(daten, media_type=medientyp,
+                        headers={"Cache-Control": bildspeicher.cache_anweisung(schluessel, v)})
     except service.NichtGefunden:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Kein Profilbild vorhanden.")

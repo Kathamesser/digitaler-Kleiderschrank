@@ -106,7 +106,15 @@ def test_kleidungsstueck_mit_bild_im_bucket(bucket, monkeypatch, als_test_nutzer
     assert antwort.status_code == 200
     assert antwort.content == PNG
     assert antwort.headers["content-type"] == "image/png"
-    assert antwort.headers["cache-control"] == "no-store"  # Browser speichert Bilder nicht zwischen
+    # Adresse mit passendem ?v=: der Browser darf das Bild lange behalten
+    assert antwort.headers["cache-control"] == bildspeicher.CACHE_LANG
+
+
+def test_cache_anweisung():
+    assert bildspeicher.version("n1/abc123.jpg") == "abc123"
+    assert bildspeicher.cache_anweisung("n1/abc123.jpg", "abc123") == bildspeicher.CACHE_LANG
+    assert bildspeicher.cache_anweisung("n1/abc123.jpg", "anders") == "no-store"
+    assert bildspeicher.cache_anweisung("n1/abc123.jpg", None) == "no-store"
 
 
 def test_kein_verwaistes_bild_im_bucket(bucket, monkeypatch, als_test_nutzer):
@@ -136,7 +144,10 @@ def test_profilbild_im_bucket_ersetzt_altes(bucket, monkeypatch, als_test_nutzer
         assert len(_alle_schluessel(bucket)) == 1  # Datenschutz: das alte Bild ist weg
         profil = client.get(url)
         assert profil.content == PNG
-        assert profil.headers["cache-control"] == "no-store"
+        assert profil.headers["cache-control"] == bildspeicher.CACHE_LANG
+        # Veraltete oder fehlende Version: Bild kommt, wird aber nicht zwischengespeichert
+        assert client.get("/api/nutzer/ich/profilbild?v=alt").headers["cache-control"] == "no-store"
+        assert client.get("/api/nutzer/ich/profilbild").headers["cache-control"] == "no-store"
         client.delete("/api/nutzer/ich/profilbild")
     assert _alle_schluessel(bucket) == []
 

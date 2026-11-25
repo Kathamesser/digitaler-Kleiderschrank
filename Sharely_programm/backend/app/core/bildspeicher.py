@@ -40,6 +40,28 @@ def medientyp(schluessel: str) -> str:
     return MEDIENTYPEN.get(PurePosixPath(schluessel).suffix.lstrip("."), "application/octet-stream")
 
 
+def version(schluessel: str) -> str:
+    """Kennung des Bildes für die Adresse (?v=…): der zufällige Dateiname ohne Endung.
+    Jedes neu hochgeladene Bild bekommt einen neuen Zufallsnamen, also auch eine neue Adresse."""
+    return PurePosixPath(schluessel).stem
+
+
+# Der Browser darf ein Bild ein Jahr behalten und muss nicht nachfragen („immutable“), weil sich
+# hinter einer Adresse mit ?v=<Dateiname> nie ein anderes Bild verbirgt. „private“: nur der Browser
+# des Nutzers speichert, keine fremden Zwischenspeicher unterwegs (Datenschutz).
+CACHE_LANG = "private, max-age=31536000, immutable"
+
+
+def cache_anweisung(schluessel: str, v: str | None) -> str:
+    """Cache-Control für eine Bildantwort (Entscheidung Christian, 25.11.2026).
+
+    Passt ?v= zum aktuellen Bild, darf der Browser es lange behalten. Fehlt ?v= oder ist es
+    veraltet (Bild inzwischen ersetzt), wird nichts gespeichert: Unter einer Adresse ohne
+    passende Version könnte später ein anderes Bild liegen (so entstand der Fehler vom 24.11.2026,
+    als der Browser alte Fotos unter der immer gleichen Adresse zeigte)."""
+    return CACHE_LANG if v is not None and v == version(schluessel) else "no-store"
+
+
 def _pruefen(schluessel: str) -> str:
     """Schlüssel kommen nur aus unserem eigenen Code, trotzdem kein Ausbruch aus dem Ordner.
     („..“ hieße „eine Ebene höher“; damit könnte man sonst Dateien außerhalb des Bildordners erreichen.)"""
